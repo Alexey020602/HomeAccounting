@@ -22,7 +22,7 @@ var request = new CheckRequest
 };
 
 var file = new FileInfo(@"C:\Users\Fedor\Downloads\photo_2025-01-03_17-10-45.jpg");
-var json = await service.GetAsyncByFile(file).ConfigureAwait(false);
+var json = await service.GetAsyncByRaw(request).ConfigureAwait(false);
 // var json = await service.GetAsyncByRaw(request);
 foreach (var item in json.Data.Json.Items)
 {

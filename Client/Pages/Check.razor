@@ -1,0 +1,23 @@
+@page "/Check"
+@using FnsChecksApi
+<InputFile OnChange="@OnChange"></InputFile>
+<div>
+    @if (Root != null)
+    {
+        @foreach (var item in Root.Data.Json.Items)
+        {
+            <p>item</p>
+        }
+    }
+</div>
+
+@code {
+
+    [Inject] private ICheckService CheckService { get; set; } = null!;
+
+    // private IBrowserFile? File { get; set; }
+    private Root? Root { get; set; }
+
+    private async Task OnChange(InputFileChangeEventArgs args) => Root = await CheckService.GetAsyncByFile(args.File.OpenReadStream());
+
+}

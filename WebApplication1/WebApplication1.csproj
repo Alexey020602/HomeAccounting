@@ -16,4 +16,8 @@
       <ProjectReference Include="..\FnsChecksApi\FnsChecksApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\tmp\" />
+    </ItemGroup>
+
 </Project>

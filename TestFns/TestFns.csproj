@@ -11,4 +11,9 @@
       <ProjectReference Include="..\FnsChecksApi\FnsChecksApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ZXing.Net" Version="0.16.9" />
+      <PackageReference Include="ZXing.Net.Bindings.CoreCompat.System.Drawing" Version="0.16.8-beta" />
+    </ItemGroup>
+
 </Project>

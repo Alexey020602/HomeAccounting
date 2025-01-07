@@ -1,23 +1,65 @@
 @page "/Check"
 @using FnsChecksApi
+@using FnsChecksApi.Dto.Categorized
+@using FnsChecksApi.Requests
 <InputFile OnChange="@OnChange"></InputFile>
+Чек
+<EditForm Model="@Request"  OnSubmit="@OnSubmit">
+    <InputText @bind-Value="@Request.Fd" >ФД</InputText>
+    <InputText @bind-Value="@Request.Fn">ФН</InputText>
+    <InputText @bind-Value="@Request.Fp">ФП</InputText>
+    <button type="submit">Получить данные чека</button>
+</EditForm>
+<button @onclick="@TestGet">Test Get</button>
+<p>@TestGetResult</p>
+<button @onclick="@TestPost">Test Post</button>
+<p>@TestPostResult</p>
 <div>
     @if (Root != null)
     {
-        @foreach (var item in Root.Data.Json.Items)
+        @foreach (var item in Root.Items)
         {
-            <p>item</p>
+            <p>@item</p>
         }
     }
 </div>
 
 @code {
-
-    [Inject] private ICheckService CheckService { get; set; } = null!;
-
-    // private IBrowserFile? File { get; set; }
+    [Inject] private IApi Api { get; set; } = null!;
     private Root? Root { get; set; }
+    private string TestGetResult { get; set; } = "Пусто";
+    private string TestPostResult { get; set; } = "Пусто";
+    private CheckRequest Request { get; set; } = new()
+    {
+        Fd = "",
+        Fn = "",
+        Fp = ""
+    };
 
-    private async Task OnChange(InputFileChangeEventArgs args) => Root = await CheckService.GetAsyncByFile(args.File.OpenReadStream());
+    private async Task OnSubmit() => Root = await Api.GetReceipt(Request);
+    private async Task OnChange(InputFileChangeEventArgs args)
+    {
+        // var fileStream = new FileStream(TempFilePath,FileMode.Create);
+        // await args.File.OpenReadStream().CopyToAsync(fileStream);
+        Root = await Api.GetReceipt(args.File.OpenReadStream());
+    }
 
+    private async Task TestGet()
+    {
+        TestGetResult = await Api.GetTest();
+    }
+
+    private async Task TestPost()
+    {
+        TestPostResult = await Api.PostTest("Test Post");
+    }
+    // private static string TempFilePath
+    // {
+    //     get
+    //     {
+    //         var fileName = Path.GetRandomFileName();
+    //         return Path.Combine(Environment.Content)
+    //     }
+    //     
+    // }
 }

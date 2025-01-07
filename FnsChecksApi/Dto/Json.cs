@@ -1,24 +1,13 @@
 using System.Text.Json.Serialization;
 
-namespace FnsChecksApi;
-public record Data(
-    Json Json,
-    string Html
-);
-
-public record Gs1m(
-    string Gtin,
-    string Sernum,
-    int ProductIdType,
-    string RawProductCode
-);
+namespace FnsChecksApi.Dto;
 
 public record Item(
     int Nds,
     int Sum,
     string Name,
     int Price,
-    int Quantity,
+    double Quantity,
     int PaymentType,
     int ProductType,
     ProductCodeNew ProductCodeNew,
@@ -50,7 +39,7 @@ public record Json(
     int TotalSum,
     int CreditSum,
     string NumberKkt,
-    int FiscalSign,
+    long FiscalSign,
     int PrepaidSum,
     string OperatorInn,
     string RetailPlace,
@@ -77,9 +66,11 @@ public record Manual(
     string Fd,
     string Fp,
     string CheckTime,
+    [property: JsonConverter(typeof(IntOrStringJsonConverter))]
     string Type,
     string Sum
 );
+
 
 public record Metadata(
     long Id,
@@ -105,5 +96,11 @@ public record Root(
     int First,
     Data Data,
     Request Request
-);
+): Receipt(Code, Request);
 
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "code")]
+[JsonDerivedType(typeof(Root), 1)]
+[JsonDerivedType(typeof(BadAnswerReceipt), 3)]
+public abstract record Receipt(int Code, Request Request); 
+
+public record BadAnswerReceipt(int Code, string Data, Request Request): Receipt(Code, Request);

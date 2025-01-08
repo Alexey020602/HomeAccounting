@@ -1,4 +1,4 @@
-namespace FnsChecksApi.Dto;
+namespace FnsChecksApi.Dto.Fns;
 
 public record Data(
     Json Json,

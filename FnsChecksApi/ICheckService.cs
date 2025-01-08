@@ -1,4 +1,5 @@
 using FnsChecksApi.Dto;
+using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
 using Microsoft.AspNetCore.Http;
 using Refit;

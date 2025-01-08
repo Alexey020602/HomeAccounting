@@ -1,5 +1,6 @@
 using FnsChecksApi.Dto;
 using FnsChecksApi.Dto.Categorized;
+using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
 using Microsoft.AspNetCore.Http;
 using Root = FnsChecksApi.Dto.Categorized.Root;
@@ -49,7 +50,7 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
             throw new Exception($"Превышено количество запросов:\n{badAnswerReceipt.Data}");
         }
 
-        if (fnsResponse is not Dto.Root root)
+        if (fnsResponse is not Dto.Fns.Root root)
         {
             throw new InvalidOperationException("Неправильный тип ответа ФНС");
         }
@@ -60,7 +61,7 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
             );
     }
 
-    private static Query CreateQuery(Dto.Root root) => new(
+    private static Query CreateQuery(Dto.Fns.Root root) => new(
         root.Data.Json.Items.Select(i => i.Name).ToList()
     );
 }

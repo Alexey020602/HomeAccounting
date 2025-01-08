@@ -2,6 +2,7 @@
 using System.Text.Json;
 using FnsChecksApi;
 using FnsChecksApi.Dto;
+using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
 using Refit;
 using ZXing;

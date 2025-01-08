@@ -2,6 +2,7 @@
 @using FnsChecksApi
 @using FnsChecksApi.Dto.Categorized
 @using FnsChecksApi.Requests
+@using Client.Components
 <InputFile OnChange="@OnChange"></InputFile>
 Чек
 <EditForm Model="@Request"  OnSubmit="@OnSubmit">
@@ -17,10 +18,7 @@
 <div>
     @if (Root != null)
     {
-        @foreach (var item in Root.Items)
-        {
-            <p>@item</p>
-        }
+        <ReceiptComponent Root ="@Root"/>
     }
 </div>
 

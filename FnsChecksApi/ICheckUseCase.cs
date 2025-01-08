@@ -9,4 +9,5 @@ public interface ICheckUseCase
     Task<Dto.Categorized.Root> GetReceipt(Stream file);
     Task<Dto.Categorized.Root> GetReceipt(FileInfo file);
     Task<Dto.Categorized.Root> GetReceipt(IFormFile file);
+    Task<Dto.Categorized.Root> GetReceipt(CheckRawRequest checkRequest);
 }

@@ -8,6 +8,11 @@ namespace FnsChecksApi;
 
 public class CheckUseCase(ICheckService checkService, IReceiptService receiptService) : ICheckUseCase
 {
+    public async Task<Root> GetReceipt(CheckRawRequest checkRequest)
+    {
+        return await ProcessReceipt(await checkService.GetAsyncByRaw(checkRequest));
+    }
+
     public async Task<Dto.Categorized.Root> GetReceipt(CheckRequest checkRequest)
     {
         var fnsResponse = await checkService.GetAsyncByRaw(checkRequest);

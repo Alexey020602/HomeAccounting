@@ -1,0 +1,30 @@
+@using FnsChecksApi.Dto.Categorized
+
+<ul>
+@foreach (var item in Root.Items)
+{
+    <li>
+        @Row(item)
+    </li>
+}
+</ul>
+
+@code {
+    [Parameter] public Root Root { get; set; } = null!;
+
+    private RenderFragment Row(Item item) => @<div>
+        Название продукта - @item.InitialRequest
+        @ProductView(item.Product)
+        @CategoryView(item.Category)
+    </div>;
+
+    private RenderFragment CategoryView(Category category) => @<p>
+                                                                  Первичная категория: @category.FirstLevelCategory
+                                                                  Вторичная категория: @category.SecondLevelCategory
+                                                              </p>;
+
+    private RenderFragment ProductView(Product product) => @<p>
+                                                               Полное описание: @product.FullDescription
+                                                               Ключевое слово: @product.KeyWord
+                                                           </p>;
+}

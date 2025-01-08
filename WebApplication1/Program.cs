@@ -1,3 +1,4 @@
+using System.Drawing;
 using FnsChecksApi;
 using FnsChecksApi.Dto.Categorized;
 using FnsChecksApi.Requests;
@@ -5,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.FileProviders;
 using Refit;
+using ZXing;
+using ZXing.CoreCompat.System.Drawing;
 
 string corsPolicyName = "CorsPolicy";
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,8 @@ builder.Services.AddRefitClient<ICheckService>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"));
 builder.Services.AddRefitClient<IReceiptService>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"));
+
+builder.Services.AddTransient<IBarcodeReader<Bitmap>, BarcodeReader>();
 // builder.Services.AddProblemDetails();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 
@@ -91,12 +96,19 @@ app.MapPost("/receipt", async ([FromBody] CheckRequest request, ICheckUseCase ch
 
 app.MapPost(
         "/receiptWithFile",
-        (IFormFile file, ICheckUseCase checkUseCase, IWebHostEnvironment environment) =>
+        (IFormFile file, ICheckUseCase checkUseCase, IBarcodeReader<Bitmap> reader) =>
         {
             try
             {
+                var bitmap = (Bitmap) Image.FromStream(file.OpenReadStream());
+                var result = reader.Decode(bitmap);
+                if (result == null)
+                {
+                    throw new ApplicationException("Failed to decode image");
+                }
+                
                 // var tempPath = Path.Combine(environment.WebRootPath, "tmp", Path.GetRandomFileName());
-                return checkUseCase.GetReceipt(file);
+                return checkUseCase.GetReceipt(new CheckRawRequest(result.Text));
             }
             catch (Exception ex)
             {

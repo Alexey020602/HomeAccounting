@@ -2,7 +2,6 @@ using FnsChecksApi.Dto;
 using FnsChecksApi.Dto.Categorized;
 using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
-using Microsoft.AspNetCore.Http;
 using Root = FnsChecksApi.Dto.Categorized.Root;
 
 namespace FnsChecksApi;
@@ -19,12 +18,6 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
         var fnsResponse = await checkService.GetAsyncByRaw(checkRequest);
 
         return await ProcessReceipt(fnsResponse);
-    }
-
-    public async Task<Root> GetReceipt(IFormFile file)
-    {
-        var fnsResponse = await checkService.GetAsyncByFormFile(file);
-        return await  ProcessReceipt(fnsResponse);
     }
     
     public async Task<Root> GetReceipt(FileInfo file)

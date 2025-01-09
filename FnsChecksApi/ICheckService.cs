@@ -1,8 +1,8 @@
 using FnsChecksApi.Dto;
 using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
-using Microsoft.AspNetCore.Http;
 using Refit;
+
 
 namespace FnsChecksApi;
 
@@ -18,8 +18,4 @@ public interface ICheckService
     [Post("/api/v1/check/get")]
     [Multipart]
     public Task<Receipt> GetAsyncByFile(Stream qrFile, string token = "15239.20dUQQYmlHxbOPLzb" /*"30787.hZOYna2xwcSHHqk3q"*/);
-    
-    [Post("/api/v1/check/get")]
-    [Multipart]
-    public Task<Receipt> GetAsyncByFormFile(IFormFile qrFile, string token = "15239.20dUQQYmlHxbOPLzb");
 }

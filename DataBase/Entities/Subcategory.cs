@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataBase.Entities;
-
-[Table(nameof(Subcategory))]
-public class Subcategory: Category
+[Index(nameof(Name), nameof(CategoryId), IsUnique = true)]
+public class Subcategory
 {
-    public string SubcategoryName { get; set; } = null!;
+    public int Id { get; set; }
+    public string? Name { get; set; } 
+    public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;
     public List<Product> Products { get; set; } = [];
 }   

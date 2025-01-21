@@ -10,4 +10,6 @@ public class Subcategory
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;
     public List<Product> Products { get; set; } = [];
+
+    public override string ToString() => $"{Name} из {Category}";
 }   

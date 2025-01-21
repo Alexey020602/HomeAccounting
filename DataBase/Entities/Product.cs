@@ -10,4 +10,6 @@ public class Product
     public int Price { get; set; }
     public int Sum { get; set; }
     public Subcategory Subcategory { get; set; } = null!;
+
+    public override string ToString() => $"{Name} Категория {Subcategory}";
 }

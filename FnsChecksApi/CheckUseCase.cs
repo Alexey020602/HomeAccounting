@@ -36,7 +36,20 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
         return await  ProcessReceipt(fnsResponse);
     }
 
-    private async Task SaveCheck(Receipt fnsResponse)
+    public async Task SaveCheck(CheckRequest checkRequest)
+    {
+        var raw = checkRequest.RawRequest();
+        if (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == raw.QrRaw) is not null)
+            return;
+        await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), raw.QrRaw);
+    }
+    public async Task SaveCheck(CheckRawRequest checkRequest)
+    {
+        if (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == checkRequest.QrRaw) is not null)
+            return;
+        await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), checkRequest.QrRaw);
+    }
+    public async Task SaveCheck(Receipt fnsResponse, string qrRaw)
     {
         ArgumentNullException.ThrowIfNull(fnsResponse);
         
@@ -67,9 +80,20 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
                 Subcategory = subcategory,
             };
         });
-        var products = await Task.WhenAll(productsTasks);
+        var products = new List<Product>(); 
+
+        foreach (var task in productsTasks)
+        {
+            products.Add(await task);
+        }
+
+        var check = new Check
+        {
+            CheckRaw = qrRaw,
+            Products = products,
+        };
         
-        await context.Products.AddRangeAsync(products);
+        await context.Checks.AddAsync(check);
         await context.SaveChangesAsync();
     }
 
@@ -79,30 +103,47 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
             Name = name,
         };
 
-    private async Task<DataBase.Entities.Subcategory> GetSubcategoryByName(string? name, string categoryName)
+    private async Task<Category> CreateCategory(string name)
     {
-        var existingCategory = await context.Categories.SingleOrDefaultAsync(c => c.Name == categoryName);
-        if (existingCategory is not null)
-        {
-            return await context.Subcategories.SingleOrDefaultAsync(c =>
-                    c.Name == name && c.CategoryId == existingCategory.Id) ?? new Subcategory
-                {
-                    Name = name,
-                    CategoryId = existingCategory.Id,
-                };
-        }
-
         var category = new Category
         {
-            Name = categoryName,
+            Name = name,
         };
+        var entry = context.Categories.Attach(category);
+        await context.Categories.AddAsync(category);
+        
+        return category;
+    }
+
+    private async Task<Subcategory> CreateSubcategory(string? name, Category category)
+    {
         var subcategory = new Subcategory
         {
             Name = name,
             Category = category,
         };
         
+        context.Subcategories.Attach(subcategory);
+        await context.Subcategories.AddAsync(subcategory);
+        // await context.SaveChangesAsync();
         return subcategory;
+    }
+
+    private async Task<DataBase.Entities.Subcategory> GetSubcategoryByName(string? name, string categoryName)
+    {
+        var existingCategory = await context.Categories.SingleOrDefaultAsync(c => c.Name == categoryName) ??
+                               context.Categories.Local.SingleOrDefault(c => c.Name == categoryName);
+        if (existingCategory is not null)
+        {
+            return await context.Subcategories.SingleOrDefaultAsync(c =>
+                    c.Name == name && c.CategoryId == existingCategory.Id) ??
+                   context.Subcategories.Local.SingleOrDefault(c => c.Name == name && c.CategoryId == existingCategory.Id) ??
+                   await CreateSubcategory(name, existingCategory);
+        }
+
+        var category = await CreateCategory(categoryName);
+        
+        return await CreateSubcategory(name, category);
     }
     private async Task<Root> ProcessReceipt(Receipt fnsResponse)
     {

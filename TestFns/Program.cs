@@ -1,82 +1,67 @@
 ﻿using System.Drawing;
 using System.Text.Json;
+using DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Dto;
 using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
+using Microsoft.EntityFrameworkCore;
 using Refit;
 using ZXing;
 using ZXing.CoreCompat.System.Drawing;
+using Microsoft.EntityFrameworkCore;
 
-var options = new JsonSerializerOptions();
-var serializer = new SystemTextJsonContentSerializer();
+var options = new DbContextOptionsBuilder<ApplicationContext>()
+    .UseInMemoryDatabase(Guid.NewGuid().ToString())
+    .Options;
 
-var settings = new RefitSettings()
+using var context = new ApplicationContext(options);
+
+// using var context = ApplicationContext(
+//         new DbContextOptionsBuilder<ApplicationContext>()
+//             .UseInMemoryDatabase(Guid.NewGuid().ToString())
+//             .Options);
+
+var checkService = RestService.For<ICheckService>("https://proverkacheka.com");
+var receiptService = RestService.For<IReceiptService>("https://cheicheck.ru");
+
+var checkUseCase = new CheckUseCase(checkService, receiptService, context);
+
+var requests = new [] 
 {
-    ContentSerializer = serializer,
+    // "t=20250107T104157&s=1691.16&fn=7380440801290534&i=9446&fp=1880975916&n=1",
+    // "t=20250112T1715&s=93.00&fn=7381440800435707&i=21728&fp=3846028993&n=1",
+    // "t=20250113T2321&s=1015.73&fn=7284440500173838&i=62887&fp=182171056&n=1",
+    // "t=20250111T105907&s=1236.35&fn=7380440801290534&i=10277&fp=840967215&n=1",
+    "t=20250104T1233&s=1289.00&fn=7380440700673345&i=26636&fp=1241320200&n=1",
+}.Select(raw => new CheckRawRequest(raw)).ToList();
+
+var checkRequest = new CheckRequest
+{
+    Fd = "9152",
+    Fn = "7380440801290534",
+    Fp = "3909637264",
+    T = "20250105T1520",
+    S = "860.88",
 };
+requests.Add(checkRequest.RawRequest());
 
-var checkImagePath = @"C:\Users\Fedor\Downloads\photo_2025-01-07_11-55-29.jpg";
+await checkUseCase.SaveCheck(checkRequest.RawRequest());
 
-var service = RestService.For<ICheckService>("https://proverkacheka.com");
-const string token = "15239.20dUQQYmlHxbOPLzb";
-var request = new CheckRequest
-{
-    Token = token,
-    Fd = "70399",
-    Fn = "7380440800793300",
-    Fp = "4259975605",
-    T = "07.01.25 10:57",
-    S = "444.95",
-};
-
-var checkRawData = "t=20250105T152050&s=860.88&fn=7380440801290534&i=9152&fp=3909637264&n=1";
-
-var rawRequest = new CheckRawRequest(checkRawData);
-
-IBarcodeReader<Bitmap> reader = new BarcodeReader();
-var image = Image.FromFile(checkImagePath);
-var barcodeBitmap = (Bitmap) image;
-
-var result = reader.Decode(barcodeBitmap);
-
-Console.WriteLine(result.Text);
-// var dictionary = HttpUtility.ParseQueryString(checkRawData);
-//
-// string json = JsonSerializer.Serialize(dictionary.Cast<string>().ToDictionary(k => k, v => dictionary[v]));
-//
-// CheckRequest checkRequest = JsonSerializer.Deserialize<CheckRequest>(json, options);
-
-// var checkRequest = new CheckRequest()
-// {   
-//     Fd = dictionary["i"] ?? throw new ArgumentNullException(),
-//     Fn = dictionary["fn"] ?? throw new ArgumentNullException(),
-//     Fp = dictionary["fp"] ?? throw new ArgumentNullException(),
-//     T = dictionary["t"] ?? throw new ArgumentNullException(),
-//     S = dictionary["s"] ?? throw new ArgumentNullException(),
-// };
-
-var file = new FileInfo(checkImagePath);
-var receipt = await service.GetAsyncByRaw(rawRequest);
-
-// var receipt = await service.GetAsyncByFile(file);
-if (receipt is not Root root)
-{
-    return;
-}
-// var json = await service.GetAsyncByRaw(request);
-foreach (var item in root.Data.Json.Items)
-{
-    Console.WriteLine(item);
-}
-
-// foreach (var product in json.Goods)
+// foreach (var request in requests)
 // {
-//     Console.WriteLine(product);
+//     Console.WriteLine(request);
+//     await checkUseCase.SaveCheck(request);
 // }
-// int type;
-int.TryParse(root.Request.Manual.Type, out var type);
 
-Console.WriteLine(type);
+var checks = await context.Checks
+    .Include(c => c.Products)
+    .ThenInclude(p => p.Subcategory)
+    .ThenInclude(s => s.Products)
+    .ToListAsync()
+    ;
 
-Console.WriteLine(root);
+foreach (var check in checks)
+{
+    Console.WriteLine(check);
+}

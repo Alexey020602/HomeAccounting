@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Text.Json;
+using DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Dto.Categorized;
 using FnsChecksApi.Requests;
@@ -21,6 +22,15 @@ builder.Services.AddRefitClient<IReceiptService>()
 
 builder.Services.AddTransient<IBarcodeReader<Bitmap>, BarcodeReader>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
+}
+else
+{
+    //todo Сделать регистрацию БД из ConnectionStrings
+}
 
 var app = builder.Build();
 

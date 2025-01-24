@@ -48,15 +48,15 @@ namespace DataBase.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("CheckRaw")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Sum")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

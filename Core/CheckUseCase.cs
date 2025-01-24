@@ -1,5 +1,7 @@
+using Core.Mappers;
 using DataBase;
 using DataBase.Entities;
+using FnsChecksApi;
 using FnsChecksApi.Dto;
 using FnsChecksApi.Dto.Categorized;
 using FnsChecksApi.Dto.Fns;
@@ -9,7 +11,7 @@ using Category = DataBase.Entities.Category;
 using Product = DataBase.Entities.Product;
 using Root = FnsChecksApi.Dto.Categorized.Root;
 
-namespace FnsChecksApi;
+namespace Core;
 
 public class CheckUseCase(ICheckService checkService, IReceiptService receiptService, ApplicationContext context) : ICheckUseCase
 {
@@ -18,7 +20,7 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
         return await ProcessReceipt(await checkService.GetAsyncByRaw(checkRequest));
     }
 
-    public async Task<Dto.Categorized.Root> GetReceipt(CheckRequest checkRequest)
+    public async Task<FnsChecksApi.Dto.Categorized.Root> GetReceipt(CheckRequest checkRequest)
     {
         var fnsResponse = await checkService.GetAsyncByRaw(checkRequest);
 
@@ -43,25 +45,14 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
             return;
         await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), raw.QrRaw);
     }
-    public async Task SaveCheck(CheckRawRequest checkRequest)
+    public async Task<Core.Model.Check> SaveCheck(CheckRawRequest checkRequest)
     {
-        if (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == checkRequest.QrRaw) is not null)
-            return;
+        return (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == checkRequest.QrRaw))?.ConvertToCheck() ??
         await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), checkRequest.QrRaw);
     }
-    public async Task SaveCheck(Receipt fnsResponse, string qrRaw)
+    public async Task<Core.Model.Check> SaveCheck(Receipt fnsResponse, string qrRaw)
     {
-        ArgumentNullException.ThrowIfNull(fnsResponse);
-        
-        if (fnsResponse is BadAnswerReceipt badAnswerReceipt)
-        {
-            throw new Exception($"{badAnswerReceipt.Data}");
-        }
-
-        if (fnsResponse is not Dto.Fns.Root root)
-        {
-            throw new InvalidOperationException("Неправильный тип ответа ФНС");
-        }
+        var root = Validate(fnsResponse);
 
         var normalizedProsucts = await receiptService.GetReceipt(CreateQuery(root)) ?? throw new InvalidOperationException();
         
@@ -95,8 +86,25 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
         
         await context.Checks.AddAsync(check);
         await context.SaveChangesAsync();
+        return check.ConvertToCheck();
     }
 
+    private FnsChecksApi.Dto.Fns.Root Validate(Receipt fnsResponse)
+    {
+        ArgumentNullException.ThrowIfNull(fnsResponse);
+        
+        if (fnsResponse is BadAnswerReceipt badAnswerReceipt)
+        {
+            throw new Exception($"{badAnswerReceipt.Data}");
+        }
+
+        if (fnsResponse is not FnsChecksApi.Dto.Fns.Root root)
+        {
+            throw new InvalidOperationException("Неправильный тип ответа ФНС");
+        }
+        
+        return root;
+    }
     private async Task<Category> GetCategoryByName(string name) =>
         await context.Categories.SingleOrDefaultAsync(c => c.Name == name) ?? new Category
         {
@@ -157,7 +165,7 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
             throw new Exception($"{badAnswerReceipt.Data}");
         }
 
-        if (fnsResponse is not Dto.Fns.Root root)
+        if (fnsResponse is not FnsChecksApi.Dto.Fns.Root root)
         {
             throw new InvalidOperationException("Неправильный тип ответа ФНС");
         }
@@ -168,7 +176,7 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
             );
     }
 
-    private static Query CreateQuery(Dto.Fns.Root root) => new(
+    private static Query CreateQuery(FnsChecksApi.Dto.Fns.Root root) => new(
         root.Data.Json.Items.Select(i => i.Name).ToList()
     );
 }

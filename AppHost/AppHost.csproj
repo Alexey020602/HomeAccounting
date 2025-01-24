@@ -19,7 +19,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Client\Client.csproj" />
       <ProjectReference Include="..\MigrationService\MigrationService.csproj" />
-      <ProjectReference Include="..\WebApplication1\WebApplication1.csproj" />
+      <ProjectReference Include="..\Api\Api.csproj" />
     </ItemGroup>
 
 </Project>

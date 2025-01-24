@@ -6,13 +6,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestFns", "TestFns\TestFns.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{8DD1D0DD-E20F-4F01-AFFB-7E223CE872AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{FAA594FB-922A-4E03-BC1E-A58F924E9A0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{FAA594FB-922A-4E03-BC1E-A58F924E9A0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "AppHost\AppHost.csproj", "{4F61174D-926D-47D1-BE35-95D5FE85E748}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBase", "DataBase\DataBase.csproj", "{03869DB1-6ADB-4CE6-91DB-2563D65B6395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "MigrationService\MigrationService.csproj", "{7A3C4921-43B7-4B85-A0D5-EB891A6EC90D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{967DED93-6215-431B-9FBD-154D4E624FE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +50,9 @@ Global
 		{7A3C4921-43B7-4B85-A0D5-EB891A6EC90D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A3C4921-43B7-4B85-A0D5-EB891A6EC90D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A3C4921-43B7-4B85-A0D5-EB891A6EC90D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{967DED93-6215-431B-9FBD-154D4E624FE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{967DED93-6215-431B-9FBD-154D4E624FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{967DED93-6215-431B-9FBD-154D4E624FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{967DED93-6215-431B-9FBD-154D4E624FE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

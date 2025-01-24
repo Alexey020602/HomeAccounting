@@ -1,5 +1,6 @@
-﻿using System.Drawing;
-using System.Text.Json;
+﻿using System.Text.Json;
+using System.Drawing;
+using Core;
 using DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Dto;
@@ -7,15 +8,29 @@ using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
 using Microsoft.EntityFrameworkCore;
 using Refit;
+using SkiaSharp;
 using ZXing;
-using ZXing.CoreCompat.System.Drawing;
-using Microsoft.EntityFrameworkCore;
+using ZXing.SkiaSharp;
 
+var path = "/Users/Alexey/Downloads/2025-01-24 17.40.56.jpg";
+var file = new FileInfo(path);
+
+if (!file.Exists) throw new Exception();
+// SKBitmap bitmap = SKBitmap.Decode(path);
+using var stream = file.Open(FileMode.Open);
+var memory = new byte[stream.Length];
+await stream.ReadExactlyAsync(memory, 0, memory.Length);
+var image = SKImage.FromEncodedData(memory);
+var bitmap = SKBitmap.FromImage(image);
+var reader = new BarcodeReader();
+var result = reader.Decode(bitmap);
+Console.WriteLine(result.Text);
+// var bitmap = 
 var options = new DbContextOptionsBuilder<ApplicationContext>()
     .UseInMemoryDatabase(Guid.NewGuid().ToString())
     .Options;
 
-using var context = new ApplicationContext(options);
+await using var context = new ApplicationContext(options);
 
 // using var context = ApplicationContext(
 //         new DbContextOptionsBuilder<ApplicationContext>()

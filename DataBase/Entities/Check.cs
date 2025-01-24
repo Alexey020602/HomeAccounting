@@ -7,8 +7,8 @@ namespace DataBase.Entities;
 public class Check
 {
     public Guid Id { get; set; }
-    public int Sum { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime PurchaseDate { get; set; }
+    public DateTime AddedDate { get; set; }
     public string CheckRaw { get; set; } = null!;
     [MinLength(1)]
     public List<Product> Products { get; set; } = [];

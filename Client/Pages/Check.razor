@@ -1,63 +1,93 @@
 @page "/Check"
-@using FnsChecksApi
-@using FnsChecksApi.Dto.Categorized
-@using FnsChecksApi.Requests
-@using Client.Components
-<InputFile OnChange="@OnChange"></InputFile>
-Чек
-<EditForm Model="@Request"  OnSubmit="@OnSubmit">
-    <InputText @bind-Value="@Request.Fd" >ФД</InputText>
-    <InputText @bind-Value="@Request.Fn">ФН</InputText>
-    <InputText @bind-Value="@Request.Fp">ФП</InputText>
-    <button type="submit">Получить данные чека</button>
-</EditForm>
-<button @onclick="@TestGet">Test Get</button>
-<p>@TestGetResult</p>
-<button @onclick="@TestPost">Test Post</button>
-<p>@TestPostResult</p>
-<div>
-    @if (Root != null)
-    {
-        <ReceiptComponent Root ="@Root"/>
-    }
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Домашняя бухгалтерия</PageTitle>
+
+<h1>Домашняя бухгалтерия – загрузка чеков</h1>
+<div class="form-container">
+    <p>Чтобы добавить новый чек в вашу домашнюю бухгалтерию, пожалуйста, выберите файл с изображением чека и нажмите
+        кнопку «Загрузить». После успешной загрузки вы сможете просмотреть информацию о чеке.</p>
+    <EditForm Model = "Model" OnValidSubmit="OnSubmit">
+        <InputFile OnChange="@OnChange">Выберите файл чека:</InputFile>
+        <button type="submit">Загрузить чек</button>
+    </EditForm>
 </div>
 
-@code {
-    [Inject] private IApi Api { get; set; } = null!;
-    private Root? Root { get; set; }
-    private string TestGetResult { get; set; } = "Пусто";
-    private string TestPostResult { get; set; } = "Пусто";
-    private CheckRequest Request { get; set; } = new()
-    {
-        Fd = "",
-        Fn = "",
-        Fp = ""
-    };
+@if (SavedCheck is not null)
+{
+    <div class="block">
+        <ul>
+            @foreach (var product in SavedCheck.Products)
+            {
+                <li>
+                    @product.Name
+                    @product.Subcategory.Name
+                    @product.Subcategory.Category.Name
+                </li>
+            }
+        </ul>
+    </div>
+}
 
-    private async Task OnSubmit() => Root = await Api.GetReceipt(Request);
-    private async Task OnChange(InputFileChangeEventArgs args)
+
+@* <form id="uploadForm" method="post" enctype="multipart/form-data"> *@
+@*     <label for="checkFile">Выберите файл чека:</label> *@
+@*     <input type="file" id="checkFile" name="checkFile" required> *@
+@* *@
+@* </form> *@
+@* *@
+@* <div class="upload-status" id="uploadStatus"></div> *@
+
+
+@* Чек *@
+@* <EditForm Model="@Request"  OnSubmit="@OnSubmit"> *@
+@*     <InputText @bind-Value="@Request.Fd" >ФД</InputText> *@
+@*     <InputText @bind-Value="@Request.Fn">ФН</InputText> *@
+@*     <InputText @bind-Value="@Request.Fp">ФП</InputText> *@
+@*     <button type="submit">Получить данные чека</button> *@
+@* </EditForm> *@
+@* <button @onclick="@TestGet">Test Get</button> *@
+@* <p>@TestGetResult</p> *@
+@* <button @onclick="@TestPost">Test Post</button> *@
+@* <p>@TestPostResult</p> *@
+@* <div> *@
+@*     @if (Root != null) *@
+@*     { *@
+@*         <ReceiptComponent Root ="@Root"/> *@
+@*     } *@
+@* </div> *@
+
+@code {
+
+    public class FormModel
     {
+        [Required] public IBrowserFile? SelectedFile { get; set; }
+    }
+    [Inject] private IApi Api { get; set; } = null!;
+    private FormModel Model = new();
+    private Core.Model.Check? SavedCheck { get; set; }
+
+    // private CheckRequest Request { get; set; } = new()
+    // {
+    //     Fd = "",
+    //     Fn = "",
+    //     Fp = ""
+    // };
+
+    // private async Task OnSubmit() => SavedCheck = await Api.GetReceipt(Request);
+    private async Task OnSubmit()
+    {
+        if (Model.SelectedFile is null) return;
+        SavedCheck = await Api.GetReceipt(Model.SelectedFile.OpenReadStream());
+    }
+
+    private Task OnChange(InputFileChangeEventArgs args)
+    {
+        Model.SelectedFile = args.File;
+        return Task.CompletedTask;
         // var fileStream = new FileStream(TempFilePath,FileMode.Create);
         // await args.File.OpenReadStream().CopyToAsync(fileStream);
-        Root = await Api.GetReceipt(args.File.OpenReadStream());
+        // = await Api.GetReceipt(args.File.OpenReadStream());
     }
 
-    private async Task TestGet()
-    {
-        TestGetResult = await Api.GetTest();
-    }
-
-    private async Task TestPost()
-    {
-        TestPostResult = await Api.PostTest("Test Post");
-    }
-    // private static string TempFilePath
-    // {
-    //     get
-    //     {
-    //         var fileName = Path.GetRandomFileName();
-    //         return Path.Combine(Environment.Content)
-    //     }
-    //     
-    // }
 }

@@ -12,7 +12,7 @@ var migrations = builder
     .WaitFor(db);
 
 var api = builder
-    .AddProject<Projects.WebApplication1>("api")
+    .AddProject<Projects.Api>("api")
     .WaitForCompletion(migrations)
     .WithReference(db);
     // .WithExternalHttpEndpoints()

@@ -9,7 +9,7 @@ public class Worker(
     IServiceProvider services,
     IHostApplicationLifetime hostApplicationLifetime,
     ILogger<Worker> logger
-) : BackgroundService 
+) : BackgroundService
 {
     public const string ActivitySourceName = "Migrations";
     private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
@@ -23,9 +23,10 @@ public class Worker(
             var scope = services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
             var applicationContextSeed = scope.ServiceProvider.GetRequiredService<ApplicationContextSeed>();
-            // await dbContext.EnsureDatabaseAsync(cancellationToken);
-            // await dbContext.RunMigrationAsync(cancellationToken);
+            logger.LogInformation("Prepare database");
             await dbContext.Database.MigrateAsync(cancellationToken);
+            logger.LogInformation("Database migration completed");
+            logger.LogInformation("База данных готова к работе");
             await applicationContextSeed.Seed(cancellationToken);
             logger.LogInformation("Data added to database");
         }

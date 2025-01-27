@@ -5,10 +5,11 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MigrationService/MigrationService.csproj", "MigrationService/"]
-COPY ["Core/Core.csproj", "Core/"]
-COPY ["FnsChecksApi/FnsChecksApi.csproj", "FnsChecksApi/"]
-COPY ["DataBase/DataBase.csproj", "DataBase/"]
+#COPY . .
+COPY MigrationService/MigrationService.csproj MigrationService/MigrationService.csproj 
+#COPY ["Core/Core.csproj", "Core/"]
+#COPY ["FnsChecksApi/FnsChecksApi.csproj", "FnsChecksApi/"]
+#COPY ["DataBase/DataBase.csproj", "DataBase/"]
 RUN dotnet restore "MigrationService/MigrationService.csproj"
 COPY . .
 WORKDIR "/src/MigrationService"

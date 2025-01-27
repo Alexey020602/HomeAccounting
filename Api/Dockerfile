@@ -3,10 +3,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["Core/Core.csproj", "Core"]
-COPY ["DataBase/DataBase.csproj", "DataBase"]
-COPY ["FnsChecksApi/FnsChecksApi.csproj", "FnsChecksApi"]
-COPY ["Api/Api.csproj", "Api"]
+#COPY ["Core/Core.csproj", "Core"]
+#COPY ["DataBase/DataBase.csproj", "DataBase"]
+#COPY ["FnsChecksApi/FnsChecksApi.csproj", "FnsChecksApi"]
+COPY ["Api/Api.csproj", "Api/Api.csproj"]
 RUN dotnet restore "Api/Api.csproj"
 COPY . .
 WORKDIR "/src/Api"

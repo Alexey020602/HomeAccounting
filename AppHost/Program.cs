@@ -13,12 +13,18 @@ var migrations = builder
 
 var api = builder
     .AddProject<Projects.Api>("api")
+    // .WithExternalHttpEndpoints()
+    // .WithHttpEndpoint()
+    // .WithHttpsEndpoint()
     .WaitForCompletion(migrations)
     .WithReference(db);
     // .WithExternalHttpEndpoints()
     ;
 
 builder.AddProject<Projects.Client>("client")
+    // .WithExternalHttpEndpoints()
+    // .WithHttpEndpoint(port: 5000, targetPort: 5160)
+    // .WithHttpsEndpoint()
     // .WithReference(api)
     // .WaitFor(api)
     // .WithEnvironment("ApiUrlHttp", api.GetEndpoint("http"))

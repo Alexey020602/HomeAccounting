@@ -1,9 +1,10 @@
 using System.Drawing;
 using Core;
+using Core.Services;
 using DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Dto.Categorized;
-using FnsChecksApi.Requests;
+using Core.Model;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.AspNetCore;
 using Refit;
@@ -71,28 +72,20 @@ var summaries = new[]
 app.MapGet("/checks", async (IReportUseCase reportUseCase) => Results.Json(await reportUseCase.GetChecksAsync()));
 app.MapPost("/receipt", async ([FromBody] CheckRequest request, ICheckUseCase checkUseCase) =>
     {
-        var response = await checkUseCase.GetReceipt(request);
-        return response;
+        var response = await checkUseCase.SaveCheck(request);
+        return Results.Json(response);
     });
 
 app.MapPost(
         "/receiptWithFile",
-        async (IFormFile file, ICheckUseCase checkUseCase, IBarcodeReader<SKBitmap> reader) =>
+        async (IFormFile file, ICheckUseCase checkUseCase, IBarcodeService service) =>
         {
             try
             {
                 var stream = file.OpenReadStream();
-                var memory = new byte[stream.Length];
-                await stream.ReadExactlyAsync(memory, 0, memory.Length);
-                var image = SKImage.FromEncodedData(memory);
-                var bitmap = SKBitmap.FromImage(image);
-                var result = reader.Decode(bitmap);
-                if (result == null)
-                {
-                    return Results.BadRequest("Не удалось обработать изображение");
-                }
+                var result = await service.ReadBarcodeAsync(stream);
 
-                return Results.Json(await checkUseCase.SaveCheck(new CheckRawRequest(result.Text)));
+                return Results.Json(await checkUseCase.SaveCheck(result));
             }
             catch (Exception ex)
             {
@@ -103,17 +96,3 @@ app.MapPost(
     .DisableAntiforgery();
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
-
-public static class CheckUseCaseExtensions
-{
-    public static Task<Root> GetReceiptAsync(this ICheckUseCase checkUseCase, IFormFile file, string path)
-    {
-        var fileStream = new FileStream(path, FileMode.Create);
-        file.CopyTo(fileStream);
-        return checkUseCase.GetReceipt(fileStream);
-    }
-}

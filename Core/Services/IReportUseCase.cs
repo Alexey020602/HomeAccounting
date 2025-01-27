@@ -1,7 +1,6 @@
 using Core.Model;
-using DataBase;
 
-namespace Core;
+namespace Core.Services;
 
 public interface IReportUseCase
 {

@@ -3,13 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataBase.Entities;
 
-[Index(nameof(CheckRaw), IsUnique = true)]
+[Index(nameof(Fd), nameof(Fn), nameof(Fp), nameof(PurchaseDate), IsUnique = true)]
 public class Check
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public DateTime PurchaseDate { get; set; }
     public DateTime AddedDate { get; set; }
-    public string CheckRaw { get; set; } = null!;
+    public string Fd { get; set; }
+    public string Fn { get; set; }
+    public string Fp { get; set; }
+    public string S { get; set; }
+    // public string CheckRaw { get; set; } = null!;
     [MinLength(1)]
     public List<Product> Products { get; set; } = [];
 

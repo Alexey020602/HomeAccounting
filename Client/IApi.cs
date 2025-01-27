@@ -1,5 +1,4 @@
 using Core.Model;
-using FnsChecksApi.Requests;
 using Refit;
 
 namespace Client;

@@ -1,4 +1,8 @@
+using System.Linq.Expressions;
+using Core.Extensions;
 using Core.Mappers;
+using Core.Services;
+using Core.Model;
 using DataBase;
 using DataBase.Entities;
 using FnsChecksApi;
@@ -8,104 +12,59 @@ using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
 using Microsoft.EntityFrameworkCore;
 using Category = DataBase.Entities.Category;
+using Check = DataBase.Entities.Check;
+using Subcategory = DataBase.Entities.Subcategory;
+using CheckRequest = Core.Model.CheckRequest;
+using Item = FnsChecksApi.Dto.Fns.Item;
 using Product = DataBase.Entities.Product;
 using Root = FnsChecksApi.Dto.Categorized.Root;
 
 namespace Core;
 
-public class CheckUseCase(ICheckService checkService, IReceiptService receiptService, ApplicationContext context) : ICheckUseCase
+public partial class CheckUseCase(ICheckService checkService, IReceiptService receiptService, ApplicationContext context) : ICheckUseCase
 {
-    public async Task<Root> GetReceipt(CheckRawRequest checkRequest)
+    private sealed class Converter(Root normalizedProducts, FnsChecksApi.Dto.Fns.Root root, ApplicationContext context)
     {
-        return await ProcessReceipt(await checkService.GetAsyncByRaw(checkRequest));
-    }
 
-    public async Task<FnsChecksApi.Dto.Categorized.Root> GetReceipt(CheckRequest checkRequest)
-    {
-        var fnsResponse = await checkService.GetAsyncByRaw(checkRequest);
-
-        return await ProcessReceipt(fnsResponse);
-    }
-    
-    public async Task<Root> GetReceipt(FileInfo file)
-    {
-        var fnsResponse = await checkService.GetAsyncByFile(file);
-        return await  ProcessReceipt(fnsResponse);
-    }
-    public async Task<Root> GetReceipt(Stream file)
-    {
-        var fnsResponse = await checkService.GetAsyncByFile(file);
-        return await  ProcessReceipt(fnsResponse);
-    }
-
-    public async Task SaveCheck(CheckRequest checkRequest)
-    {
-        var raw = checkRequest.RawRequest();
-        if (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == raw.QrRaw) is not null)
-            return;
-        await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), raw.QrRaw);
-    }
-    public async Task<Core.Model.Check> SaveCheck(CheckRawRequest checkRequest)
-    {
-        return (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == checkRequest.QrRaw))?.ConvertToCheck() ??
-        await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), checkRequest.QrRaw);
-    }
-    public async Task<Core.Model.Check> SaveCheck(Receipt fnsResponse, string qrRaw)
-    {
-        var root = Validate(fnsResponse);
-
-        var normalizedProsucts = await receiptService.GetReceipt(CreateQuery(root)) ?? throw new InvalidOperationException();
-        
-        //Берем продукты, конвертируем в продукты из БД
-        //Для каждого продукта по InitialRequest находим категорию и подкатегорию:
-        //Ищем подкатегорию по названию, если такой нет, ищем категорию и добавляем подкатегорию с найденной категорией, или с новой категорией
-        var productsTasks = root.Data.Json.Items.Select(async (item) =>
+        public async Task<Core.Model.Check> ConvertToCheck(CheckRequest checkRequest)
         {
-            var category = normalizedProsucts.Items.First(i => i.InitialRequest == item.Name).Category;
+            var productTasks = root.Data.Json.Items.Select(CreateProduct);
+            var products = new List<Product>();
+            foreach (var productTask in productTasks)
+            {
+                products.Add(await productTask);
+            }
+            
+            var check = new Check
+            {
+                Fp = checkRequest.Fp,
+                Fn = checkRequest.Fn,
+                Fd = checkRequest.Fd,
+                S = checkRequest.S,
+                AddedDate = DateTime.Now,
+                PurchaseDate = checkRequest.T,
+                Products = products,
+            };
+        
+            await context.Checks.AddAsync(check);
+            await context.SaveChangesAsync();
+            return check.ConvertToCheck();
+        }
+        private async Task<Product> CreateProduct(Item item)
+        {
+            var category = normalizedProducts.Items.First(i => i.InitialRequest == item.Name).Category;
+            
             var subcategory = await GetSubcategoryByName(category.SecondLevelCategory, category.FirstLevelCategory);
-            return new DataBase.Entities.Product
+            return new Product
             {
                 Name = item.Name,
                 Price = item.Price,
                 Quantity = item.Quantity,
                 Subcategory = subcategory,
             };
-        });
-        var products = new List<Product>(); 
-
-        foreach (var task in productsTasks)
-        {
-            products.Add(await task);
-        }
-
-        var check = new Check
-        {
-            CheckRaw = qrRaw,
-            Products = products,
-        };
+        } 
         
-        await context.Checks.AddAsync(check);
-        await context.SaveChangesAsync();
-        return check.ConvertToCheck();
-    }
-
-    private FnsChecksApi.Dto.Fns.Root Validate(Receipt fnsResponse)
-    {
-        ArgumentNullException.ThrowIfNull(fnsResponse);
-        
-        if (fnsResponse is BadAnswerReceipt badAnswerReceipt)
-        {
-            throw new Exception($"{badAnswerReceipt.Data}");
-        }
-
-        if (fnsResponse is not FnsChecksApi.Dto.Fns.Root root)
-        {
-            throw new InvalidOperationException("Неправильный тип ответа ФНС");
-        }
-        
-        return root;
-    }
-    private async Task<Category> GetCategoryByName(string name) =>
+        private async Task<Category> GetCategoryByName(string name) =>
         await context.Categories.SingleOrDefaultAsync(c => c.Name == name) ?? new Category
         {
             Name = name,
@@ -137,15 +96,12 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
         return subcategory;
     }
 
-    private async Task<DataBase.Entities.Subcategory> GetSubcategoryByName(string? name, string categoryName)
+    private async Task<Subcategory> GetSubcategoryByName(string? name, string categoryName)
     {
-        var existingCategory = await context.Categories.SingleOrDefaultAsync(c => c.Name == categoryName) ??
-                               context.Categories.Local.SingleOrDefault(c => c.Name == categoryName);
+        var existingCategory = await GetExistingCategory(categoryName);
         if (existingCategory is not null)
         {
-            return await context.Subcategories.SingleOrDefaultAsync(c =>
-                    c.Name == name && c.CategoryId == existingCategory.Id) ??
-                   context.Subcategories.Local.SingleOrDefault(c => c.Name == name && c.CategoryId == existingCategory.Id) ??
+            return await GetExistingSubcategory(name, existingCategory) ??
                    await CreateSubcategory(name, existingCategory);
         }
 
@@ -153,6 +109,103 @@ public class CheckUseCase(ICheckService checkService, IReceiptService receiptSer
         
         return await CreateSubcategory(name, category);
     }
+
+    private async Task<Subcategory?> GetExistingSubcategory(string? name, Category existingCategory) =>
+        context.Subcategories.Local.SingleOrDefault(SubcategoryByNameAndCategoryExpression(name, existingCategory.Id).Compile()) ?? 
+        await context.Subcategories.SingleOrDefaultAsync(SubcategoryByNameAndCategoryExpression(name, existingCategory.Id));
+
+    private static Expression<Func<Subcategory, bool>> SubcategoryByNameAndCategoryExpression(string? name, int categoryId) => 
+        subcategory => subcategory.Name == name && subcategory.CategoryId == categoryId;
+
+    private async Task<Category?> GetExistingCategory(string categoryName) =>
+        context.Categories.Local.SingleOrDefault(c => c.Name == categoryName) ??
+        await context.Categories.SingleOrDefaultAsync(c => c.Name == categoryName);
+    }
+    // public async Task SaveCheck(CheckRequest checkRequest)
+    // {
+    //     var raw = checkRequest.RawRequest();
+    //     if (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == raw.QrRaw) is not null)
+    //         return;
+    //     await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), raw.QrRaw);
+    // }
+    public async Task<Core.Model.Check> SaveCheck(string qrRaw)
+    {
+        return (await GetCheckByRequest(new CheckRequest(qrRaw)))?.ConvertToCheck() ??
+        await SaveCheck(await checkService.GetAsyncByRaw(new CheckRawRequest(qrRaw)), qrRaw);
+    }
+
+    private async Task<Core.Model.Check> SaveCheck(Receipt fnsResponse, string qrRaw)
+    {
+        var root = Validate(fnsResponse);
+
+        var normalizedProducts = await receiptService.GetReceipt(CreateQuery(root)) ?? throw new InvalidOperationException();
+        
+        //Берем продукты, конвертируем в продукты из БД
+        //Для каждого продукта по InitialRequest находим категорию и подкатегорию:
+        //Ищем подкатегорию по названию, если такой нет, ищем категорию и добавляем подкатегорию с найденной категорией, или с новой категорией
+        // var productsTasks = root.Data.Json.Items.Select(async (item) =>
+        // {
+        //     var category = normalizedProducts.Items.First(i => i.InitialRequest == item.Name).Category;
+        //     var subcategory = await GetSubcategoryByName(category.SecondLevelCategory, category.FirstLevelCategory);
+        //     return new Product
+        //     {
+        //         Name = item.Name,
+        //         Price = item.Price,
+        //         Quantity = item.Quantity,
+        //         Subcategory = subcategory,
+        //     };
+        // });
+        // var products = new List<Product>(); 
+        //
+        // foreach (var task in productsTasks)
+        // {
+        //     products.Add(await task);
+        // }
+        //
+        // var check = new Check
+        // {
+        //     CheckRaw = qrRaw,
+        //     Products = products,
+        // };
+        //
+        // await context.Checks.AddAsync(check);
+        // await context.SaveChangesAsync();
+        // return check.ConvertToCheck();
+        return await new Converter(normalizedProducts, root, context).ConvertToCheck(new CheckRequest(qrRaw));
+    }
+    
+    // private Task<Check?> GetCheckByRaw(string qrraw) => context.Checks
+    //     .Include(c => c.Products)
+    //     .ThenInclude(p => p.Subcategory)
+    //     .ThenInclude(sub => sub.Category)
+    //     .SingleOrDefaultAsync(c => c.CheckRaw == qrraw);
+    private Task<Check?> GetCheckByRequest(CheckRequest checkRequest) => context.Checks
+        .Include(c => c.Products)
+        .ThenInclude(p => p.Subcategory)
+        .ThenInclude(sub => sub.Category)
+        .SingleOrDefaultAsync(c => 
+            c.Fn == checkRequest.Fn && 
+            c.PurchaseDate == checkRequest.T &&
+            c.Fd == checkRequest.Fd &&
+            c.Fp == checkRequest.Fp);
+    private FnsChecksApi.Dto.Fns.Root Validate(Receipt fnsResponse)
+    {
+        ArgumentNullException.ThrowIfNull(fnsResponse);
+        
+        if (fnsResponse is BadAnswerReceipt badAnswerReceipt)
+        {
+            throw new Exception($"{badAnswerReceipt.Data}");
+        }
+
+        if (fnsResponse is not FnsChecksApi.Dto.Fns.Root root)
+        {
+            throw new InvalidOperationException("Неправильный тип ответа ФНС");
+        }
+        
+        return root;
+    }
+    
+
     private async Task<Root> ProcessReceipt(Receipt fnsResponse)
     {
         if (fnsResponse is null)

@@ -59,9 +59,9 @@ var checkRequest = new CheckRequest
     T = "20250105T1520",
     S = "860.88",
 };
-requests.Add(checkRequest.RawRequest());
-
-await checkUseCase.SaveCheck(checkRequest.RawRequest());
+// requests.Add(checkRequest.RawRequest());
+//
+// await checkUseCase.SaveCheck(checkRequest.RawRequest());
 
 // foreach (var request in requests)
 // {

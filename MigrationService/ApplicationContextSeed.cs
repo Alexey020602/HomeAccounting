@@ -1,4 +1,5 @@
 using Core;
+using Core.Services;
 using DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Requests;
@@ -7,7 +8,7 @@ namespace MigrationService;
 
 public class ApplicationContextSeed
 {
-    private readonly IReadOnlyList<CheckRawRequest> requests;
+    private readonly IReadOnlyList<string> requests;
     private readonly ICheckUseCase checkUseCase;
     private readonly ApplicationContext context;
     private readonly ILogger<ApplicationContextSeed> logger;
@@ -29,7 +30,7 @@ public class ApplicationContextSeed
             "t=20250113T2321&s=1015.73&fn=7284440500173838&i=62887&fp=182171056&n=1",
             "t=20250111T105907&s=1236.35&fn=7380440801290534&i=10277&fp=840967215&n=1",
             "t=20250104T1233&s=1289.00&fn=7380440700673345&i=26636&fp=1241320200&n=1",
-        }.Select(qrraw => new CheckRawRequest(qrraw)).ToList();
+        }.ToList();
     }
     public async Task Seed(CancellationToken token = default)
     {

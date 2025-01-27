@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-MigrationService-cc651a86-98aa-44ac-9bb5-84ef4687f097</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,5 +20,11 @@
       <ProjectReference Include="..\Core\Core.csproj" />
       <ProjectReference Include="..\DataBase\DataBase.csproj" />
       <ProjectReference Include="..\FnsChecksApi\FnsChecksApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 </Project>

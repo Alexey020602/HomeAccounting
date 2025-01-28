@@ -74,7 +74,7 @@ namespace DataBase.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Fd", "Fn", "Fp", "PurchaseDate")
+                    b.HasIndex("Fd", "S", "Fn", "Fp", "PurchaseDate")
                         .IsUnique();
 
                     b.ToTable("Checks");

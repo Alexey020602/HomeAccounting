@@ -52,14 +52,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.MapOpenApi();
-    app.UseSwaggerUi(options =>
-    {
-        options.DocumentPath = "openapi/v1.json";
-        options.SwaggerRoutes.Add(new SwaggerUiRoute("Api", "/openapi/v1.json"));
-    });
-}
 
+}
+app.MapOpenApi();
+app.UseSwaggerUi(options =>
+{
+    options.DocumentPath = "openapi/v1.json";
+    options.SwaggerRoutes.Add(new SwaggerUiRoute("Api", "/openapi/v1.json"));
+});
 // app.UseHttpsRedirection();
 app.UseCors(policyBuilder => policyBuilder
     // .WithOrigins("https://client", "http://client", "http://localhost:5160", "https://localhost:7152")

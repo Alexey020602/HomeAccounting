@@ -16,6 +16,7 @@ FROM build AS publish
 RUN dotnet publish "Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
+RUN apt-get update && apt-get install -y libfontconfig
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Api.dll"]

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataBase.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250128110945_Initial")]
+    [Migration("20250128181142_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -77,7 +77,7 @@ namespace DataBase.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Fd", "Fn", "Fp", "PurchaseDate")
+                    b.HasIndex("Fd", "S", "Fn", "Fp", "PurchaseDate")
                         .IsUnique();
 
                     b.ToTable("Checks");

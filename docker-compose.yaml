@@ -1,8 +1,9 @@
 ﻿version: "3"
 
 services:
-  pg:
+  postgres:
     image: postgres:latest
+    container_name: postgres
     networks:
       - "my-network"
     environment:
@@ -25,13 +26,13 @@ services:
       - "my-network"
     image: migrations_service
     depends_on:
-      - pg
+      - postgres
     build:
       context: .
       dockerfile: MigrationService/Dockerfile
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=pg;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
+      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5433;Database=HomeAccounting;Username=postgres;Password=11111111;
   api:
     image: api
     pull_policy: always
@@ -46,11 +47,11 @@ services:
       dockerfile: Api/Dockerfile
     container_name: api
     depends_on:
-      - pg
+      - postgres
       - migrations
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=pg;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
+      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5433;Database=HomeAccounting;Username=postgres;Password=11111111;
       - ASPNETCORE_HTTP_PORTS=80
   client:
     image: client

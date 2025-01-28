@@ -99,9 +99,9 @@ namespace DataBase.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Checks_Fd_Fn_Fp_PurchaseDate",
+                name: "IX_Checks_Fd_S_Fn_Fp_PurchaseDate",
                 table: "Checks",
-                columns: new[] { "Fd", "Fn", "Fp", "PurchaseDate" },
+                columns: new[] { "Fd", "S", "Fn", "Fp", "PurchaseDate" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

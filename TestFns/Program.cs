@@ -40,7 +40,7 @@ await using var context = new ApplicationContext(options);
 var checkService = RestService.For<ICheckService>("https://proverkacheka.com");
 var receiptService = RestService.For<IReceiptService>("https://cheicheck.ru");
 
-var checkUseCase = new CheckUseCase(checkService, receiptService, context);
+// var checkUseCase = new CheckUseCase(checkService, receiptService, context);
 
 var requests = new [] 
 {

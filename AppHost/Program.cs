@@ -13,7 +13,7 @@ var migrations = builder
 
 var api = builder
     .AddProject<Projects.Api>("api")
-    // .WithExternalHttpEndpoints()
+    .WithExternalHttpEndpoints()
     // .WithHttpEndpoint()
     // .WithHttpsEndpoint()
     .WaitForCompletion(migrations)

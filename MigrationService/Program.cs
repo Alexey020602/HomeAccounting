@@ -2,6 +2,7 @@ using Core;
 using Core.Services;
 using DataBase;
 using FnsChecksApi;
+using Microsoft.EntityFrameworkCore;
 using MigrationService;
 using Refit;
 
@@ -21,7 +22,7 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    
+    builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 builder.Services.AddHostedService<Worker>();
 

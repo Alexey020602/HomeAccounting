@@ -1,4 +1,6 @@
-﻿services:
+﻿version: "3"
+
+services:
   pg:
     image: postgres:latest
     networks:
@@ -6,9 +8,9 @@
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=11111111
-      - PGPORT=5432
+      - PGPORT=5433
     ports:
-      - "5433:5432"
+      - "5433:5433"
     volumes:
       - postgresdata:/var/lib/postgresql/data
 #    healthcheck:
@@ -18,10 +20,10 @@
 #      retries: 5
   migrations:
     container_name: migrations_service
+    pull_policy: always
     networks:
       - "my-network"
     image: migrations_service
-    pull_policy: always
     depends_on:
       - pg
     build:
@@ -29,7 +31,7 @@
       dockerfile: MigrationService/Dockerfile
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
+      - ConnectionStrings_DefaultConnection=Host=pg;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
   api:
     image: api
     pull_policy: always
@@ -38,7 +40,7 @@
     expose: 
       - 80
     ports: 
-      - 5080:5080
+      - 5080:80
     build:
       context: .
       dockerfile: Api/Dockerfile
@@ -48,10 +50,11 @@
       - migrations
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
-
+      - ConnectionStrings_DefaultConnection=Host=pg;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
+      - ASPNETCORE_HTTP_PORTS=80
   client:
     image: client
+    pull_policy: always
     build:
       context: .
       dockerfile: Client/Dockerfile
@@ -63,25 +66,23 @@
     expose:
       - 80
     ports:
-      - 5160:5160
-    environment:
-      - VIRTUAL_HOST=homeaccounting.opolcheniya.keenetic.pro
-      - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=homeaccounting.opolcheniya.keenetic.pro
-      - LETSENCRYPT_EMAIL=myemail@mydomain.com
+      - 5160:80
+#    environment:
+#      - VIRTUAL_HOST=homeaccounting.opolcheniya.keenetic.pro
+#      - VIRTUAL_PORT=80
+#      - LETSENCRYPT_HOST=homeaccounting.opolcheniya.keenetic.pro
+#      - LETSENCRYPT_EMAIL=myemail@mydomain.com
   reverse_proxy:
     image: nginx:latest
+    container_name: reverse_proxy
     networks:
       - "my-network"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-#      - "./proxy.conf:/etc/nginx/conf.d/default.conf"
-    expose:
-      - 80
-      - 443
+#      - "./proxy.conf:/etc/nginx/conf.d/proxy.conf"
     ports:
       - "80:80"
-      - "443:443"
+#      - "443:443"
     depends_on:
       - client
       - api
@@ -92,5 +93,6 @@ volumes:
 
 networks:
   my-network:
-    external: false 
+    external: false
+    
 #    name: "my-network"

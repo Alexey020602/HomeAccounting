@@ -6,6 +6,7 @@ using FnsChecksApi;
 using FnsChecksApi.Dto.Categorized;
 using Core.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NSwag.AspNetCore;
 using Refit;
 using SkiaSharp;
@@ -26,6 +27,7 @@ builder.Services.AddRefitClient<IReceiptService>()
 builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
+builder.Services.AddTransient<IBarcodeService, BarcodeService>();
 
 // builder.Services.AddProblemDetails();
 
@@ -38,6 +40,7 @@ if (builder.Environment.IsDevelopment())
 else
 {
     //todo Сделать регистрацию БД из ConnectionStrings
+    builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
 var app = builder.Build();

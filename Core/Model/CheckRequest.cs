@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Core.Extensions;
 
 namespace Core.Model;
@@ -22,7 +23,8 @@ public class CheckRequest
         Fn = values["fn"];
         Fp = values["fp"];
         S = values["s"];
-        T = new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds();
+        var dateTime = new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds().ToUniversalTime();
+        T =  dateTime;
     }
     public CheckRequest(string raw): this(CreateDictionaryFromRawString(raw)) { }
 }

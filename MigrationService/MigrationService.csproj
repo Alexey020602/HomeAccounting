@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-MigrationService-cc651a86-98aa-44ac-9bb5-84ef4687f097</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>

@@ -8,7 +8,7 @@
       - POSTGRES_PASSWORD=11111111
       - PGPORT=5432
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgresdata:/var/lib/postgresql/data
 #    healthcheck:
@@ -29,7 +29,7 @@
       dockerfile: MigrationService/Dockerfile
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5432;Database=Diploma;Username=postgres;Password=11111111;
+      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
   api:
     image: api
     pull_policy: always
@@ -37,6 +37,8 @@
       - "my-network"
     expose: 
       - 80
+    ports: 
+      - 5080:5080
     build:
       context: .
       dockerfile: Api/Dockerfile
@@ -46,7 +48,7 @@
       - migrations
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5432;Database=Diploma;Username=postgres;Password=11111111;
+      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5432;Database=HomeAccounting;Username=postgres;Password=11111111;
 
   client:
     image: client
@@ -60,6 +62,8 @@
       - api
     expose:
       - 80
+    ports:
+      - 5160:5160
     environment:
       - VIRTUAL_HOST=homeaccounting.opolcheniya.keenetic.pro
       - VIRTUAL_PORT=80
@@ -70,7 +74,8 @@
     networks:
       - "my-network"
     volumes:
-      - "./proxy/proxy.conf:/etc/nginx/conf.d/proxy.conf"
+      - ./nginx.conf:/etc/nginx/nginx.conf
+#      - "./proxy.conf:/etc/nginx/conf.d/default.conf"
     expose:
       - 80
       - 443

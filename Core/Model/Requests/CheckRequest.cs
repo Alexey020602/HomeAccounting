@@ -1,7 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using Core.Extensions;
 
-namespace Core.Model;
+namespace Core.Model.Requests;
 
 public class CheckRequest
 {
@@ -16,15 +15,18 @@ public class CheckRequest
     public string Fp { get; init; }
     public string S  { get; init; }
     public DateTime T { get; init; }
+    public DateTime AddedDate { get; set; }
  
-    public CheckRequest(Dictionary<string, string> values)
+    public CheckRequest(Dictionary<string, string> values, DateTimeOffset addedDate)
     {
         Fd = values["i"];
         Fn = values["fn"];
         Fp = values["fp"];
         S = values["s"];
         var dateTime = new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds().ToUniversalTime();
+        
         T =  dateTime;
+        AddedDate = addedDate.DateTime;
     }
-    public CheckRequest(string raw): this(CreateDictionaryFromRawString(raw)) { }
+    public CheckRequest(RawCheckRequest request): this(CreateDictionaryFromRawString(request.QrRaw), request.AddedTime) { }
 }

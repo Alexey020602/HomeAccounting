@@ -10,7 +10,7 @@ using FnsChecksApi.Requests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Check = DataBase.Entities.Check;
-using CheckRequest = Core.Model.CheckRequest;
+using CheckRequest = Core.Model.Requests.CheckRequest;
 using Root = FnsChecksApi.Dto.Categorized.Root;
 
 namespace Core;

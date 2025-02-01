@@ -12,7 +12,7 @@ public sealed class DateTimeFnsParser {
     {
         foreach(var format in Formats)
         {
-            if (DateTime.TryParseExact(date, format, null, DateTimeStyles.None, out var result))
+            if (DateTime.TryParseExact(date, format, null, DateTimeStyles.AssumeUniversal, out var result))
             {
                 return result;
             }

@@ -5,6 +5,7 @@ using DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Dto.Categorized;
 using Core.Model;
+using Core.Model.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NSwag.AspNetCore;
@@ -81,14 +82,18 @@ app.MapPost("/receipt", async ([FromBody] CheckRequest request, ICheckUseCase ch
 
 app.MapPost(
         "/receiptWithFile",
-        async (IFormFile file, ICheckUseCase checkUseCase, IBarcodeService service) =>
+        async ([FromForm] DateTimeOffset addedDate, IFormFile file, ICheckUseCase checkUseCase, IBarcodeService service) =>
         {
             try
             {
                 var stream = file.OpenReadStream();
                 var result = await service.ReadBarcodeAsync(stream);
 
-                return Results.Json(await checkUseCase.SaveCheck(result));
+                return Results.Json(await checkUseCase.SaveCheck(new RawCheckRequest()
+                {
+                    QrRaw = result,
+                    AddedTime = addedDate,
+                }));
             }
             catch (Exception ex)
             {

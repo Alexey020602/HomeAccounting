@@ -1,4 +1,5 @@
 using Core.Model;
+using Core.Model.Requests;
 
 namespace Core.Extensions;
 

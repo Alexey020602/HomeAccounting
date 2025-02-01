@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Category = DataBase.Entities.Category;
 using Check = DataBase.Entities.Check;
 using Subcategory = DataBase.Entities.Subcategory;
-using CheckRequest = Core.Model.CheckRequest;
+using CheckRequest = Core.Model.Requests.CheckRequest;
 using Item = FnsChecksApi.Dto.Fns.Item;
 using Product = DataBase.Entities.Product;
 using Root = FnsChecksApi.Dto.Categorized.Root;

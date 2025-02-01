@@ -1,16 +1,16 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+﻿
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<div class="container">
+    
 
-        <article class="content px-4">
+    <main class="main-content">
+        <div class="page">
             @Body
-        </article>
+        </div>
     </main>
 </div>
+
+<style>
+    /* Перенесите сюда все CSS стили из предыдущего примера */
+</style>

@@ -1,17 +1,39 @@
+@page "/"
 @page "/Check"
 @using System.ComponentModel.DataAnnotations
 
 <PageTitle>Домашняя бухгалтерия</PageTitle>
 
+@* <div class="form-container"> *@
+
+@*     <EditForm Model = "Model" OnValidSubmit="OnSubmit"> *@
+@*         <InputFile OnChange="@OnChange">Выберите файл чека:</InputFile> *@
+@*         <button type="submit">Загрузить чек</button> *@
+@*     </EditForm> *@
+@* </div> *@
+
+
 <h1>Домашняя бухгалтерия – загрузка чеков</h1>
-<div class="form-container">
-    <p>Чтобы добавить новый чек в вашу домашнюю бухгалтерию, пожалуйста, выберите файл с изображением чека и нажмите
-        кнопку «Загрузить». После успешной загрузки вы сможете просмотреть информацию о чеке.</p>
-    <EditForm Model = "Model" OnValidSubmit="OnSubmit">
-        <InputFile OnChange="@OnChange">Выберите файл чека:</InputFile>
-        <button type="submit">Загрузить чек</button>
+
+<section class="add-form">
+    @*     <p>Чтобы добавить новый чек в вашу домашнюю бухгалтерию, пожалуйста, выберите файл с изображением чека и нажмите *@
+    @*         кнопку «Загрузить». После успешной загрузки вы сможете просмотреть информацию о чеке.</p> *@
+    <EditForm Model="@Model" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator/>
+
+        <div class="form-group">
+            <label>Прикрепить чек:</label>
+            <InputFile OnChange="OnChange"
+                       accept="image/*"
+                       class="upload-input"/>
+            <div class="file-name">
+                @(Model.SelectedFile?.Name ?? "Файл не выбран")
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Добавить</button>
     </EditForm>
-</div>
+</section>
 
 @if (SavedCheck is not null)
 {
@@ -28,7 +50,6 @@
         </ul>
     </div>
 }
-
 
 @* <form id="uploadForm" method="post" enctype="multipart/form-data"> *@
 @*     <label for="checkFile">Выберите файл чека:</label> *@

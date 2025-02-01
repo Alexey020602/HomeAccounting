@@ -1,51 +1,100 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-h1 {
-    text-align: center;
-}
-.form-container {
-    max-width: 500px;
-    margin: 50px auto;
-    border: 1px solid #ccc;
-    padding: 30px;
-    background-color: white;
-    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-}
-label {
-    display: block;
-    margin-bottom: 10px;
-}
-input[type=file], button {
-    width: 100%;
-    padding: 12px;
+.file-upload {
+    position: relative;
     margin-top: 10px;
-    font-size: 16px;
+}
+
+.upload-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+}
+
+.upload-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     cursor: pointer;
 }
+
+.upload-button {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #2980b9;
+}
+
+.file-name {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Обновление для существующих стилей */
+.add-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+button[type="submit"] {
+    align-self: flex-start;
+}
+
+.balance-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Секция операций */
+.transactions {
+    margin-top: 30px;
+}
+
+.transaction-list {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Форма добавления */
+.add-form {
+    margin-top: 30px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
 button {
-    background-color: #007bff;
+    background-color: #3498db;
     color: white;
     border: none;
-    transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
+
 button:hover {
-    background-color: #0056b3;
-}
-.upload-status {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #e7f3fe;
-    border-left: 5px solid #2196F3;
-    display: none;
-}
-a {
-    color: #007bff;
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
+    background-color: #2980b9;
 }

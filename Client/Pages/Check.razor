@@ -1,114 +1,80 @@
 @page "/"
 @page "/Check"
 @using System.ComponentModel.DataAnnotations
+@using Client.Components
 
-<PageTitle>Домашняя бухгалтерия</PageTitle>
+<PageTitle>Загрузка чека</PageTitle>
 
-@* <div class="form-container"> *@
+<div class="receipt-card">
+    <h3 class="page-title">Добавление нового чека</h3>
 
-@*     <EditForm Model = "Model" OnValidSubmit="OnSubmit"> *@
-@*         <InputFile OnChange="@OnChange">Выберите файл чека:</InputFile> *@
-@*         <button type="submit">Загрузить чек</button> *@
-@*     </EditForm> *@
-@* </div> *@
-
-
-<h1>Домашняя бухгалтерия – загрузка чеков</h1>
-
-<section class="add-form">
-    @*     <p>Чтобы добавить новый чек в вашу домашнюю бухгалтерию, пожалуйста, выберите файл с изображением чека и нажмите *@
-    @*         кнопку «Загрузить». После успешной загрузки вы сможете просмотреть информацию о чеке.</p> *@
     <EditForm Model="@Model" OnValidSubmit="OnSubmit">
-        <DataAnnotationsValidator/>
+        <DataAnnotationsValidator />
 
-        <div class="form-group">
-            <label>Прикрепить чек:</label>
-            <InputFile OnChange="OnChange"
-                       accept="image/*"
-                       class="upload-input"/>
-            <div class="file-name">
-                @(Model.SelectedFile?.Name ?? "Файл не выбран")
+        <div class="form-grid">
+            <div class="form-column">
+                <!-- Загрузка изображения -->
+                <div class="form-group">
+                    <label>Изображение чека <span class="required">*</span></label>
+                    <InputFile class="file-input" OnChange="OnChange" />
+                    
+                </div>
             </div>
         </div>
 
-        <button type="submit" class="btn-primary">Добавить</button>
+        <!-- Кнопки отправки -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить чек
+            </button>
+            <button type="button" class="btn btn-secondary"
+                    @onclick="Cancel">
+                Отмена
+            </button>
+        </div>
     </EditForm>
-</section>
+</div>
 
 @if (SavedCheck is not null)
 {
     <div class="block">
-        <ul>
-            @foreach (var product in SavedCheck.Products)
-            {
-                <li>
-                    @product.Name
-                    @product.Subcategory.Name
-                    @product.Subcategory.Category.Name
-                </li>
-            }
-        </ul>
+        <ReceiptComponent Check="SavedCheck"/>
     </div>
 }
 
-@* <form id="uploadForm" method="post" enctype="multipart/form-data"> *@
-@*     <label for="checkFile">Выберите файл чека:</label> *@
-@*     <input type="file" id="checkFile" name="checkFile" required> *@
-@* *@
-@* </form> *@
-@* *@
-@* <div class="upload-status" id="uploadStatus"></div> *@
-
-
-@* Чек *@
-@* <EditForm Model="@Request"  OnSubmit="@OnSubmit"> *@
-@*     <InputText @bind-Value="@Request.Fd" >ФД</InputText> *@
-@*     <InputText @bind-Value="@Request.Fn">ФН</InputText> *@
-@*     <InputText @bind-Value="@Request.Fp">ФП</InputText> *@
-@*     <button type="submit">Получить данные чека</button> *@
-@* </EditForm> *@
-@* <button @onclick="@TestGet">Test Get</button> *@
-@* <p>@TestGetResult</p> *@
-@* <button @onclick="@TestPost">Test Post</button> *@
-@* <p>@TestPostResult</p> *@
-@* <div> *@
-@*     @if (Root != null) *@
-@*     { *@
-@*         <ReceiptComponent Root ="@Root"/> *@
-@*     } *@
-@* </div> *@
 
 @code {
 
     public class FormModel
     {
-        [Required] public IBrowserFile? SelectedFile { get; set; }
+        [Required(ErrorMessage = "Выберите файл с чеком")] 
+        public IBrowserFile? SelectedFile { get; set; }
+
+        public Core.Model.Requests.FileCheckRequest ToCheckFileRequest() => new()
+        {
+            FileStream = SelectedFile?.OpenReadStream() ?? throw new Exception("Не выбран файл"),
+            AddedTime = DateTimeOffset.Now,
+        };
     }
-    [Inject] private IApi Api { get; set; } = null!;
+    [Inject] private IChecksApi ChecksApi { get; set; } = null!;
     private FormModel Model = new();
-    private Core.Model.Check? SavedCheck { get; set; }
+    private Core.Model.ChecksList.Check? SavedCheck { get; set; }
 
-    // private CheckRequest Request { get; set; } = new()
-    // {
-    //     Fd = "",
-    //     Fn = "",
-    //     Fp = ""
-    // };
-
-    // private async Task OnSubmit() => SavedCheck = await Api.GetReceipt(Request);
     private async Task OnSubmit()
     {
-        if (Model.SelectedFile is null) return;
-        SavedCheck = await Api.GetReceipt(Model.SelectedFile.OpenReadStream());
+        SavedCheck = await ChecksApi.GetReceipt(Model.ToCheckFileRequest());
     }
 
     private Task OnChange(InputFileChangeEventArgs args)
     {
         Model.SelectedFile = args.File;
+        
         return Task.CompletedTask;
-        // var fileStream = new FileStream(TempFilePath,FileMode.Create);
-        // await args.File.OpenReadStream().CopyToAsync(fileStream);
-        // = await Api.GetReceipt(args.File.OpenReadStream());
     }
 
+    private Task Cancel()
+    {
+        Model.SelectedFile = null;
+        return Task.CompletedTask;
+    }
 }

@@ -16,7 +16,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var apiUrl = builder.Configuration.GetValue<string>("ApiUrlHttp") ?? throw new Exception("Отсутствует адрес для api");
 // var apiUrl = builder.Configuration["ApiUrlHttp"] ?? throw new Exception("Отсутствует адрес для api");
 var apiUri = new Uri(apiUrl);
-builder.Services.AddRefitClient<IApi>()
+builder.Services.AddRefitClient<IChecksApi>()
     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

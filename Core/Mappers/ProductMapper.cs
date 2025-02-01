@@ -10,6 +10,7 @@ public static class ProductMapper
         Name = product.Name,
         Quantity = product.Quantity,
         Sum = product.Sum,
+        Price = product.Price,
         Subcategory = product.Subcategory.ConvertToSubcategory(),
     };
     

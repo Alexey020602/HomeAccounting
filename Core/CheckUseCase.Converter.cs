@@ -57,6 +57,7 @@ public partial class CheckUseCase
             {
                 Name = item.Name,
                 Price = item.Price,
+                Sum = item.Sum,
                 Quantity = item.Quantity,
                 Subcategory = subcategory,
             };

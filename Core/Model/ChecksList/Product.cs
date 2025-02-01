@@ -1,11 +1,11 @@
-namespace Core.Model;
+namespace Core.Model.ChecksList;
 
 public class Product
 {
     public required int Id { get; init; }
     public required string Name { get; init; }
     public required double Quantity { get; init; }
-    public required int Sum { get; init; }
+    public required int PennySum { get; init; }
     public required int Price { get; init; }
-    public required Subcategory Subcategory { get; init; }
+    public Sum Sum => new Sum(PennySum);
 }

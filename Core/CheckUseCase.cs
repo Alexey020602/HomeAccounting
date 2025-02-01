@@ -77,12 +77,6 @@ public partial class CheckUseCase(ICheckService checkService, IReceiptService re
         logger.LogInformation($"PurchaseDate: {check.AddedDate} Kind: {check.AddedDate.Kind}");
         return check;
     }
-    
-    // private Task<Check?> GetCheckByRaw(string qrraw) => context.Checks
-    //     .Include(c => c.Products)
-    //     .ThenInclude(p => p.Subcategory)
-    //     .ThenInclude(sub => sub.Category)
-    //     .SingleOrDefaultAsync(c => c.CheckRaw == qrraw);
     private Task<Check?> GetCheckByRequest(CheckRequest checkRequest) => context.Checks
         .Include(c => c.Products)
         .ThenInclude(p => p.Subcategory)

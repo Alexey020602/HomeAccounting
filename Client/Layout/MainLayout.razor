@@ -1,16 +1,94 @@
-﻿
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
+<!-- Основной контейнер -->
+<div class="main-container">
+    <!-- Кнопка меню для мобильных -->
+    <button class="menu-toggle" @onclick="ToggleSidebar">
+        @if (IsSidebarActive)
+        {
+            <p>Закрыть</p>
+        }
+        else
+        {
+            <p>Открыть</p>
+        }
+    </button>
 
-<div class="container">
-    
+    <!-- Боковая панель -->
+    <div class="sidebar @(IsSidebarActive ? "active" : "")">
+        <div class="app-title">
+            <h3>Домашняя бухгалтерия</h3>
+        </div>
 
-    <main class="main-content">
-        <div class="page">
+        <nav class="nav-menu">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <i class="fas fa-home"></i> Главная
+            </NavLink>
+            <NavLink class="nav-link" href="checks">
+                 Чеки
+            </NavLink>
+            <NavLink class="nav-link" href="reports">
+                <i class="fas fa-chart-pie"></i> Отчеты
+            </NavLink>
+            <NavLink class="nav-link" href="categories">
+                <i class="fas fa-tags"></i> Категории
+            </NavLink>
+            <NavLink class="nav-link" href="settings">
+                <i class="fas fa-cog"></i> Настройки
+            </NavLink>
+        </nav>
+
+        <!-- Текущий баланс -->
+        <div class="current-balance">
+            <h4>Расход за текущий месяц:</h4>
+            <div class="balance-amount">@CurrentBalance.ToString("C")</div>
+        </div>
+    </div>
+
+    <!-- Основная область -->
+    <div class="main-content">
+        @* <!-- Верхняя панель --> *@
+        @* <div class="top-bar"> *@
+        @*     <div class="quick-actions"> *@
+        @*         <button class="btn btn-primary" @onclick="ShowAddIncome"> *@
+        @*             <i class="fas fa-plus-circle"></i> *@
+        @*             <span>Доход</span> *@
+        @*         </button> *@
+        @*         <button class="btn btn-danger" @onclick="ShowAddExpense"> *@
+        @*             <i class="fas fa-minus-circle"></i> *@
+        @*             <span>Расход</span> *@
+        @*         </button> *@
+        @*     </div> *@
+        @*     <div class="user-info"> *@
+        @*         <i class="fas fa-user-circle"></i> @UserName *@
+        @*     </div> *@
+        @* </div> *@
+
+        <!-- Контент -->
+        <div class="content">
             @Body
         </div>
-    </main>
+    </div>
 </div>
 
-<style>
-    /* Перенесите сюда все CSS стили из предыдущего примера */
-</style>
+@code {
+    // Пример данных - замените на реальные
+    private decimal CurrentBalance = 15450.75m;
+    private string UserName = "Иван Петров";
+    
+    private bool IsSidebarActive = false;
+
+    private void ToggleSidebar()
+    {
+        IsSidebarActive = !IsSidebarActive;
+    }
+
+    private void ShowAddIncome()
+    {
+        // Логика открытия формы добавления дохода
+    }
+
+    private void ShowAddExpense()
+    {
+        // Логика открытия формы добавления расхода
+    }
+}

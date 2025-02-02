@@ -1,0 +1,32 @@
+.subcategory-group {
+    padding: 15px;
+    background: #fff;
+}
+
+.subcategory-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: #34495e;
+}
+
+.subcategory-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    flex-grow: 1;
+}
+
+.subcategory-total {
+    background: #27ae60;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+
+.products-list {
+    display: grid;
+    gap: 12px;
+}

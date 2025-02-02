@@ -5,4 +5,4 @@ public record Root(
     int First,
     Data Data,
     Request Request
-): Receipt(Code, Request);
+) : Receipt(Code, Request);

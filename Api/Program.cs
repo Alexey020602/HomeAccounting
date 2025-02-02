@@ -1,11 +1,8 @@
-using System.Drawing;
 using Core;
+using Core.Model.Requests;
 using Core.Services;
 using DataBase;
 using FnsChecksApi;
-using FnsChecksApi.Dto.Categorized;
-using Core.Model;
-using Core.Model.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NSwag.AspNetCore;
@@ -33,16 +30,11 @@ builder.Services.AddTransient<IBarcodeService, BarcodeService>();
 // builder.Services.AddProblemDetails();
 
 if (builder.Environment.IsDevelopment())
-{
-    
-    
     builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
-}
 else
-{
     //todo Сделать регистрацию БД из ConnectionStrings
-    builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
+    builder.Services.AddDbContext<ApplicationContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -50,11 +42,7 @@ var app = builder.Build();
 // {
 // });
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-
-}
+if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 app.MapOpenApi();
 app.UseSwaggerUi(options =>
 {
@@ -75,24 +63,25 @@ var summaries = new[]
 
 app.MapGet("/checks", async (IReportUseCase reportUseCase) => Results.Json(await reportUseCase.GetChecksAsync()));
 app.MapPost("/receipt", async ([FromBody] CheckRequest request, ICheckUseCase checkUseCase) =>
-    {
-        var response = await checkUseCase.SaveCheck(request);
-        return Results.Json(response);
-    });
+{
+    var response = await checkUseCase.SaveCheck(request);
+    return Results.Json(response);
+});
 
 app.MapPost(
         "/receiptWithFile",
-        async ([FromForm] DateTimeOffset addedDate, IFormFile file, ICheckUseCase checkUseCase, IBarcodeService service) =>
+        async ([FromForm] DateTimeOffset addedDate, IFormFile file, ICheckUseCase checkUseCase,
+            IBarcodeService service) =>
         {
             try
             {
                 var stream = file.OpenReadStream();
                 var result = await service.ReadBarcodeAsync(stream);
 
-                return Results.Json(await checkUseCase.SaveCheck(new RawCheckRequest()
+                return Results.Json(await checkUseCase.SaveCheck(new RawCheckRequest
                 {
                     QrRaw = result,
-                    AddedTime = addedDate,
+                    AddedTime = addedDate
                 }));
             }
             catch (Exception ex)
@@ -103,4 +92,3 @@ app.MapPost(
         })
     .DisableAntiforgery();
 app.Run();
-

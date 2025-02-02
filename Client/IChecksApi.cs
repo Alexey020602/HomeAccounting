@@ -11,7 +11,7 @@ public interface IChecksApi
 
     [Post("/receipt")]
     Task<Check> GetReceipt(CheckRequest checkRequest);
-    
+
     // [Headers("Access-Control-Allow-Origin: *")]
     [Post("/receiptWithFile")]
     [Multipart]

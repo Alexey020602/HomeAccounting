@@ -14,14 +14,15 @@ public class Check
     public string Fp { get; set; } = null!;
 
     public string S { get; set; } = null!;
-    // public string CheckRaw { get; set; } = null!;
-    [MinLength(1)]
-    public List<Product> Products { get; set; } = [];
 
-    public override string ToString() => 
-    $"""
-    Продукты:
-    {string.Join('\n', Products)}
-    """
-    ;
+    // public string CheckRaw { get; set; } = null!;
+    [MinLength(1)] public List<Product> Products { get; set; } = [];
+
+    public override string ToString()
+    {
+        return $"""
+                Продукты:
+                {string.Join('\n', Products)}
+                """;
+    }
 }

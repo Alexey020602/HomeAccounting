@@ -1,0 +1,20 @@
+@using Core.Model.ChecksList
+<div class="product-item">
+    <span class="product-name">@Product.Name</span>
+    <span class="product-quantity">
+                                        @FormatQuantity(Product.Quantity)
+                                    </span>
+    <span class="product-price">
+                                        @Product.Sum
+                                    </span>
+</div>
+
+@code {
+    [Parameter] public Product Product { get; set; } = null!;
+
+    private string FormatQuantity(double quantity)
+    {
+        return quantity % 1 == 0 ? quantity.ToString("N0") : quantity.ToString("N3");
+    }
+
+}

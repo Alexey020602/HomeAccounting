@@ -1,7 +1,7 @@
 .receipt-card {
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin: 15px 0;
 }
@@ -39,103 +39,6 @@
     gap: 25px;
 }
 
-.category-group {
-    border: 1px solid #ecf0f1;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.category-header {
-    background: #f8f9fa;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.category-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #2c3e50;
-    flex-grow: 1;
-}
-
-.category-total {
-    background: #3498db;
-    color: white;
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-
-.subcategory-group {
-    padding: 15px;
-    background: #fff;
-}
-
-.subcategory-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    color: #34495e;
-}
-
-.subcategory-header h4 {
-    margin: 0;
-    font-size: 1rem;
-    flex-grow: 1;
-}
-
-.subcategory-total {
-    background: #27ae60;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-}
-
-.products-list {
-    display: grid;
-    gap: 12px;
-}
-
-.product-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: #fcfcfc;
-    border-radius: 6px;
-    gap: 15px;
-}
-
-.product-name {
-    flex: 3;
-    color: #2c3e50;
-    font-size: 0.95rem;
-}
-
-.product-quantity {
-    flex: 1;
-    text-align: center;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    background: #f8f9fa;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-.product-price {
-    flex: 1;
-    text-align: right;
-    color: #2c3e50;
-    font-weight: 500;
-    min-width: 80px;
-}
-
 .receipt-total {
     margin-top: 25px;
     padding-top: 15px;
@@ -144,29 +47,4 @@
     font-size: 1.3rem;
     font-weight: bold;
     color: #27ae60;
-}
-
-@media (max-width: 768px) {
-    .product-item {
-        flex-wrap: wrap;
-    }
-
-    .product-name {
-        flex: 0 0 100%;
-    }
-
-    .product-quantity,
-    .product-price {
-        flex: 1;
-        text-align: left;
-    }
-
-    .category-header {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .category-total {
-        order: 1;
-    }
 }

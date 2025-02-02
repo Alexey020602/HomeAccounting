@@ -4,9 +4,12 @@ namespace Core.Mappers;
 
 public static class CategoryMappers
 {
-    public static Category ConvertToCategory(this DataBase.Entities.Category category) => new()
+    public static Category ConvertToCategory(this DataBase.Entities.Category category)
     {
-        Id = category.Id,
-        Name = category.Name,
-    };
+        return new Category
+        {
+            Id = category.Id,
+            Name = category.Name
+        };
+    }
 }

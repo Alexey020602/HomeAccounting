@@ -9,17 +9,14 @@ public static class DbContextOperations
     public static async Task EnsureDatabaseAsync(this DbContext dbContext, CancellationToken cancellationToken)
     {
         var dbCreator = dbContext.GetService<IRelationalDatabaseCreator>();
-        
+
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
             // Create the database if it does not exist.
             // Do this first so there is then a database to start a transaction against.
-            if (!await dbCreator.ExistsAsync(cancellationToken))
-            {
-                await dbCreator.CreateAsync(cancellationToken);
-            }
+            if (!await dbCreator.ExistsAsync(cancellationToken)) await dbCreator.CreateAsync(cancellationToken);
         });
     }
 
@@ -35,8 +32,10 @@ public static class DbContextOperations
         });
     }
 
-    public static Task  MigrateIfRelationalAsync(this DbContext dbContext, CancellationToken cancellationToken) =>
-        dbContext.Database.IsRelational()
+    public static Task MigrateIfRelationalAsync(this DbContext dbContext, CancellationToken cancellationToken)
+    {
+        return dbContext.Database.IsRelational()
             ? dbContext.Database.MigrateAsync(cancellationToken)
             : Task.CompletedTask;
+    }
 }

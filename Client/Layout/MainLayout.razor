@@ -24,7 +24,7 @@
                 <i class="fas fa-home"></i> Главная
             </NavLink>
             <NavLink class="nav-link" href="checks">
-                 Чеки
+                Чеки
             </NavLink>
             <NavLink class="nav-link" href="reports">
                 <i class="fas fa-chart-pie"></i> Отчеты
@@ -71,24 +71,13 @@
 </div>
 
 @code {
-    // Пример данных - замените на реальные
-    private decimal CurrentBalance = 15450.75m;
-    private string UserName = "Иван Петров";
-    
-    private bool IsSidebarActive = false;
+    private readonly decimal CurrentBalance = 15450.75m;
+
+    private bool IsSidebarActive;
 
     private void ToggleSidebar()
     {
         IsSidebarActive = !IsSidebarActive;
     }
 
-    private void ShowAddIncome()
-    {
-        // Логика открытия формы добавления дохода
-    }
-
-    private void ShowAddExpense()
-    {
-        // Логика открытия формы добавления расхода
-    }
 }

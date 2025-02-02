@@ -1,5 +1,4 @@
 @using Core.Model.ChecksList
-
 <div class="receipt-card">
     <div class="receipt-header">
         <div class="receipt-dates">
@@ -17,43 +16,7 @@
     <div class="categories-container">
         @foreach (var category in Check.Categories)
         {
-            <div class="category-group">
-                <div class="category-header">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>@category.Name</h3>
-                    <span class="category-total">
-                        @category.Sum
-                    </span>
-                </div>
-
-                @foreach (var subcategory in category.Subcategories)
-                {
-                    <div class="subcategory-group">
-                        <div class="subcategory-header">
-                            <i class="fas fa-tag"></i>
-                            <h4>@subcategory.Name</h4>
-                            <span class="subcategory-total">
-                                @subcategory.Sum
-                            </span>
-                        </div>
-
-                        <div class="products-list">
-                            @foreach (var product in subcategory.Products)
-                            {
-                                <div class="product-item">
-                                    <span class="product-name">@product.Name</span>
-                                    <span class="product-quantity">
-                                        @FormatQuantity(product.Quantity)
-                                    </span>
-                                    <span class="product-price">
-                                        @product.Sum
-                                    </span>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
+            <CategoryComponent Category="category"/>
         }
     </div>
 
@@ -63,13 +26,6 @@
 </div>
 
 @code {
+
     [Parameter] public Check Check { get; set; } = null!;
-    // private IEnumerable<IGrouping<CategoryHierarchy, Product>> GroupedProducts => Check.Products
-    //     .GroupBy(product => new CategoryHierarchy(product.Subcategory.Category, product.Subcategory))
-    //     .OrderBy(g => g.Key.Category.Name);
-        
-    private string FormatQuantity(double quantity) =>
-        quantity % 1 == 0 ? quantity.ToString("N0") : quantity.ToString("N3");
-    
-    public record CategoryHierarchy(Category Category, Subcategory Subcategory);
 }

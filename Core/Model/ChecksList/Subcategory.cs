@@ -7,6 +7,6 @@ public class Subcategory
     public required IReadOnlyList<Product> Products { get; set; }
 
     public int PennySum => Products.Sum(p => p.PennySum);
-    
-    public Sum Sum => new Sum(PennySum);
+
+    public Sum Sum => new(PennySum);
 }

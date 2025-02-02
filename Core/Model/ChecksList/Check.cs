@@ -7,6 +7,6 @@ public class Check
     public required DateTime AddedDate { get; init; }
     public required IReadOnlyList<Category> Categories { get; set; }
     public int PennySum => Categories.Sum(c => c.PennySum);
-    
-    public Sum Sum => new Sum(PennySum);
+
+    public Sum Sum => new(PennySum);
 }

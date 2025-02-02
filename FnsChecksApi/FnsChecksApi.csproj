@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Refit" Version="8.0.0" />
+        <PackageReference Include="Refit" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DataBase\DataBase.csproj" />
+        <ProjectReference Include="..\DataBase\DataBase.csproj"/>
     </ItemGroup>
 
 </Project>

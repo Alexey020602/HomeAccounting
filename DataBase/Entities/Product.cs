@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace DataBase.Entities;
+﻿namespace DataBase.Entities;
 
 public class Product
 {
@@ -11,5 +9,8 @@ public class Product
     public int Sum { get; set; }
     public Subcategory Subcategory { get; set; } = null!;
 
-    public override string ToString() => $"{Name} Категория {Subcategory}";
+    public override string ToString()
+    {
+        return $"{Name} Категория {Subcategory}";
+    }
 }

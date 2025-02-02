@@ -3,16 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace FnsChecksApi;
 
-public class IntOrStringJsonConverter: JsonConverter<string>
+public class IntOrStringJsonConverter : JsonConverter<string>
 {
-    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => reader
-            .TokenType switch
-        {
-            JsonTokenType.Null => null,
-            JsonTokenType.String => reader.GetString(),
-            JsonTokenType.Number => reader.GetInt64().ToString(),
-            _ => throw new JsonException(),
-        };
+    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return reader
+                .TokenType switch
+            {
+                JsonTokenType.Null => null,
+                JsonTokenType.String => reader.GetString(),
+                JsonTokenType.Number => reader.GetInt64().ToString(),
+                _ => throw new JsonException()
+            };
+    }
 
     public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
     {

@@ -1,14 +1,13 @@
 using Core.Mappers;
-using Core.Model.ChecksList;
+using Core.Model.Report;
 using Core.Services;
 using DataBase;
 using Microsoft.EntityFrameworkCore;
-using DBProduct = DataBase.Entities.Product;
-using DBSubcategory = DataBase.Entities.Subcategory;
-using DBCategory = DataBase.Entities.Category;
+using Check = Core.Model.ChecksList.Check;
+
 namespace Core;
 
-public class ReportUseCase(ApplicationContext context): IReportUseCase
+public class ReportUseCase(ApplicationContext context) : IReportUseCase
 {
     public async Task<IReadOnlyList<Check>> GetChecksAsync(int skip = 0, int take = 100)
     {
@@ -19,43 +18,23 @@ public class ReportUseCase(ApplicationContext context): IReportUseCase
             .Skip(skip)
             .Take(take)
             .ToListAsync();
-        
-        
-        return checks.ConvertAll(check => new Check()
-        {
-            Id = check.Id,
-            AddedDate = check.AddedDate,
-            PurchaseDate = check.PurchaseDate,
-            Categories = ConvertToCategories(check.Products),
-        });
+
+
+        return checks.ConvertAll(check => check.ConvertToCheckList());
     }
 
-    private static IReadOnlyList<Category> ConvertToCategories(IReadOnlyList<DBProduct> products) => products
-        .GroupBy(product => product.Subcategory)
-        .GroupBy(subcategoryGroup => subcategoryGroup.Key.Category)
-        .Select(ConvertToCategory)
-        .ToList();
-    private static Category ConvertToCategory(IGrouping<DBCategory, IGrouping<DBSubcategory, DBProduct>> categories) =>
-        new Category()
-        {
-            Id = categories.Key.Id,
-            Name = categories.Key.Name,
-            Subcategories = categories.Select(ConvertToSubcategory).ToList(),
-        };
-    private static Subcategory ConvertToSubcategory(IGrouping<DBSubcategory, DBProduct> subcategories) =>
-        new Subcategory()
-        {
-            Id = subcategories.Key.Id,
-            Name = subcategories.Key.Name,
-            Products = subcategories
-                .Select(product => new Product()
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    Quantity = product.Quantity,
-                    PennySum = product.Sum,
-                })
-                .ToList(),
-        };
+    public async Task<Report> GetReport(ReportRequest request)
+    {
+        return (await context
+                .Checks
+                .Where(check => check.PurchaseDate >= request.StartDate.ToUniversalTime() &&
+                                check.PurchaseDate <= request.EndDate.ToUniversalTime())
+                .Include(c => c.Products)
+                .ThenInclude(p => p.Subcategory)
+                .ThenInclude(sub => sub.Category)
+                .Skip(request.Skip)
+                .Take(request.Take)
+                .ToListAsync())
+            .CreateReport(request);
+    }
 }

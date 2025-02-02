@@ -15,9 +15,12 @@ using Root = FnsChecksApi.Dto.Categorized.Root;
 
 namespace Core;
 
-public partial class CheckUseCase(ICheckService checkService, IReceiptService receiptService, ApplicationContext context, ILogger<CheckUseCase> logger) : ICheckUseCase
+public partial class CheckUseCase(
+    ICheckService checkService,
+    IReceiptService receiptService,
+    ApplicationContext context,
+    ILogger<CheckUseCase> logger) : ICheckUseCase
 {
-    
     // public async Task SaveCheck(CheckRequest checkRequest)
     // {
     //     var raw = checkRequest.RawRequest();
@@ -25,18 +28,20 @@ public partial class CheckUseCase(ICheckService checkService, IReceiptService re
     //         return;
     //     await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), raw.QrRaw);
     // }
-    public async Task<Core.Model.Check> SaveCheck(CheckRequest checkRequest)
+    public async Task<Model.ChecksList.Check> SaveCheck(CheckRequest checkRequest)
     {
-        return (await GetCheckByRequest(checkRequest))?.ConvertToCheck() ??
-        await SaveCheck(await checkService.GetAsyncByRaw(new CheckRawRequest(checkRequest.RawCheck())), checkRequest);
+        return (await GetCheckByRequest(checkRequest))?.ConvertToCheckList() ??
+               await SaveCheck(await checkService.GetAsyncByRaw(new CheckRawRequest(checkRequest.RawCheck())),
+                   checkRequest);
     }
 
-    private async Task<Core.Model.Check> SaveCheck(Receipt fnsResponse, CheckRequest checkRequest)
+    private async Task<Model.ChecksList.Check> SaveCheck(Receipt fnsResponse, CheckRequest checkRequest)
     {
         var root = Validate(fnsResponse);
 
-        var normalizedProducts = await receiptService.GetReceipt(CreateQuery(root)) ?? throw new InvalidOperationException();
-        
+        var normalizedProducts =
+            await receiptService.GetReceipt(CreateQuery(root)) ?? throw new InvalidOperationException();
+
         //Берем продукты, конвертируем в продукты из БД
         //Для каждого продукта по InitialRequest находим категорию и подкатегорию:
         //Ищем подкатегорию по названию, если такой нет, ищем категорию и добавляем подкатегорию с найденной категорией, или с новой категорией
@@ -71,64 +76,54 @@ public partial class CheckUseCase(ICheckService checkService, IReceiptService re
 
         var converter = new Converter(normalizedProducts, root, context, logger);
 
-        var check = await converter.ConvertToCheck(checkRequest);
-        
-        logger.LogInformation($"PurchaseDate: {check.PurchaseDate} Kind: {check.PurchaseDate.Kind}");
-        logger.LogInformation($"PurchaseDate: {check.AddedDate} Kind: {check.AddedDate.Kind}");
-        return check;
+        return await converter.ConvertToCheck(checkRequest);
     }
-    private Task<Check?> GetCheckByRequest(CheckRequest checkRequest) => context.Checks
-        .Include(c => c.Products)
-        .ThenInclude(p => p.Subcategory)
-        .ThenInclude(sub => sub.Category)
-        .SingleOrDefaultAsync(c => 
-            c.Fn == checkRequest.Fn && 
-            c.PurchaseDate == checkRequest.T &&
-            c.Fd == checkRequest.Fd &&
-            c.Fp == checkRequest.Fp);
+
+    private Task<Check?> GetCheckByRequest(CheckRequest checkRequest)
+    {
+        return context.Checks
+            .Include(c => c.Products)
+            .ThenInclude(p => p.Subcategory)
+            .ThenInclude(sub => sub.Category)
+            .SingleOrDefaultAsync(c =>
+                c.Fn == checkRequest.Fn &&
+                c.PurchaseDate == checkRequest.T &&
+                c.Fd == checkRequest.Fd &&
+                c.Fp == checkRequest.Fp);
+    }
+
     private FnsChecksApi.Dto.Fns.Root Validate(Receipt fnsResponse)
     {
         ArgumentNullException.ThrowIfNull(fnsResponse);
-        
-        if (fnsResponse is BadAnswerReceipt badAnswerReceipt)
-        {
-            throw new Exception($"{badAnswerReceipt.Data}");
-        }
+
+        if (fnsResponse is BadAnswerReceipt badAnswerReceipt) throw new Exception($"{badAnswerReceipt.Data}");
 
         if (fnsResponse is not FnsChecksApi.Dto.Fns.Root root)
-        {
             throw new InvalidOperationException("Неправильный тип ответа ФНС");
-        }
-        
+
         return root;
     }
-    
+
 
     private async Task<Root> ProcessReceipt(Receipt fnsResponse)
     {
-        if (fnsResponse is null)
-        {
-            throw new NullReferenceException();
-        }
-        
-        if (fnsResponse is BadAnswerReceipt badAnswerReceipt)
-        {
-            throw new Exception($"{badAnswerReceipt.Data}");
-        }
+        if (fnsResponse is null) throw new NullReferenceException();
+
+        if (fnsResponse is BadAnswerReceipt badAnswerReceipt) throw new Exception($"{badAnswerReceipt.Data}");
 
         if (fnsResponse is not FnsChecksApi.Dto.Fns.Root root)
-        {
             throw new InvalidOperationException("Неправильный тип ответа ФНС");
-        }
-        
+
         return await receiptService
             .GetReceipt(
                 CreateQuery(root)
             );
     }
 
-    private static Query CreateQuery(FnsChecksApi.Dto.Fns.Root root) => new(
-        root.Data.Json.Items.Select(i => i.Name).ToList()
-    );
+    private static Query CreateQuery(FnsChecksApi.Dto.Fns.Root root)
+    {
+        return new Query(
+            root.Data.Json.Items.Select(i => i.Name).ToList()
+        );
+    }
 }
-

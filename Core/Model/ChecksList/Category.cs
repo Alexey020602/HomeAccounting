@@ -6,6 +6,6 @@ public class Category
     public required string Name { get; set; }
     public required IReadOnlyList<Subcategory> Subcategories { get; set; }
     public int PennySum => Subcategories.Sum(s => s.PennySum);
-    
-    public Sum Sum => new Sum(PennySum);
+
+    public Sum Sum => new(PennySum);
 }

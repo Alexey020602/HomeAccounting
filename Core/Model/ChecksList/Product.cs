@@ -7,5 +7,5 @@ public class Product
     public required double Quantity { get; init; }
     public required int PennySum { get; init; }
     public required int Price { get; init; }
-    public Sum Sum => new Sum(PennySum);
+    public Sum Sum => new(PennySum);
 }

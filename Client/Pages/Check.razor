@@ -2,6 +2,7 @@
 @page "/Check"
 @using System.ComponentModel.DataAnnotations
 @using Client.Components
+@using Core.Model.Requests
 
 <PageTitle>Загрузка чека</PageTitle>
 
@@ -9,15 +10,15 @@
     <h3 class="page-title">Добавление нового чека</h3>
 
     <EditForm Model="@Model" OnValidSubmit="OnSubmit">
-        <DataAnnotationsValidator />
+        <DataAnnotationsValidator/>
 
         <div class="form-grid">
             <div class="form-column">
                 <!-- Загрузка изображения -->
                 <div class="form-group">
                     <label>Изображение чека <span class="required">*</span></label>
-                    <InputFile class="file-input" OnChange="OnChange" />
-                    
+                    <InputFile class="file-input" OnChange="OnChange"/>
+
                 </div>
             </div>
         </div>
@@ -47,17 +48,21 @@
 
     public class FormModel
     {
-        [Required(ErrorMessage = "Выберите файл с чеком")] 
+        [Required(ErrorMessage = "Выберите файл с чеком")]
         public IBrowserFile? SelectedFile { get; set; }
 
-        public Core.Model.Requests.FileCheckRequest ToCheckFileRequest() => new()
+        public Core.Model.Requests.FileCheckRequest ToCheckFileRequest()
         {
-            FileStream = SelectedFile?.OpenReadStream() ?? throw new Exception("Не выбран файл"),
-            AddedTime = DateTimeOffset.Now,
-        };
+            return new FileCheckRequest
+            {
+                FileStream = SelectedFile?.OpenReadStream() ?? throw new Exception("Не выбран файл"),
+                AddedTime = DateTimeOffset.Now
+            };
+        }
     }
+
     [Inject] private IChecksApi ChecksApi { get; set; } = null!;
-    private FormModel Model = new();
+    private readonly FormModel Model = new();
     private Core.Model.ChecksList.Check? SavedCheck { get; set; }
 
     private async Task OnSubmit()
@@ -68,7 +73,7 @@
     private Task OnChange(InputFileChangeEventArgs args)
     {
         Model.SelectedFile = args.File;
-        
+
         return Task.CompletedTask;
     }
 
@@ -77,4 +82,5 @@
         Model.SelectedFile = null;
         return Task.CompletedTask;
     }
+
 }

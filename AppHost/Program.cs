@@ -1,3 +1,5 @@
+using Projects;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var db = builder
@@ -7,21 +9,21 @@ var db = builder
     .AddDatabase("HomeAccounting");
 
 var migrations = builder
-    .AddProject<Projects.MigrationService>("migrations")
+    .AddProject<MigrationService>("migrations")
     .WithReference(db)
     .WaitFor(db);
 
 var api = builder
-    .AddProject<Projects.Api>("api")
+    .AddProject<Api>("api")
     .WithExternalHttpEndpoints()
     // .WithHttpEndpoint()
     // .WithHttpsEndpoint()
     .WaitForCompletion(migrations)
     .WithReference(db);
-    // .WithExternalHttpEndpoints()
-    ;
+// .WithExternalHttpEndpoints()
+;
 
-builder.AddProject<Projects.Client>("client")
+builder.AddProject<Client>("client")
     // .WithExternalHttpEndpoints()
     // .WithHttpEndpoint(port: 5000, targetPort: 5160)
     // .WithHttpsEndpoint()

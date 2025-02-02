@@ -4,10 +4,13 @@ namespace Core.Mappers;
 
 public static class SubcategoryMappers
 {
-    public static Subcategory ConvertToSubcategory(this DataBase.Entities.Subcategory subcategory) => new()
+    public static Subcategory ConvertToSubcategory(this DataBase.Entities.Subcategory subcategory)
     {
-        Id = subcategory.Id,
-        Name = subcategory.Name,
-        Category = subcategory.Category.ConvertToCategory(),
-    };
+        return new Subcategory
+        {
+            Id = subcategory.Id,
+            Name = subcategory.Name,
+            Category = subcategory.Category.ConvertToCategory()
+        };
+    }
 }

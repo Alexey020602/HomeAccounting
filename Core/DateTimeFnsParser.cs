@@ -2,21 +2,20 @@ using System.Globalization;
 
 namespace Core;
 
-public sealed class DateTimeFnsParser {
-    public string[] Formats = [
+public sealed class DateTimeFnsParser
+{
+    public string[] Formats =
+    [
         "yyyyMMddTHHmmss",
         "yyyyMMddTHHmm"
     ];
 
-    public DateTime Parse(string date) 
+    public DateTime Parse(string date)
     {
-        foreach(var format in Formats)
-        {
+        foreach (var format in Formats)
             if (DateTime.TryParseExact(date, format, null, DateTimeStyles.AssumeUniversal, out var result))
-            {
                 return result;
-            }
-        }
+
         throw new Exception("Cannot parse date string");
     }
 }

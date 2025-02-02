@@ -1,0 +1,21 @@
+@using Core.Model.ChecksList
+<div class="subcategory-group">
+    <div class="subcategory-header">
+        <i class="fas fa-tag"></i>
+        <h4>@Subcategory.Name</h4>
+        <span class="subcategory-total">
+                                @Subcategory.Sum
+                            </span>
+    </div>
+
+    <div class="products-list">
+        @foreach (var product in Subcategory.Products)
+        {
+            <ProductComponent Product="product"/>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public Subcategory Subcategory { get; set; } = null!;
+}

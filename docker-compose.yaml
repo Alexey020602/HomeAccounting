@@ -14,11 +14,11 @@ services:
       - "5433:5433"
     volumes:
       - postgresdata:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+  #    healthcheck:
+  #      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+  #      interval: 10s
+  #      timeout: 5s
+  #      retries: 5
   migrations:
     container_name: migrations_service
     pull_policy: always
@@ -38,9 +38,9 @@ services:
     pull_policy: always
     networks:
       - "my-network"
-    expose: 
+    expose:
       - 80
-    ports: 
+    ports:
       - 5080:80
     build:
       context: .
@@ -68,11 +68,11 @@ services:
       - 80
     ports:
       - 5160:80
-#    environment:
-#      - VIRTUAL_HOST=homeaccounting.opolcheniya.keenetic.pro
-#      - VIRTUAL_PORT=80
-#      - LETSENCRYPT_HOST=homeaccounting.opolcheniya.keenetic.pro
-#      - LETSENCRYPT_EMAIL=myemail@mydomain.com
+  #    environment:
+  #      - VIRTUAL_HOST=homeaccounting.opolcheniya.keenetic.pro
+  #      - VIRTUAL_PORT=80
+  #      - LETSENCRYPT_HOST=homeaccounting.opolcheniya.keenetic.pro
+  #      - LETSENCRYPT_EMAIL=myemail@mydomain.com
   reverse_proxy:
     image: nginx:latest
     container_name: reverse_proxy
@@ -80,14 +80,14 @@ services:
       - "my-network"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-#      - "./proxy.conf:/etc/nginx/conf.d/proxy.conf"
+    #      - "./proxy.conf:/etc/nginx/conf.d/proxy.conf"
     ports:
       - "80:80"
-#      - "443:443"
+    #      - "443:443"
     depends_on:
       - client
       - api
-    
+
 
 volumes:
   postgresdata:
@@ -95,5 +95,5 @@ volumes:
 networks:
   my-network:
     external: false
-    
+
 #    name: "my-network"

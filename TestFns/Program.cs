@@ -1,15 +1,9 @@
-﻿using System.Text.Json;
-using System.Drawing;
-using Core;
-using DataBase;
+﻿using DataBase;
 using FnsChecksApi;
-using FnsChecksApi.Dto;
-using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
 using Microsoft.EntityFrameworkCore;
 using Refit;
 using SkiaSharp;
-using ZXing;
 using ZXing.SkiaSharp;
 
 var path = "/Users/Alexey/Downloads/2025-01-24 17.40.56.jpg";
@@ -42,13 +36,13 @@ var receiptService = RestService.For<IReceiptService>("https://cheicheck.ru");
 
 // var checkUseCase = new CheckUseCase(checkService, receiptService, context);
 
-var requests = new [] 
+var requests = new[]
 {
     // "t=20250107T104157&s=1691.16&fn=7380440801290534&i=9446&fp=1880975916&n=1",
     // "t=20250112T1715&s=93.00&fn=7381440800435707&i=21728&fp=3846028993&n=1",
     // "t=20250113T2321&s=1015.73&fn=7284440500173838&i=62887&fp=182171056&n=1",
     // "t=20250111T105907&s=1236.35&fn=7380440801290534&i=10277&fp=840967215&n=1",
-    "t=20250104T1233&s=1289.00&fn=7380440700673345&i=26636&fp=1241320200&n=1",
+    "t=20250104T1233&s=1289.00&fn=7380440700673345&i=26636&fp=1241320200&n=1"
 }.Select(raw => new CheckRawRequest(raw)).ToList();
 
 var checkRequest = new CheckRequest
@@ -57,7 +51,7 @@ var checkRequest = new CheckRequest
     Fn = "7380440801290534",
     Fp = "3909637264",
     T = "20250105T1520",
-    S = "860.88",
+    S = "860.88"
 };
 // requests.Add(checkRequest.RawRequest());
 //
@@ -70,13 +64,10 @@ var checkRequest = new CheckRequest
 // }
 
 var checks = await context.Checks
-    .Include(c => c.Products)
-    .ThenInclude(p => p.Subcategory)
-    .ThenInclude(s => s.Products)
-    .ToListAsync()
+        .Include(c => c.Products)
+        .ThenInclude(p => p.Subcategory)
+        .ThenInclude(s => s.Products)
+        .ToListAsync()
     ;
 
-foreach (var check in checks)
-{
-    Console.WriteLine(check);
-}
+foreach (var check in checks) Console.WriteLine(check);

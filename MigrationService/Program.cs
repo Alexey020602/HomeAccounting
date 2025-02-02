@@ -17,13 +17,10 @@ builder.Services.AddRefitClient<IReceiptService>()
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddTransient<ICheckUseCase, CheckUseCase>();
 if (builder.Environment.IsDevelopment())
-{
     builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
-}
 else
-{
-    builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
+    builder.Services.AddDbContext<ApplicationContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

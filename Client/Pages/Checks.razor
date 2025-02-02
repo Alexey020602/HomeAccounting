@@ -1,25 +1,27 @@
 @page "/Checks"
 @inject IChecksApi ChecksApi
-@using CoreCheck = Core.Model.ChecksList.Check
 @using Client.Components
+@using CoreCheck = Core.Model.ChecksList.Check
 
 <PageTitle>Список чеков</PageTitle>
 
 <h1>Добавленные чеки</h1>
 
-@foreach (var check in @Receipts)
+@foreach (var check in Receipts)
 {
     <ReceiptComponent Check="check"/>
 }
 
 @code {
     private List<CoreCheck> Receipts { get; set; } = [];
+
     protected override async Task OnInitializedAsync()
     {
         Receipts = await ChecksApi.GetChecks();
         Receipts.Sort(new DateComparer());
     }
-    private sealed class DateComparer: IComparer<CoreCheck>
+
+    private sealed class DateComparer : IComparer<CoreCheck>
     {
         public int Compare(CoreCheck? x, CoreCheck? y)
         {
@@ -29,4 +31,5 @@
             return x.PurchaseDate.CompareTo(y.PurchaseDate);
         }
     }
+
 }

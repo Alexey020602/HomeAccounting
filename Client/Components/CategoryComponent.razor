@@ -1,0 +1,19 @@
+@using Core.Model.ChecksList
+<div class="category-group">
+    <div class="category-header">
+        <i class="fas fa-folder-open"></i>
+        <h3>@Category.Name</h3>
+        <span class="category-total">
+                        @Category.Sum
+                    </span>
+    </div>
+
+    @foreach (var subcategory in Category.Subcategories)
+    {
+        <SubcategoryComponent Subcategory="subcategory"/>
+    }
+</div>
+
+@code {
+    [Parameter] public Category Category { get; set; } = null!;
+}

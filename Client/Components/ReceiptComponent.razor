@@ -13,10 +13,13 @@
         </div>
     </div>
 
-    <div class="categories-container">
-        @foreach (var category in Check.Categories)
+    <div class="categories-container" onclick="@Toggle">
+        @if (!Opened)
         {
-            <CategoryComponent Category="category"/>
+            @foreach (var category in Check.Categories)
+            {
+                <CategoryComponent Category="category"/>
+            }
         }
     </div>
 
@@ -26,6 +29,8 @@
 </div>
 
 @code {
-
     [Parameter] public Check Check { get; set; } = null!;
+    private bool Opened { get; set; }
+
+    private void Toggle() => Opened = !Opened;
 }

@@ -1,0 +1,33 @@
+@page "/MonthReport"
+@using Client.Api
+@using Core.Extensions
+@using Core.Model.Report
+@using Client.Components
+@inject IReportsApi ReportsApi
+
+<div>
+    <InputDate @bind-Value="Begin">Начало периода</InputDate>
+    <InputDate @bind-Value="End">Конец периода</InputDate>
+    <button onclick="@LoadReport"></button>
+</div>
+
+@if (Report is not null)
+{
+    <div>
+        <h2>Расход за месяц: @Report.Sum.ToString()</h2>
+        @foreach (var category in Report.Categories)
+        {
+            <CategoryComponent Category="category"/>
+        }
+    </div>
+}
+
+@code {
+    private DateTime Begin { get; set; } = DateTimeExtensions.DayOfCurrentMonth(7);
+    private DateTime End { get; set; } = DateTime.Now;
+    private Report? Report { get; set; }
+
+    protected override Task OnInitializedAsync() => LoadReport();
+
+    private async Task LoadReport() => Report = await ReportsApi.GetMonthReport(new ReportRequest(Begin, End));
+}

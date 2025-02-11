@@ -1,4 +1,5 @@
 using Client;
+using Client.Api;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
@@ -16,6 +17,8 @@ var apiUrl = builder.Configuration.GetValue<string>("ApiUrlHttp") ?? throw new E
 // var apiUrl = builder.Configuration["ApiUrlHttp"] ?? throw new Exception("Отсутствует адрес для api");
 var apiUri = new Uri(apiUrl);
 builder.Services.AddRefitClient<IChecksApi>()
+    .ConfigureHttpClient(client => client.BaseAddress = apiUri);
+builder.Services.AddRefitClient<IReportsApi>()
     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

@@ -2,7 +2,7 @@ using Core.Model.ChecksList;
 using Core.Model.Requests;
 using Refit;
 
-namespace Client;
+namespace Client.Api;
 
 public interface IChecksApi
 {

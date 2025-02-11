@@ -21,27 +21,27 @@
 
         <nav class="nav-menu">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="fas fa-home"></i> Главная
+                Главная
             </NavLink>
             <NavLink class="nav-link" href="checks">
                 Чеки
             </NavLink>
-            <NavLink class="nav-link" href="reports">
-                <i class="fas fa-chart-pie"></i> Отчеты
+            <NavLink class="nav-link" href="monthreport">
+                Отчеты
             </NavLink>
-            <NavLink class="nav-link" href="categories">
-                <i class="fas fa-tags"></i> Категории
-            </NavLink>
-            <NavLink class="nav-link" href="settings">
-                <i class="fas fa-cog"></i> Настройки
-            </NavLink>
+            @* <NavLink class="nav-link" href="categories"> *@
+            @*     <i class="fas fa-tags"></i> Категории *@
+            @* </NavLink> *@
+            @* <NavLink class="nav-link" href="settings"> *@
+            @*     <i class="fas fa-cog"></i> Настройки *@
+            @* </NavLink> *@
         </nav>
 
         <!-- Текущий баланс -->
-        <div class="current-balance">
-            <h4>Расход за текущий месяц:</h4>
-            <div class="balance-amount">@CurrentBalance.ToString("C")</div>
-        </div>
+        @* <div class="current-balance"> *@
+        @*     <h4>Расход за текущий месяц:</h4> *@
+        @*     <div class="balance-amount">@CurrentBalance.ToString("C")</div> *@
+        @* </div> *@
     </div>
 
     <!-- Основная область -->
@@ -71,7 +71,7 @@
 </div>
 
 @code {
-    private readonly decimal CurrentBalance = 15450.75m;
+    // private readonly decimal CurrentBalance = 15450.75m;
 
     private bool IsSidebarActive;
 

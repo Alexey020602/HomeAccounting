@@ -25,6 +25,7 @@ public static class CheckListMapper
             .GroupBy(product => product.Subcategory)
             .GroupBy(subcategoryGroup => subcategoryGroup.Key.Category)
             .Select(ConvertToCategory)
+            .OrderBy(category => category.PennySum)
             .ToList();
     }
 
@@ -34,7 +35,10 @@ public static class CheckListMapper
         {
             Id = categories.Key.Id,
             Name = categories.Key.Name,
-            Subcategories = categories.Select(ConvertToSubcategory).ToList()
+            Subcategories = categories
+                .Select(ConvertToSubcategory)
+                .OrderBy(subcategory => subcategory.PennySum)
+                .ToList()
         };
     }
 
@@ -53,6 +57,7 @@ public static class CheckListMapper
                     Quantity = product.Quantity,
                     PennySum = product.Sum
                 })
+                .OrderBy(product => product.PennySum)
                 .ToList()
         };
     }

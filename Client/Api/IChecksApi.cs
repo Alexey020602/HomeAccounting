@@ -9,11 +9,10 @@ public interface IChecksApi
     [Get("/checks")]
     Task<List<Check>> GetChecks();
 
-    [Post("/receipt")]
+    [Post("/checks")]
     Task<Check> GetReceipt(CheckRequest checkRequest);
 
-    // [Headers("Access-Control-Allow-Origin: *")]
-    [Post("/receiptWithFile")]
+    [Post("/checks/file")]
     [Multipart]
-    Task<Check> GetReceipt(FileCheckRequest fileCheckRequest);
+    Task<Check> GetReceipt(Stream file, DateTimeOffset addedDate);
 }

@@ -19,7 +19,7 @@
                 <div class="form-group">
                     <label>Изображение чека <span class="required">*</span></label>
                     <InputFile class="file-input" OnChange="OnChange"/>
-
+                    <ValidationMessage For="@(() => Model.SelectedFile )"/>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
 
     private async Task OnSubmit()
     {
-        SavedCheck = await ChecksApi.GetReceipt(Model.ToCheckFileRequest());
+        SavedCheck = await ChecksApi.GetReceipt(Model.SelectedFile!.OpenReadStream(), DateTimeOffset.Now);
     }
 
     private Task OnChange(InputFileChangeEventArgs args)

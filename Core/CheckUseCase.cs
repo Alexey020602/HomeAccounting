@@ -21,13 +21,19 @@ public partial class CheckUseCase(
     ApplicationContext context,
     ILogger<CheckUseCase> logger) : ICheckUseCase
 {
-    // public async Task SaveCheck(CheckRequest checkRequest)
-    // {
-    //     var raw = checkRequest.RawRequest();
-    //     if (await context.Checks.SingleOrDefaultAsync(c => c.CheckRaw == raw.QrRaw) is not null)
-    //         return;
-    //     await SaveCheck(await checkService.GetAsyncByRaw(checkRequest), raw.QrRaw);
-    // }
+    public async Task<IReadOnlyList<Model.ChecksList.Check>> GetChecksAsync(int skip = 0, int take = 100)
+    {
+        var checks = await context.Checks
+            .Include(c => c.Products)
+            .ThenInclude(p => p.Subcategory)
+            .ThenInclude(sub => sub.Category)
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+
+
+        return checks.ConvertAll(check => check.ConvertToCheckList());
+    }
     public async Task<Model.ChecksList.Check> SaveCheck(CheckRequest checkRequest)
     {
         return (await GetCheckByRequest(checkRequest))?.ConvertToCheckList() ??
@@ -41,38 +47,6 @@ public partial class CheckUseCase(
 
         var normalizedProducts =
             await receiptService.GetReceipt(CreateQuery(root)) ?? throw new InvalidOperationException();
-
-        //Берем продукты, конвертируем в продукты из БД
-        //Для каждого продукта по InitialRequest находим категорию и подкатегорию:
-        //Ищем подкатегорию по названию, если такой нет, ищем категорию и добавляем подкатегорию с найденной категорией, или с новой категорией
-        // var productsTasks = root.Data.Json.Items.Select(async (item) =>
-        // {
-        //     var category = normalizedProducts.Items.First(i => i.InitialRequest == item.Name).Category;
-        //     var subcategory = await GetSubcategoryByName(category.SecondLevelCategory, category.FirstLevelCategory);
-        //     return new Product
-        //     {
-        //         Name = item.Name,
-        //         Price = item.Price,
-        //         Quantity = item.Quantity,
-        //         Subcategory = subcategory,
-        //     };
-        // });
-        // var products = new List<Product>(); 
-        //
-        // foreach (var task in productsTasks)
-        // {
-        //     products.Add(await task);
-        // }
-        //
-        // var check = new Check
-        // {
-        //     CheckRaw = qrRaw,
-        //     Products = products,
-        // };
-        //
-        // await context.Checks.AddAsync(check);
-        // await context.SaveChangesAsync();
-        // return check.ConvertToCheck();
 
         var converter = new Converter(normalizedProducts, root, context, logger);
 
@@ -103,8 +77,6 @@ public partial class CheckUseCase(
 
         return root;
     }
-
-
     private async Task<Root> ProcessReceipt(Receipt fnsResponse)
     {
         if (fnsResponse is null) throw new NullReferenceException();

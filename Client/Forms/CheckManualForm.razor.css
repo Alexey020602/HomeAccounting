@@ -1,0 +1,22 @@
+.form-floating {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    transition: border-color 0.3s ease;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-end {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

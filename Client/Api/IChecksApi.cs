@@ -15,4 +15,6 @@ public interface IChecksApi
     [Post("/checks/file")]
     [Multipart]
     Task<Check> GetReceipt(Stream file, DateTimeOffset addedDate);
+    
+    Task<Check> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
 }

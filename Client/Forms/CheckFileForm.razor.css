@@ -1,0 +1,29 @@
+.file-upload-area {
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+    background: rgba(13, 110, 253, 0.03);
+}
+
+.file-upload-area:hover {
+    border-color: #0d6efd;
+    background: rgba(13, 110, 253, 0.05);
+}
+
+.file-upload-area label {
+    cursor: pointer;
+    min-height: 150px;
+}
+
+.bi-cloud-arrow-up {
+    color: #0d6efd;
+}
+
+@media (max-width: 576px) {
+    .d-flex.justify-content-end {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

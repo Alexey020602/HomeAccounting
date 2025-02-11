@@ -1,91 +1,35 @@
-.receipt-card {
-    background: white;
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-    max-width: 1000px;
+.input-container {
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.manual-form,
+.file-form {
+    max-width: 600px;
     margin: 0 auto;
 }
 
-.page-title {
-    color: #2c3e50;
-    margin-bottom: 30px;
-    text-align: center;
+.bi-file-earmark-arrow-up {
+    color: #0d6efd;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 25px;
+.bi-pencil {
+    color: #198754;
 }
 
-@media (min-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr 1fr;
+.card-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
     }
-}
 
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #34495e;
-}
-
-.form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #bdc3c7;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.file-input {
-    width: 100%;
-    padding: 10px;
-    border: 2px dashed #3498db;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.image-preview {
-    position: relative;
-    margin-top: 15px;
-}
-
-.image-preview img {
-    width: 100%;
-    max-height: 250px;
-    object-fit: contain;
-    border-radius: 5px;
-    border: 1px solid #eee;
-}
-
-.image-preview button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.form-actions {
-    margin-top: 30px;
-    display: flex;
-    gap: 15px;
-    justify-content: flex-end;
-}
-
-.required {
-    color: #e74c3c;
-    font-size: 0.8em;
-}
-
-.validation-message {
-    color: #e74c3c;
-    font-size: 0.9em;
-    margin-top: 5px;
+    .input-container {
+        padding: 1rem !important;
+    }
 }

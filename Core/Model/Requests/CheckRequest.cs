@@ -2,30 +2,30 @@ using Core.Extensions;
 
 namespace Core.Model.Requests;
 
-public class CheckRequest
+public class CheckRequest(string Fn, string Fd, string Fp, string S, DateTime T, DateTime AddedDate)
 {
-    public CheckRequest(Dictionary<string, string> values, DateTimeOffset addedDate)
+    public CheckRequest(Dictionary<string, string> values, DateTimeOffset addedDate): 
+        this(
+            values["fn"], 
+            values["i"], 
+            values["fp"],
+            values["s"], 
+            new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds().ToUniversalTime(), 
+            addedDate.DateTime)
     {
-        Fd = values["i"];
-        Fn = values["fn"];
-        Fp = values["fp"];
-        S = values["s"];
-        var dateTime = new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds().ToUniversalTime();
-
-        T = dateTime;
-        AddedDate = addedDate.DateTime;
+        
     }
 
     public CheckRequest(RawCheckRequest request) : this(CreateDictionaryFromRawString(request.QrRaw), request.AddedTime)
     {
     }
 
-    public string Fn { get; init; }
-    public string Fd { get; init; }
-    public string Fp { get; init; }
-    public string S { get; init; }
-    public DateTime T { get; init; }
-    public DateTime AddedDate { get; set; }
+    public string Fn { get; init; } = Fn;
+    public string Fd { get; init; } = Fd;
+    public string Fp { get; init; } = Fp;
+    public string S { get; init; } = S;
+    public DateTime T { get; init; } = T;
+    public DateTime AddedDate { get; set; } = AddedDate;
 
     private static Dictionary<string, string> CreateDictionaryFromRawString(string raw, char splitter = '&')
     {

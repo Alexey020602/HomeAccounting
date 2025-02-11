@@ -1,0 +1,8 @@
+.form-floating input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.6;
+    padding: 4px;
+}
+
+.bi-calendar2-week {
+    margin-right: 8px;
+}

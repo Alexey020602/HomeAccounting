@@ -1,21 +1,30 @@
 @using Core.Model.ChecksList
-<div class="subcategory-group">
-    <div class="subcategory-header">
-        <i class="fas fa-tag"></i>
-        <h4>@Subcategory.Name</h4>
-        <span class="subcategory-total">
-                                @Subcategory.Sum
-                            </span>
+<div class="mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2 px-2" onclick="@Toggle"  style="cursor: pointer">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-tag-fill text-muted me-2"></i>
+            <h5 class="mb-0">@Subcategory.Name</h5>
+        </div>
+        <span class="badge bg-success rounded-pill fs-6">
+            @Subcategory.Sum.ToString()
+        </span>
     </div>
 
-    <div class="products-list">
-        @foreach (var product in Subcategory.Products)
-        {
-            <ProductComponent Product="product"/>
-        }
-    </div>
+    @if (ShowProducts)
+    {
+        <div class="list-group">
+            @foreach (var product in Subcategory.Products)
+            {
+                <div class="list-group-item list-group-item-action border-0 py-2">
+                    <ProductComponent Product="product"/>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @code {
     [Parameter] public Subcategory Subcategory { get; set; } = null!;
+    private bool ShowProducts { get; set; }
+    private void Toggle() => ShowProducts = !ShowProducts;
 }

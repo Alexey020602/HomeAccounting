@@ -1,0 +1,9 @@
+.report-container {
+    border-top: 2px solid #dee2e6;
+    padding-top: 1.5rem;
+}
+
+.total-sum {
+    font-weight: 600;
+    letter-spacing: -1px;
+}

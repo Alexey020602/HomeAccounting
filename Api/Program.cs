@@ -53,36 +53,6 @@ app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
 );
 
-app.MapControllers().DisableAntiforgery();
+app.MapControllers();
 
-// app.MapGet("/checks", async (IReportUseCase reportUseCase) => Results.Json(await reportUseCase.GetChecksAsync()));
-// app.MapPost("/receipt", async ([FromBody] CheckRequest request, ICheckUseCase checkUseCase) =>
-// {
-//     var response = await checkUseCase.SaveCheck(request);
-//     return Results.Json(response);
-// });
-//
-// app.MapPost(
-//         "/receiptWithFile",
-//         async ([FromForm] DateTimeOffset addedDate, IFormFile file, ICheckUseCase checkUseCase,
-//             IBarcodeService service) =>
-//         {
-//             try
-//             {
-//                 var stream = file.OpenReadStream();
-//                 var result = await service.ReadBarcodeAsync(stream);
-//
-//                 return Results.Json(await checkUseCase.SaveCheck(new RawCheckRequest
-//                 {
-//                     QrRaw = result,
-//                     AddedTime = addedDate
-//                 }));
-//             }
-//             catch (Exception ex)
-//             {
-//                 Console.WriteLine(ex.Message);
-//                 throw;
-//             }
-//         })
-//     .DisableAntiforgery();
 app.Run();

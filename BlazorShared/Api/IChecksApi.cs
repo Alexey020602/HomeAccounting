@@ -2,7 +2,7 @@ using Core.Model.ChecksList;
 using Core.Model.Requests;
 using Refit;
 
-namespace Client.Api;
+namespace BlazorShared.Api;
 
 public interface IChecksApi
 {

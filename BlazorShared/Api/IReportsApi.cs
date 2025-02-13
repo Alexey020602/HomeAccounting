@@ -1,7 +1,7 @@
 using Core.Model.Report;
 using Refit;
 
-namespace Client.Api;
+namespace BlazorShared.Api;
 
 public interface IReportsApi
 {

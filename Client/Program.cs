@@ -1,5 +1,5 @@
+using BlazorShared.Api;
 using Client;
-using Client.Api;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;

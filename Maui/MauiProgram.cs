@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using BlazorShared.Api;
+using BlazorShared.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,16 +23,17 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
         var apiUrl =
 #if DEBUG
-            "https://localhost:7162";
+            "http://localhost:5080";
 #else
         "";
 #endif
         var apiUri = new Uri(apiUrl);
-        builder.Services.AddMudServices();
-        builder.Services.AddRefitClient<IChecksApi>()
-            .ConfigureHttpClient(client => client.BaseAddress = apiUri);
-        builder.Services.AddRefitClient<IReportsApi>()
-            .ConfigureHttpClient(client => client.BaseAddress = apiUri);
+        builder.Services.AddBlazorShared(apiUri);
+        // builder.Services.AddMudServices();
+        // builder.Services.AddRefitClient<IChecksApi>()
+        //     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
+        // builder.Services.AddRefitClient<IReportsApi>()
+        //     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

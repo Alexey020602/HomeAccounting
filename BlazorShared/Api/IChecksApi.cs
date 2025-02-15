@@ -1,18 +1,20 @@
+using BlazorShared.Api.Attributes;
 using Core.Model.ChecksList;
 using Core.Model.Requests;
 using Refit;
 
 namespace BlazorShared.Api;
 
+[Api("checks")]
 public interface IChecksApi
 {
-    [Get("/checks")]
+    [Get("/")]
     Task<List<Check>> GetChecks();
 
-    [Post("/checks")]
+    [Post("/")]
     Task<Check> GetReceipt(CheckRequest checkRequest);
 
-    [Post("/checks/file")]
+    [Post("/file")]
     [Multipart]
     Task<Check> GetReceipt(Stream file, DateTimeOffset addedDate);
     

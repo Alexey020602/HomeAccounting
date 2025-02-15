@@ -4,55 +4,56 @@
 @using BlazorShared.Components
 @using Core.Model.Requests
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Добавление нового чека</h3>
-            <button class="btn btn-light" @onclick="ToggleInputMode">
-                <i class="bi @(ManualInput ? "bi-file-earmark-arrow-up" : "bi-pencil") me-2"></i>
-                @ToggleButtonText
-            </button>
-        </div>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudCard Elevation="5">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Добавление нового чека</MudText>
+            </CardHeaderContent>
+            <ChildContent>
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           EndIcon="@(ManualInput ? Icons.Material.Filled.Upload : Icons.Material.Filled.Edit)"
+                           OnClick="ToggleInputMode"
+                           Class="ml-auto">
+                    @ToggleButtonText
+                </MudButton>
+            </ChildContent>
+        </MudCardHeader>
 
-        <div class="card-body">
-            <div class="input-container p-3 border rounded">
+        <MudCardContent>
+            <MudPaper Elevation="0" Class="pa-4" Style="border: 1px solid var(--mud-palette-lines-default);">
                 @if (ManualInput)
                 {
-                    <div class="manual-form">
-                        <CheckManualForm OnSubmit="@SendManualRequest"/>
-                    </div>
+                    <CheckManualForm OnSubmit="SendManualRequest"/>
                 }
                 else
                 {
-                    <div class="file-form">
-                        <CheckFileForm OnSubmit="@SendFileRequest"/>
-                    </div>
+                    <CheckFileForm OnSubmit="SendFileRequest"/>
                 }
-            </div>
+            </MudPaper>
 
             @if (SavedCheck is not null)
             {
-                <div class="mt-4">
-                    <div class="card shadow-sm mt-3">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Сохраненный чек</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <ReceiptComponent Check="SavedCheck"/>
-                        </div>
-                    </div>
-                </div>
+                <MudCard Elevation="3" Class="mt-4">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">Сохраненный чек</MudText>
+                    </MudCardHeader>
+                    <MudCardContent Class="pa-0">
+                        <ReceiptComponent Check="SavedCheck"/>
+                    </MudCardContent>
+                </MudCard>
             }
-        </div>
-    </div>
-</div>
-
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
 
 @code {
     [Inject] private IChecksApi ChecksApi { get; set; } = null!;
     private Core.Model.ChecksList.Check? SavedCheck { get; set; }
     private bool ManualInput { get; set; }
     private string ToggleButtonText => ManualInput ? "Ввести чек файлом" : "Ввести чек вручную";
+
     private void ToggleInputMode() => ManualInput = !ManualInput;
 
     private async Task SendFileRequest(FileCheckRequest request) => SavedCheck = await ChecksApi.GetReceipt(request);

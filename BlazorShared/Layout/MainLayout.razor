@@ -10,48 +10,54 @@
 @* Needed for snackbars *@
 <MudSnackbarProvider />
 
-<div class="main-container">
-    <button class="menu-toggle" @onclick="ToggleSidebar">
-        @if (IsSidebarActive)
-        {
-            <i class="fas fa-times"></i>
-        }
-        else
-        {
-            <i class="fas fa-bars"></i>
-        }
-    </button>
+<HeadContent>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="_content/BlazorShared/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="_content/BlazorShared/css/app.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+</HeadContent>
 
-    <div class="sidebar @(IsSidebarActive ? "active" : "collapsed")">
-        <div class="app-header">
-            <h3 class="app-title">Домашняя бухгалтерия</h3>
-        </div>
+<MudLayout>
+    <MudAppBar Elevation="3" Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" 
+                       Color="Color.Inherit" 
+                       OnClick="ToggleSidebar" 
+                       Class="ml-2" />
+        <MudText Typo="Typo.h6" Class="ml-3 white--text">Домашняя бухгалтерия</MudText>
+    </MudAppBar>
 
-        <nav class="nav-menu">
-            <NavLink class="nav-link" href="check" Match="NavLinkMatch.All">
+    <MudDrawer @bind-Open="_isSidebarActive" 
+               Elevation="2" 
+               Color="Color.Default" 
+               Breakpoint="Breakpoint.Md" 
+               Variant="DrawerVariant.Responsive"
+               ClipMode="DrawerClipMode.Always">
+        <MudNavMenu>
+            <MudNavLink Href="check" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Receipt">
                 Добавление чека
-            </NavLink>
-            <NavLink class="nav-link" href="checks">
+            </MudNavLink>
+            <MudNavLink Href="checks" Icon="@Icons.Material.Filled.List">
                 Чеки
-            </NavLink>
-            <NavLink class="nav-link" href="monthreport">
+            </MudNavLink>
+            <MudNavLink Href="monthreport" Icon="@Icons.Material.Filled.Assessment">
                 Отчет
-            </NavLink>
-        </nav>
-    </div>
+            </MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
 
-    <div class="main-content @(IsSidebarActive ? "" : "expanded")">
-        <div class="content-container">
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-16">
             @Body
-        </div>
-    </div>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
-    private bool IsSidebarActive = true;
+    private bool _isSidebarActive = true;
 
     private void ToggleSidebar()
     {
-        IsSidebarActive = !IsSidebarActive;
+        _isSidebarActive = !_isSidebarActive;
     }
 }

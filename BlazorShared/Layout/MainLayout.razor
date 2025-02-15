@@ -22,50 +22,21 @@
         </div>
 
         <nav class="nav-menu">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                Главная
+            <NavLink class="nav-link" href="check" Match="NavLinkMatch.All">
+                Добавление чека
             </NavLink>
             <NavLink class="nav-link" href="checks">
                 Чеки
             </NavLink>
             <NavLink class="nav-link" href="monthreport">
-                Отчеты
+                Отчет
             </NavLink>
-            @* <NavLink class="nav-link" href="categories"> *@
-            @*     <i class="fas fa-tags"></i> Категории *@
-            @* </NavLink> *@
-            @* <NavLink class="nav-link" href="settings"> *@
-            @*     <i class="fas fa-cog"></i> Настройки *@
-            @* </NavLink> *@
         </nav>
-
-        <!-- Текущий баланс -->
-        @* <div class="current-balance"> *@
-        @*     <h4>Расход за текущий месяц:</h4> *@
-        @*     <div class="balance-amount">@CurrentBalance.ToString("C")</div> *@
-        @* </div> *@
     </div>
 
     <!-- Основная область -->
     <div class="main-content">
-        @* <!-- Верхняя панель --> *@
-        @* <div class="top-bar"> *@
-        @*     <div class="quick-actions"> *@
-        @*         <button class="btn btn-primary" @onclick="ShowAddIncome"> *@
-        @*             <i class="fas fa-plus-circle"></i> *@
-        @*             <span>Доход</span> *@
-        @*         </button> *@
-        @*         <button class="btn btn-danger" @onclick="ShowAddExpense"> *@
-        @*             <i class="fas fa-minus-circle"></i> *@
-        @*             <span>Расход</span> *@
-        @*         </button> *@
-        @*     </div> *@
-        @*     <div class="user-info"> *@
-        @*         <i class="fas fa-user-circle"></i> @UserName *@
-        @*     </div> *@
-        @* </div> *@
 
-        <!-- Контент -->
         <div class="content">
             @Body
         </div>

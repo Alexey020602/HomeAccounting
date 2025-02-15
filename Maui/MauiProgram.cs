@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using BlazorShared.Api;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,24 +19,13 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
-
-        var appsettings =
-#if DEBUG
-            "wwwroot/appsettings.Development.json";
-#else
-            "wwwroot/appsettings.json";
-#endif
-            
-        builder.Configuration.AddConfiguration(new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile(
-                appsettings, 
-                optional: false, 
-                reloadOnChange: true)
-            .Build());
         builder.Services.AddMauiBlazorWebView();
-        var apiUrl = builder.Configuration.GetValue<string>("ApiUrlHttp") ?? throw new Exception("Отсутствует адрес для api");
-// var apiUrl = builder.Configuration["ApiUrlHttp"] ?? throw new Exception("Отсутствует адрес для api");
+        var apiUrl =
+#if DEBUG
+            "https://localhost:7162";
+#else
+        "";
+#endif
         var apiUri = new Uri(apiUrl);
         builder.Services.AddMudServices();
         builder.Services.AddRefitClient<IChecksApi>()

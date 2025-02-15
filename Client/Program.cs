@@ -1,3 +1,4 @@
+using BlazorShared;
 using BlazorShared.Api;
 using Client;
 using Microsoft.AspNetCore.Components.Web;
@@ -6,7 +7,7 @@ using MudBlazor.Services;
 using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<Routes>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // builder.Services.AddRefitClient<ICheckService>()
@@ -22,7 +23,6 @@ builder.Services.AddRefitClient<IChecksApi>()
     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
 builder.Services.AddRefitClient<IReportsApi>()
     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var app = builder.Build();
 

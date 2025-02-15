@@ -73,15 +73,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="wwwroot\appsettings.Development.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
-      <Resource Include="wwwroot\appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Update="wwwroot\appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <CopyToPublishDirectory>Never</CopyToPublishDirectory>
@@ -90,6 +81,11 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <CopyToPublishDirectory>Never</CopyToPublishDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Resources\appsettings.json" />
+      <EmbeddedResource Include="Resources\appsettings.json" />
     </ItemGroup>
     
 <!--    <ItemGroup>-->

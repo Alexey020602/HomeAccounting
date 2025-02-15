@@ -1,24 +1,30 @@
-﻿@inherits LayoutComponentBase
-<MudThemeProvider/>
-<MudPopoverProvider/>
-<!-- Основной контейнер -->
+﻿@inherits  LayoutComponentBase
+
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
 <div class="main-container">
-    <!-- Кнопка меню для мобильных -->
     <button class="menu-toggle" @onclick="ToggleSidebar">
         @if (IsSidebarActive)
         {
-            <p>Закрыть</p>
+            <i class="fas fa-times"></i>
         }
         else
         {
-            <p>Открыть</p>
+            <i class="fas fa-bars"></i>
         }
     </button>
 
-    <!-- Боковая панель -->
-    <div class="sidebar @(IsSidebarActive ? "active" : "")">
-        <div class="app-title">
-            <h3>Домашняя бухгалтерия</h3>
+    <div class="sidebar @(IsSidebarActive ? "active" : "collapsed")">
+        <div class="app-header">
+            <h3 class="app-title">Домашняя бухгалтерия</h3>
         </div>
 
         <nav class="nav-menu">
@@ -34,23 +40,18 @@
         </nav>
     </div>
 
-    <!-- Основная область -->
-    <div class="main-content">
-
-        <div class="content">
+    <div class="main-content @(IsSidebarActive ? "" : "expanded")">
+        <div class="content-container">
             @Body
         </div>
     </div>
 </div>
 
 @code {
-    // private readonly decimal CurrentBalance = 15450.75m;
-
-    private bool IsSidebarActive;
+    private bool IsSidebarActive = true;
 
     private void ToggleSidebar()
     {
         IsSidebarActive = !IsSidebarActive;
     }
-
 }

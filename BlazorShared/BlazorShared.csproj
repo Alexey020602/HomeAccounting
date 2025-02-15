@@ -31,7 +31,6 @@
       <AdditionalFiles Include="Forms\CheckFileForm.razor" />
       <AdditionalFiles Include="Forms\CheckManualForm.razor" />
       <AdditionalFiles Include="Layout\MainLayout.razor" />
-      <AdditionalFiles Include="Layout\NavMenu.razor" />
       <AdditionalFiles Include="Pages\Check.razor" />
       <AdditionalFiles Include="Pages\Checks.razor" />
       <AdditionalFiles Include="Pages\MonthReport.razor" />

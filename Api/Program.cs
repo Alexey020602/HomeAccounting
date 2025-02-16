@@ -1,3 +1,4 @@
+using Api;
 using Core;
 using Core.Model.Report;
 using Core.Model.Requests;
@@ -19,11 +20,17 @@ builder.Services.AddCors();
 builder.Services.AddOpenApi();
 builder.Services.AddLogging();
 
-builder.Services.AddRefitClient<ICheckService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"));
-builder.Services.AddRefitClient<IReceiptService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"));
+builder.Services.AddTransient<HttpLoggingHandler>();
 
+builder.Services.AddRefitClient<ICheckService>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
+    .AddHttpMessageHandler<HttpLoggingHandler>();
+builder.Services.AddRefitClient<IReceiptService>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
+    .AddHttpMessageHandler<HttpLoggingHandler>();
+
+builder.Services.AddScoped<ICheckRepository, CheckRepository>();
+builder.Services.AddScoped<ICheckSource, CheckSource>();
 builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();

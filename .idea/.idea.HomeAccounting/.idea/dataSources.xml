@@ -15,12 +15,5 @@
       <jdbc-url>jdbc:postgresql://localhost:54323/HomeAccounting?password=h3aP%7D6YK73%28%28%29XFu22RcC%28&amp;user=postgres</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="HomeAccounting" uuid="a5849e4f-bc0d-4ff9-89a3-5239a31f960e">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:59651/HomeAccounting?password=h3aP%7D6YK73%28%28%29XFu22RcC%28&amp;user=postgres</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
   </component>
 </project>

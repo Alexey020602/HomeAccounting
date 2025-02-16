@@ -3,7 +3,7 @@ using Core.Services;
 using SkiaSharp;
 using ZXing;
 
-namespace Core;
+namespace Api;
 
 public class BarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
 {

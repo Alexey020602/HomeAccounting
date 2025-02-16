@@ -17,6 +17,7 @@ public record Json(
     int TotalSum,
     int CreditSum,
     string NumberKkt,
+    ///ФПД
     long FiscalSign,
     int PrepaidSum,
     string OperatorInn,
@@ -30,11 +31,13 @@ public record Json(
     int RedefineMask,
     int RequestNumber,
     string SellerAddress,
+    ///ФН
     string FiscalDriveNumber,
     double MessageFiscalSign,
     ///Адрес
     string RetailPlaceAddress,
     int AppliedTaxationType,
+    ///ФД
     int FiscalDocumentNumber,
     int FiscalDocumentFormatVer,
     int CheckingLabeledProdResult

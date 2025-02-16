@@ -1,16 +1,12 @@
 using Core.Mappers;
 using Core.Model.Report;
 using Core.Services;
-using DataBase;
 using Microsoft.EntityFrameworkCore;
-using Check = Core.Model.ChecksList.Check;
 
-namespace Core;
+namespace DataBase;
 
 public class ReportUseCase(ApplicationContext context) : IReportUseCase
 {
-    
-
     public async Task<Report> GetReport(ReportRequest request)
     {
         return (await context

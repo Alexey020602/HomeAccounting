@@ -45,14 +45,14 @@ var requests = new[]
     "t=20250104T1233&s=1289.00&fn=7380440700673345&i=26636&fp=1241320200&n=1"
 }.Select(raw => new CheckRawRequest(raw)).ToList();
 
-var checkRequest = new CheckRequest
-{
-    Fd = "9152",
-    Fn = "7380440801290534",
-    Fp = "3909637264",
-    T = "20250105T1520",
-    S = "860.88"
-};
+// var checkRequest = new CheckRequest
+// {
+//     Fd = "9152",
+//     Fn = "7380440801290534",
+//     Fp = "3909637264",
+//     T = "20250105T1520",
+//     S = "860.88"
+// };
 // requests.Add(checkRequest.RawRequest());
 //
 // await checkUseCase.SaveCheck(checkRequest.RawRequest());

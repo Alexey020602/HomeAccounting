@@ -9,11 +9,18 @@ using Refit;
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddTransient<ApplicationContextSeed>();
 builder.Services.AddLogging();
-builder.Services.AddRefitClient<ICheckService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"));
-builder.Services.AddRefitClient<IReceiptService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"));
 
+builder.Services.AddTransient<HttpLoggingHandler>();
+
+builder.Services.AddRefitClient<ICheckService>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
+    .AddHttpMessageHandler<HttpLoggingHandler>();
+builder.Services.AddRefitClient<IReceiptService>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
+    .AddHttpMessageHandler<HttpLoggingHandler>();
+
+builder.Services.AddScoped<ICheckRepository, CheckRepository>();
+builder.Services.AddScoped<ICheckSource, CheckSource>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddTransient<ICheckUseCase, CheckUseCase>();
 if (builder.Environment.IsDevelopment())

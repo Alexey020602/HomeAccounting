@@ -1,83 +1,63 @@
 @using System.ComponentModel.DataAnnotations
 @using Core.Model.Requests
 
-<div class="card shadow-sm">
-    <div class="card-body">
+<MudCard Elevation="5">
+    <MudCardContent>
         <EditForm Model="@ManualModel" OnValidSubmit="SendManualRequest">
-            <DataAnnotationsValidator />
-
-            <div class="row g-3">
-                <!-- Поля ввода -->
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <InputText @bind-Value="ManualModel.Fn" class="form-control" />
-                        <label>ФН (Фабричный номер) <span class="text-danger">*</span></label>
-                        <ValidationMessage For="@(() => ManualModel.Fn)" class="text-danger small" />
-                    </div>
+            <DataAnnotationsValidator/>
+            <MudGrid Spacing="3" Justify="Justify.FlexStart">
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="ManualModel.Fn" Variant="Variant.Outlined" For="@(() => ManualModel.Fn)">ФН (Фабричный номер) *</MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="ManualModel.Fd" Variant="Variant.Outlined" For="@(() => ManualModel.Fd)">ФД (Формат документа) *</MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="ManualModel.Fp" Variant="Variant.Outlined" For="@(() => ManualModel.Fp)">ФП (Фискальный признак) *</MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="ManualModel.Sum" Variant="Variant.Outlined" For="@(() => ManualModel.Sum)">Сумма *</MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker @bind-Date="ManualModel.PurchaseDate" Variant="Variant.Outlined" For="@(() => ManualModel.PurchaseDate)"> Дата покупки *</MudDatePicker>
+                </MudItem>
+                <MudItem xs="12">
+                <div class="d-flex gap-2 justify-end mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+                        Сохранить чек
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Outlined" Color="Color.Error">
+                        Отмена
+                    </MudButton>
                 </div>
-
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <InputText @bind-Value="ManualModel.Fd" class="form-control" />
-                        <label>ФД (Формат документа) <span class="text-danger">*</span></label>
-                        <ValidationMessage For="@(() => ManualModel.Fd)" class="text-danger small" />
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <InputText @bind-Value="ManualModel.Fp" class="form-control" />
-                        <label>ФП (Фискальный признак) <span class="text-danger">*</span></label>
-                        <ValidationMessage For="@(() => ManualModel.Fp)" class="text-danger small" />
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <InputText @bind-Value="ManualModel.Sum" class="form-control" />
-                        <label>Сумма <span class="text-danger">*</span></label>
-                        <ValidationMessage For="@(() => ManualModel.Sum)" class="text-danger small" />
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <InputDate @bind-Value="ManualModel.PurchaseDate" class="form-control" />
-                        <label>Дата покупки <span class="text-danger">*</span></label>
-                        <ValidationMessage For="@(() => ManualModel.PurchaseDate)" class="text-danger small" />
-                    </div>
-                </div>
-
-                <!-- Кнопки -->
-                <div class="col-12">
-                    <div class="d-flex gap-2 justify-content-end mt-4">
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-save me-2"></i>Сохранить чек
-                        </button>
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                @onclick="CancelManualInput">
-                            Отмена
-                        </button>
-                    </div>
-                </div>
-            </div>
+                </MudItem>
+            </MudGrid>
         </EditForm>
-    </div>
-</div>
+    </MudCardContent>
+</MudCard>
+
 
 @code {
     [Parameter] public EventCallback<CheckRequest> OnSubmit { get; set; }
+
     private sealed class ManualInputModel
     {
-        [Required] public string Fn { get; set; } = "";
-        [Required] public string Fd { get; set; } = "";
-        [Required] public string Fp { get; set; } = "";
-        [Required] public string Sum { get; set; } = "";
-        [Required] public DateTime PurchaseDate { get; set; } = DateTime.Now;
-        
-        public CheckRequest ToCheckRequest() => new CheckRequest(Fn, Fd, Fp, Sum, PurchaseDate, DateTime.Now);
+        [Required(ErrorMessage = "Необходимо ввести ФН чека")]
+        public string Fn { get; set; } = "";
+
+        [Required(ErrorMessage = "Необходимо ввести ФД чека")]
+        public string Fd { get; set; } = "";
+
+        [Required(ErrorMessage = "Необходимо ввести ФП чека")]
+        public string Fp { get; set; } = "";
+
+        [Required(ErrorMessage = "Необходимо ввести сумму чека")]
+        public string Sum { get; set; } = "";
+        [Required(ErrorMessage = "Необходимо ввести дату покупки")] public DateTime? PurchaseDate { get; set; }
+
+        public CheckRequest ToCheckRequest() => new CheckRequest(Fn, Fd, Fp, Sum, PurchaseDate ?? throw new Exception("Не выбрана дата"), DateTime.Now);
     }
+
     private ManualInputModel ManualModel { get; set; } = new();
     private async Task SendManualRequest() => await OnSubmit.InvokeAsync(ManualModel.ToCheckRequest());
     private void CancelManualInput() => ManualModel = new();

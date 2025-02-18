@@ -1,68 +1,98 @@
 @using System.ComponentModel.DataAnnotations
 @using Core.Model.Requests
-<div class="card shadow-sm">
-    <div class="card-body">
+<style>
+    .file-upload-area {
+        border: 2px dashed #dee2e6;
+        transition: all 0.3s ease;
+        background: rgba(13, 110, 253, 0.03);
+    }
+
+    .file-upload-area:hover {
+        border-color: #0d6efd;
+        background: rgba(13, 110, 253, 0.05);
+    }
+
+    .file-upload-area label {
+        cursor: pointer;
+        min-height: 150px;
+    }
+</style>
+<MudCard Elevation="5">
+    <MudCardContent>
         <EditForm Model="@Model" OnValidSubmit="SendFileRequest">
-            <div class="row g-3">
-                <!-- Поле загрузки файла -->
-                <div class="col-12">
-                    <div class="form-group">
-                        <label class="form-label fw-medium">
-                            Изображение чека <span class="text-danger">*</span>
-                        </label>
+            <DataAnnotationsValidator/>
 
-                        <div class="file-upload-area border rounded-3 p-4 text-center position-relative">
-                            <InputFile class="form-control visually-hidden"
-                                       OnChange="OnChange"
-                                       id="fileInput" />
-                            <label for="fileInput" class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center">
-                                <i class="bi bi-cloud-arrow-up fs-2 mb-2"></i>
-                                <span class="text-muted small">
-                                    Перетащите файл или нажмите для выбора
-                                </span>
-                            </label>
+            <MudGrid Spacing="3" Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudInputLabel>Изображение чека *</MudInputLabel>
+                    <div>
+                        <MudFileUpload
+                            T="IBrowserFile"
+                            Hidden="false"
+                            Class="file-upload-area border rounded-3 p-4 text-center position-relative"
+                            InputClass="absolute mud-width-full mud-height-full"
+                            InputStyle="opacity:0"
+                            For="@(() => Model.SelectedFile)"
+                            Accept="image/*"
+                            @bind-Files="Model.SelectedFile">
+                            <ActivatorContent>
+                                
+                                Перетащите, или нажмите для выбора
 
-                            @if (Model.SelectedFile != null)
-                            {
-                                <div class="mt-2 text-success">
-                                    <i class="bi bi-file-image"></i>
-                                    @Model.SelectedFile.Name
-                                </div>
-                            }
-
-                            <ValidationMessage For="@(() => Model.SelectedFile)"
-                                               class="text-danger small d-block mt-2" />
-                        </div>
+                            </ActivatorContent>
+                            <SelectedTemplate Context="file">
+                                @if (file is not null)
+                                {
+                                    <MudChip
+                                        Class="mt-2"
+                                        Icon="@Icons.Material.Filled.Image"
+                                        T="string"
+                                        Text="@file.Name"
+                                        OnClose="ClearFile"/>
+                                }
+                            </SelectedTemplate>
+                        </MudFileUpload>
                     </div>
-                </div>
-
-                <!-- Кнопки -->
-                <div class="col-12">
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button type="submit"
-                                class="btn btn-primary px-4">
-                            <i class="bi bi-save me-2"></i>Сохранить чек
-                        </button>
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                @onclick="Cancel">
+                    @* <MudIconButton Icon="@Icons.Material.Filled.Upload" *@
+                    @*                Color="Color.Primary" *@
+                    @*                OnClick="() => fileUpload.Click()" *@
+                    @*                Size="Size.Large"/> *@
+                    @* *@
+                    @* <MudText Typo="Typo.body2" Color="Color.TextSecondary" Class="mt-2"> *@
+                    @*     Перетащите файл или нажмите для выбора *@
+                    @* </MudText> *@
+                </MudItem>
+                <MudItem xs="12">
+                    <div class="d-flex gap-2 justify-end">
+                        <MudButton
+                            Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            ButtonType="ButtonType.Submit">
+                            Сохранить чек
+                        </MudButton>
+                        <MudButton
+                            Variant="Variant.Outlined"
+                            Color="Color.Secondary"
+                            Disabled="@(Model.SelectedFile == null)"
+                            OnClick="Cancel">
                             Отмена
-                        </button>
+                        </MudButton>
                     </div>
-                </div>
-            </div>
+                </MudItem>
+            </MudGrid>
         </EditForm>
-    </div>
-</div>
+    </MudCardContent>
+</MudCard>
 
 @code {
     [Parameter] public EventCallback<FileCheckRequest> OnSubmit { get; set; }
+
     private sealed class FormModel
     {
         [Required(ErrorMessage = "Выберите файл с чеком")]
         public IBrowserFile? SelectedFile { get; set; }
 
-        public Core.Model.Requests.FileCheckRequest ToCheckFileRequest()
+        public FileCheckRequest ToCheckFileRequest()
         {
             return new FileCheckRequest
             {
@@ -71,8 +101,10 @@
             };
         }
     }
+
     private FormModel Model { get; set; } = new();
     private async Task SendFileRequest() => await OnSubmit.InvokeAsync(Model.ToCheckFileRequest());
+
     private Task OnChange(InputFileChangeEventArgs args)
     {
         Model.SelectedFile = args.File;
@@ -84,4 +116,10 @@
     {
         Model = new();
     }
+
+    private void ClearFile()
+    {
+        Model.SelectedFile = null;
+    }
+
 }

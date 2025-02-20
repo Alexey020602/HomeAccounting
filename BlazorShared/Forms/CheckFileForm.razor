@@ -1,22 +1,23 @@
 @using System.ComponentModel.DataAnnotations
+@using System.Linq.Expressions
 @using Core.Model.Requests
-<style>
-    .file-upload-area {
-        border: 2px dashed #dee2e6;
-        transition: all 0.3s ease;
-        background: rgba(13, 110, 253, 0.03);
-    }
-
-    .file-upload-area:hover {
-        border-color: #0d6efd;
-        background: rgba(13, 110, 253, 0.05);
-    }
-
-    .file-upload-area label {
-        cursor: pointer;
-        min-height: 150px;
-    }
-</style>
+@* <style> *@
+@*     .file-upload-area { *@
+@*         border: 2px dashed #dee2e6; *@
+@*         transition: all 0.3s ease; *@
+@*         background: rgba(13, 110, 253, 0.03); *@
+@*     } *@
+@* *@
+@*     .file-upload-area:hover { *@
+@*         border-color: #0d6efd; *@
+@*         background: rgba(13, 110, 253, 0.05); *@
+@*     } *@
+@* *@
+@*     .file-upload-area { *@
+@*         cursor: pointer; *@
+@*         min-height: 150px; *@
+@*     } *@
+@* </style> *@
 <MudCard Elevation="5">
     <MudCardContent>
         <EditForm Model="@Model" OnValidSubmit="SendFileRequest">
@@ -25,20 +26,19 @@
             <MudGrid Spacing="3" Justify="Justify.FlexStart">
                 <MudItem xs="12">
                     <MudInputLabel>Изображение чека *</MudInputLabel>
-                    <div>
+                    <div class="file-upload-area rounded-3">
                         <MudFileUpload
                             T="IBrowserFile"
                             Hidden="false"
-                            Class="file-upload-area border rounded-3 p-4 text-center position-relative"
-                            InputClass="absolute mud-width-full mud-height-full"
+                            InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
                             InputStyle="opacity:0"
-                            For="@(() => Model.SelectedFile)"
+                            For="Model.FileValidation"
                             Accept="image/*"
                             @bind-Files="Model.SelectedFile">
                             <ActivatorContent>
-                                
-                                Перетащите, или нажмите для выбора
-
+                                <div class = "p-4 position-relative text-center">
+                                    Перетащите, или нажмите для выбора
+                                </div>
                             </ActivatorContent>
                             <SelectedTemplate Context="file">
                                 @if (file is not null)
@@ -100,6 +100,8 @@
                 AddedTime = DateTimeOffset.Now
             };
         }
+
+        public Expression<Func<IBrowserFile?>> FileValidation => () => SelectedFile;
     }
 
     private FormModel Model { get; set; } = new();

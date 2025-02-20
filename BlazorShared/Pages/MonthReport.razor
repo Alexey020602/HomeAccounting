@@ -5,57 +5,92 @@
 @using BlazorShared.Components
 @inject IReportsApi ReportsApi
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Отчет за период</h5>
-        </div>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudCard Elevation="5">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5" Color="Color.Primary">Отчет за период</MudText>
+        </MudCardHeader>
 
-        <div class="card-body">
-            <div class="row g-3 mb-4">
-                <div class="col-md-5">
-                    <div class="form-floating">
-                        <InputDate @bind-Value="Begin" class="form-control"/>
-                        <label>Начало периода</label>
-                    </div>
-                </div>
+        <MudCardContent>
+            <MudGrid Spacing="3" Justify="Justify.FlexStart">
+                <!-- Период -->
+                <MudItem xs="12" md="5">
+                    <MudDatePicker Label="Начало периода"
+                                 @bind-Date="Begin"
+                                 Variant="Variant.Outlined"
+                                 DateFormat="dd.MM.yyyy"
+                                 Editable="true"/>
+                </MudItem>
 
-                <div class="col-md-5">
-                    <div class="form-floating">
-                        <InputDate @bind-Value="End" class="form-control"/>
-                        <label>Конец периода</label>
-                    </div>
-                </div>
+                <MudItem xs="12" md="5">
+                    <MudDatePicker Label="Конец периода"
+                                 @bind-Date="End"
+                                 Variant="Variant.Outlined"
+                                 DateFormat="dd.MM.yyyy"
+                                 Editable="true"/>
+                </MudItem>
 
-                <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-primary w-100" @onclick="LoadReport">
-                        <i class="bi bi-calendar2-week"></i> Загрузить
-                    </button>
-                </div>
-            </div>
+                <MudItem xs="12" md="2" Class="d-flex align-end">
+                    <MudButton Variant="Variant.Filled"
+                             Color="Color.Primary"
+                             FullWidth="true"
+                             StartIcon="@Icons.Material.Filled.CalendarMonth"
+                             OnClick="LoadReport">
+                        Загрузить
+                    </MudButton>
+                </MudItem>
 
-            @if (Report is not null)
-            {
-                <MonthReportComponent Report="Report"/>
-            }
-
-            @* else *@
-            @* { *@
-            @*     <div class="text-center py-5"> *@
-            @*         <div class="spinner-border text-primary" role="status"> *@
-            @*             <span class="visually-hidden">Загрузка...</span> *@
-            @*         </div> *@
-            @*     </div> *@
-            @* } *@
-        </div>
-    </div>
-</div>
-
+                <!-- Контент отчета -->
+                <MudItem xs="12">
+                    @if (Report is not null)
+                    {
+                        <MonthReportComponent Report="Report"/>
+                    }
+                    else if (isLoading)
+                    {
+                        <div class="d-flex justify-center py-4">
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+                        </div>
+                    }
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
 
 @code {
-    private DateTime Begin { get; set; } = DateTimeExtensions.DayOfCurrentMonth(7);
-    private DateTime End { get; set; } = DateTime.Now;
+    private DateTime begin = DateTimeExtensions.DayOfCurrentMonth(7);
+
+    private DateTime? Begin
+    {
+        get => begin;
+        set => begin = value ?? DateTimeExtensions.DayOfCurrentMonth(7);
+    }
+    private DateTime end = DateTime.Now;
+
+    private DateTime? End
+    {
+        get => end;
+        set => end = value ?? DateTime.Now;
+    }
     private Report? Report { get; set; }
-    protected override Task OnInitializedAsync() => LoadReport();
-    private async Task LoadReport() => Report = await ReportsApi.GetMonthReport(new ReportRequest(Begin, End));
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadReport();
+    }
+
+    private async Task LoadReport()
+    {
+        try
+        {
+            isLoading = true;
+            Report = await ReportsApi.GetMonthReport(new ReportRequest(begin, end));
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 }

@@ -1,19 +1,28 @@
 @using Core.Model.ChecksList
-<div class="d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center">
-        <i class="bi bi-circle-fill text-primary me-2" style="font-size: 0.5rem"></i>
-        <span>@Product.Name</span>
-    </div>
+<MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Row="true" Spacing="2">
+    <!-- Левая часть -->
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudIcon Icon="@Icons.Material.Filled.Circle"
+                 Size="Size.Small"
+                 Color="Color.Primary"
+                 Style="font-size: 8px;"/>
 
-    <div class="d-flex align-items-center gap-3">
-        <span class="text-muted small">
+        <MudText Typo="Typo.body1" Style="line-height: 1.2;">
+            @Product.Name
+        </MudText>
+    </MudStack>
+
+    <!-- Правая часть -->
+    <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.body2" Color="Color.Secondary">
             @FormatQuantity(Product.Quantity)
-        </span>
-        <span class="fw-medium">
+        </MudText>
+
+        <MudText Typo="Typo.body1" Class="font-weight-medium">
             @Product.Sum
-        </span>
-    </div>
-</div>
+        </MudText>
+    </MudStack>
+</MudStack>
 
 @code {
     [Parameter] public Product Product { get; set; } = null!;

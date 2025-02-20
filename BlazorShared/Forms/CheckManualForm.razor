@@ -7,19 +7,19 @@
             <DataAnnotationsValidator/>
             <MudGrid Spacing="3" Justify="Justify.FlexStart">
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="ManualModel.Fn" Variant="Variant.Outlined" For="@(() => ManualModel.Fn)">ФН (Фабричный номер) *</MudTextField>
+                    <MudTextField Label="ФН" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fn" Variant="Variant.Outlined" For="@(() => ManualModel.Fn)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="ManualModel.Fd" Variant="Variant.Outlined" For="@(() => ManualModel.Fd)">ФД (Формат документа) *</MudTextField>
+                    <MudTextField Label="ФД" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fd" Variant="Variant.Outlined" For="@(() => ManualModel.Fd)" />
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="ManualModel.Fp" Variant="Variant.Outlined" For="@(() => ManualModel.Fp)">ФП (Фискальный признак) *</MudTextField>
+                    <MudTextField Label="ФП" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fp" Variant="Variant.Outlined" For="@(() => ManualModel.Fp)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="ManualModel.Sum" Variant="Variant.Outlined" For="@(() => ManualModel.Sum)">Сумма *</MudTextField>
+                    <MudTextField Label="Сумма" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Sum" Variant="Variant.Outlined" For="@(() => ManualModel.Sum)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudDatePicker @bind-Date="ManualModel.PurchaseDate" Variant="Variant.Outlined" For="@(() => ManualModel.PurchaseDate)"> Дата покупки *</MudDatePicker>
+                    <MudDatePicker Label="Дата покупки" @bind-Date="ManualModel.PurchaseDate" Variant="Variant.Outlined" For="@(() => ManualModel.PurchaseDate)"/>
                 </MudItem>
                 <MudItem xs="12">
                 <div class="d-flex gap-2 justify-end mt-4">

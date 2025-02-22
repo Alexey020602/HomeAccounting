@@ -1,49 +1,59 @@
 
+@using Core.Model.ChecksList
 @using Core.Model.Report
 
-<div class="report-container">
-    <div class="d-flex justify-content-between align-items-center mb-4" onclick="@Toggle" style="cursor: pointer">
-        <h2 class="mb-0">
-            Отчет за
-            <span class="text-primary">@Report.StartDate.ToString("d MMM")</span> -
-            <span class="text-primary">@Report.EndDate.ToString("d MMM")</span>
-        </h2>
-        <div class="total-sum display-6 text-success" >
-            @Report.Sum.ToString()
-        </div>
-    </div>
+<MudCard>
+    <MudCardHeader @onclick="@Toggle" Style="cursor: pointer">
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" >
+            <MudText Align="Align.Center" Typo="Typo.h2">
+                Отчет за
+                <MudText Inline="true" Color="Color.Primary"
+                         Typo="Typo.h2">@Report.StartDate.ToString("d MMM")</MudText>
+                <MudText Inline="true" Typo="Typo.h2"> -</MudText>
+                <MudText Inline="true" Color="Color.Primary" Typo="Typo.h2">@Report.EndDate.ToString("d MMM")</MudText>
+            </MudText>
+            <MudSpacer/>
+            <MudText Typo="Typo.h2">@Report.Sum.ToString()</MudText>
+        </MudStack>
+    </MudCardHeader>
 
-    @if (ShowCategories)
-    {
-        <MudChart ChartType="ChartType.Bar" ChartSeries="Series" XAxisLabels="Labels" Width="100%" Height="100%"/>
-            
-        
-        <div class="list-group">
-            @foreach (var category in Report.Categories)
-            {
-                <div class="list-group-item list-group-item-action">
-                    <CategoryComponent Category="category"/>
-                </div>
-            }
-        </div>
-    }
-</div>
+    <MudCollapse @bind-Expanded="ShowCategories">
+        @if (Report.Categories.Any())
+        {
+            <MudChart ChartType="ChartType.Bar" ChartSeries="Series" XAxisLabels="Labels" Width="100%" Height="100%"/>
+
+            <MudList T="Category" ReadOnly="true">
+                @foreach (var category in Report.Categories)
+                {
+                    <MudListItem Value="category">
+                        <CategoryComponent Category="category"/>
+                    </MudListItem>
+                }
+            </MudList>
+        }
+    </MudCollapse>
+</MudCard>
 
 @code {
+
     // Chart<double> chart = new Chart<double>();
     [Parameter] public Report Report { get; set; } = null!;
-    private List<ChartSeries> Series => [new ChartSeries()
-    {
-        Data = ChartData,
-    }];
-    
+
+    private List<ChartSeries> Series =>
+    [
+        new ChartSeries()
+        {
+            Data = ChartData,
+        }
+    ];
+
     private double[] ChartData => Report.Categories.Select(category => category.Sum.ToDouble()).ToArray();
     private string[] Labels => Report.Categories.Select(c => c.Name).ToArray();
     private bool ShowCategories { get; set; }
     private void Toggle() => ShowCategories = !ShowCategories;
+
     protected override void OnParametersSet()
     {
-        
     }
 
 }

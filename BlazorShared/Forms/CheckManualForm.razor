@@ -22,14 +22,14 @@
                     <MudDatePicker Label="Дата покупки" @bind-Date="ManualModel.PurchaseDate" Variant="Variant.Outlined" For="@(() => ManualModel.PurchaseDate)"/>
                 </MudItem>
                 <MudItem xs="12">
-                <div class="d-flex gap-2 justify-end mt-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
-                        Сохранить чек
-                    </MudButton>
-                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Outlined" Color="Color.Error">
-                        Отмена
-                    </MudButton>
-                </div>
+                    <MudStack Row="true" Justify="Justify.FlexEnd">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+                            Сохранить чек
+                        </MudButton>
+                        <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Outlined" Color="Color.Error">
+                            Отмена
+                        </MudButton>
+                    </MudStack>
                 </MudItem>
             </MudGrid>
         </EditForm>

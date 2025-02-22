@@ -1,39 +1,36 @@
 @using Core.Model.ChecksList
-<MudItem Class="mb-3">
-    <MudPaper Class="pa-2" Elevation="0" Style="cursor: pointer;" @onclick="Toggle">
+<MudCard>
+    <MudPaper Elevation="0" Style="cursor: pointer;" @onclick="Toggle">
         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Spacing="2">
             <!-- Левая часть -->
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                 <MudIcon Icon="@Icons.Material.Filled.Label"
                          Size="Size.Medium"
-                         Color="Color.Inherit"
-                         Class="text-muted"/>
+                         Color="Color.Inherit"/>
 
-                <MudText Typo="Typo.h6" Class="mb-0">
+                <MudText Typo="Typo.h6">
                     @Subcategory.Name
                 </MudText>
             </MudStack>
-
-            <!-- Правая часть -->
+            
             <MudChip Color="Color.Success"
                      Variant="Variant.Filled"
-                     Class="rounded-pill"
-                     Value="Subcategory.Sum"
+                     T="string"
                      Text="@Subcategory.Sum.ToString()"/>
         </MudStack>
     </MudPaper>
 
-    <MudCollapse @bind-Expanded="@ShowProducts">
-        <MudList Dense="true" Class="pl-6" ReadOnly="true" T="Product">
+    <MudCollapse @bind-Expanded="@ShowProducts" >
+        <MudList Dense="true" ReadOnly="true" T="Product">
             @foreach (var product in Subcategory.Products)
             {
-                <MudListItem  Class="py-2" Value="product">
+                <MudListItem Value="product">
                     <ProductComponent Product="product"/>
                 </MudListItem>
             }
         </MudList>
     </MudCollapse>
-</MudItem>
+</MudCard>
 
 @code {
     [Parameter] public Subcategory Subcategory { get; set; } = null!;

@@ -14,6 +14,4 @@ public static class ReportMapper
             Categories = checks.SelectMany(c => c.Products).ConvertToCategories().ToList()
         };
     }
-
-    // public static
 }

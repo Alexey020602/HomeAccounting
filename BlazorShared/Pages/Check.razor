@@ -22,7 +22,7 @@
         </MudCardHeader>
 
         <MudCardContent>
-            <MudPaper Elevation="0" Class="pa-4" Style="border: 1px solid var(--mud-palette-lines-default);">
+            <MudPaper Elevation="0" Class="pa-4">
                 @if (ManualInput)
                 {
                     <CheckManualForm OnSubmit="SendManualRequest"/>
@@ -35,14 +35,14 @@
 
             @if (SavedCheck is not null)
             {
-                <MudCard Elevation="3" Class="mt-4">
+                <MudPaper Elevation="0" Class="mt-4">
                     <MudCardHeader>
                         <MudText Typo="Typo.h6">Сохраненный чек</MudText>
                     </MudCardHeader>
                     <MudCardContent Class="pa-0">
                         <ReceiptComponent Check="SavedCheck"/>
                     </MudCardContent>
-                </MudCard>
+                </MudPaper>
             }
         </MudCardContent>
     </MudCard>

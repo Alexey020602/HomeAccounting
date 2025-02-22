@@ -5,14 +5,24 @@
 @using CoreCheck = Core.Model.ChecksList.Check
 
 <PageTitle>Список чеков</PageTitle>
-
-<MudText Typo="Typo.h1" Color="Color.Primary">Добавленные чеки</MudText>
-
-@foreach (var check in Receipts)
-{
-    <ReceiptComponent Check="check"/>
-}
-
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h1" Color="Color.Primary">Добавленные чеки</MudText>
+    </MudCardHeader>
+    
+    <MudCardContent>
+        <MudList T="CoreCheck" ReadOnly="true">
+            @foreach (var check in Receipts)
+            {
+                <MudListItem Value="check">
+                    <ReceiptComponent Check="check"/>
+                </MudListItem>
+                
+            }
+        </MudList>
+    </MudCardContent>
+    
+</MudCard>
 @code {
     private List<CoreCheck> Receipts { get; set; } = [];
 

@@ -1,45 +1,36 @@
 @using Core.Model.ChecksList
-<div class="card mb-3 shadow-sm">
-    <div class="card-header bg-light" @onclick="Toggle" style="cursor: pointer">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex flex-column flex-md-row gap-2">
-                <div class="d-flex align-items-center gap-1">
-                    <span class="text-muted small">Покупка:</span>
-                    <span class="fw-medium">
-                        @Check.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                    </span>
-                </div>
-                <div class="vr d-none d-md-inline mx-2"></div>
-                <div class="d-flex align-items-center gap-1">
-                    <span class="text-muted small">Добавлен:</span>
-                    <span class="fw-medium">
-                        @Check.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                    </span>
-                </div>
-            </div>
-            <i class="bi @(ShowCategories ? "bi-chevron-up" : "bi-chevron-down") text-muted"></i>
-        </div>
-    </div>
-
-    @if (ShowCategories)
-    {
-        <div class="card-body p-0">
-            <div class="list-group list-group-flush">
+<MudCard @onclick="Toggle" Style="cursor: pointer">
+    <MudCardHeader>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText>Покупка:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText>@Check.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText>Добавлен:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText>@Check.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudCollapse @bind-Expanded="ShowCategories">
+            <MudList T="Check" ReadOnly="true">
                 @foreach (var category in Check.Categories)
                 {
-                    <div class="list-group-item border-0 py-2">
+                    <MudListItem Value="category">
                         <CategoryComponent Category="category"/>
-                    </div>
+                    </MudListItem>
                 }
-            </div>
-        </div>
-    }
+            </MudList>
+        </MudCollapse>
+    </MudCardContent>
 
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-        <span class="text-muted">Итого:</span>
-        <span class="fs-5 fw-bold text-success">@Check.Sum</span>
-    </div>
-</div>
+
+</MudCard>
 
 @code {
     [Parameter] public Check Check { get; set; } = null!;

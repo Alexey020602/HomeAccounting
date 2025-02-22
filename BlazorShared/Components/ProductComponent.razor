@@ -1,24 +1,21 @@
 @using Core.Model.ChecksList
 <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Row="true" Spacing="2">
-    <!-- Левая часть -->
     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
         <MudIcon Icon="@Icons.Material.Filled.Circle"
                  Size="Size.Small"
-                 Color="Color.Primary"
-                 Style="font-size: 8px;"/>
+                 Color="Color.Primary"/>
 
-        <MudText Typo="Typo.body1" Style="line-height: 1.2;">
+        <MudText Typo="Typo.body1">
             @Product.Name
         </MudText>
     </MudStack>
 
-    <!-- Правая часть -->
     <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Secondary">
             @FormatQuantity(Product.Quantity)
         </MudText>
 
-        <MudText Typo="Typo.body1" Class="font-weight-medium">
+        <MudText Typo="Typo.body1">
             @Product.Sum
         </MudText>
     </MudStack>

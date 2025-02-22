@@ -1,23 +1,7 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Linq.Expressions
 @using Core.Model.Requests
-@* <style> *@
-@*     .file-upload-area { *@
-@*         border: 2px dashed #dee2e6; *@
-@*         transition: all 0.3s ease; *@
-@*         background: rgba(13, 110, 253, 0.03); *@
-@*     } *@
-@* *@
-@*     .file-upload-area:hover { *@
-@*         border-color: #0d6efd; *@
-@*         background: rgba(13, 110, 253, 0.05); *@
-@*     } *@
-@* *@
-@*     .file-upload-area { *@
-@*         cursor: pointer; *@
-@*         min-height: 150px; *@
-@*     } *@
-@* </style> *@
+
 <MudCard Elevation="5">
     <MudCardContent>
         <EditForm Model="@Model" OnValidSubmit="SendFileRequest">
@@ -26,44 +10,29 @@
             <MudGrid Spacing="3" Justify="Justify.FlexStart">
                 <MudItem xs="12">
                     <MudInputLabel>Изображение чека *</MudInputLabel>
-                    <div class="file-upload-area rounded-3">
-                        <MudFileUpload
-                            T="IBrowserFile"
-                            Hidden="false"
-                            InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                            InputStyle="opacity:0"
-                            For="Model.FileValidation"
-                            Accept="image/*"
-                            @bind-Files="Model.SelectedFile">
-                            <ActivatorContent>
-                                <div class = "p-4 position-relative text-center">
-                                    Перетащите, или нажмите для выбора
-                                </div>
-                            </ActivatorContent>
-                            <SelectedTemplate Context="file">
-                                @if (file is not null)
-                                {
-                                    <MudChip
-                                        Class="mt-2"
-                                        Icon="@Icons.Material.Filled.Image"
-                                        T="string"
-                                        Text="@file.Name"
-                                        OnClose="ClearFile"/>
-                                }
-                            </SelectedTemplate>
-                        </MudFileUpload>
-                    </div>
-                    @* <MudIconButton Icon="@Icons.Material.Filled.Upload" *@
-                    @*                Color="Color.Primary" *@
-                    @*                OnClick="() => fileUpload.Click()" *@
-                    @*                Size="Size.Large"/> *@
-                    @* *@
-                    @* <MudText Typo="Typo.body2" Color="Color.TextSecondary" Class="mt-2"> *@
-                    @*     Перетащите файл или нажмите для выбора *@
-                    @* </MudText> *@
+                    <MudFileUpload
+                        T="IBrowserFile"
+                        For="Model.FileValidation"
+                        Accept="image/*"
+                        @bind-Files="Model.SelectedFile">
+                        <ActivatorContent>
+                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Primary" Text="Нажмите для выбора"/>
+                        </ActivatorContent>
+                        <SelectedTemplate Context="file">
+                            @if (file is not null)
+                            {
+                                <MudChip
+                                    Class="mt-2"
+                                    Icon="@Icons.Material.Filled.Image"
+                                    T="string"
+                                    Text="@file.Name"
+                                    OnClose="ClearFile"/>
+                            }
+                        </SelectedTemplate>
+                    </MudFileUpload>
                 </MudItem>
                 <MudItem xs="12">
-                    <div class="d-flex gap-2 justify-end">
+                    <MudStack Row="true" Justify="Justify.FlexEnd">
                         <MudButton
                             Variant="Variant.Filled"
                             Color="Color.Primary"
@@ -77,7 +46,7 @@
                             OnClick="Cancel">
                             Отмена
                         </MudButton>
-                    </div>
+                    </MudStack>
                 </MudItem>
             </MudGrid>
         </EditForm>

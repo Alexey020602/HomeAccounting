@@ -12,35 +12,33 @@
         </MudCardHeader>
 
         <MudCardContent>
-            <MudGrid Spacing="3" Justify="Justify.FlexStart">
-                <!-- Период -->
+            <MudGrid Spacing="3">
                 <MudItem xs="12" md="5">
                     <MudDatePicker Label="Начало периода"
-                                 @bind-Date="Begin"
-                                 Variant="Variant.Outlined"
-                                 DateFormat="dd.MM.yyyy"
-                                 Editable="true"/>
+                                   @bind-Date="Begin"
+                                   Variant="Variant.Outlined"
+                                   DateFormat="dd.MM.yyyy"
+                                   Editable="true"/>
                 </MudItem>
 
                 <MudItem xs="12" md="5">
                     <MudDatePicker Label="Конец периода"
-                                 @bind-Date="End"
-                                 Variant="Variant.Outlined"
-                                 DateFormat="dd.MM.yyyy"
-                                 Editable="true"/>
+                                   @bind-Date="End"
+                                   Variant="Variant.Outlined"
+                                   DateFormat="dd.MM.yyyy"
+                                   Editable="true"/>
                 </MudItem>
 
-                <MudItem xs="12" md="2" Class="d-flex align-end">
+                <MudItem xs="12" md="2">
                     <MudButton Variant="Variant.Filled"
-                             Color="Color.Primary"
-                             FullWidth="true"
-                             StartIcon="@Icons.Material.Filled.CalendarMonth"
-                             OnClick="LoadReport">
+                               Color="Color.Primary"
+                               FullWidth="true"
+                               StartIcon="@Icons.Material.Filled.CalendarMonth"
+                               OnClick="LoadReport">
                         Загрузить
                     </MudButton>
                 </MudItem>
 
-                <!-- Контент отчета -->
                 <MudItem xs="12">
                     @if (Report is not null)
                     {
@@ -48,9 +46,7 @@
                     }
                     else if (isLoading)
                     {
-                        <div class="d-flex justify-center py-4">
-                            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
-                        </div>
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
                     }
                 </MudItem>
             </MudGrid>

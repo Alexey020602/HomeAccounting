@@ -1,10 +1,10 @@
 
 @using Core.Model.ChecksList
 @using Core.Model.Report
-
+<style>.mud-chart-line { overflow: visible; }</style>
 <MudCard>
     <MudCardHeader @onclick="@Toggle" Style="cursor: pointer">
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" >
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
             <MudText Align="Align.Center" Typo="Typo.h2">
                 Отчет за
                 <MudText Inline="true" Color="Color.Primary"
@@ -20,29 +20,46 @@
     <MudCollapse @bind-Expanded="ShowCategories">
         @if (Report.Categories.Any())
         {
-            <MudChart ChartType="ChartType.Bar" ChartSeries="Series" XAxisLabels="Labels" Width="100%" Height="100%"/>
+            <MudCard Elevation="0">
+                    <MudChart
+                        Style="padding-left: 20px"
+                        ChartType="ChartType.Bar"
+                        ChartSeries="Series"
+                        XAxisLabels="Labels"
+                        
+                        Width="100%"
+                        Height="100%"
+                        ChartOptions="chartOptions"/>
 
-            <MudList T="Category" ReadOnly="true">
-                @foreach (var category in Report.Categories)
-                {
-                    <MudListItem Value="category">
-                        <CategoryComponent Category="category"/>
-                    </MudListItem>
-                }
-            </MudList>
+                    <MudList T="Category" ReadOnly="true">
+                        @foreach (var category in Report.Categories)
+                        {
+                            <MudListItem Value="category">
+                                <CategoryComponent Category="category"/>
+                            </MudListItem>
+                        }
+                    </MudList>
+            </MudCard>
         }
     </MudCollapse>
 </MudCard>
 
 @code {
-
-    // Chart<double> chart = new Chart<double>();
     [Parameter] public Report Report { get; set; } = null!;
+
+    private readonly ChartOptions chartOptions = new()
+    {
+        ShowLegend = false,
+        YAxisTicks = 5,
+        YAxisRequireZeroPoint = false,
+        // YAxisFormat = "N2",
+    };
 
     private List<ChartSeries> Series =>
     [
         new ChartSeries()
         {
+            // Name = "Категории",
             Data = ChartData,
         }
     ];

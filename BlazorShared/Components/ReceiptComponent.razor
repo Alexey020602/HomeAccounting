@@ -1,6 +1,6 @@
 @using Core.Model.ChecksList
-<MudCard @onclick="Toggle" Style="cursor: pointer">
-    <MudCardHeader>
+<MudCard>
+    <MudCardHeader @onclick="Toggle" Style="cursor: pointer">
         <MudGrid>
             <MudItem xs="12" md="6">
                 <MudText>Покупка:</MudText>
@@ -28,8 +28,6 @@
             </MudList>
         </MudCollapse>
     </MudCardContent>
-
-
 </MudCard>
 
 @code {

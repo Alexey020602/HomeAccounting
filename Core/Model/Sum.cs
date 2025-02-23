@@ -10,5 +10,5 @@ public record Sum(int FullPennySum)
         return $"{Rubles}.{Penny}";
     }
     
-    public double ToDouble() => Rubles + (double)Penny / 100;
+    public double ToDouble() => (double) Rubles + (double)Penny / 100;
 }

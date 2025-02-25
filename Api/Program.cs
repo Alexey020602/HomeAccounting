@@ -1,4 +1,5 @@
 using Api;
+using Authorization;
 using Core;
 using Core.Model.Report;
 using Core.Model.Requests;
@@ -60,6 +61,8 @@ app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
 );
 
-app.MapControllers();
+app.MapControllers()
+    // .RequireAuthorization()
+    ;
 
 app.Run();

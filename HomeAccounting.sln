@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorShared", "BlazorShare
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui", "Maui\Maui.csproj", "{A0A92BC4-8AE9-426B-AE7C-C682F26BBD3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization", "Authorization\Authorization.csproj", "{34ABE096-1D56-4849-9C75-C173F706823F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,5 +75,9 @@ Global
 		{A0A92BC4-8AE9-426B-AE7C-C682F26BBD3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A92BC4-8AE9-426B-AE7C-C682F26BBD3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A92BC4-8AE9-426B-AE7C-C682F26BBD3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34ABE096-1D56-4849-9C75-C173F706823F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34ABE096-1D56-4849-9C75-C173F706823F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34ABE096-1D56-4849-9C75-C173F706823F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34ABE096-1D56-4849-9C75-C173F706823F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

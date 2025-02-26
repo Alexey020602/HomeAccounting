@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
@@ -15,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\DataBase\DataBase.csproj" />
     </ItemGroup>
 
 </Project>

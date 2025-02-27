@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Authorization;
+namespace Authorization.Models;
 
 public record LoginRequest(
     [property: Required(ErrorMessage = "Username is required")]

@@ -1,14 +1,18 @@
 using Api;
 using Authorization;
+using Authorization.DependencyInjection;
 using Core;
 using Core.Model.Report;
 using Core.Model.Requests;
 using Core.Services;
 using DataBase;
 using FnsChecksApi;
-using FnsChecksApi.Dto.Fns;
+using FnsChecksApi.Dto.Fns;using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Refit;
 using SkiaSharp;
@@ -18,7 +22,7 @@ using BarcodeReader = ZXing.SkiaSharp.BarcodeReader;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
 builder.Services.AddLogging();
 
 builder.Services.AddTransient<HttpLoggingHandler>();
@@ -38,6 +42,8 @@ builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddTransient<IBarcodeService, BarcodeService>();
 builder.Services.AddControllers();
 
+builder.Services.AddAuthorization(builder.Configuration);
+
 if (builder.Environment.IsDevelopment())
     builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
 else
@@ -48,6 +54,10 @@ var app = builder.Build();
 
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapOpenApi();
 app.UseSwaggerUi(options =>
 {
@@ -62,7 +72,33 @@ app.UseCors(policyBuilder => policyBuilder
 );
 
 app.MapControllers()
-    // .RequireAuthorization()
+    .RequireAuthorization()
     ;
 
 app.Run();
+
+internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider): IOpenApiDocumentTransformer
+{
+    public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
+
+        if (authenticationSchemes.All(scheme => scheme.Name != JwtBearerDefaults.AuthenticationScheme))
+            return;
+
+        var requirements = new Dictionary<string, OpenApiSecurityScheme>
+        {
+            {JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                In = ParameterLocation.Header,
+                BearerFormat = "JWT",
+            }}
+        };
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes = requirements;
+    }
+}

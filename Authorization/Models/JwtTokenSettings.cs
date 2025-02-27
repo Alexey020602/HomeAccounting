@@ -1,10 +1,11 @@
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Authorization;
+namespace Authorization.Models;
 
 public class JwtTokenSettings
 {
+    public const string SectionName = "JwtTokenSettings";
     public required string Issuer { get; init; }
     public required string Audience { get; init; }
     public required string Key { get; init; }
@@ -19,8 +20,8 @@ public class JwtTokenSettings
         AccessTokenExpireMinutes = 60,
         RefreshTokenExpireDays = 3,
     };
-    
-    public DateTime ExpirationDate => DateTime.UtcNow.AddMinutes(AccessTokenExpireMinutes);
+    public DateTime AccessTokenExpirationDate => DateTime.UtcNow.AddMinutes(AccessTokenExpireMinutes);
+    public DateTime RefreshTokenExpirationDate => DateTime.UtcNow.AddDays(RefreshTokenExpireDays);
     public SecurityKey SecurityKey  => new SymmetricSecurityKey(
         Encoding.UTF8.GetBytes(Key)
     );

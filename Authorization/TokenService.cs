@@ -1,22 +1,25 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Core.Model;
+using Authorization.Extensions;
+using Authorization.Models;
+using DataBase.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using User = Core.Model.User;
 
 namespace Authorization;
 
 public class TokenService(IConfiguration configuration, ILogger<TokenService> logger): ITokenService
 {
     // private const int ExpirationMinutes = 60;
-    private const string SectionName = "JwtTokenSettings";
+    
     // private const string ValidIssuer = "ValidIssuer";
     // private const string ValidAudience = "ValidAudience";
     // private const string SymmetricSecurityKey = "SymmetricSecurityKey";
     private readonly SecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-    private JwtTokenSettings Settings => configuration.GetSection(SectionName).Get<JwtTokenSettings>() ?? throw new Exception("Missing JwtTokenSettings in app.config");
+    private JwtTokenSettings Settings => configuration.CreateJwtTokenSettings();
     private const string SecurityAlgorithm = SecurityAlgorithms.HmacSha256;
     public ClaimsPrincipal GetPrincipal(string token)
     {
@@ -27,12 +30,16 @@ public class TokenService(IConfiguration configuration, ILogger<TokenService> lo
         }
         return principal;
     }
-    public string CreateRefreshToken()
+    public RefreshToken CreateRefreshToken()
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
+        return new()
+        {
+            Token = Convert.ToBase64String(randomNumber),
+            Expires = Settings.RefreshTokenExpirationDate,
+        };
     }
     public string CreateToken(IReadOnlyList<Claim> claims)
     {
@@ -46,7 +53,7 @@ public class TokenService(IConfiguration configuration, ILogger<TokenService> lo
             Settings.Issuer,
             Settings.Audience,
             claims,
-            expires: Settings.ExpirationDate,
+            expires: Settings.AccessTokenExpirationDate,
             signingCredentials: CreateSigningCredentials());
 
     private static IEnumerable<Claim> CreateClaims(User user) => CreateUserClaims(user);

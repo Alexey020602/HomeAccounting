@@ -18,7 +18,7 @@ public class Check
 
     // public string CheckRaw { get; set; } = null!;
     [MinLength(1)] public List<Product> Products { get; set; } = [];
-    public IdentityUser<Guid> User { get; set; } = null!;
+    public User User { get; set; } = null!;
     public override string ToString()
     {
         return $"""

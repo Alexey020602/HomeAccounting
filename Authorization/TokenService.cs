@@ -55,15 +55,6 @@ public class TokenService(IConfiguration configuration, ILogger<TokenService> lo
             claims,
             expires: Settings.AccessTokenExpirationDate,
             signingCredentials: CreateSigningCredentials());
-
-    private static IEnumerable<Claim> CreateClaims(User user) => CreateUserClaims(user);
-
-    private static IEnumerable<Claim> CreateUserClaims(User user) =>
-    [
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Name, user.Name!)
-    ];
-
     private SigningCredentials CreateSigningCredentials()
     {
         return new SigningCredentials(

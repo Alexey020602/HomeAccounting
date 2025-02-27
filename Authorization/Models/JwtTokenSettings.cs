@@ -27,9 +27,9 @@ public class JwtTokenSettings
     );
     public TokenValidationParameters TokenValidationParameters => new()
     {
-        ValidateAudience = true,
-        ValidateIssuer = true,
-        ValidateIssuerSigningKey = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ValidateIssuerSigningKey = false,
         IssuerSigningKey = SecurityKey,
         ValidateLifetime = true,
     };

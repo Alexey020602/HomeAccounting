@@ -7,11 +7,13 @@ using Core.Model.Requests;
 using Core.Services;
 using DataBase;
 using FnsChecksApi;
-using FnsChecksApi.Dto.Fns;using Microsoft.AspNetCore.Authentication;
+using FnsChecksApi.Dto.Fns;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Refit;
@@ -55,10 +57,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapOpenApi();
+
 app.UseSwaggerUi(options =>
 {
     options.DocumentPath = "openapi/v1.json";
@@ -71,13 +72,17 @@ app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
 );
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers()
     .RequireAuthorization()
     ;
 
 app.Run();
 
-internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider): IOpenApiDocumentTransformer
+internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
+    : IOpenApiDocumentTransformer
 {
     public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
@@ -89,16 +94,44 @@ internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchem
 
         var requirements = new Dictionary<string, OpenApiSecurityScheme>
         {
-            {JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                In = ParameterLocation.Header,
-                BearerFormat = "JWT",
-            }}
+                $"{JwtBearerDefaults.AuthenticationScheme} token", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    In = ParameterLocation.Header,
+                    BearerFormat = "JWT",
+                    Description = "Please insert JWT token",
+                    Name = "Authorization",
+                }
+            },
+            {
+                $"{JwtBearerDefaults.AuthenticationScheme} password", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "password",
+                    In = ParameterLocation.Header,
+                    
+                }
+            }
         };
 
         document.Components ??= new OpenApiComponents();
         document.Components.SecuritySchemes = requirements;
+        document.SecurityRequirements.Add(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    []
+                }
+            }
+        );
     }
 }

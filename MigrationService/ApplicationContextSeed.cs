@@ -1,4 +1,5 @@
 using Core.Model.Requests;
+using Core.Model;
 using Core.Services;
 using DataBase;
 
@@ -43,7 +44,7 @@ public class ApplicationContextSeed
     {
         try
         {
-            foreach (var request in requests) await checkUseCase.SaveCheck(request);
+            foreach (var request in requests) await checkUseCase.SaveCheck(request, User.Default);
         }
         catch (Exception ex)
         {

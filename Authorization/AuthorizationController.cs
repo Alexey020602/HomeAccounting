@@ -73,13 +73,13 @@ public class AuthorizationController( /*IUserService userService, */UserManager<
     public async Task<IActionResult> Refresh(string refreshToken)
     {
         var user = await userManager.Users.FirstOrDefaultAsync(user =>
-            user.RefreshToken != null && user.RefreshToken.Token == refreshToken);
+            user.RefreshTokenToken != null && user.RefreshTokenToken.Token == refreshToken);
         if (user is null)
         {
             return BadRequest("User Not Found");
         }
 
-        if (user.RefreshToken is null || user.RefreshToken.Expires > DateTime.UtcNow)
+        if (user.RefreshTokenToken is null || user.RefreshTokenToken.Expires < DateTime.UtcNow)
         {
             return BadRequest("Refresh Token Expired");
         }
@@ -103,7 +103,7 @@ public class AuthorizationController( /*IUserService userService, */UserManager<
     private async Task<RefreshToken> CreateRefreshToken(User user)
     {
         var refreshToken = tokenService.CreateRefreshToken();
-        user.RefreshToken = refreshToken;
+        user.RefreshTokenToken = refreshToken;
 
         await userManager.UpdateAsync(user);
         return refreshToken;

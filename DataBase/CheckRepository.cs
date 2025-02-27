@@ -1,12 +1,13 @@
 using System.Linq.Expressions;
 using Core.Mappers;
-using Core.Model;
 using Core.Model.Normalized;
 using Core.Model.Requests;
 using Core.Services;
 using DataBase.Entities;
+using DataBase.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Check = Core.Model.ChecksList.Check;
+using User = Core.Model.User;
 
 namespace DataBase;
 
@@ -38,7 +39,7 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
                 c.Fp == checkRequest.Fp);
         return dbCheck?.ConvertToCheckList();
     }
-    public async Task<Check> SaveCheck(NormalizedCheck normalizedCheck)
+    public async Task<Check> SaveCheck(NormalizedCheck normalizedCheck, User user)
     {
         var products = new List<Product>(normalizedCheck.Products.Count);
         foreach (var product in normalizedCheck.Products)
@@ -54,7 +55,8 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
             S = normalizedCheck.Sum,
             AddedDate = DateTime.UtcNow,
             PurchaseDate = normalizedCheck.PurchaseDate,
-            Products = products
+            Products = products,
+            User = user.ToEntity(),
         };
 
         await context.Checks.AddAsync(check);

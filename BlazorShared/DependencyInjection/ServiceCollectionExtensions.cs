@@ -1,6 +1,8 @@
 using System.Reflection;
 using BlazorShared.Api;
 using BlazorShared.Api.Attributes;
+using BlazorShared.Authorization;
+using BlazorShared.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
@@ -12,14 +14,15 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri)
     {
-
+        serviceCollection.AddCascadingAuthenticationState();
         serviceCollection.AddMudServices(config =>
         {
             config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
             config.SnackbarConfiguration.PreventDuplicates = false;
             config.SnackbarConfiguration.VisibleStateDuration = 4000;
         });
-
+        serviceCollection.AddTransient<ILocalStorage, LocalStorage>();
+        serviceCollection.AddTransient<AuthorizationHandler>();
         serviceCollection.AddRefitClients(apiUri);
         
         // serviceCollection.AddRefitClient<IChecksApi>()
@@ -51,12 +54,10 @@ public static class ServiceCollectionExtensions
             .ConfigureHttpClient(client =>
                 client.BaseAddress = apiUri.AppendingPath(apiAttribute.BasePath));
 
-        // if (apiAttribute is not  ApiAuthorizableAttribute) continue;
-                
-        //TODO: добавить MessageHandler для HttpClient
+        if (apiAttribute is not  ApiAuthorizableAttribute) return serviceCollection;
                         
-        // httpClientBuilder
-        //     .AddHttpMessageHandler<>();
+        httpClientBuilder
+            .AddHttpMessageHandler<AuthorizationHandler>();
         return serviceCollection;
     }
     private static Uri AppendingPath(this Uri uri, string? path)

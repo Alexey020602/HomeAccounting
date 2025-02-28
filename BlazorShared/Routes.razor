@@ -1,7 +1,17 @@
 @using BlazorShared.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorShared.Components
+@inject NavigationManager NavigationManager
 <Router AppAssembly="@typeof(MainLayout).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <Authorizing>
+                Проверка авторизации
+            </Authorizing>
+            <NotAuthorized>
+                <RedirectToLoginComponent ReturnUrl="@NavigationManager.GetCurrentPath()"></RedirectToLoginComponent>
+            </NotAuthorized>
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
     </Found>
     <NotFound>

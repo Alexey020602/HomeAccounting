@@ -5,6 +5,7 @@ using Refit;
 namespace BlazorShared.Api;
 
 [Api]
+[Headers("Authorization: Bearer")]
 public interface IReportsApi
 {
     [Get("/reports/month")]

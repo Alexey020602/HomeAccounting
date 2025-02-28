@@ -1,0 +1,15 @@
+@using System.Net
+@using Refit
+@inherits ErrorBoundaryBase
+
+@code {
+    protected override Task OnErrorAsync(Exception exception)
+    {
+        if (exception is not ApiException
+            {
+                StatusCode: HttpStatusCode.Unauthorized
+            })
+            return Task.CompletedTask;
+        return Task.CompletedTask;
+    }
+}

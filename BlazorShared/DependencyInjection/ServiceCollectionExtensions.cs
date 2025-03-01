@@ -2,6 +2,7 @@ using System.Reflection;
 using BlazorShared.Api.Attributes;
 using BlazorShared.Authorization;
 using BlazorShared.Authorization.AuthenticationStateProvider;
+using BlazorShared.Services;
 using BlazorShared.Utils;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,8 +32,10 @@ public static class ServiceCollectionExtensions
         serviceCollection
             .AddAuthorizationCore()
             .AddCascadingAuthenticationState()
-            .AddScoped<LoginAuthenticationStateProvider, StorageAuthenticationStateProvider>()
-            .AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<LoginAuthenticationStateProvider>());
+            .AddScoped<StorageLoginStateProvider>()
+            .AddTransient<ILoginService, LoginService>()
+            .AddTransient<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
+            .AddTransient<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>());
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {

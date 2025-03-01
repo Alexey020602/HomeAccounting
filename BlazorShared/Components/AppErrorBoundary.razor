@@ -1,16 +1,24 @@
 @using System.Net
+@using BlazorShared.Services
 @using Refit
 @inherits ErrorBoundaryBase
+@inject ILoginService LoginService
+@inject NavigationManager NavigationManager
 
 @code {
-    protected override Task OnErrorAsync(Exception exception)
+    protected override async Task OnErrorAsync(Exception exception)
     {
         if (exception is not ApiException
             {
                 StatusCode: HttpStatusCode.Unauthorized
             })
-            return ProcessError(exception);
-        return Task.CompletedTask;
+        {
+            await ProcessError(exception);
+            return;
+        }
+
+        await LoginService.Logout();
+        // NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.}");
     }
 
     private Task ProcessError(Exception exception)

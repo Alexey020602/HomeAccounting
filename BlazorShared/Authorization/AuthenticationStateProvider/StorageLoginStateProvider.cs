@@ -1,11 +1,11 @@
-using BlazorShared.Authorization.AuthenticationStateProvider;
 using BlazorShared.Authorization.Dto;
-using BlazorShared.Utils;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace BlazorShared.Authorization;
+namespace BlazorShared.Authorization.AuthenticationStateProvider;
 
-public class StorageAuthenticationStateProvider(IAuthenticationStorage authenticationStorage) : LoginAuthenticationStateProvider
+public class StorageLoginStateProvider(IAuthenticationStorage authenticationStorage): 
+    Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider,
+    ILoginStateProvider
 {
     private readonly IAuthenticationStorage authenticationStorage = authenticationStorage;
 
@@ -17,13 +17,13 @@ public class StorageAuthenticationStateProvider(IAuthenticationStorage authentic
             : AuthenticationStateExtensions.GetAnonymous();
     }
 
-    public override async Task Logout()
+    public async Task Logout()
     {
         await authenticationStorage.RemoveAuthorizationAsync();
         NotifyLogout();
     }
 
-    public override async Task Login(Authentication authentication)
+    public async Task Login(Authentication authentication)
     {
         await authenticationStorage.SetAuthorizationAsync(authentication);
         NotifyLogin(authentication);

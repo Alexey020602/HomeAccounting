@@ -5,7 +5,7 @@ namespace Core.Authorization;
 public class LoginRequest
 {
     [Required(ErrorMessage = "Username is required")]
-    public required string Login { get; set; }
+    public string Login { get; set; } = string.Empty;
     [Required(ErrorMessage = "Password is required")]
-    public required string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 }

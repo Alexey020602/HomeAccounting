@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorShared.Components
 @inject NavigationManager NavigationManager
+<CascadingAuthenticationState>
 <Router AppAssembly="@typeof(MainLayout).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -21,3 +22,4 @@
         </LayoutView>
     </NotFound>
 </Router>
+</CascadingAuthenticationState>

@@ -1,8 +1,9 @@
 using System.Reflection;
-using BlazorShared.Api;
 using BlazorShared.Api.Attributes;
 using BlazorShared.Authorization;
+using BlazorShared.Authorization.AuthenticationStateProvider;
 using BlazorShared.Utils;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
@@ -12,26 +13,26 @@ namespace BlazorShared.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri)
-    {
-        serviceCollection.AddCascadingAuthenticationState();
-        serviceCollection.AddMudServices(config =>
-        {
-            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
-            config.SnackbarConfiguration.PreventDuplicates = false;
-            config.SnackbarConfiguration.VisibleStateDuration = 4000;
-        });
-        serviceCollection.AddTransient<ILocalStorage, LocalStorage>();
-        serviceCollection.AddTransient<AuthorizationHandler>();
-        serviceCollection.AddRefitClients(apiUri);
-        
-        // serviceCollection.AddRefitClient<IChecksApi>()
-        //     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
-        // serviceCollection.AddRefitClient<IReportsApi>()
-        //     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
-        
-        return serviceCollection;
-    }
+    public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri) =>
+        serviceCollection
+            .AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+                config.SnackbarConfiguration.PreventDuplicates = false;
+                config.SnackbarConfiguration.VisibleStateDuration = 4000;
+            })
+            .AddTransient<IAuthenticationStorage, AuthenticationStorage>()
+            .AddTransient<ILocalStorage, LocalStorage>()
+            .AddTransient<AuthorizationHandler>()
+            .AddRefitClients(apiUri)
+            .AddAuthorizationState();
+
+    private static IServiceCollection AddAuthorizationState(this IServiceCollection serviceCollection) =>
+        serviceCollection
+            .AddAuthorizationCore()
+            .AddCascadingAuthenticationState()
+            .AddScoped<LoginAuthenticationStateProvider, StorageAuthenticationStateProvider>()
+            .AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<LoginAuthenticationStateProvider>());
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {
@@ -44,6 +45,7 @@ public static class ServiceCollectionExtensions
                 serviceCollection.AddRefitClient(type, apiUri, apiAttribute);
             }
         }
+
         return serviceCollection;
     }
 
@@ -54,16 +56,17 @@ public static class ServiceCollectionExtensions
             .ConfigureHttpClient(client =>
                 client.BaseAddress = apiUri.AppendingPath(apiAttribute.BasePath));
 
-        if (apiAttribute is not  ApiAuthorizableAttribute) return serviceCollection;
-                        
+        if (apiAttribute is not ApiAuthorizableAttribute) return serviceCollection;
+
         httpClientBuilder
             .AddHttpMessageHandler<AuthorizationHandler>();
         return serviceCollection;
     }
+
     private static Uri AppendingPath(this Uri uri, string? path)
     {
         if (path is null) return uri;
-        
+
         var uriBuilder = new UriBuilder(uri);
         uriBuilder.Path += path;
         return uriBuilder.Uri;

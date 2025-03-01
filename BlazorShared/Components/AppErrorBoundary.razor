@@ -9,7 +9,12 @@
             {
                 StatusCode: HttpStatusCode.Unauthorized
             })
-            return Task.CompletedTask;
+            return ProcessError(exception);
+        return Task.CompletedTask;
+    }
+
+    private Task ProcessError(Exception exception)
+    {
         return Task.CompletedTask;
     }
 }

@@ -1,4 +1,4 @@
-namespace Authorization.Models;
+namespace Core.Authorization;
 
 public class AuthorizationResponse
 {

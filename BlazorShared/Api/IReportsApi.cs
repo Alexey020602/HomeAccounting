@@ -4,10 +4,10 @@ using Refit;
 
 namespace BlazorShared.Api;
 
-[Api]
+[ApiAuthorizable("reports/month")]
 [Headers("Authorization: Bearer")]
 public interface IReportsApi
 {
-    [Get("/reports/month")]
+    [Get("/")]
     Task<Report> GetMonthReport(ReportRequest request);
 }

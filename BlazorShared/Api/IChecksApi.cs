@@ -6,7 +6,7 @@ using Refit;
 namespace BlazorShared.Api;
 
 [Headers("Authorization: Bearer")]
-[Api("checks")]
+[ApiAuthorizable("checks")]
 public interface IChecksApi
 {
     [Get("/")]

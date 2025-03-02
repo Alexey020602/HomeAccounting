@@ -2,7 +2,10 @@
 @inject IChecksApi ChecksApi
 @using BlazorShared.Api
 @using BlazorShared.Components
+@using Microsoft.AspNetCore.Authorization
 @using CoreCheck = Core.Model.ChecksList.Check
+
+@attribute [Authorize]
 
 <PageTitle>Список чеков</PageTitle>
 <MudCard>

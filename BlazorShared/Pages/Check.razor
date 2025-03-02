@@ -3,6 +3,9 @@
 @using BlazorShared.Api
 @using BlazorShared.Components
 @using Core.Model.Requests
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
     <MudCard Elevation="5">

@@ -1,0 +1,50 @@
+<MudLayout>
+    <MudAppBar Elevation="3" Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       OnClick="ToggleSidebar"
+                       Class="ml-2" />
+        <MudText Typo="Typo.h6" Class="ml-3 white--text">Домашняя бухгалтерия</MudText>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_isSidebarActive"
+               Elevation="2"
+               Color="Color.Default"
+               Breakpoint="Breakpoint.Md"
+               Variant="DrawerVariant.Responsive"
+               ClipMode="DrawerClipMode.Always">
+        <MudNavMenu>
+            <MudNavLink Href="check" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Receipt">
+                Добавление чека
+            </MudNavLink>
+            <MudNavLink Href="checks" Icon="@Icons.Material.Filled.List">
+                Чеки
+            </MudNavLink>
+            <MudNavLink Href="monthreport" Icon="@Icons.Material.Filled.Assessment">
+                Отчет
+            </MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer  MaxWidth="MaxWidth.ExtraExtraLarge" Class="justify-center" Style="background-color: yellow">
+            @ChildContent
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; } = null!;
+    private bool _isSidebarActive = true;
+
+    private void ToggleSidebar()
+    {
+        _isSidebarActive = !_isSidebarActive;
+    }
+
+    // protected override RenderFragment WrapContent(RenderFragment main)
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+}

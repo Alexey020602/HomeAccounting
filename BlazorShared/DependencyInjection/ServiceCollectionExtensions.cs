@@ -16,13 +16,15 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri) =>
         serviceCollection
+            .AddLogging()
             .AddMudServices(config =>
             {
                 config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
                 config.SnackbarConfiguration.PreventDuplicates = false;
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
-            .AddTransient<IAuthenticationStorage, AuthenticationStorage>()
+            .AddSingleton<IAuthenticationStorage, AuthenticationStorage>()
+            // .AddSingleton<IAuthenticationStorage, MemoryAuthenticationStorage>()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddTransient<AuthorizationHandler>()
             .AddRefitClients(apiUri)
@@ -34,8 +36,9 @@ public static class ServiceCollectionExtensions
             .AddCascadingAuthenticationState()
             .AddScoped<StorageLoginStateProvider>()
             .AddTransient<ILoginService, LoginService>()
-            .AddTransient<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
-            .AddTransient<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>());
+            .AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
+            .AddScoped<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
+        ;
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {

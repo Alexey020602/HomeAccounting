@@ -55,16 +55,18 @@ else
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
-
-
-app.MapOpenApi();
-
-app.UseSwaggerUi(options =>
+if (app.Environment.IsDevelopment())
 {
-    options.DocumentPath = "openapi/v1.json";
-    options.SwaggerRoutes.Add(new SwaggerUiRoute("Api", "/openapi/v1.json"));
-});
+    app.UseDeveloperExceptionPage();
+    app.MapOpenApi();
+
+    app.UseSwaggerUi(options =>
+    {
+        options.DocumentPath = "openapi/v1.json";
+        options.SwaggerRoutes.Add(new SwaggerUiRoute("Api", "/openapi/v1.json"));
+    });
+    
+}
 
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyHeader()

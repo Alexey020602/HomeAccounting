@@ -1,25 +1,30 @@
-@using BlazorShared.Layout
+@using BlazorShared.Layouts
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorShared.Components
 @inject NavigationManager NavigationManager
 <CascadingAuthenticationState>
-<Router AppAssembly="@typeof(MainLayout).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <Authorizing>
-                Проверка авторизации
-            </Authorizing>
-            <NotAuthorized>
-                <RedirectToLoginComponent ReturnUrl="@NavigationManager.GetCurrentPath()"></RedirectToLoginComponent>
-            </NotAuthorized>
-        </AuthorizeRouteView>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+    <AppErrorBoundary>
+        @* <ChildContent> *@
+            <Router AppAssembly="@typeof(MainLayout).Assembly">
+                <Found Context="routeData">
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                        <Authorizing>
+                            Проверка авторизации
+                        </Authorizing>
+                        <NotAuthorized>
+                            <RedirectToLoginComponent
+                                ReturnUrl="@NavigationManager.GetCurrentPath()"></RedirectToLoginComponent>
+                        </NotAuthorized>
+                    </AuthorizeRouteView>
+                    <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+                </Found>
+                <NotFound>
+                    <PageTitle>Not found</PageTitle>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p role="alert">Sorry, there's nothing at this address.</p>
+                    </LayoutView>
+                </NotFound>
+            </Router>
+        @* </ChildContent> *@
+    </AppErrorBoundary>
 </CascadingAuthenticationState>

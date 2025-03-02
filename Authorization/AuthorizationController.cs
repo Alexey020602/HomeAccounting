@@ -23,7 +23,7 @@ public class AuthorizationController( /*IUserService userService, */UserManager<
         var user = await userManager.FindByIdAsync(loginRequest.Login);
         // var user = await userService.GetUserByLogin(loginRequest.Login);
 
-        if (user is null) return BadRequest("User");
+        if (user is null) return BadRequest("User not found");
 
         if (!await userManager.CheckPasswordAsync(user, loginRequest.Password))
             return BadRequest("Wrong Password");

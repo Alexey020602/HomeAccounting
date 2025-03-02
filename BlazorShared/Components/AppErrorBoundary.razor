@@ -1,9 +1,11 @@
 @using System.Net
-@using BlazorShared.Services
+@using BlazorShared.Authorization
 @using Refit
 @inherits ErrorBoundaryBase
-@inject ILoginService LoginService
+@inject IAuthenticationStorage AuthenticationStorage
 @inject NavigationManager NavigationManager
+
+@ChildContent
 
 @code {
     protected override async Task OnErrorAsync(Exception exception)
@@ -13,12 +15,11 @@
                 StatusCode: HttpStatusCode.Unauthorized
             })
         {
-            await ProcessError(exception);
-            return;
+            throw exception;
         }
-
-        await LoginService.Logout();
-        // NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.}");
+        Console.WriteLine(exception);
+        await AuthenticationStorage.RemoveAuthorizationAsync();
+        NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.GetCurrentPath()}");
     }
 
     private Task ProcessError(Exception exception)

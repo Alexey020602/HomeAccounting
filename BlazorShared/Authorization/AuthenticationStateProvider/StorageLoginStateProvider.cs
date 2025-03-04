@@ -20,13 +20,17 @@ public class StorageLoginStateProvider(IAuthenticationStorage authenticationStor
 
     public async Task Logout()
     {
+        logger.LogInformation("Performing logout");
         await authenticationStorage.RemoveAuthorizationAsync();
+        logger.LogInformation("Logouted from storage");
         NotifyLogout();
     }
 
     public async Task Login(Authentication authentication)
     {
+        logger.LogInformation("Performing login");
         await authenticationStorage.SetAuthorizationAsync(authentication);
+        logger.LogInformation("Login state {authentication}", authentication);
         NotifyLogin(authentication);
     }
 

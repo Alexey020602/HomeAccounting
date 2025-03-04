@@ -97,7 +97,7 @@ internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchem
         var requirements = new Dictionary<string, OpenApiSecurityScheme>
         {
             {
-                $"{JwtBearerDefaults.AuthenticationScheme} token", new OpenApiSecurityScheme
+                JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
                     Scheme = JwtBearerDefaults.AuthenticationScheme,
@@ -107,15 +107,15 @@ internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchem
                     Name = "Authorization",
                 }
             },
-            {
-                $"{JwtBearerDefaults.AuthenticationScheme} password", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "password",
-                    In = ParameterLocation.Header,
-                    
-                }
-            }
+            // {
+            //     $"{JwtBearerDefaults.AuthenticationScheme} password", new OpenApiSecurityScheme
+            //     {
+            //         Type = SecuritySchemeType.Http,
+            //         Scheme = "password",
+            //         In = ParameterLocation.Header,
+            //         
+            //     }
+            // }
         };
 
         document.Components ??= new OpenApiComponents();

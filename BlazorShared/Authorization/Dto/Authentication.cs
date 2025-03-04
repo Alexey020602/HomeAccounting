@@ -1,17 +1,19 @@
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 
 namespace BlazorShared.Authorization.Dto;
 
 public record Authentication(string AccessToken, string RefreshToken, string Login)
 {
+    [JsonIgnore]
     public ClaimsPrincipal Principal => new ClaimsPrincipal(Identity);
+    [JsonIgnore]
     private ClaimsIdentity Identity => new ClaimsIdentity(Claims, "jwtAuthType");
-
+    [JsonIgnore]
     private IReadOnlyList<Claim> Claims =>
     [
         new Claim(ClaimTypes.NameIdentifier, Login)
     ];
-
     public override string ToString() => $"""
                                          Access Token: {AccessToken}
                                          RefreshToken: {RefreshToken}

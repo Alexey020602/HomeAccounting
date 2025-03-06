@@ -1,9 +1,11 @@
 @using System.Net
 @using BlazorShared.Authorization
+@using BlazorShared.Authorization.AuthenticationStateProvider
 @using Refit
 @inherits ErrorBoundaryBase
-@inject IAuthenticationStorage AuthenticationStorage
+@inject ILoginStateProvider LoginStateProvider
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 @ChildContent
 
@@ -15,15 +17,16 @@
                 StatusCode: HttpStatusCode.Unauthorized
             })
         {
-            throw exception;
+            ProcessError(exception);
+            return;
         }
         Console.WriteLine(exception);
-        await AuthenticationStorage.RemoveAuthorizationAsync();
+        await LoginStateProvider.Logout();
         NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.GetCurrentPath()}");
     }
 
-    private Task ProcessError(Exception exception)
+    private void ProcessError(Exception exception)
     {
-        return Task.CompletedTask;
+        Snackbar.Add(exception.Message, Severity.Error);
     }
 }

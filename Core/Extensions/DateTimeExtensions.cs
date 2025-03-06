@@ -1,3 +1,5 @@
+using Core.Model;
+
 namespace Core.Extensions;
 
 public static class DateTimeExtensions
@@ -19,4 +21,11 @@ public static class DateTimeExtensions
 
     public static DateTime BeginOfBillingPerion(this DateTime date, int beginDay = 7) =>
         date.DayOfCurrentMonth(beginDay);
+    
+    public static DateTime DayOfMonth(int day, Months month) => new DateTime(DateTime.UtcNow.Year, (int)month, day);
+    
+    public static Months GetMonth(this DateTime date) => (Months) date.Month;
+    
+    
+    public static int GetCurrentYear() => DateTime.UtcNow.Year;
 }

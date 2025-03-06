@@ -2,6 +2,7 @@ namespace Core.Model;
 
 public enum Months
 {
+    Unknown = 0,
     January = 1,
     February = 2,
     March = 3,

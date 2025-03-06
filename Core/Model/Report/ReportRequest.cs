@@ -1,9 +1,10 @@
+using Core.Extensions;
+
 namespace Core.Model.Report;
 
-public record ReportRequest(DateTime StartDate, DateTime EndDate)
+public record ReportRequest(int Month, int Year)
 {
-    public ReportRequest() : this(DateTime.MinValue.ToUniversalTime(), DateTime.UtcNow)
-    {
-        
-    }
+    // public ReportRequest(Months month) : this(month, DateTimeExtensions.GetCurrentYear())
+    // {
+    // }
 }

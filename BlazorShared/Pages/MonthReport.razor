@@ -3,6 +3,7 @@
 @using Core.Extensions
 @using Core.Model.Report
 @using BlazorShared.Components
+@using Core.Model
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
@@ -18,22 +19,16 @@
         <MudCardContent>
             <MudGrid Spacing="3">
                 <MudItem xs="12" md="5">
-                    <MudDatePicker Label="Начало периода"
-                                   @bind-Date="Begin"
+                    <MudDatePicker Label="Год"
+                                   OpenTo="OpenTo.Month"
+                                   FixDay="1"
+                                   @bind-Date="yearAndMonth"
                                    Variant="Variant.Outlined"
-                                   DateFormat="dd.MM.yyyy"
+                                   DateFormat="yyyy"
                                    Editable="true"/>
                 </MudItem>
 
-                <MudItem xs="12" md="5">
-                    <MudDatePicker Label="Конец периода"
-                                   @bind-Date="End"
-                                   Variant="Variant.Outlined"
-                                   DateFormat="dd.MM.yyyy"
-                                   Editable="true"/>
-                </MudItem>
-
-                <MudItem xs="12" md="2">
+                <MudItem xs="12" md="2" >
                     <MudButton Variant="Variant.Filled"
                                Color="Color.Primary"
                                FullWidth="true"
@@ -59,34 +54,34 @@
 </MudContainer>
 
 @code {
-    private DateTime begin = DateTimeExtensions.DayOfCurrentMonth(7);
 
-    private DateTime? Begin
-    {
-        get => begin;
-        set => begin = value ?? DateTimeExtensions.DayOfCurrentMonth(7);
-    }
-    private DateTime end = DateTime.Now;
+    // private Months month = MonthsExtensions.GetCurrentMonth();
 
-    private DateTime? End
-    {
-        get => end;
-        set => end = value ?? DateTime.Now;
-    }
+    private DateTime? yearAndMonth = DateTime.Now;
+    // private DateTime begin = DateTimeExtensions.DayOfCurrentMonth(7);
+    //
+    // private DateTime? Begin
+    // {
+    //     get => begin;
+    //     set => begin = value ?? DateTimeExtensions.DayOfCurrentMonth(7);
+    // }
+    // private DateTime end = DateTime.Now;
+    //
+    // private DateTime? End
+    // {
+    //     get => end;
+    //     set => end = value ?? DateTime.Now;
+    // }
     private Report? Report { get; set; }
     private bool isLoading;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadReport();
-    }
-
     private async Task LoadReport()
     {
+        if (!yearAndMonth.HasValue) return;
         try
         {
             isLoading = true;
-            Report = await ReportsApi.GetMonthReport(new ReportRequest(begin, end));
+            Report = await ReportsApi.GetMonthReport(new ReportRequest(yearAndMonth.Value.Month, yearAndMonth.Value.Year));
         }
         finally
         {

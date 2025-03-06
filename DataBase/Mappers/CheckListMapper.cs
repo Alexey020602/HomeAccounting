@@ -4,8 +4,33 @@ using DBProduct = DataBase.Entities.Product;
 using DBSubcategory = DataBase.Entities.Subcategory;
 using DBCategory = DataBase.Entities.Category;
 
-namespace Core.Mappers;
+namespace DataBase.Mappers;
 
+internal sealed class DefaultSubcategoryComparer : IEqualityComparer<DBSubcategory>
+{
+    public bool Equals(DBSubcategory? x, DBSubcategory? y)
+    {
+        if (x is null || y is null) return false;
+        if (ReferenceEquals(x, y)) return true;
+
+        return x.Id == y.Id;
+    }
+
+    public int GetHashCode(DBSubcategory obj) => obj.Id.GetHashCode();
+}
+
+internal sealed class DefaultCategoryComparer : IEqualityComparer<DBCategory>
+{
+    public bool Equals(DBCategory? x, DBCategory? y)
+    {
+        if (x is null || y is null) return false;
+        if (ReferenceEquals(x, y)) return true;
+
+        return x.Id == y.Id;
+    }
+
+    public int GetHashCode(DBCategory obj) => obj.Id.GetHashCode();
+}
 public static class CheckListMapper
 {
     public static Check ConvertToCheckList(this DBCheck check)
@@ -22,8 +47,8 @@ public static class CheckListMapper
     public static IReadOnlyList<Category> ConvertToCategories(this IEnumerable<DBProduct> products)
     {
         return products
-            .GroupBy(product => product.Subcategory)
-            .GroupBy(subcategoryGroup => subcategoryGroup.Key.Category)
+            .GroupBy(product => product.Subcategory, new DefaultSubcategoryComparer())
+            .GroupBy(subcategoryGroup => subcategoryGroup.Key.Category, new DefaultCategoryComparer())
             .Select(ConvertToCategory)
             .OrderByDescending(category => category.PennySum)
             .ToList();

@@ -10,6 +10,7 @@ using FnsChecksApi;
 using FnsChecksApi.Dto.Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
 builder.Services.AddLogging();
-
+builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 builder.Services.AddTransient<HttpLoggingHandler>();
 
 builder.Services.AddRefitClient<ICheckService>()
@@ -42,6 +43,7 @@ builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddTransient<IBarcodeService, BarcodeService>();
+builder.Services.AddTransient<IAccountingSettingsService, ConfigurationAccountingSettingsService>();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthorization(builder.Configuration);
@@ -53,7 +55,6 @@ else
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -77,6 +78,7 @@ app.UseCors(policyBuilder => policyBuilder
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseHttpLogging();
 app.MapControllers()
     .RequireAuthorization()
     ;

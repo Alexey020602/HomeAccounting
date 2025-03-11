@@ -6,11 +6,7 @@
 <MudCard>
     <MudCardHeader @onclick="@Toggle" Style="cursor: pointer">
         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-            <MudText Align="Align.Center" Typo="Typo.h2">
-                Отчет за
-                <MudText Inline="true" Color="Color.Primary"
-                         Typo="Typo.h2">@Report.PeriodDate.ToString("MMMM yyyy")</MudText>
-            </MudText>
+            
             <MudSpacer/>
             <MudText Typo="Typo.h2">@Report.Sum.ToString()</MudText>
         </MudStack>

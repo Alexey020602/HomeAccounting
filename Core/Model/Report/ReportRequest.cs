@@ -2,7 +2,7 @@ using Core.Extensions;
 
 namespace Core.Model.Report;
 
-public record ReportRequest(int Month, int Year)
+public record ReportRequest(DateRange Range, string? Login = null)
 {
     // public ReportRequest(Months month) : this(month, DateTimeExtensions.GetCurrentYear())
     // {

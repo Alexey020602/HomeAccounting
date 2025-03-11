@@ -6,13 +6,11 @@ namespace Core.Mappers;
 
 public static class ReportMapper
 {
-    public static Report CreateReport(this IReadOnlyList<Check> checks, ReportRequest reportRequest, int firstDay)
+    public static Report CreateReport(this IReadOnlyList<Check> checks, ReportRequest reportRequest)
     {
         return new Report
         {
-            FirstDay = firstDay,
-            Month = reportRequest.Month,
-            Year = reportRequest.Year,
+            DateRange = reportRequest.Range,
             Categories = checks.SelectMany(c => c.Products).ConvertToCategories().ToList()
         };
     }

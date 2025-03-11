@@ -9,7 +9,7 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class ReportsController(IReportUseCase reportUseCase): ControllerBase
 {
-    [HttpGet("month")]
-    public async Task<IActionResult> GetMonthReport([FromQuery] ReportRequest request) =>
+    [HttpPut("month")]
+    public async Task<IActionResult> GetMonthReport(ReportRequest request) =>
         new JsonResult(await reportUseCase.GetReport(request));
 }

@@ -1,0 +1,37 @@
+@using BlazorShared.Api
+@using DateTime = System.DateTime
+@using DateRange = Core.Model.Report.DateRange
+@inject IAccountingApi AccountingApi
+
+<MudDatePicker Label="Отчетный месяц"
+               OpenTo="OpenTo.Month"
+               FixDay="accountingPeriod"
+               Variant="Variant.Outlined"
+               Editable="true"
+               DateChanged="OnDateChanged"
+/>
+
+@code {
+    private DateRange DateRange { get; set; } = new();
+    [Parameter] public EventCallback<DateRange> DateRangeChanged { get; set; }
+    private int accountingPeriod;
+
+    protected override async Task OnInitializedAsync()
+    {
+        accountingPeriod = await AccountingApi.GetPeriodAsync();
+    }
+
+    private Task OnDateChanged(DateTime? dateTime)
+    {
+        DateRange = dateTime.HasValue
+            ? new DateRange()
+            {
+                Start = dateTime.Value,
+                End = dateTime.Value.AddMonths(1),
+            }
+            : new DateRange();
+
+        return DateRangeChanged.InvokeAsync(DateRange);
+    }
+
+}

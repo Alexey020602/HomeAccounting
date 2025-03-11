@@ -8,6 +8,6 @@ namespace BlazorShared.Api;
 [Headers("Authorization: Bearer")]
 public interface IReportsApi
 {
-    [Get("/")]
+    [Put("/")]
     Task<Report> GetMonthReport(ReportRequest request);
 }

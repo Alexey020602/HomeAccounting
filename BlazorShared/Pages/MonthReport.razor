@@ -3,8 +3,10 @@
 @using Core.Extensions
 @using Core.Model.Report
 @using BlazorShared.Components
+@using BlazorShared.Forms
 @using Core.Model
 @using Microsoft.AspNetCore.Authorization
+@using DateRange = Core.Model.Report.DateRange
 
 @attribute [Authorize]
 
@@ -19,13 +21,14 @@
         <MudCardContent>
             <MudGrid Spacing="3">
                 <MudItem xs="12" md="5">
-                    <MudDatePicker Label="Год"
-                                   OpenTo="OpenTo.Month"
-                                   FixDay="1"
-                                   @bind-Date="yearAndMonth"
-                                   Variant="Variant.Outlined"
-                                   DateFormat="yyyy"
-                                   Editable="true"/>
+                    <MonthPeriodFilter DateRangeChanged="@(range => dateRange = range)"/>
+                    @* <MudDatePicker Label="Год" *@
+                    @*                OpenTo="OpenTo.Month" *@
+                    @*                FixDay="1" *@
+                    @*                @bind-Date="yearAndMonth" *@
+                    @*                Variant="Variant.Outlined" *@
+                    @*                DateFormat="MMMM yyyy" *@
+                    @*                Editable="true"/> *@
                 </MudItem>
 
                 <MudItem xs="12" md="2" >
@@ -57,7 +60,11 @@
 
     // private Months month = MonthsExtensions.GetCurrentMonth();
 
-    private DateTime? yearAndMonth = DateTime.Now;
+    private DateRange dateRange = new DateRange()
+    {
+        Start = DateTime.Now,
+        End = DateTime.Now,
+    };
     // private DateTime begin = DateTimeExtensions.DayOfCurrentMonth(7);
     //
     // private DateTime? Begin
@@ -77,11 +84,10 @@
 
     private async Task LoadReport()
     {
-        if (!yearAndMonth.HasValue) return;
         try
         {
             isLoading = true;
-            Report = await ReportsApi.GetMonthReport(new ReportRequest(yearAndMonth.Value.Month, yearAndMonth.Value.Year));
+            Report = await ReportsApi.GetMonthReport(new ReportRequest(dateRange));
         }
         finally
         {

@@ -6,7 +6,7 @@
 <MudCard>
     <MudCardHeader @onclick="@Toggle" Style="cursor: pointer">
         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-            
+            <DateRangeComponent DateRange="Report.DateRange"/>
             <MudSpacer/>
             <MudText Typo="Typo.h2">@Report.Sum.ToString()</MudText>
         </MudStack>

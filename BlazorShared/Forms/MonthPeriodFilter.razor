@@ -3,35 +3,59 @@
 @using DateRange = Core.Model.Report.DateRange
 @inject IAccountingApi AccountingApi
 
-<MudDatePicker Label="Отчетный месяц"
-               OpenTo="OpenTo.Month"
-               FixDay="accountingPeriod"
-               Variant="Variant.Outlined"
-               Editable="true"
-               DateChanged="OnDateChanged"
-/>
+@* <MudDatePicker Label="Отчетный месяц" *@
+@*                OpenTo="OpenTo.Month" *@
+@*                FixDay="accountingPeriod" *@
+@*                Variant="Variant.Outlined" *@
+@*                Editable="true" *@
+@*                DateChanged="OnDateChanged"> *@
+@*     <PickerActions Context="dateTime"> *@
+@*         Date: @dateTime *@
+@*     </PickerActions> *@
+@* </MudDatePicker> *@
+
+@* <MudDateRangePicker FixDay="accountingPeriod" Editable="true" DateRangeChanged="OnDateRangeChanged"></MudDateRangePicker> *@
+
+<MudSelect 
+    @bind-Value:get="Range"
+    @bind-Value:set="RangeChanged"
+    Variant="Variant.Outlined"
+    Clearable="true"
+    >
+    @foreach (var range in dateRanges)
+    {
+        <MudSelectItem Value="range">@range.ToString(format: "d MMMM yyyy")</MudSelectItem>
+    }
+</MudSelect>
 
 @code {
-    private DateRange DateRange { get; set; } = new();
-    [Parameter] public EventCallback<DateRange> DateRangeChanged { get; set; }
-    private int accountingPeriod;
+    [Parameter] public DateRange Range { get; set; }
+    [Parameter] public EventCallback<DateRange> RangeChanged { get; set; }
+    private IReadOnlyList<DateRange> dateRanges = [];
+    private int accountingPeriod = 1;
 
     protected override async Task OnInitializedAsync()
     {
         accountingPeriod = await AccountingApi.GetPeriodAsync();
+        InitializeDateRanges();
+        
     }
 
-    private Task OnDateChanged(DateTime? dateTime)
+    private void InitializeDateRanges()
     {
-        DateRange = dateTime.HasValue
-            ? new DateRange()
-            {
-                Start = dateTime.Value,
-                End = dateTime.Value.AddMonths(1),
-            }
-            : new DateRange();
-
-        return DateRangeChanged.InvokeAsync(DateRange);
+        var firstDateRange = GetInitialDateRange();
+        dateRanges = Enumerable.Range(0, 12)
+            .Select(i => new DateRange(firstDateRange.Start?.AddMonths(- i), firstDateRange.End?.AddMonths(-i)))
+            .ToList();
     }
 
+    private DateRange GetInitialDateRange()
+    {
+        return DateRange.CreateMonthRangeFromDateTime(DateTime.Now.AddMonths(MonthsDifference).AddDays(NumberOfDaysForAdding));
+    }
+
+    private double NumberOfDaysForAdding => IsTodayBeforeAccountingDayOfCurrentMonth ? DaysDifference : -DaysDifference;
+    private double DaysDifference => DateTime.Now.Day - accountingPeriod;
+    private int MonthsDifference => IsTodayBeforeAccountingDayOfCurrentMonth ? -1 : 0;
+    private bool IsTodayBeforeAccountingDayOfCurrentMonth => DateTime.Now.Day < accountingPeriod;
 }

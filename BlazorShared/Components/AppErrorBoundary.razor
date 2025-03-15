@@ -1,8 +1,10 @@
 @using System.Net
 @using BlazorShared.Authorization
 @using BlazorShared.Authorization.AuthenticationStateProvider
+@using Microsoft.Extensions.Logging
 @using Refit
 @inherits ErrorBoundaryBase
+@inject ILogger<AppErrorBoundary> Logger
 @inject ILoginStateProvider LoginStateProvider
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
@@ -17,10 +19,10 @@
                 StatusCode: HttpStatusCode.Unauthorized
             })
         {
+            Logger.LogError(exception.Message);
             ProcessError(exception);
             return;
         }
-        Console.WriteLine(exception);
         await LoginStateProvider.Logout();
         NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.GetCurrentPath()}");
     }

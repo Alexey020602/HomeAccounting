@@ -30,8 +30,8 @@ namespace DataBase;
 public static class ReportRequestExtensions
 {
     public static Expression<Func<DbCheck, bool>> GetPredicate(this ReportRequest request) => 
-        check => check.PurchaseDate >= request.Range.Start.ToUniversalTime()
-        && check.PurchaseDate <= request.Range.End.ToUniversalTime();
+        check => (!request.Range.Start.HasValue || check.PurchaseDate >= request.Range.Start.Value.ToUniversalTime())
+             && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
 }
 
 public class ReportUseCase(ApplicationContext context) : IReportUseCase

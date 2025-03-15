@@ -1,0 +1,22 @@
+@using DateRange = Core.Model.Report.DateRange
+
+@code {
+    [Parameter] public DateRange DateRange { get; set; }
+    [Parameter] public EventCallback<DateRange> DateRangeChanged { get; set; }
+    private Task OnDateRangeChanged(MudBlazor.DateRange dateRange)
+    {
+        if (!dateRange.Start.HasValue || !dateRange.End.HasValue)
+        {
+            return Task.CompletedTask;
+        }
+
+        var newDateRange = new DateRange()
+        {
+            Start = dateRange.Start.Value,
+            End = dateRange.End.Value,
+        };
+
+        DateRange = newDateRange;
+        return DateRangeChanged.InvokeAsync(newDateRange);
+    }
+}

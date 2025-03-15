@@ -3,9 +3,9 @@
 <MudText Align="Align.Center" Typo="Typo.h2">
     Отчет за
     <MudText Inline="true" Color="Color.Primary"
-             Typo="Typo.h2">@DateRange.Start.ToString(StartFormat)</MudText>
+             Typo="Typo.h2">@DateRange.Start?.ToString(StartFormat)</MudText>
     -
-    <MudText Inline="true" Color="Color.Primary" Typo="Typo.h2">@DateRange.End.ToString(EndFormat)</MudText>
+    <MudText Inline="true" Color="Color.Primary" Typo="Typo.h2">@DateRange.End?.ToString(EndFormat)</MudText>
 </MudText>
 
 @code {
@@ -17,11 +17,11 @@
         {
             var format = "dd";
 
-            if (DateRange.IsSameYear())
+            if (DateRange.IsSameYear)
             {
                 format += " MMMM yyyy";
             }
-            else if(DateRange.IsSameMonth())
+            else if(DateRange.IsSameMonth)
             {
                 format += " MMMM";
             }

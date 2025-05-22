@@ -1,8 +1,7 @@
 using Core.Model.Report;
-using DataBase.Mappers;
 using Check = DataBase.Entities.Check;
 
-namespace Core.Mappers;
+namespace DataBase.Mappers;
 
 public static class ReportMapper
 {

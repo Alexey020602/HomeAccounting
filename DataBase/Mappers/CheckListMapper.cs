@@ -6,31 +6,6 @@ using DBCategory = DataBase.Entities.Category;
 
 namespace DataBase.Mappers;
 
-internal sealed class DefaultSubcategoryComparer : IEqualityComparer<DBSubcategory>
-{
-    public bool Equals(DBSubcategory? x, DBSubcategory? y)
-    {
-        if (x is null || y is null) return false;
-        if (ReferenceEquals(x, y)) return true;
-
-        return x.Id == y.Id;
-    }
-
-    public int GetHashCode(DBSubcategory obj) => obj.Id.GetHashCode();
-}
-
-internal sealed class DefaultCategoryComparer : IEqualityComparer<DBCategory>
-{
-    public bool Equals(DBCategory? x, DBCategory? y)
-    {
-        if (x is null || y is null) return false;
-        if (ReferenceEquals(x, y)) return true;
-
-        return x.Id == y.Id;
-    }
-
-    public int GetHashCode(DBCategory obj) => obj.Id.GetHashCode();
-}
 public static class CheckListMapper
 {
     public static Check ConvertToCheckList(this DBCheck check)
@@ -46,26 +21,29 @@ public static class CheckListMapper
 
     public static IReadOnlyList<Category> ConvertToCategories(this IEnumerable<DBProduct> products)
     {
-        return products
-            .GroupBy(product => product.Subcategory, new DefaultSubcategoryComparer())
-            .GroupBy(subcategoryGroup => subcategoryGroup.Key.Category, new DefaultCategoryComparer())
-            .Select(ConvertToCategory)
-            .OrderByDescending(category => category.PennySum)
-            .ToList();
+        var categories = from product in products
+            group product by product.Subcategory
+            into subcategoryGroup
+            group subcategoryGroup by subcategoryGroup.Key.Category
+            into categoryGroup
+            orderby categoryGroup
+                .Sum(subcategory => subcategory.Sum(p => p.Sum))
+            descending 
+            select categoryGroup.ConvertToCategory();
+
+        return categories.OrderByDescending(category => category.PennySum).ToList();
     }
 
-    public static Category ConvertToCategory(this IGrouping<DBCategory, IGrouping<DBSubcategory, DBProduct>> categories)
-    {
-        return new Category
+    public static Category
+        ConvertToCategory(this IGrouping<DBCategory, IGrouping<DBSubcategory, DBProduct>> categories) =>
+        new()
         {
             Id = categories.Key.Id,
             Name = categories.Key.Name,
-            Subcategories = categories
-                .Select(ConvertToSubcategory)
-                .OrderByDescending(subcategory => subcategory.PennySum)
-                .ToList()
+            Subcategories = (from subcategory in categories
+                orderby subcategory.Sum(product => product.Sum) descending
+                select subcategory.ConvertToSubcategory()).ToList()
         };
-    }
 
     public static Subcategory ConvertToSubcategory(this IGrouping<DBSubcategory, DBProduct> subcategories)
     {
@@ -73,16 +51,16 @@ public static class CheckListMapper
         {
             Id = subcategories.Key.Id,
             Name = subcategories.Key.Name,
-            Products = subcategories
-                .Select(product => new Product
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    Quantity = product.Quantity,
-                    PennySum = product.Sum
-                })
-                .OrderByDescending(product => product.PennySum)
+            Products = (from product in subcategories
+                    orderby product.Sum descending 
+                        select new Product
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        Quantity = product.Quantity,
+                        PennySum = product.Sum
+                    })
                 .ToList()
         };
     }

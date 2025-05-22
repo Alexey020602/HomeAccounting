@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Core.Mappers;
 using Core.Model.Normalized;
 using Core.Model.Requests;
 using Core.Services;
@@ -15,13 +14,16 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
 {
     public async Task<IReadOnlyList<Check>> GetChecksAsync(int skip = 0, int take = 100)
     {
-        var checks = await context.Checks
-            .Include(c => c.Products)
-            .ThenInclude(p => p.Subcategory)
-            .ThenInclude(sub => sub.Category)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+        var checks = 
+            
+            await context.Checks
+                .AsNoTracking()
+             .Include(c => c.Products)
+             .ThenInclude(p => p.Subcategory)
+             .ThenInclude(sub => sub.Category)
+             .Skip(skip)
+             .Take(take)
+             .ToListAsync();
 
 
         return checks.ConvertAll(check => check.ConvertToCheckList());

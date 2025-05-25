@@ -2,9 +2,16 @@ using System.Text.Json.Serialization;
 
 namespace FnsChecksApi.Dto.Categorized;
 
-public record Product(
-    [property: JsonPropertyName("key_word")]
-    string KeyWord,
-    [property: JsonPropertyName("full_description")]
-    string FullDescription
-);
+public class Product
+{
+    /// <summary>
+    /// Ключевое (образующее) слово в названии продукта
+    /// </summary>
+    [JsonPropertyName("key_word")]
+    public required string KeyWord { get; init; }
+    /// <summary>
+    /// Наименование продукта
+    /// </summary>
+    [JsonPropertyName("full_description")]
+    public required string FullDescription { get; init; }
+}

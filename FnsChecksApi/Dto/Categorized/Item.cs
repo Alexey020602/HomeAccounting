@@ -2,14 +2,16 @@ using System.Text.Json.Serialization;
 
 namespace FnsChecksApi.Dto.Categorized;
 
-public record Item(
-    [property: JsonPropertyName("initial_request")]
-    string InitialRequest,
-    [property: JsonPropertyName("normalized_request")]
-    string NormalizedRequest,
-    string Brand,
-    Product Product,
-    IReadOnlyList<Measure> Measures,
-    Category Category,
-    double? Probability
-);
+public class Item
+{
+    [JsonPropertyName("initial_request")]
+    public required string InitialRequest { get; init; }
+
+    [JsonPropertyName("normalized_request")]
+    public required string NormalizedRequest { get; init; }
+    public required string Brand { get; init; }
+    public required Product Product { get; init; }
+    public required IReadOnlyList<Measure> Measures { get; init; }
+    public required Category Category { get; init; }
+    public double? Probability { get; init; }
+}

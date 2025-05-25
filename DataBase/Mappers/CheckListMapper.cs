@@ -21,18 +21,14 @@ public static class CheckListMapper
 
     public static IReadOnlyList<Category> ConvertToCategories(this IEnumerable<DBProduct> products)
     {
-        // return products
-        //     .GroupBy(product => product.Subcategory, new DefaultSubcategoryComparer())
-        //     .GroupBy(subcategoryGroup => subcategoryGroup.Key.Category, new DefaultCategoryComparer())
-        //     .Select(ConvertToCategory)
-        //     .OrderByDescending(category => category.PennySum)
-        //     .ToList();
-
         var categories = from product in products
             group product by product.Subcategory
             into subcategoryGroup
             group subcategoryGroup by subcategoryGroup.Key.Category
             into categoryGroup
+            orderby categoryGroup
+                .Sum(subcategory => subcategory.Sum(p => p.Sum))
+            descending 
             select categoryGroup.ConvertToCategory();
 
         return categories.OrderByDescending(category => category.PennySum).ToList();
@@ -47,10 +43,6 @@ public static class CheckListMapper
             Subcategories = (from subcategory in categories
                 orderby subcategory.Sum(product => product.Sum) descending
                 select subcategory.ConvertToSubcategory()).ToList()
-
-            // .Select(ConvertToSubcategory)
-            // .OrderByDescending(subcategory => subcategory.PennySum)
-            // .ToList()
         };
 
     public static Subcategory ConvertToSubcategory(this IGrouping<DBSubcategory, DBProduct> subcategories)

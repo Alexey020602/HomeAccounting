@@ -13,7 +13,7 @@ public class CheckUseCase(
 
     public async Task<Model.ChecksList.Check> SaveCheck(CheckRequest checkRequest, User user)
     {
-        return (await checkRepository.GetCheckByRequest(checkRequest)) ??
+        return await checkRepository.GetCheckByRequest(checkRequest) ??
                await checkRepository.SaveCheck(await checkSource.GetCheck(checkRequest), user);
     }
 }

@@ -44,6 +44,7 @@ public class ApplicationContextSeed
     {
         try
         {
+            await AddDefaultUser(token);
             foreach (var request in requests) await checkUseCase.SaveCheck(request, User.Default);
         }
         catch (Exception ex)
@@ -51,5 +52,14 @@ public class ApplicationContextSeed
             logger.LogError(ex, "Seeding error");
             throw;
         }
+    }
+
+    private Task AddDefaultUser(CancellationToken token = default)
+    {
+        if (context.Users.Any(user => user.Id == DataBase.Entities.User.Default.Id)) return Task.CompletedTask;
+        
+        context.Users.Add(DataBase.Entities.User.Default);
+        
+        return context.SaveChangesAsync(token);
     }
 }

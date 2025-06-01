@@ -43,12 +43,11 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
     }
     public async Task<Check> SaveCheck(NormalizedCheck normalizedCheck, User user)
     {
-        var products = new List<Product>(normalizedCheck.Products.Count);
-        foreach (var product in normalizedCheck.Products)
-        {
-            products.Add(await CreateProduct(product));
-        }
-
+        await context.Categories.Include(category => normalizedCheck.Products.Any(product => product.Category == category.Name)).LoadAsync();
+        await context.Subcategories.Include(subcategory => normalizedCheck.Products.Any(product => product.Subcategory == subcategory.Name)).LoadAsync();
+        var userEntity = await context.Users.FindAsync(user.Login) ??
+                         throw new KeyNotFoundException($"User with login {user.Login} not found");
+        
         var check = new DataBase.Entities.Check
         {
             Fp = normalizedCheck.Fp,
@@ -57,19 +56,19 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
             S = normalizedCheck.Sum,
             AddedDate = DateTime.UtcNow,
             PurchaseDate = normalizedCheck.PurchaseDate,
-            Products = products,
-            User = user.ToEntity(),
+            Products = normalizedCheck.Products.Select(CreateProduct).ToList(),
+            User = userEntity,
         };
 
-        await context.Checks.AddAsync(check);
+        context.Checks.Add(check);
         await context.SaveChangesAsync();
 
         return check.ConvertToCheckList();
     }
     
-    private async Task<Product> CreateProduct(NormalizedProduct product)
+    private Product CreateProduct(NormalizedProduct product)
     {
-        var subcategory = await GetSubcategoryByName(product.Subcategory, product.Category);
+        var subcategory = GetSubcategoryByName(product.Subcategory, product.Category);
         return new Product
         {
             Name = product.Name,
@@ -80,57 +79,55 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
         };
     }
     
-    private async Task<Category> CreateCategory(string name)
+    private Category CreateCategory(string name)
     {
         var category = new Category
         {
             Name = name
         };
-        var entry = context.Categories.Attach(category);
-        await context.Categories.AddAsync(category);
+        
+        context.Categories.Add(category);
 
         return category;
     }
     
-    private async Task<Subcategory> CreateSubcategory(string? name, Category category)
+    private Subcategory CreateSubcategory(string? name, Category category)
     {
         var subcategory = new Subcategory
         {
             Name = name,
             Category = category
         };
-
-        context.Subcategories.Attach(subcategory);
-        await context.Subcategories.AddAsync(subcategory);
+        
+        context.Subcategories.Add(subcategory);
 
         return subcategory;
     }
 
-    private async Task<Subcategory> GetSubcategoryByName(string? name, string categoryName)
+    private Subcategory GetSubcategoryByName(string? name, string categoryName)
     {
-        var existingCategory = await GetExistingCategory(categoryName);
-        if (existingCategory is not null)
-            return await GetExistingSubcategory(name, existingCategory) ??
-                   await CreateSubcategory(name, existingCategory);
+        if (GetExistingCategory(categoryName) is { } existingCategory)
+            return GetExistingSubcategory(name, existingCategory) ??
+                   CreateSubcategory(name, existingCategory);
 
-        var category = await CreateCategory(categoryName);
+        var category = CreateCategory(categoryName);
 
-        return await CreateSubcategory(name, category);
+        return CreateSubcategory(name, category);
     }
     
-    private async Task<Subcategory?> GetExistingSubcategory(string? name, Category existingCategory) =>
+    private Subcategory? GetExistingSubcategory(string? name, Category existingCategory) =>
         context.Subcategories.Local.SingleOrDefault(
-            SubcategoryByNameAndCategoryExpression(name, existingCategory.Id).Compile()) ??
+            SubcategoryByNameAndCategoryExpression(name, existingCategory.Id))/* ??
         await context.Subcategories.SingleOrDefaultAsync(
-            SubcategoryByNameAndCategoryExpression(name, existingCategory.Id));
+            SubcategoryByNameAndCategoryExpression(name, existingCategory.Id))*/;
 
-    private static Expression<Func<Subcategory, bool>> SubcategoryByNameAndCategoryExpression(string? name,
+    private static Func<Subcategory, bool> SubcategoryByNameAndCategoryExpression(string? name,
         int categoryId) =>
         subcategory => subcategory.Name == name && subcategory.CategoryId == categoryId;
 
-    private async Task<Category?> GetExistingCategory(string categoryName)
+    private Category? GetExistingCategory(string categoryName)
     {
-        return context.Categories.Local.SingleOrDefault(c => c.Name == categoryName) ??
-               await context.Categories.SingleOrDefaultAsync(c => c.Name == categoryName);
+        return context.Categories.Local.SingleOrDefault(c => c.Name == categoryName) /*??
+               await context.Categories.SingleOrDefaultAsync(c => c.Name == categoryName)*/;
     }
 }

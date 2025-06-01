@@ -34,7 +34,7 @@ public static class ReportRequestExtensions
              && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
 }
 
-public class ReportUseCase(ApplicationContext context) : IReportUseCase
+public class ReportUseCase(ApplicationContext context) : IReportUseCase, IDisposable
 {
     public async Task<Report> GetReport(ReportRequest request)
     {
@@ -47,5 +47,11 @@ public class ReportUseCase(ApplicationContext context) : IReportUseCase
                 .ThenInclude(sub => sub.Category)
                 .ToListAsync())
             .CreateReport(request);
+    }
+
+    public void Dispose()
+    {
+        context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

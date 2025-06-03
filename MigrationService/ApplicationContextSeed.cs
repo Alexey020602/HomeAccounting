@@ -1,7 +1,6 @@
-using Core.Model.Requests;
-using Core.Model;
-using Core.Services;
-using DataBase;
+using Checks.Api.Requests;
+using Checks.Core;
+using Checks.DataBase;
 
 namespace MigrationService;
 
@@ -45,7 +44,7 @@ public class ApplicationContextSeed
         try
         {
             await AddDefaultUser(token);
-            foreach (var request in requests) await checkUseCase.SaveCheck(request, User.Default);
+            // foreach (var request in requests) await checkUseCase.SaveCheck(request, User.Default);
         }
         catch (Exception ex)
         {
@@ -56,9 +55,9 @@ public class ApplicationContextSeed
 
     private Task AddDefaultUser(CancellationToken token = default)
     {
-        if (context.Users.Any(user => user.Id == DataBase.Entities.User.Default.Id)) return Task.CompletedTask;
+        if (context.Users.Any(user => user.Id == Checks.DataBase.Entities.User.Default.Id)) return Task.CompletedTask;
         
-        context.Users.Add(DataBase.Entities.User.Default);
+        context.Users.Add(Checks.DataBase.Entities.User.Default);
         
         return context.SaveChangesAsync(token);
     }

@@ -1,10 +1,12 @@
+using Checks.Core;
 using Core;
 using Core.Services;
-using DataBase;
+using Checks.DataBase;
 using FnsChecksApi;
 using Microsoft.EntityFrameworkCore;
 using MigrationService;
 using Refit;
+using Shared.Model.NormalizedChecks;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddTransient<ApplicationContextSeed>();

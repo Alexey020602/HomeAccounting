@@ -1,6 +1,6 @@
 using Authorization.Extensions;
-using DataBase;
-using DataBase.Entities;
+using Checks.DataBase;
+using Checks.DataBase.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

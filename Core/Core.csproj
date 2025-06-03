@@ -7,4 +7,9 @@
         <WarningsAsErrors>Nullable</WarningsAsErrors>
     </PropertyGroup>
 
+    <ItemGroup>
+<!--      <ProjectReference Include="..\Checks\Checks.csproj" />-->
+      <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
+    </ItemGroup>
+
 </Project>

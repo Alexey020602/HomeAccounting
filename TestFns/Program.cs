@@ -1,4 +1,4 @@
-﻿using DataBase;
+﻿using Checks.DataBase;
 using FnsChecksApi;
 using FnsChecksApi.Requests;
 using Microsoft.EntityFrameworkCore;

@@ -1,26 +1,21 @@
 using Api;
 using Authorization;
 using Authorization.DependencyInjection;
-using Core;
-using Core.Model.Report;
-using Core.Model.Requests;
+using Checks.Api;
+using Checks.Core;
+using Checks.DataBase;
 using Core.Services;
-using DataBase;
 using FnsChecksApi;
-using FnsChecksApi.Dto.Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Refit;
-using SkiaSharp;
-using ZXing;
-using BarcodeReader = ZXing.SkiaSharp.BarcodeReader;
+using Shared.Model.NormalizedChecks;
+using Checks.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,12 +34,15 @@ builder.Services.AddRefitClient<IReceiptService>()
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
 builder.Services.AddScoped<ICheckSource, CheckSource>();
-builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>();
-builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
+
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
-builder.Services.AddTransient<IBarcodeService, BarcodeService>();
+builder.Services.AddCheckModule();
+
 builder.Services.AddTransient<IAccountingSettingsService, ConfigurationAccountingSettingsService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(ChecksController).Assembly)
+    .AddApplicationPart(typeof(AuthorizationController).Assembly)
+    ;
 
 builder.Services.AddAuthorization(builder.Configuration);
 

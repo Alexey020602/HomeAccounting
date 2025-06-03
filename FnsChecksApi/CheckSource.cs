@@ -1,11 +1,11 @@
-using Core.Extensions;
-using Core.Model.Normalized;
-using Core.Model.Requests;
+using Checks.Api.Requests;
 using Core.Services;
 using FnsChecksApi.Dto;
 using FnsChecksApi.Dto.Categorized;
 using FnsChecksApi.Dto.Fns;
 using FnsChecksApi.Requests;
+using Shared.Model.NormalizedChecks;
+using Shared.Model.Requests;
 using Root = FnsChecksApi.Dto.Fns.Root;
 
 namespace FnsChecksApi;

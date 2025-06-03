@@ -1,11 +1,6 @@
-﻿using Core.Model.Report;
-using DataBase;
-using Model = Core.Model.ChecksList;
-using DataBase.Entities;
-using DataBase.Mappers;
-using Microsoft.EntityFrameworkCore;
-using Category = DataBase.Entities.Category;
-using ModelCategory = Core.Model.ChecksList.Category;
+﻿using Checks.DataBase.Entities;
+using Checks.DataBase.Mappers;
+using Category = Checks.DataBase.Entities.Category;
 
 namespace HomeAccountingTests;
 //Надо проверить группировку 

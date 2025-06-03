@@ -1,0 +1,24 @@
+using Shared.Model;
+
+namespace Checks.Core;
+
+static class CheckDtoExtensions
+{
+    public static AddCheckRequest CreateFromCheckDto(this CheckDto check, User user) => new(
+        user,
+        check.PurchaseDate,
+        check.Fn,
+        check.Fd,
+        check.Fp,
+        check.Sum,
+        check.Products.Select(ConvertToAddCheckRequestProduct).ToList());
+
+    private static AddCheckRequest.Product ConvertToAddCheckRequestProduct(this ProductDto product) =>
+        new AddCheckRequest.Product(
+            product.Name,
+            product.Quantity,
+            product.Price,
+            product.Sum,
+            product.Subcategory,
+            product.Category);
+}

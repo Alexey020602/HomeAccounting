@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using DataBase.Entities;
+using Checks.DataBase.Entities;
 
 namespace Authorization;
 

@@ -13,8 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Checks\Checks.csproj" />
         <ProjectReference Include="..\Core\Core.csproj" />
-        <ProjectReference Include="..\DataBase\DataBase.csproj"/>
+        <ProjectReference Include="..\Checks.DataBase\Checks.DataBase.csproj" />
     </ItemGroup>
 
 </Project>

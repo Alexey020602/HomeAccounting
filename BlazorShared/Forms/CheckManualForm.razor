@@ -1,5 +1,6 @@
 @using System.ComponentModel.DataAnnotations
-@using Core.Model.Requests
+@using Checks.Api.Requests
+@using Shared.Model.Requests
 
 <MudCard Elevation="5">
     <MudCardContent>
@@ -55,7 +56,7 @@
         public string Sum { get; set; } = "";
         [Required(ErrorMessage = "Необходимо ввести дату покупки")] public DateTime? PurchaseDate { get; set; }
 
-        public CheckRequest ToCheckRequest() => new CheckRequest(Fn, Fd, Fp, Sum, PurchaseDate ?? throw new Exception("Не выбрана дата"), DateTime.Now);
+        public CheckRequest ToCheckRequest() => new CheckRequest(Fn, Fd, Fp, Sum, PurchaseDate ?? throw new Exception("Не выбрана дата"));
     }
 
     private ManualInputModel ManualModel { get; set; } = new();

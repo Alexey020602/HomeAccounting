@@ -3,11 +3,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Authorization.Extensions;
 using Authorization.Models;
-using DataBase.Entities;
+using Checks.DataBase.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using User = Core.Model.User;
+using User = Shared.Model.User;
 
 namespace Authorization;
 

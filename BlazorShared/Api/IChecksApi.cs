@@ -1,7 +1,9 @@
 using BlazorShared.Api.Attributes;
-using Core.Model.ChecksList;
-using Core.Model.Requests;
+using Checks.Api.Requests;
 using Refit;
+using Shared.Model.Checks;
+using Shared.Model.Requests;
+
 
 namespace BlazorShared.Api;
 

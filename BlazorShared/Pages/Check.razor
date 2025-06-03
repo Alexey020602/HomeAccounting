@@ -2,8 +2,9 @@
 @using BlazorShared.Forms
 @using BlazorShared.Api
 @using BlazorShared.Components
-@using Core.Model.Requests
+@using global::Checks.Api.Requests
 @using Microsoft.AspNetCore.Authorization
+@using Shared.Model.Requests
 
 @attribute [Authorize]
 
@@ -53,7 +54,7 @@
 
 @code {
     [Inject] private IChecksApi ChecksApi { get; set; } = null!;
-    private Core.Model.ChecksList.Check? SavedCheck { get; set; }
+    private Shared.Model.Checks.Check? SavedCheck { get; set; }
     private bool ManualInput { get; set; }
     private string ToggleButtonText => ManualInput ? "Ввести чек файлом" : "Ввести чек вручную";
 

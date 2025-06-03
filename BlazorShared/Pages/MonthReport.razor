@@ -1,10 +1,12 @@
 @page "/MonthReport"
 @using BlazorShared.Api
-@using Core.Model.Report
 @using BlazorShared.Components
 @using BlazorShared.Forms
+@using Core.Reports.Model
 @using Microsoft.AspNetCore.Authorization
-@using DateRange = Core.Model.Report.DateRange
+@using Reports.Core
+@using Reports.Dto
+@using DateRange = Core.Reports.Model.DateRange
 
 @attribute [Authorize]
 

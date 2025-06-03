@@ -1,6 +1,8 @@
 using BlazorShared.Api.Attributes;
-using Core.Model.Report;
+using Core.Reports.Model;
 using Refit;
+using Reports.Core;
+using Reports.Dto;
 
 namespace BlazorShared.Api;
 

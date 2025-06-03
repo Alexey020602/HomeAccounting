@@ -1,7 +1,7 @@
+using Authorization.Dto;
 using BlazorShared.Api;
 using BlazorShared.Authorization;
 using BlazorShared.Authorization.AuthenticationStateProvider;
-using Core.Authorization;
 
 namespace BlazorShared.Services;
 

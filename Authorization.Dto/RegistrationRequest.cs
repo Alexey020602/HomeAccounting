@@ -1,4 +1,4 @@
-namespace Core.Authorization;
+namespace Authorization.Dto;
 
 public class RegistrationRequest
 {

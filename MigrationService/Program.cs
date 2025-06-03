@@ -1,6 +1,4 @@
 using Checks.Core;
-using Core;
-using Core.Services;
 using Checks.DataBase;
 using FnsChecksApi;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +20,7 @@ builder.Services.AddRefitClient<IReceiptService>()
     .AddHttpMessageHandler<HttpLoggingHandler>();
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
-builder.Services.AddScoped<ICheckSource, CheckSource>();
+builder.Services.AddScoped<Shared.Model.NormalizedChecks.ICheckSource, CheckSource>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddTransient<ICheckUseCase, CheckUseCase>();
 if (builder.Environment.IsDevelopment())

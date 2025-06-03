@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Authorization.Dto\Authorization.Dto.csproj" />
       <ProjectReference Include="..\Core\Core.csproj" />
       <ProjectReference Include="..\Checks.DataBase\Checks.DataBase.csproj" />
     </ItemGroup>

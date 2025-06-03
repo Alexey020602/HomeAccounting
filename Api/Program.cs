@@ -16,6 +16,7 @@ using NSwag.AspNetCore;
 using Refit;
 using Shared.Model.NormalizedChecks;
 using Checks.Integrations;
+using Reports.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,15 +34,15 @@ builder.Services.AddRefitClient<IReceiptService>()
     .AddHttpMessageHandler<HttpLoggingHandler>();
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
-builder.Services.AddScoped<ICheckSource, CheckSource>();
+builder.Services.AddScoped<Shared.Model.NormalizedChecks.ICheckSource, CheckSource>();
 
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
 
 builder.Services.AddTransient<IAccountingSettingsService, ConfigurationAccountingSettingsService>();
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(ChecksController).Assembly)
-    .AddApplicationPart(typeof(AuthorizationController).Assembly)
+    // .AddApplicationPart(typeof(ChecksController).Assembly)
+    // .AddApplicationPart(typeof(AuthorizationController).Assembly)
     ;
 
 builder.Services.AddAuthorization(builder.Configuration);

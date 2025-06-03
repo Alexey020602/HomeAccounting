@@ -4,17 +4,10 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <WarningsAsErrors>Nullable</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-<!--      <ProjectReference Include="..\Checks\Checks.csproj" />-->
       <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Authorization\" />
-      <Folder Include="Reports\Model\" />
     </ItemGroup>
 
 </Project>

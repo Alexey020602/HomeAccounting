@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Authorization;
+namespace Authorization.Dto;
 
 public class LoginRequest
 {

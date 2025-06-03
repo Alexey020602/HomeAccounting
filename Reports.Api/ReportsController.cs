@@ -1,9 +1,8 @@
-using Core.Model.Report;
-using Core.Services;
+using Core.Reports.Model;
 using Microsoft.AspNetCore.Mvc;
-using Refit;
+using Reports.Core;
 
-namespace Api.Controllers;
+namespace Reports.Api;
 
 [ApiController]
 [Route("[controller]")]

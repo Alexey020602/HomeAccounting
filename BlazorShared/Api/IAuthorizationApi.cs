@@ -1,5 +1,5 @@
+using Authorization.Dto;
 using BlazorShared.Api.Attributes;
-using Core.Authorization;
 using Refit;
 
 namespace BlazorShared.Api;

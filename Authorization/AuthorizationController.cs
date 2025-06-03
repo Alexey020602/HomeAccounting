@@ -1,6 +1,6 @@
+using Authorization.Dto;
 using Authorization.Extensions;
 using Authorization.Models;
-using Core.Authorization;
 using Checks.DataBase;
 using Checks.DataBase.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

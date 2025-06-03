@@ -1,13 +1,7 @@
 using System.Linq.Expressions;
-using Core.Model;
-using Core.Model.Report;
-using Core.Services;
-using Checks.DataBase.Mappers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Check = Checks.DataBase.Entities.Check;
-using DbCheck = Checks.DataBase.Entities.Check;
-namespace Checks.DataBase;
+using Shared.Model.Checks;
+
+namespace Reports.Core;
 
 // public static class AccountingSettingsServiceExtensions
 // {
@@ -34,24 +28,19 @@ public static class ReportRequestExtensions
              && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
 }
 
-public class ReportUseCase(ApplicationContext context) : IReportUseCase, IDisposable
+public class ReportUseCase() : IReportUseCase
 {
     public async Task<Report> GetReport(ReportRequest request)
     {
-        return (await context
-                .Checks
-                .AsNoTracking()
-                .Where(request.GetPredicate())
-                .Include(c => c.Products)
-                .ThenInclude(p => p.Subcategory)
-                .ThenInclude(sub => sub.Category)
-                .ToListAsync())
-            .CreateReport(request);
-    }
-
-    public void Dispose()
-    {
-        context.Dispose();
-        GC.SuppressFinalize(this);
+        throw new NotImplementedException();
+        // return (await context
+        //         .Checks
+        //         .AsNoTracking()
+        //         .Where(request.GetPredicate())
+        //         .Include(c => c.Products)
+        //         .ThenInclude(p => p.Subcategory)
+        //         .ThenInclude(sub => sub.Category)
+        //         .ToListAsync())
+        //     .CreateReport(request);
     }
 }

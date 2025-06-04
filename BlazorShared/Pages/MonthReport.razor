@@ -83,7 +83,7 @@
         try
         {
             isLoading = true;
-            Report = await ReportsApi.GetMonthReport(new ReportRequest(dateRange));
+            Report = await ReportsApi.GetMonthReport(new Reports.Dto.ReportRequest(dateRange));
         }
         finally
         {

@@ -2,7 +2,7 @@ using BlazorShared.Api.Attributes;
 using Core.Reports.Model;
 using Refit;
 using Reports.Core;
-using Reports.Dto;
+using ReportRequest = Reports.Dto.ReportRequest;
 
 namespace BlazorShared.Api;
 

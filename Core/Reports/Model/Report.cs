@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
-using Shared.Model;
-using Shared.Model.Checks;
+using Checks.Contracts;
+using Core.Model.Report;
 
-namespace Core.Model.Report;
+namespace Core.Reports.Model;
 
 public sealed class Report
 {

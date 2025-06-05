@@ -1,5 +1,6 @@
 using BlazorShared.Api.Attributes;
 using Checks.Api.Requests;
+using Checks.Contracts;
 using Refit;
 using Shared.Model.Checks;
 using Shared.Model.Requests;
@@ -12,14 +13,14 @@ namespace BlazorShared.Api;
 public interface IChecksApi
 {
     [Get("/")]
-    Task<List<Check>> GetChecks();
+    Task<List<CheckDto>> GetChecks();
 
     [Post("/")]
-    Task<Check> GetReceipt(CheckRequest checkRequest);
+    Task<CheckDto> GetReceipt(CheckRequest checkRequest);
 
     [Post("/file")]
     [Multipart]
-    Task<Check> GetReceipt(Stream file, DateTimeOffset addedDate);
+    Task<CheckDto> GetReceipt(Stream file, DateTimeOffset addedDate);
     
-    Task<Check> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
+    Task<CheckDto> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
 }

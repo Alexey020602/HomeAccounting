@@ -26,9 +26,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Authorization\Authorization.csproj" />
-        <ProjectReference Include="..\Checks.Integrations\Checks.Integrations.csproj" />
+        <ProjectReference Include="..\Checks\Checks.csproj" />
         <ProjectReference Include="..\Core\Core.csproj"/>
-        <ProjectReference Include="..\FnsChecksApi\FnsChecksApi.csproj"/>
+        <ProjectReference Include="..\Fns\Fns.csproj" />
     </ItemGroup>
 
     <ItemGroup>

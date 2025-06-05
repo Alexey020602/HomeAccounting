@@ -2,11 +2,10 @@ using Checks.Core;
 using Core;
 using Core.Services;
 using Checks.DataBase;
-using FnsChecksApi;
+using Fns;
 using Microsoft.EntityFrameworkCore;
 using MigrationService;
 using Refit;
-using Shared.Model.NormalizedChecks;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddTransient<ApplicationContextSeed>();
@@ -22,9 +21,8 @@ builder.Services.AddRefitClient<IReceiptService>()
     .AddHttpMessageHandler<HttpLoggingHandler>();
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
-builder.Services.AddScoped<ICheckSource, CheckSource>();
+// builder.Services.AddScoped<ICheckSource, CheckSource>();
 builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
-builder.Services.AddTransient<ICheckUseCase, CheckUseCase>();
 if (builder.Environment.IsDevelopment())
     builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
 else

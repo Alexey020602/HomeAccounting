@@ -1,4 +1,5 @@
 using Core.Model.Report;
+using Core.Reports.Model;
 using Check = Checks.DataBase.Entities.Check;
 using Entities_Check = Checks.DataBase.Entities.Check;
 

@@ -3,6 +3,7 @@ using Core.Model;
 using Core.Model.Report;
 using Core.Services;
 using Checks.DataBase.Mappers;
+using Core.Reports.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Check = Checks.DataBase.Entities.Check;

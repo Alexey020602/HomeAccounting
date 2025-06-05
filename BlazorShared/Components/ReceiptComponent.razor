@@ -1,3 +1,4 @@
+@using Checks.Contracts
 @using Shared.Model
 @using Shared.Model.Checks
 <MudCard>
@@ -7,20 +8,20 @@
                 <MudText>Покупка:</MudText>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudText>@Check.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+                <MudText>@CheckDto.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
             </MudItem>
             <MudItem xs="12" md="6">
                 <MudText>Добавлен:</MudText>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudText>@Check.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+                <MudText>@CheckDto.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
             </MudItem>
         </MudGrid>
     </MudCardHeader>
     <MudCardContent>
         <MudCollapse @bind-Expanded="ShowCategories">
-            <MudList T="Check" ReadOnly="true">
-                @foreach (var category in Check.Categories)
+            <MudList T="CheckDto" ReadOnly="true">
+                @foreach (var category in CheckDto.Categories)
                 {
                     <MudListItem Value="category">
                         <CategoryComponent Category="category"/>
@@ -32,7 +33,7 @@
 </MudCard>
 
 @code {
-    [Parameter] public Check Check { get; set; } = null!;
+    [Parameter] public CheckDto CheckDto { get; set; } = null!;
     private bool ShowCategories { get; set; }
     private void Toggle() => ShowCategories = !ShowCategories;
 }

@@ -1,4 +1,5 @@
 using Core.Model.Report;
+using Core.Reports.Model;
 
 namespace Core.Services;
 

@@ -1,3 +1,4 @@
+using Checks.Contracts;
 using Shared.Model;
 using Shared.Model.Checks;
 
@@ -5,8 +6,8 @@ namespace Checks.Core;
 
 public interface ICheckUseCase
 {
-    Task<Check> SaveCheck(SaveCheckRequest saveCheckRequest);
-    Task<IReadOnlyList<Check>> GetChecksAsync(int skip = 0, int take = 100);
+    Task<Contracts.CheckDto> SaveCheck(SaveCheckRequest saveCheckRequest);
+    Task<IReadOnlyList<Contracts.CheckDto>> GetChecksAsync(int skip = 0, int take = 100);
 }
 
 // public static class CheckUseCaseExtensions

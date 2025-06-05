@@ -1,3 +1,4 @@
+using Checks.Contracts;
 using Shared.Model;
 using Shared.Model.Checks;
 using DBCheck = Checks.DataBase.Entities.Check;
@@ -9,9 +10,9 @@ namespace Checks.DataBase.Mappers;
 
 public static class CheckListMapper
 {
-    public static Check ConvertToCheckList(this Entities.Check check)
+    public static CheckDto ConvertToCheckList(this Entities.Check check)
     {
-        return new Check
+        return new CheckDto
         {
             Id = check.Id,
             AddedDate = check.AddedDate,

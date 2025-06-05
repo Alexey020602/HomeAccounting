@@ -1,5 +1,6 @@
 using Shared.Model;
-
+using CheckDto = Fns.Contracts.NormalizedCheck;
+using ProductDto = Fns.Contracts.NormalizedProduct;
 namespace Checks.Core;
 
 static class CheckDtoExtensions

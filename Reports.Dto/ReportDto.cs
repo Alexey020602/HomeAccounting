@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Reports.Model;
+using Shared.Model;
 using Shared.Model.Checks;
 
 namespace Reports.Dto;

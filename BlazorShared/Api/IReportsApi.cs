@@ -1,5 +1,4 @@
 using BlazorShared.Api.Attributes;
-using Core.Reports.Model;
 using Refit;
 using Reports.Core;
 using ReportRequest = Reports.Dto.ReportRequest;

@@ -5,7 +5,7 @@ using Checks.Api;
 using Checks.Core;
 using Checks.DataBase;
 using Core.Services;
-using FnsChecksApi;
+using Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
@@ -14,8 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Refit;
-using Shared.Model.NormalizedChecks;
-using Checks.Integrations;
 using Reports.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,13 +26,15 @@ builder.Services.AddTransient<HttpLoggingHandler>();
 
 builder.Services.AddRefitClient<ICheckService>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
+    .AddDefaultLogger()
     .AddHttpMessageHandler<HttpLoggingHandler>();
 builder.Services.AddRefitClient<IReceiptService>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
+    .AddDefaultLogger()
     .AddHttpMessageHandler<HttpLoggingHandler>();
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
-builder.Services.AddScoped<Shared.Model.NormalizedChecks.ICheckSource, CheckSource>();
+// builder.Services.AddScoped<ICheckSource, CheckSource>();
 
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();

@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
+using Checks.Contracts;
 using Core.Reports.Model;
-using Shared.Model.Checks;
+using Shared.Model;
 
 namespace Reports.Core;
 

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Checks.Contracts;
 using Shared.Model.Checks;
 
 namespace Reports.Core;
@@ -23,7 +24,7 @@ namespace Reports.Core;
 
 public static class ReportRequestExtensions
 {
-    public static Expression<Func<Check, bool>> GetPredicate(this ReportRequest request) => 
+    public static Expression<Func<CheckDto, bool>> GetPredicate(this ReportRequest request) => 
         check => (!request.Range.Start.HasValue || check.PurchaseDate >= request.Range.Start.Value.ToUniversalTime())
              && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
 }

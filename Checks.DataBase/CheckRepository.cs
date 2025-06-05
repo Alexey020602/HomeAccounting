@@ -2,13 +2,13 @@ using Checks.Core;
 using Checks.DataBase.Entities;
 using Checks.DataBase.Mappers;
 using Microsoft.EntityFrameworkCore;
-using Check = Shared.Model.Checks.Check;
+using CheckDto = Checks.Contracts.CheckDto;
 
 namespace Checks.DataBase;
 
 public class CheckRepository(ApplicationContext context) : ICheckRepository
 {
-    public async Task<IReadOnlyList<Check>> GetChecksAsync(int skip = 0, int take = 100)
+    public async Task<IReadOnlyList<CheckDto>> GetChecksAsync(int skip = 0, int take = 100)
     {
         var checks = 
             
@@ -24,7 +24,7 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
 
         return checks.ConvertAll(check => check.ConvertToCheckList());
     }
-    public async Task<Check?> GetCheckByRequest(GetCheckRequest checkRequest)
+    public async Task<CheckDto?> GetCheckByRequest(GetCheckRequest checkRequest)
     {
         var dbCheck = await context.Checks
             .Include(c => c.Products)
@@ -37,7 +37,7 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
                 c.Fp == checkRequest.Fp);
         return dbCheck?.ConvertToCheckList();
     }
-    public async Task<Check> SaveCheck(AddCheckRequest addCheckRequest)
+    public async Task<CheckDto> SaveCheck(AddCheckRequest addCheckRequest)
     {
         await context.Categories
             .Include(category => addCheckRequest.Products.Any(product => product.Category == category.Name))

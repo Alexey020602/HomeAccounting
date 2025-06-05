@@ -2,8 +2,8 @@
 @inject IChecksApi ChecksApi
 @using BlazorShared.Api
 @using BlazorShared.Components
+@using global::Checks.Contracts
 @using Microsoft.AspNetCore.Authorization
-@using CoreCheck = Shared.Model.Checks.Check
 
 @attribute [Authorize]
 
@@ -14,7 +14,7 @@
     </MudCardHeader>
     
     <MudCardContent>
-        <MudList T="CoreCheck" ReadOnly="true">
+        <MudList T="CheckDto" ReadOnly="true">
             @foreach (var check in Receipts)
             {
                 <MudListItem Value="check">
@@ -27,7 +27,7 @@
     
 </MudCard>
 @code {
-    private List<CoreCheck> Receipts { get; set; } = [];
+    private List<CheckDto> Receipts { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,9 +35,9 @@
         Receipts.Sort(new DateComparer());
     }
 
-    private sealed class DateComparer : IComparer<CoreCheck>
+    private sealed class DateComparer : IComparer<CheckDto>
     {
-        public int Compare(CoreCheck? x, CoreCheck? y)
+        public int Compare(CheckDto? x, CheckDto? y)
         {
             ArgumentNullException.ThrowIfNull(x);
             ArgumentNullException.ThrowIfNull(y);

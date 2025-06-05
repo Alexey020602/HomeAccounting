@@ -9,6 +9,7 @@
 
     <ItemGroup>
 <!--      <ProjectReference Include="..\Checks\Checks.csproj" />-->
+      <ProjectReference Include="..\Checks.Contracts\Checks.Contracts.csproj" />
       <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
     </ItemGroup>
 

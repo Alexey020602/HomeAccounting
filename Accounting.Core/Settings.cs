@@ -1,4 +1,4 @@
-namespace Core.Model.Accounting;
+namespace Accounting.Core;
 
 public class Settings
 {

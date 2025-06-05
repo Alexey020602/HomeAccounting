@@ -15,7 +15,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Checks.Core\Checks.Core.csproj" />
-      <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 
 </Project>

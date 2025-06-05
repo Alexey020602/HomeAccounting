@@ -1,3 +1,6 @@
+using Accounting.Api;
+using Accounting.Contracts;
+using Accounting.Core;
 using Api;
 using Authorization;
 using Authorization.DependencyInjection;
@@ -39,7 +42,7 @@ builder.Services.AddScoped<ICheckRepository, CheckRepository>();
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
 
-builder.Services.AddTransient<IAccountingSettingsService, ConfigurationAccountingSettingsService>();
+builder.Services.AddAccountingModule();
 builder.Services.AddControllers()
     // .AddApplicationPart(typeof(ChecksController).Assembly)
     // .AddApplicationPart(typeof(AuthorizationController).Assembly)

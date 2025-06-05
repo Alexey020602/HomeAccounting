@@ -1,6 +1,5 @@
-using Core.Model.Accounting;
-
-namespace Api;
+using Microsoft.Extensions.Configuration;
+namespace Accounting.Core;
 
 public static class ConfigurationExtensions
 {

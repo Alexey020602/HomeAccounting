@@ -1,4 +1,4 @@
-namespace Core.Services;
+namespace Accounting.Contracts;
 
 public interface IAccountingSettingsService
 {

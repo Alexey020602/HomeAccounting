@@ -1,7 +1,7 @@
-using Core.Services;
+using Accounting.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace Accounting.Api;
 
 [ApiController]
 [Route("[controller]")]

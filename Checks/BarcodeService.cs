@@ -1,9 +1,7 @@
-using Checks.Api;
-using Core.Services;
 using SkiaSharp;
 using ZXing;
 
-namespace Api;
+namespace Checks.Api;
 
 public class BarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
 {

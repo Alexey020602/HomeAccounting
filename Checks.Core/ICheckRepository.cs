@@ -1,3 +1,4 @@
+using Authorization.Contracts;
 using Checks.Contracts;
 using Shared.Model;
 using Shared.Model.Checks;
@@ -21,7 +22,7 @@ public class GetCheckRequest(string fn, string fd, string fp, string s, DateTime
     public DateTime T { get; } = t;
 }
 
-public record AddCheckRequest(User User, DateTime PurchaseDate, string Fn, string Fd, string Fp, string S, IReadOnlyList<AddCheckRequest.Product> Products)
+public record AddCheckRequest(string Login, DateTime PurchaseDate, string Fn, string Fd, string Fp, string S, IReadOnlyList<AddCheckRequest.Product> Products)
 {
     public record Product(
         string Name,

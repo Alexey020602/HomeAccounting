@@ -1,6 +1,6 @@
+using Authorization.Contracts;
 using Checks.Api.Requests;
 using Checks.Core;
-using Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Model;
@@ -18,7 +18,7 @@ public class ChecksController(ICheckUseCase checkUseCase) : ControllerBase
     //todo подумать над изменением типа запроса на Put
     [HttpPost]
     public async Task<IActionResult> AddCheck([FromBody] CheckRequest checkRequest) =>
-        Ok(await checkUseCase.SaveCheck(checkRequest.SaveCheckRequest(HttpContext.User.CreateUser())));
+        Ok(await checkUseCase.SaveCheck(checkRequest.SaveCheckRequest(HttpContext.User.GetLogin())));
 
     [HttpPost("file")]
     public async Task<IActionResult> AddCheckWithFile(IFormFile file, DateTimeOffset addedDate,
@@ -27,7 +27,7 @@ public class ChecksController(ICheckUseCase checkUseCase) : ControllerBase
         var qrResult = await barcodeService.ReadBarcodeAsync(file.OpenReadStream());
         return Ok(await checkUseCase.SaveCheck(
             new CheckRequest(qrResult, addedDate)
-                .SaveCheckRequest(HttpContext.User.CreateUser())
+                .SaveCheckRequest(HttpContext.User.GetLogin())
         ));
     }
 }

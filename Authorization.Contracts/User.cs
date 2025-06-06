@@ -1,4 +1,4 @@
-namespace Shared.Model;
+namespace Authorization.Contracts;
 
 public class User(string login, string name)
 {

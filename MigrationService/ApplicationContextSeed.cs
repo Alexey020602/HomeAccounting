@@ -1,6 +1,6 @@
-using Checks.Api.Requests;
 using Checks.Core;
 using Checks.DataBase;
+using Shared.Model.Requests;
 
 namespace MigrationService;
 

@@ -1,5 +1,5 @@
-using Core.Reports.Model;
 using Microsoft.AspNetCore.Mvc;
+using Reports.Contracts;
 using Reports.Core;
 
 namespace Reports.Api;

@@ -1,4 +1,4 @@
-namespace Core.Reports.Model;
+namespace Shared.Model;
 
 public static class DateRangeExtensions
 {

@@ -1,6 +1,5 @@
 using Accounting.Contracts;
 using Accounting.Core;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Accounting.Api;

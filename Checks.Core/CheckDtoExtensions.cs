@@ -1,3 +1,4 @@
+using Authorization.Contracts;
 using Shared.Model;
 using CheckDto = Fns.Contracts.NormalizedCheck;
 using ProductDto = Fns.Contracts.NormalizedProduct;
@@ -5,8 +6,8 @@ namespace Checks.Core;
 
 static class CheckDtoExtensions
 {
-    public static AddCheckRequest CreateFromCheckDto(this CheckDto check, User user) => new(
-        user,
+    public static AddCheckRequest CreateFromCheckDto(this CheckDto check, string login) => new(
+        login,
         check.PurchaseDate,
         check.Fn,
         check.Fd,

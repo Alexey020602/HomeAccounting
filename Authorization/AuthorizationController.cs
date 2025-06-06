@@ -1,4 +1,4 @@
-using Authorization.Dto;
+using Authorization.Contracts;
 using Authorization.Extensions;
 using Authorization.Models;
 using Checks.DataBase;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using User = Checks.DataBase.Entities.User;
 
 namespace Authorization;
 

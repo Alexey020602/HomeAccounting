@@ -1,6 +1,4 @@
-using Api;
 using Checks.Core;
-using Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp;
 using ZXing;

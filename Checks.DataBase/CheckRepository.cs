@@ -45,8 +45,8 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
         await context.Subcategories
             .Include(subcategory => addCheckRequest.Products.Any(product => product.Subcategory == subcategory.Name))
             .LoadAsync();
-        var userEntity = await context.Users.FindAsync(addCheckRequest.User.Login) ??
-                         throw new KeyNotFoundException($"User with login {addCheckRequest.User.Login} not found");
+        var userEntity = await context.Users.FindAsync(addCheckRequest.Login) ??
+                         throw new KeyNotFoundException($"User with login {addCheckRequest.Login} not found");
         
         var check = new DataBase.Entities.Check
         {

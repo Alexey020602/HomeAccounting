@@ -1,4 +1,4 @@
-namespace Authorization.Dto;
+namespace Authorization.Contracts;
 
 public class RegistrationRequest
 {

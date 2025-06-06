@@ -1,4 +1,3 @@
-using Core.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Checks.Api;

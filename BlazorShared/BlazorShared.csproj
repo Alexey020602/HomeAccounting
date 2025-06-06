@@ -23,8 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Authorization.Dto\Authorization.Dto.csproj" />
-      <ProjectReference Include="..\Reports.Dto\Reports.Dto.csproj" />
+      <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
+      <ProjectReference Include="..\Checks.Contracts\Checks.Contracts.csproj" />
+      <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

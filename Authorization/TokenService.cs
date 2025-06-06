@@ -7,7 +7,7 @@ using Checks.DataBase.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using User = Shared.Model.User;
+using User = Authorization.Contracts.User;
 
 namespace Authorization;
 

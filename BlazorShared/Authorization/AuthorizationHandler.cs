@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Authorization.Dto;
+using Authorization.Contracts;
 using BlazorShared.Api;
 using BlazorShared.Authorization.Dto;
 

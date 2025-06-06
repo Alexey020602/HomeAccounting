@@ -53,19 +53,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Accounting", "Accounting", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reports", "Reports", "{0B1F655C-79A5-4A4B-9F27-ADB2DDBA5C42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Dto", "Authorization.Dto\Authorization.Dto.csproj", "{E62AA4E9-8D53-481C-B974-6A044ABCA949}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Contracts", "Authorization.Contracts\Authorization.Contracts.csproj", "{E62AA4E9-8D53-481C-B974-6A044ABCA949}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Api", "Reports.Api\Reports.Api.csproj", "{63A39C22-96A6-41FF-B2D7-8AE9D1E77608}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Core", "Reports.Core\Reports.Core.csproj", "{B3BB3858-1FB5-4CB0-A483-068F8C3401E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Dto", "Reports.Dto\Reports.Dto.csproj", "{87AE9DD3-7EE8-450C-B706-A240FF402ADD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Contracts", "Reports.Contracts\Reports.Contracts.csproj", "{87AE9DD3-7EE8-450C-B706-A240FF402ADD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accounting.Core", "Accounting.Core\Accounting.Core.csproj", "{9552C116-F994-477E-8A49-BC7B404772D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accounting.Contracts", "Accounting.Contracts\Accounting.Contracts.csproj", "{B1DC57FD-3961-4A03-9BC5-1F3B28CA319E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accounting.Api", "Accounting.Api\Accounting.Api.csproj", "{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{D74C0A99-878F-4293-A590-76917F872F28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{C7C24919-DDD8-4F83-BADE-022BF0DBDB15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,6 +161,10 @@ Global
 		{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C24919-DDD8-4F83-BADE-022BF0DBDB15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C24919-DDD8-4F83-BADE-022BF0DBDB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C24919-DDD8-4F83-BADE-022BF0DBDB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C24919-DDD8-4F83-BADE-022BF0DBDB15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B} = {0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}
@@ -178,5 +186,7 @@ Global
 		{9552C116-F994-477E-8A49-BC7B404772D4} = {3E953E04-4892-4A65-8511-C2E2AD14E573}
 		{B1DC57FD-3961-4A03-9BC5-1F3B28CA319E} = {3E953E04-4892-4A65-8511-C2E2AD14E573}
 		{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7} = {3E953E04-4892-4A65-8511-C2E2AD14E573}
+		{4F61174D-926D-47D1-BE35-95D5FE85E748} = {D74C0A99-878F-4293-A590-76917F872F28}
+		{C7C24919-DDD8-4F83-BADE-022BF0DBDB15} = {D74C0A99-878F-4293-A590-76917F872F28}
 	EndGlobalSection
 EndGlobal

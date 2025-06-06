@@ -1,8 +1,6 @@
-@using Reports.Core
-@using Reports.Dto
+@using Reports.Contracts
 @using Checks.Contracts
-@using Shared.Model
-@using Shared.Model.Checks
+
 <style>.mud-chart-line { overflow: visible; }</style>
 <MudCard>
     <MudCardHeader @onclick="@Toggle" Style="cursor: pointer">
@@ -41,7 +39,7 @@
 </MudCard>
 
 @code {
-    [Parameter] public Report Report { get; set; } = null!;
+    [Parameter] public ReportDto Report { get; set; } = null!;
 
     private readonly ChartOptions chartOptions = new()
     {
@@ -60,7 +58,7 @@
         }
     ];
 
-    private double[] ChartData => Report.Categories.Select(category => category.Sum.ToDouble()).ToArray();
+    private double[] ChartData => Report.Categories.Select(category =>(double) category.PennySum).ToArray();
     private string[] Labels => Report.Categories.Select(c => c.Name).ToArray();
     private bool ShowCategories { get; set; }
     private void Toggle() => ShowCategories = !ShowCategories;

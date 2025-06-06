@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Reports.Core\Reports.Core.csproj" />
-      <ProjectReference Include="..\Reports.Dto\Reports.Dto.csproj" />
+      <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

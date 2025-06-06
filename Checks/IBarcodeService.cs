@@ -1,4 +1,4 @@
-namespace Core.Services;
+namespace Checks.Api;
 
 public interface IBarcodeService
 {

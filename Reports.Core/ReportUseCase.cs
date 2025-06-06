@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Checks.Contracts;
+using Reports.Contracts;
 using Shared.Model.Checks;
 
 namespace Reports.Core;
@@ -31,9 +32,9 @@ public static class ReportRequestExtensions
 
 public class ReportUseCase() : IReportUseCase
 {
-    public async Task<Report> GetReport(ReportRequest request)
+    public Task<ReportDto> GetReport(ReportRequest request)
     {
-        throw new NotImplementedException();
+        return Task.FromException<ReportDto>(new NotImplementedException());
         // return (await context
         //         .Checks
         //         .AsNoTracking()

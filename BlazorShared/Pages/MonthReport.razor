@@ -2,11 +2,9 @@
 @using BlazorShared.Api
 @using BlazorShared.Components
 @using BlazorShared.Forms
-@using Core.Reports.Model
 @using Microsoft.AspNetCore.Authorization
-@using Reports.Core
-@using Reports.Dto
-@using DateRange = Core.Reports.Model.DateRange
+@using Reports.Contracts
+@using DateRange = Shared.Model.DateRange
 
 @attribute [Authorize]
 
@@ -75,7 +73,7 @@
     //     get => end;
     //     set => end = value ?? DateTime.Now;
     // }
-    private Report? Report { get; set; }
+    private ReportDto? Report { get; set; }
     private bool isLoading;
 
     private async Task LoadReport()
@@ -83,7 +81,7 @@
         try
         {
             isLoading = true;
-            Report = await ReportsApi.GetMonthReport(new Reports.Dto.ReportRequest(dateRange));
+            Report = await ReportsApi.GetMonthReport(new Reports.Contracts.ReportRequest(dateRange));
         }
         finally
         {

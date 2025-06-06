@@ -1,4 +1,4 @@
-using Core.Reports.Model;
+using Shared.Model;
 using MudDateRange = MudBlazor.DateRange;
 namespace BlazorShared.Extensions;
 

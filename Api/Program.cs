@@ -1,13 +1,9 @@
 using Accounting.Api;
-using Accounting.Contracts;
-using Accounting.Core;
 using Api;
-using Authorization;
 using Authorization.DependencyInjection;
 using Checks.Api;
 using Checks.Core;
 using Checks.DataBase;
-using Core.Services;
 using Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Refit;
+using Reports.Contracts;
 using Reports.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -87,57 +84,60 @@ app.MapControllers()
 
 app.Run();
 
-internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
-    : IOpenApiDocumentTransformer
+namespace Api
 {
-    public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
-        CancellationToken cancellationToken)
+    internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
+        : IOpenApiDocumentTransformer
     {
-        var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
-
-        if (authenticationSchemes.All(scheme => scheme.Name != JwtBearerDefaults.AuthenticationScheme))
-            return;
-
-        var requirements = new Dictionary<string, OpenApiSecurityScheme>
+        public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+            CancellationToken cancellationToken)
         {
-            {
-                JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    In = ParameterLocation.Header,
-                    BearerFormat = "JWT",
-                    Description = "Please insert JWT token",
-                    Name = "Authorization",
-                }
-            },
-            // {
-            //     $"{JwtBearerDefaults.AuthenticationScheme} password", new OpenApiSecurityScheme
-            //     {
-            //         Type = SecuritySchemeType.Http,
-            //         Scheme = "password",
-            //         In = ParameterLocation.Header,
-            //         
-            //     }
-            // }
-        };
+            var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
 
-        document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes = requirements;
-        document.SecurityRequirements.Add(new OpenApiSecurityRequirement()
+            if (authenticationSchemes.All(scheme => scheme.Name != JwtBearerDefaults.AuthenticationScheme))
+                return;
+
+            var requirements = new Dictionary<string, OpenApiSecurityScheme>
             {
                 {
-                    new OpenApiSecurityScheme()
+                    JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        Type = SecuritySchemeType.Http,
+                        Scheme = JwtBearerDefaults.AuthenticationScheme,
+                        In = ParameterLocation.Header,
+                        BearerFormat = "JWT",
+                        Description = "Please insert JWT token",
+                        Name = "Authorization",
+                    }
+                },
+                // {
+                //     $"{JwtBearerDefaults.AuthenticationScheme} password", new OpenApiSecurityScheme
+                //     {
+                //         Type = SecuritySchemeType.Http,
+                //         Scheme = "password",
+                //         In = ParameterLocation.Header,
+                //         
+                //     }
+                // }
+            };
+
+            document.Components ??= new OpenApiComponents();
+            document.Components.SecuritySchemes = requirements;
+            document.SecurityRequirements.Add(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    []
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        []
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 }

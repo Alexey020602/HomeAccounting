@@ -1,7 +1,7 @@
 using BlazorShared.Api.Attributes;
 using Refit;
-using Reports.Core;
-using ReportRequest = Reports.Dto.ReportRequest;
+using Reports.Contracts;
+using ReportRequest = Reports.Contracts.ReportRequest;
 
 namespace BlazorShared.Api;
 
@@ -10,5 +10,5 @@ namespace BlazorShared.Api;
 public interface IReportsApi
 {
     [Put("/")]
-    Task<Report> GetMonthReport(ReportRequest request);
+    Task<ReportDto> GetMonthReport(ReportRequest request);
 }

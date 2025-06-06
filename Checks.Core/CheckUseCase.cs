@@ -16,7 +16,7 @@ public class CheckUseCase(
         return await checkRepository.GetCheckByRequest(saveCheckRequest.CreateGetCheckRequestFromSaveCheckRequest()) ??
                await checkRepository.SaveCheck(
                    (await checkSource.GetCheck(saveCheckRequest.CreateCheckRequestFromSaveCheckRequest()))
-                   .CreateFromCheckDto(saveCheckRequest.User)
+                   .CreateFromCheckDto(saveCheckRequest.Login)
                );
     }
 }

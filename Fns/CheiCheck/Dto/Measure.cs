@@ -1,4 +1,4 @@
-namespace Fns.Dto.Categorized;
+namespace Fns.CheiCheck.Dto;
 
 public record Measure(
     string Type,

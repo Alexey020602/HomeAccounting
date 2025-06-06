@@ -1,4 +1,4 @@
-using Fns.Dto.Fns;
+using Fns.ProverkaCheka.Dto;
 using Fns.Requests;
 using Refit;
 

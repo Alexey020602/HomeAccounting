@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Fns.Dto.Categorized;
+namespace Fns.CheiCheck.Dto;
 
 public class Product
 {

@@ -1,4 +1,4 @@
-namespace Fns.Dto.Fns;
+namespace Fns.ProverkaCheka.Dto;
 
 public record ProductCodeNew(
     Gs1m Gs1m

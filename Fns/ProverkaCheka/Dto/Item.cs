@@ -1,4 +1,4 @@
-namespace Fns.Dto.Fns;
+namespace Fns.ProverkaCheka.Dto;
 
 public record Item(
     int Nds,

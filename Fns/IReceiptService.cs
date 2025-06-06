@@ -1,4 +1,4 @@
-using Fns.Dto.Categorized;
+using Fns.CheiCheck.Dto;
 using Refit;
 
 namespace Fns;

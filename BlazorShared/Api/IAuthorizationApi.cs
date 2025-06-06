@@ -1,4 +1,4 @@
-using Authorization.Dto;
+using Authorization.Contracts;
 using BlazorShared.Api.Attributes;
 using Refit;
 

@@ -1,4 +1,4 @@
-namespace Checks.Api.Requests;
+namespace Shared.Model.Requests;
 
 public class FileCheckRequest
 {

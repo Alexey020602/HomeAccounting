@@ -1,9 +1,9 @@
+using Fns.CheiCheck.Dto;
 using Fns.Contracts;
-using Fns.Dto.Categorized;
-using Fns.Dto.Fns;
+using Fns.ProverkaCheka.Dto;
 using Fns.Requests;
 using Shared.Model.Requests;
-using Root = Fns.Dto.Fns.Root;
+using Root = Fns.ProverkaCheka.Dto.Root;
 
 namespace Fns;
 

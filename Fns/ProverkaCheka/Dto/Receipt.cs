@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Fns.Dto.Fns;
+namespace Fns.ProverkaCheka.Dto;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "code")]
 [JsonDerivedType(typeof(Root), 1)]

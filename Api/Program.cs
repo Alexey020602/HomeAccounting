@@ -19,6 +19,9 @@ using Reports.Core;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
+builder.AddServiceDefaults()
+    .ConfigureOpenTelemetry()
+    .AddDefaultHealthChecks();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
 builder.Services.AddLogging();
 builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
@@ -54,6 +57,8 @@ else
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+app.MapDefaultControllerRoute();
 
 if (app.Environment.IsDevelopment())
 {

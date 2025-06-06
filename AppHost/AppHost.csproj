@@ -21,6 +21,7 @@
         <ProjectReference Include="..\Client\Client.csproj"/>
         <ProjectReference Include="..\MigrationService\MigrationService.csproj"/>
         <ProjectReference Include="..\Api\Api.csproj"/>
+        <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
     </ItemGroup>
 
 </Project>

@@ -8,7 +8,9 @@ using Refit;
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddTransient<ApplicationContextSeed>();
 builder.Services.AddLogging();
-
+builder.AddServiceDefaults()
+    .AddDefaultHealthChecks()
+    .ConfigureOpenTelemetry();
 builder.Services.AddTransient<HttpLoggingHandler>();
 
 builder.Services.AddRefitClient<ICheckService>()

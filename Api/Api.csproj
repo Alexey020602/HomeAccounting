@@ -30,6 +30,7 @@
         <ProjectReference Include="..\Checks\Checks.csproj" />
         <ProjectReference Include="..\Reports.Api\Reports.Api.csproj" />
         <ProjectReference Include="..\Fns\Fns.csproj" />
+        <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
     </ItemGroup>
 
     <ItemGroup>

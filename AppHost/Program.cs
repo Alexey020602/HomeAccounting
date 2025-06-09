@@ -1,36 +1,41 @@
+using Microsoft.Extensions.DependencyInjection;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
-
+builder.Services.AddHealthChecks();
+builder.AddDockerComposeEnvironment("docker");
 var db = builder
     .AddPostgres("db")
+    .WithLifetime(ContainerLifetime.Persistent)
     .WithDataVolume()
     .WithPgAdmin()
     .AddDatabase("HomeAccounting");
 
 var migrations = builder
     .AddProject<MigrationService>("migrations")
+    
     .WithReference(db)
     .WaitFor(db);
 
 var api = builder
     .AddProject<Api>("api")
     .WithExternalHttpEndpoints()
-    // .WithHttpEndpoint()
-    // .WithHttpsEndpoint()
     .WaitForCompletion(migrations)
-    .WithReference(db);
-// .WithExternalHttpEndpoints()
+    .WithReference(db)
+    .WithHttpHealthCheck("/health");
 ;
 
-builder.AddProject<Client>("client")
-    // .WithExternalHttpEndpoints()
-    // .WithHttpEndpoint(port: 5000, targetPort: 5160)
-    // .WithHttpsEndpoint()
-    // .WithReference(api)
-    // .WaitFor(api)
-    // .WithEnvironment("ApiUrlHttp", api.GetEndpoint("http"))
-    // .WithEnvironment("ApiUrlHttps", api.GetEndpoint("https"))
+var client = builder.AddProject<Client>("client")
+    .WaitFor(api)
+    ;
+
+var yarp = builder
+        .AddProject<Gateway>("gateway")
+        // .AddYarp("apigateway")
+        // .WithConfigFile("yarp.json")
+        .WithReference(api)
+        .WithReference(client)
+        .WithExternalHttpEndpoints()
     ;
 
 builder.Build().Run();

@@ -14,11 +14,15 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Docker" Version="9.3.0-preview.1.25265.20" />
+        <PackageReference Include="Aspire.Hosting.Kubernetes" Version="9.3.0-preview.1.25265.20" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Yarp" Version="9.3.0-preview.1.25265.20" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Client\Client.csproj"/>
+        <ProjectReference Include="..\Gateway\Gateway.csproj" />
         <ProjectReference Include="..\MigrationService\MigrationService.csproj"/>
         <ProjectReference Include="..\Api\Api.csproj"/>
         <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />

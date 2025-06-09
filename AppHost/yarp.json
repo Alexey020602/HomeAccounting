@@ -1,0 +1,34 @@
+{
+  "ReverseProxy": {
+    "Routes": {
+      "client": {
+        "ClusterId": "client",
+        "Match": {
+          "Path": "/{**catch-all}"
+        }
+      },
+      "api": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/api/{**catch-all}"
+        }
+      }
+    },
+    "Clusters": {
+      "api": {
+        "Destinations": {
+          "api/d1": {
+            "Address": "http://api/"
+          }
+        }
+      },
+      "client": {
+        "Destinations": {
+          "client/d1": {
+            "Address": "http://client/"
+          }
+        }
+      }
+    }
+  }
+}

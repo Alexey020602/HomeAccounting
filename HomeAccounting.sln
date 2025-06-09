@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Utils", "Shared.Utils\Shared.Utils.csproj", "{E46F8747-1858-4905-8DBF-0BF19B4DFE4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{B57D41BA-42B2-4B56-9353-CE7E8437DB90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{E46F8747-1858-4905-8DBF-0BF19B4DFE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E46F8747-1858-4905-8DBF-0BF19B4DFE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E46F8747-1858-4905-8DBF-0BF19B4DFE4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B57D41BA-42B2-4B56-9353-CE7E8437DB90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B57D41BA-42B2-4B56-9353-CE7E8437DB90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B57D41BA-42B2-4B56-9353-CE7E8437DB90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B57D41BA-42B2-4B56-9353-CE7E8437DB90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B} = {0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}

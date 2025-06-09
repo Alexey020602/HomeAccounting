@@ -15,7 +15,7 @@ public class CheckUseCase(
     public async Task<IReadOnlyList<Category>> GetCategoriesAsync(GetChecksQuery getChecksQuery) =>
         (await checkRepository.GetProductsAsync(getChecksQuery)).ConvertToCategories();
 
-    public async Task<Contracts.CheckDto> SaveCheck(SaveCheckRequest saveCheckRequest)
+    public async Task<CheckDto> SaveCheck(SaveCheckRequest saveCheckRequest)
     {
         if (await checkRepository.GetCheckByRequest(saveCheckRequest.CreateGetCheckRequestFromSaveCheckRequest()) is
             { } check)

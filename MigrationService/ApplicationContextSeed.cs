@@ -1,3 +1,4 @@
+using Authorization.Contracts;
 using Checks.Contracts;
 using Checks.Core;
 using Checks.DataBase;
@@ -11,7 +12,7 @@ public class ApplicationContextSeed
     private readonly ApplicationContext context;
     private readonly IHostEnvironment hostEnvironment;
     private readonly ILogger<ApplicationContextSeed> logger;
-    private readonly IReadOnlyList<RawCheckRequest> requests;
+    private readonly IReadOnlyList<SaveCheckRequest> requests;
 
     public ApplicationContextSeed(
         ICheckUseCase checkUseCase,
@@ -32,10 +33,15 @@ public class ApplicationContextSeed
                 "t=20250111T105907&s=1236.35&fn=7380440801290534&i=10277&fp=840967215&n=1",
                 "t=20250104T1233&s=1289.00&fn=7380440700673345&i=26636&fp=1241320200&n=1"
             }
-            .Select(raw => new RawCheckRequest
+            .Select(raw => new CheckRequest(raw, DateTimeOffset.UtcNow))
+            .Select(t => new SaveCheckRequest
             {
-                QrRaw = raw,
-                AddedTime = DateTimeOffset.UtcNow
+                Fd = t.Fd,
+                S = t.S,
+                T = t.T,
+                Fn = t.Fn,
+                Fp = t.Fp,
+                Login = "00000000-0000-0000-0000-000000000000"
             })
             .ToList();
     }
@@ -45,7 +51,7 @@ public class ApplicationContextSeed
         try
         {
             await AddDefaultUser(token);
-            // foreach (var request in requests) await checkUseCase.SaveCheck(request, User.Default);
+            foreach (var request in requests) await checkUseCase.SaveCheck(request);
         }
         catch (Exception ex)
         {

@@ -8,20 +8,20 @@
                 <MudText>Покупка:</MudText>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudText>@CheckDto.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+                <MudText>@Check.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
             </MudItem>
             <MudItem xs="12" md="6">
                 <MudText>Добавлен:</MudText>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudText>@CheckDto.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+                <MudText>@Check.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
             </MudItem>
         </MudGrid>
     </MudCardHeader>
     <MudCardContent>
         <MudCollapse @bind-Expanded="ShowCategories">
             <MudList T="CheckDto" ReadOnly="true">
-                @foreach (var category in CheckDto.Categories)
+                @foreach (var category in Check.Categories)
                 {
                     <MudListItem Value="category">
                         <CategoryComponent Category="category"/>
@@ -33,7 +33,7 @@
 </MudCard>
 
 @code {
-    [Parameter] public CheckDto CheckDto { get; set; } = null!;
+    [Parameter] public CheckDto Check { get; set; } = null!;
     private bool ShowCategories { get; set; }
     private void Toggle() => ShowCategories = !ShowCategories;
 }

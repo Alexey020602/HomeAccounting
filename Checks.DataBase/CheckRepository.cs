@@ -62,11 +62,13 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
 
     public async Task<Check> SaveCheck(AddCheckRequest addCheckRequest)
     {
+        var categoriesNames = addCheckRequest.Products.Select(p => p.Category);
+        var subcategoriesNames = addCheckRequest.Products.Select(p => p.Subcategory);
         await context.Categories
-            .Include(category => addCheckRequest.Products.Any(product => product.Category == category.Name))
+            .Where(category => categoriesNames.Any(productCategory => productCategory == category.Name))
             .LoadAsync();
         await context.Subcategories
-            .Include(subcategory => addCheckRequest.Products.Any(product => product.Subcategory == subcategory.Name))
+            .Where(subcategory => subcategoriesNames.Any(productSubcategory => productSubcategory == subcategory.Name))
             .LoadAsync();
         var userEntity = await context.Users.FindAsync(addCheckRequest.Login) ??
                          throw new KeyNotFoundException($"User with login {addCheckRequest.Login} not found");

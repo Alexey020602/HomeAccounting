@@ -26,14 +26,12 @@ builder.Services.AddLogging();
 builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 builder.Services.AddTransient<HttpLoggingHandler>();
 
-builder.Services.AddRefitClient<ICheckService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
-    .AddDefaultLogger()
-    .AddHttpMessageHandler<HttpLoggingHandler>();
-builder.Services.AddRefitClient<IReceiptService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
-    .AddDefaultLogger()
-    .AddHttpMessageHandler<HttpLoggingHandler>();
+// builder.Services.AddRefitClient<ICheckService>()
+//     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
+//     .AddHttpMessageHandler<HttpLoggingHandler>();
+// builder.Services.AddRefitClient<IReceiptService>()
+//     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
+//     .AddHttpMessageHandler<HttpLoggingHandler>();
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
 // builder.Services.AddScoped<ICheckSource, CheckSource>();
@@ -41,8 +39,8 @@ builder.Services.AddScoped<ICheckRepository, CheckRepository>();
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
 builder.Services.AddFnsModule();
-
 builder.Services.AddAccountingModule();
+
 builder.Services.AddControllers()
     // .AddApplicationPart(typeof(ChecksController).Assembly)
     // .AddApplicationPart(typeof(AuthorizationController).Assembly)
@@ -58,7 +56,7 @@ else
 
 var app = builder.Build();
 
-app.MapDefaultControllerRoute();
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

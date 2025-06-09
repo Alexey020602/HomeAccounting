@@ -1,7 +1,5 @@
-using System.Linq.Expressions;
 using Checks.Contracts;
 using Reports.Contracts;
-using Shared.Model.Checks;
 
 namespace Reports.Core;
 
@@ -23,26 +21,17 @@ namespace Reports.Core;
 //     }
 // }
 
-public static class ReportRequestExtensions
-{
-    public static Expression<Func<CheckDto, bool>> GetPredicate(this ReportRequest request) => 
-        check => (!request.Range.Start.HasValue || check.PurchaseDate >= request.Range.Start.Value.ToUniversalTime())
-             && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
-}
 
-public class ReportUseCase() : IReportUseCase
+static class ReportRequestExtensions
 {
-    public Task<ReportDto> GetReport(ReportRequest request)
+    public static GetChecksQuery ToGetCheckQuery(this ReportRequest reportRequest) => new(Range: reportRequest.Range);
+}
+public class ReportUseCase(ICheckUseCase checkUseCase) : IReportUseCase
+{
+    private readonly ICheckUseCase checkUseCase = checkUseCase;
+    public async Task<ReportDto> GetReport(ReportRequest request)
     {
-        return Task.FromException<ReportDto>(new NotImplementedException());
-        // return (await context
-        //         .Checks
-        //         .AsNoTracking()
-        //         .Where(request.GetPredicate())
-        //         .Include(c => c.Products)
-        //         .ThenInclude(p => p.Subcategory)
-        //         .ThenInclude(sub => sub.Category)
-        //         .ToListAsync())
-        //     .CreateReport(request);
+        var checks = await checkUseCase.GetCategoriesAsync(request.ToGetCheckQuery());
+        return checks.CreateReport(request);
     }
 }

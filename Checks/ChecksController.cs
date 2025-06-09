@@ -1,5 +1,6 @@
 using Authorization.Contracts;
 using Checks.Api.Requests;
+using Checks.Contracts;
 using Checks.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace Checks.Api;
 public class ChecksController(ICheckUseCase checkUseCase) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetChecks() => Ok(await checkUseCase.GetChecksAsync());
+    public async Task<IActionResult> GetChecks([FromQuery] GetChecksQuery checksQuery) => Ok(await checkUseCase.GetChecksAsync(checksQuery));
 
     //todo подумать над изменением типа запроса на Put
     [HttpPost]

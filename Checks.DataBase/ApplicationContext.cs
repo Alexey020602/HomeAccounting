@@ -7,10 +7,10 @@ namespace Checks.DataBase;
 public class ApplicationContext(DbContextOptions<ApplicationContext> options)
     : IdentityUserContext<User, string>(options)
 {
-    public DbSet<Category> Categories { get; set; } = null!;
-    public DbSet<Product> Products { get; set; } = null!;
-    public DbSet<Subcategory> Subcategories { get; set; } = null!;
-    public DbSet<Check> Checks { get; set; } = null!;
+    internal DbSet<Category> Categories { get; set; } = null!;
+    internal DbSet<Product> Products { get; set; } = null!;
+    internal DbSet<Subcategory> Subcategories { get; set; } = null!;
+    internal DbSet<Check> Checks { get; set; } = null!;
 
     // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     // {

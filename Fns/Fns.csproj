@@ -11,10 +11,12 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
         <PackageReference Include="Refit" Version="8.0.0"/>
+        <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Fns.Contracts\Fns.Contracts.csproj" />
+      <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
     </ItemGroup>
 
 </Project>

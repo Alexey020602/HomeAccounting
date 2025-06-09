@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Fns;
+namespace Shared.Utils;
 
 public class HttpLoggingHandler(ILogger<HttpLoggingHandler> logger) : DelegatingHandler
 {

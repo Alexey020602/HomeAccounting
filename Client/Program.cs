@@ -9,6 +9,9 @@ using MudBlazor.Services;
 using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+builder.Logging.SetMinimumLevel( builder.HostEnvironment.IsDevelopment() ? LogLevel.Debug: LogLevel.Information);
+builder.Logging.Configure(options => options.ActivityTrackingOptions = (ActivityTrackingOptions)127);
 builder.RootComponents.Add<Routes>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

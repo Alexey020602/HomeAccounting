@@ -1,7 +1,4 @@
-using Authorization.Contracts;
-using Shared.Model;
-
-namespace Checks.Core;
+namespace Checks.Contracts;
 
 public class SaveCheckRequest
 {

@@ -1,13 +1,11 @@
-using Checks.Contracts;
-using Shared.Model;
-using Shared.Model.Checks;
-
-namespace Checks.Core;
+namespace Checks.Contracts;
 
 public interface ICheckUseCase
 {
     Task<Contracts.CheckDto> SaveCheck(SaveCheckRequest saveCheckRequest);
-    Task<IReadOnlyList<Contracts.CheckDto>> GetChecksAsync(int skip = 0, int take = 100);
+    Task<IReadOnlyList<Contracts.CheckDto>> GetChecksAsync(GetChecksQuery getChecksQuery);
+    
+    Task<IReadOnlyList<Category>> GetCategoriesAsync(GetChecksQuery getChecksQuery);
 }
 
 // public static class CheckUseCaseExtensions

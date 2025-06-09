@@ -1,4 +1,5 @@
 using Authorization.Contracts;
+using Checks.Contracts;
 using Checks.Core;
 using Shared.Model;
 using Shared.Model.Requests;

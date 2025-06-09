@@ -17,7 +17,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.5" />
-        <PackageReference Include="MudBlazor" Version="8.6.0" />
+        <PackageReference Include="MudBlazor" Version="8.7.0" />
         <PackageReference Include="Refit" Version="8.0.0"/>
         <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
     </ItemGroup>
@@ -26,6 +26,7 @@
       <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
       <ProjectReference Include="..\Checks.Contracts\Checks.Contracts.csproj" />
       <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
+      <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,16 +1,20 @@
 using Authorization.Contracts;
 using Checks.Contracts;
+using Checks.Core.Model;
 using Shared.Model;
 using Shared.Model.Checks;
+using Category = Checks.Contracts.Category;
+using Product = Checks.Core.Model.Product;
 
 namespace Checks.Core;
-
+//todo переделать репозиторий на классы Core
 public interface ICheckRepository
 {
-    Task<Contracts.CheckDto> SaveCheck(AddCheckRequest request);
+    Task<Check> SaveCheck(AddCheckRequest request);
 
-    Task<Contracts.CheckDto?> GetCheckByRequest(GetCheckRequest checkRequest);
-    Task<IReadOnlyList<Contracts.CheckDto>> GetChecksAsync(int skip = 0, int take = 100);
+    Task<Check?> GetCheckByRequest(GetCheckRequest checkRequest);
+    Task<IReadOnlyList<Check>> GetChecksAsync(GetChecksQuery getChecksQuery);
+    Task<IReadOnlyList<Product>> GetProductsAsync(GetChecksQuery getChecksQuery);
 }
 
 public class GetCheckRequest(string fn, string fd, string fp, string s, DateTime t)

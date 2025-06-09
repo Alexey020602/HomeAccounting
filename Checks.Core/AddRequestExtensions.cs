@@ -1,3 +1,4 @@
+using Checks.Contracts;
 using Shared.Model.Requests;
 
 namespace Checks.Core;

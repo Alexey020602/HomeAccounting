@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Checks.DataBase.Entities;
 
 [Index(nameof(Fd), nameof(S), nameof(Fn), nameof(Fp), nameof(PurchaseDate), IsUnique = true)]
-public class Check
+class Check
 {
     public int Id { get; set; }
     public DateTime PurchaseDate { get; set; }

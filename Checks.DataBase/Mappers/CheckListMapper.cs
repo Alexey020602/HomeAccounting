@@ -1,4 +1,4 @@
-using Checks.Contracts;
+using Checks.Core.Model;
 using Shared.Model;
 using Shared.Model.Checks;
 using DBCheck = Checks.DataBase.Entities.Check;
@@ -8,62 +8,31 @@ using DBCategory = Checks.DataBase.Entities.Category;
 
 namespace Checks.DataBase.Mappers;
 
-public static class CheckListMapper
+static class CheckListMapper
 {
-    public static CheckDto ConvertToCheckList(this Entities.Check check)
+    public static Category ConvertToCategory(this DBCategory dbCategory) => new(dbCategory.Id, dbCategory.Name);
+
+    public static Subcategory ConvertToSubcategory(this DBSubcategory dbSubcategory) => new(dbSubcategory.Id,
+        dbSubcategory.Name, dbSubcategory.Category.ConvertToCategory());
+
+    public static Product ConvertToProduct(this DBProduct dbProduct) => new(dbProduct.Id, dbProduct.Name,
+        dbProduct.Quantity, dbProduct.Price, dbProduct.Sum, dbProduct.Subcategory.ConvertToSubcategory());
+
+    public static IEnumerable<Product> ConvertToProducts(this IEnumerable<DBProduct> dbProducts) =>
+        dbProducts.Select(ConvertToProduct);
+
+    public static List<Product> ConvertToProducts(this List<DBProduct> dbProduct) =>
+        dbProduct.ConvertAll(ConvertToProduct);
+
+    public static Check ConvertToCheck(this DBCheck dbCheck) => new()
     {
-        return new CheckDto
-        {
-            Id = check.Id,
-            AddedDate = check.AddedDate,
-            PurchaseDate = check.PurchaseDate,
-            Categories = ConvertToCategories(check.Products)
-        };
-    }
-
-    public static IReadOnlyList<Category> ConvertToCategories(this IEnumerable<Entities.Product> products)
-    {
-        var categories = from product in products
-            group product by product.Subcategory
-            into subcategoryGroup
-            group subcategoryGroup by subcategoryGroup.Key.Category
-            into categoryGroup
-            orderby categoryGroup
-                .Sum(subcategory => subcategory.Sum(p => p.Sum))
-            descending 
-            select categoryGroup.ConvertToCategory();
-
-        return categories.OrderByDescending(category => category.PennySum).ToList();
-    }
-
-    public static Category
-        ConvertToCategory(this IGrouping<Entities.Category, IGrouping<Entities.Subcategory, Entities.Product>> categories) =>
-        new()
-        {
-            Id = categories.Key.Id,
-            Name = categories.Key.Name,
-            Subcategories = (from subcategory in categories
-                orderby subcategory.Sum(product => product.Sum) descending
-                select subcategory.ConvertToSubcategory()).ToList()
-        };
-
-    public static Subcategory ConvertToSubcategory(this IGrouping<Entities.Subcategory, Entities.Product> subcategories)
-    {
-        return new Subcategory
-        {
-            Id = subcategories.Key.Id,
-            Name = subcategories.Key.Name,
-            Products = (from product in subcategories
-                    orderby product.Sum descending 
-                        select new Product
-                    {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Price = product.Price,
-                        Quantity = product.Quantity,
-                        PennySum = product.Sum
-                    })
-                .ToList()
-        };
-    }
+        Id = dbCheck.Id, 
+        AddedDate = dbCheck.AddedDate, 
+        PurchaseDate = dbCheck.PurchaseDate, 
+        Fd = dbCheck.Fd,
+        Fn = dbCheck.Fn, 
+        Fp = dbCheck.Fp, 
+        S = dbCheck.S,
+        Products = dbCheck.Products.ConvertToProducts()
+    };
 }

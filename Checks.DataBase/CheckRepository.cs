@@ -1,30 +1,52 @@
+using System.Linq.Expressions;
+using Checks.Contracts;
 using Checks.Core;
-using Checks.DataBase.Entities;
+using Checks.Core.Model;
 using Checks.DataBase.Mappers;
 using Microsoft.EntityFrameworkCore;
+using Category = Checks.DataBase.Entities.Category;
 using CheckDto = Checks.Contracts.CheckDto;
+using Product = Checks.DataBase.Entities.Product;
+using Subcategory = Checks.DataBase.Entities.Subcategory;
 
 namespace Checks.DataBase;
 
+static class ReportRequestExtensions
+{
+    public static Expression<Func<Entities.Check, bool>> GetPredicate(this GetChecksQuery request) =>
+        check => (!request.Range.Start.HasValue || check.PurchaseDate >= request.Range.Start.Value.ToUniversalTime())
+                 && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
+}
+
 public class CheckRepository(ApplicationContext context) : ICheckRepository
 {
-    public async Task<IReadOnlyList<CheckDto>> GetChecksAsync(int skip = 0, int take = 100)
+    public async Task<IReadOnlyList<Core.Model.Product>> GetProductsAsync(GetChecksQuery getChecksQuery)
     {
-        var checks = 
-            
-            await context.Checks
-                .AsNoTracking()
-             .Include(c => c.Products)
-             .ThenInclude(p => p.Subcategory)
-             .ThenInclude(sub => sub.Category)
-             .Skip(skip)
-             .Take(take)
-             .ToListAsync();
-
-
-        return checks.ConvertAll(check => check.ConvertToCheckList());
+        return (await GetChecksAsync(getChecksQuery)).SelectMany(check => check.Products).ToList();
     }
-    public async Task<CheckDto?> GetCheckByRequest(GetCheckRequest checkRequest)
+
+    public async Task<IReadOnlyList<Check>> GetChecksAsync(GetChecksQuery getChecksQuery)
+    {
+        var checksQueryable = context.Checks
+            .AsNoTracking()
+            .Include(c => c.Products)
+            .ThenInclude(p => p.Subcategory)
+            .ThenInclude(sub => sub.Category)
+            .Where(getChecksQuery.GetPredicate());
+
+        if (getChecksQuery.Take.HasValue) 
+            checksQueryable = checksQueryable.Take(getChecksQuery.Take.Value);
+        
+        if (getChecksQuery.Skip.HasValue) 
+            checksQueryable = checksQueryable.Skip(getChecksQuery.Skip.Value);
+        
+        var checks = await checksQueryable
+                .ToListAsync();
+
+        return checks.ConvertAll(check => check.ConvertToCheck());
+    }
+
+    public async Task<Check?> GetCheckByRequest(GetCheckRequest checkRequest)
     {
         var dbCheck = await context.Checks
             .Include(c => c.Products)
@@ -35,9 +57,10 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
                 c.PurchaseDate == checkRequest.T &&
                 c.Fd == checkRequest.Fd &&
                 c.Fp == checkRequest.Fp);
-        return dbCheck?.ConvertToCheckList();
+        return dbCheck?.ConvertToCheck();
     }
-    public async Task<CheckDto> SaveCheck(AddCheckRequest addCheckRequest)
+
+    public async Task<Check> SaveCheck(AddCheckRequest addCheckRequest)
     {
         await context.Categories
             .Include(category => addCheckRequest.Products.Any(product => product.Category == category.Name))
@@ -47,7 +70,7 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
             .LoadAsync();
         var userEntity = await context.Users.FindAsync(addCheckRequest.Login) ??
                          throw new KeyNotFoundException($"User with login {addCheckRequest.Login} not found");
-        
+
         var check = new DataBase.Entities.Check
         {
             Fp = addCheckRequest.Fp,
@@ -63,9 +86,9 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
         context.Checks.Add(check);
         await context.SaveChangesAsync();
 
-        return check.ConvertToCheckList();
+        return check.ConvertToCheck();
     }
-    
+
     private Product CreateProduct(AddCheckRequest.Product product)
     {
         var subcategory = GetSubcategoryByName(product.Subcategory, product.Category);
@@ -78,19 +101,19 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
             Subcategory = subcategory
         };
     }
-    
+
     private Category CreateCategory(string name)
     {
         var category = new Category
         {
             Name = name
         };
-        
+
         context.Categories.Add(category);
 
         return category;
     }
-    
+
     private Subcategory CreateSubcategory(string? name, Category category)
     {
         var subcategory = new Subcategory
@@ -98,7 +121,7 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
             Name = name,
             Category = category
         };
-        
+
         context.Subcategories.Add(subcategory);
 
         return subcategory;
@@ -114,10 +137,10 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
 
         return CreateSubcategory(name, category);
     }
-    
+
     private Subcategory? GetExistingSubcategory(string? name, Category existingCategory) =>
         context.Subcategories.Local.SingleOrDefault(
-            SubcategoryByNameAndCategoryExpression(name, existingCategory.Id))/* ??
+            SubcategoryByNameAndCategoryExpression(name, existingCategory.Id)) /* ??
         await context.Subcategories.SingleOrDefaultAsync(
             SubcategoryByNameAndCategoryExpression(name, existingCategory.Id))*/;
 

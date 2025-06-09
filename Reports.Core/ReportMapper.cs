@@ -1,13 +1,16 @@
+using Checks.Contracts;
+using Reports.Contracts;
+
 namespace Reports.Core;
 
 public static class ReportMapper
 {
-    // public static Report CreateReport(this IReadOnlyList<Entities_Check> checks, ReportRequest reportRequest)
-    // {
-    //     return new Report
-    //     {
-    //         DateRange = reportRequest.DateRange,
-    //         Categories = checks.SelectMany(c => c.Products).ConvertToCategories().ToList()
-    //     };
-    // }
+    public static ReportDto CreateReport(this IReadOnlyList<Category> categories, ReportRequest reportRequest)
+    {
+        return new ReportDto
+        {
+            DateRange = reportRequest.Range,
+            Categories = categories
+        };
+    }
 }

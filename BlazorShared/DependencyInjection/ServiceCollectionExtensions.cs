@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
 using Refit;
+using Shared.Utils;
 
 namespace BlazorShared.DependencyInjection;
 
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IAuthenticationStorage, AuthenticationStorage>()
             // .AddSingleton<IAuthenticationStorage, MemoryAuthenticationStorage>()
             .AddTransient<ILocalStorage, LocalStorage>()
+            .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
             .AddRefitClients(apiUri)
             .AddAuthorizationState();
@@ -60,7 +62,8 @@ public static class ServiceCollectionExtensions
     {
         var httpClientBuilder = serviceCollection.AddRefitClient(type)
             .ConfigureHttpClient(client =>
-                client.BaseAddress = apiUri.AppendingPath(apiAttribute.BasePath));
+                client.BaseAddress = apiUri.AppendingPath(apiAttribute.BasePath))
+            .AddHttpMessageHandler<HttpLoggingHandler >();
 
         if (apiAttribute is not ApiAuthorizableAttribute) return serviceCollection;
 

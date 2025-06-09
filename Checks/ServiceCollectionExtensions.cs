@@ -1,3 +1,4 @@
+using Checks.Contracts;
 using Checks.Core;
 using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp;

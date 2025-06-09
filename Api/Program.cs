@@ -15,13 +15,12 @@ using NSwag.AspNetCore;
 using Refit;
 using Reports.Contracts;
 using Reports.Core;
+using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
-builder.AddServiceDefaults()
-    .ConfigureOpenTelemetry()
-    .AddDefaultHealthChecks();
+builder.AddServiceDefaults();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
 builder.Services.AddLogging();
 builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
@@ -41,6 +40,7 @@ builder.Services.AddScoped<ICheckRepository, CheckRepository>();
 
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
+builder.Services.AddFnsModule();
 
 builder.Services.AddAccountingModule();
 builder.Services.AddControllers()

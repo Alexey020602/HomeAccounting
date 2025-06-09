@@ -15,6 +15,7 @@ using NSwag.AspNetCore;
 using Refit;
 using Reports.Contracts;
 using Reports.Core;
+using Scalar.AspNetCore;
 using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,7 +63,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.MapOpenApi();
-
+    app.MapScalarApiReference();
     app.UseSwaggerUi(options =>
     {
         options.DocumentPath = "openapi/v1.json";

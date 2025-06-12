@@ -1,13 +1,16 @@
 using Accounting.Api;
 using Api;
+using Authorization;
 using Authorization.DependencyInjection;
 using Checks.Api;
 using Checks.Core;
 using Checks.DataBase;
+using Checks.DataBase.Entities;
 using Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -50,10 +53,23 @@ builder.Services.AddControllers()
 builder.Services.AddAuthorization(builder.Configuration);
 
 if (builder.Environment.IsDevelopment())
-    builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
+{
+    builder.AddNpgsqlDbContext<ChecksContext>("HomeAccounting");
+    builder.AddNpgsqlDbContext<AuthorizationContext>(
+        "HomeAccounting",
+        configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
+    );
+}
 else
-    builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    builder.Services.AddDbContext<ChecksContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddDbContext<AuthorizationContext>(options =>
+        options
+            .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+            .SetUpAuthorization()
+    );
+}
 
 var app = builder.Build();
 
@@ -69,7 +85,6 @@ if (app.Environment.IsDevelopment())
         options.DocumentPath = "openapi/v1.json";
         options.SwaggerRoutes.Add(new SwaggerUiRoute("Api", "/openapi/v1.json"));
     });
-    
 }
 
 app.UseCors(policyBuilder => policyBuilder
@@ -90,7 +105,8 @@ app.Run();
 
 namespace Api
 {
-    internal sealed class BearerAuthenticationSchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
+    internal sealed class BearerAuthenticationSchemeTransformer(
+        IAuthenticationSchemeProvider authenticationSchemeProvider)
         : IOpenApiDocumentTransformer
     {
         public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,

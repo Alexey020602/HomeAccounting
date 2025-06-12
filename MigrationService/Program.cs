@@ -22,9 +22,9 @@ builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
 builder.Services.AddTransient<ApplicationContextSeed>();
 
 if (builder.Environment.IsDevelopment())
-    builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
+    builder.AddNpgsqlDbContext<ChecksContext>("HomeAccounting");
 else
-    builder.Services.AddDbContext<ApplicationContext>(options =>
+    builder.Services.AddDbContext<ChecksContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHostedService<Worker>();

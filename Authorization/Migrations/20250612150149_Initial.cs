@@ -4,22 +4,20 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Checks.DataBase.Migrations
+namespace Authorization.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUsers : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "UserId",
-                table: "Checks",
-                type: "text",
-                nullable: true);
+            migrationBuilder.EnsureSchema(
+                name: "Identity");
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
+                schema: "Identity",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -47,6 +45,7 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
+                schema: "Identity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -61,6 +60,7 @@ namespace Checks.DataBase.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -68,6 +68,7 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
+                schema: "Identity",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
@@ -81,6 +82,7 @@ namespace Checks.DataBase.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -88,6 +90,7 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
+                schema: "Identity",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -101,71 +104,56 @@ namespace Checks.DataBase.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Checks_UserId",
-                table: "Checks",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
+                schema: "Identity",
                 table: "AspNetUserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
+                schema: "Identity",
                 table: "AspNetUserLogins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
+                schema: "Identity",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
+                schema: "Identity",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Checks_AspNetUsers_UserId",
-                table: "Checks",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Checks_AspNetUsers_UserId",
-                table: "Checks");
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
+                name: "AspNetUserLogins",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
+                name: "AspNetUserTokens",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Checks_UserId",
-                table: "Checks");
-
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "Checks");
+                name: "AspNetUsers",
+                schema: "Identity");
         }
     }
 }

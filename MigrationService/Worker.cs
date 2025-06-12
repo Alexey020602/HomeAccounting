@@ -21,7 +21,7 @@ public class Worker(
         try
         {
             var scope = services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ChecksContext>();
             var applicationContextSeed = scope.ServiceProvider.GetRequiredService<ApplicationContextSeed>();
             logger.LogInformation("Prepare database");
             await dbContext.Database.MigrateAsync(cancellationToken);

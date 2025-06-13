@@ -29,6 +29,9 @@ var client = builder.AddProject<Client>("client")
     .WaitFor(api)
     ;
 
+var serverClient = builder.AddProject<WebClient>("webclient")
+    .WaitFor(api);
+
 var yarp = builder
         .AddProject<Gateway>("gateway")
         // .AddYarp("apigateway")

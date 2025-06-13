@@ -32,5 +32,5 @@ builder.Services.AddBlazorShared(apiUri);
 //     .ConfigureHttpClient(client => client.BaseAddress = apiUri);
 
 var app = builder.Build();
-
+app.Services.GetService<ILogger<Program>>()?.LogInformation("App starting...");
 await app.RunAsync();

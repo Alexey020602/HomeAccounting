@@ -68,6 +68,7 @@ public static class ServiceCollectionExtensions
             Id = "chillexey",
             UserName = "Alexey",
             NormalizedUserName = "ALEXEY",
+            SecurityStamp = Guid.NewGuid().ToString(),
         };
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "7263A7263a+");
         return user;

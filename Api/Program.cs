@@ -73,6 +73,12 @@ else
 
 var app = builder.Build();
 
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+);
+
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
@@ -87,16 +93,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors(policyBuilder => policyBuilder
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowAnyOrigin()
-);
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpLogging();
+
 app.MapControllers()
     .RequireAuthorization()
     ;

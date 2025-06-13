@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0"/>
+    <Sdk Name="Aspire.AppHost.Sdk" Version="9.3.0"/>
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -13,10 +13,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
         <PackageReference Include="Aspire.Hosting.Docker" Version="9.3.0-preview.1.25265.20" />
         <PackageReference Include="Aspire.Hosting.Kubernetes" Version="9.3.0-preview.1.25265.20" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
         <PackageReference Include="Aspire.Hosting.Yarp" Version="9.3.0-preview.1.25265.20" />
     </ItemGroup>
 

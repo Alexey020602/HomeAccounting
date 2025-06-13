@@ -1,9 +1,12 @@
+using Aspire.Hosting.Docker.Resources.ComposeNodes;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.AddDockerComposeEnvironment("docker");
+
 var db = builder
     .AddPostgres("db")
     .WithLifetime(ContainerLifetime.Persistent)
@@ -13,7 +16,6 @@ var db = builder
 
 var migrations = builder
     .AddProject<MigrationService>("migrations")
-    
     .WithReference(db)
     .WaitFor(db);
 

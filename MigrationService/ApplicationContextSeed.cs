@@ -1,7 +1,9 @@
-using Authorization.Contracts;
+using Authorization;
 using Checks.Contracts;
 using Checks.Core;
 using Checks.DataBase;
+using Checks.DataBase.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Shared.Model.Requests;
 
 namespace MigrationService;
@@ -9,18 +11,21 @@ namespace MigrationService;
 public class ApplicationContextSeed
 {
     private readonly ICheckUseCase checkUseCase;
-    private readonly ApplicationContext context;
+    private readonly ChecksContext context;
+    private readonly IdentityUserContext<User, string> userContext;
     private readonly IHostEnvironment hostEnvironment;
     private readonly ILogger<ApplicationContextSeed> logger;
     private readonly IReadOnlyList<SaveCheckRequest> requests;
 
     public ApplicationContextSeed(
         ICheckUseCase checkUseCase,
-        ApplicationContext context,
+        ChecksContext context,
+        IdentityUserContext<User, string> userContext,
         ILogger<ApplicationContextSeed> logger,
         IHostEnvironment hostEnvironment)
     {
         this.context = context;
+        this.userContext = userContext;
         this.hostEnvironment = hostEnvironment;
         this.checkUseCase = checkUseCase;
         this.logger = logger;
@@ -62,9 +67,9 @@ public class ApplicationContextSeed
 
     private Task AddDefaultUser(CancellationToken token = default)
     {
-        if (context.Users.Any(user => user.Id == Checks.DataBase.Entities.User.Default.Id)) return Task.CompletedTask;
+        if (userContext.Users.Any(user => user.Id == Checks.DataBase.Entities.User.Default.Id)) return Task.CompletedTask;
         
-        context.Users.Add(Checks.DataBase.Entities.User.Default);
+        userContext.Users.Add(Checks.DataBase.Entities.User.Default);
         
         return context.SaveChangesAsync(token);
     }

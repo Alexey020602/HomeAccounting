@@ -3,7 +3,6 @@ using System;
 using Checks.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,16 +10,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Checks.DataBase.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
-    [Migration("20250128181142_Initial")]
-    partial class Initial
+    [DbContext(typeof(ChecksContext))]
+    partial class ChecksContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasDefaultSchema("Checks")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -42,7 +40,7 @@ namespace Checks.DataBase.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", "Checks");
                 });
 
             modelBuilder.Entity("Checks.DataBase.Entities.Check", b =>
@@ -68,6 +66,10 @@ namespace Checks.DataBase.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -80,7 +82,7 @@ namespace Checks.DataBase.Migrations
                     b.HasIndex("Fd", "S", "Fn", "Fp", "PurchaseDate")
                         .IsUnique();
 
-                    b.ToTable("Checks");
+                    b.ToTable("Checks", "Checks");
                 });
 
             modelBuilder.Entity("Checks.DataBase.Entities.Product", b =>
@@ -116,7 +118,7 @@ namespace Checks.DataBase.Migrations
 
                     b.HasIndex("SubcategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", "Checks");
                 });
 
             modelBuilder.Entity("Checks.DataBase.Entities.Subcategory", b =>
@@ -140,7 +142,7 @@ namespace Checks.DataBase.Migrations
                     b.HasIndex("Name", "CategoryId")
                         .IsUnique();
 
-                    b.ToTable("Subcategories");
+                    b.ToTable("Subcategories", "Checks");
                 });
 
             modelBuilder.Entity("Checks.DataBase.Entities.Product", b =>

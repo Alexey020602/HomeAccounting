@@ -18,7 +18,7 @@ static class ReportRequestExtensions
                  && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
 }
 
-public class CheckRepository(ApplicationContext context) : ICheckRepository
+public class CheckRepository(ChecksContext context) : ICheckRepository
 {
     public async Task<IReadOnlyList<Core.Model.Product>> GetProductsAsync(GetChecksQuery getChecksQuery)
     {
@@ -70,8 +70,8 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
         await context.Subcategories
             .Where(subcategory => subcategoriesNames.Any(productSubcategory => productSubcategory == subcategory.Name))
             .LoadAsync();
-        var userEntity = await context.Users.FindAsync(addCheckRequest.Login) ??
-                         throw new KeyNotFoundException($"User with login {addCheckRequest.Login} not found");
+        // var userEntity = await context.Users.FindAsync(addCheckRequest.Login) ??
+                         // throw new KeyNotFoundException($"User with login {addCheckRequest.Login} not found");
 
         var check = new DataBase.Entities.Check
         {
@@ -82,7 +82,7 @@ public class CheckRepository(ApplicationContext context) : ICheckRepository
             AddedDate = DateTime.UtcNow,
             PurchaseDate = addCheckRequest.PurchaseDate,
             Products = addCheckRequest.Products.Select(CreateProduct).ToList(),
-            User = userEntity,
+            Login = addCheckRequest.Login,
         };
 
         context.Checks.Add(check);

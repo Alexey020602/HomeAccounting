@@ -7,10 +7,19 @@ public class HttpLoggingHandler(ILogger<HttpLoggingHandler> logger) : Delegating
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var id = Guid.NewGuid();
-        var httpResponseMessage = await base.SendAsync(request, cancellationToken);
         await LogRequest(request, id);
-        await LogResponse(httpResponseMessage, id);
-        return httpResponseMessage;
+        try
+        {
+            var httpResponseMessage = await base.SendAsync(request, cancellationToken);
+            await LogResponse(httpResponseMessage, id);
+            return httpResponseMessage;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("[{Id}] Error:\n{Message}", id, ex.Message);
+            throw;
+        }
+
     }
 
     private async Task LogRequest(HttpRequestMessage request, Guid id)

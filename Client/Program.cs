@@ -4,14 +4,12 @@ using Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorShared.DependencyInjection;
-using MudBlazor;
-using MudBlazor.Services;
 using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Logging.SetMinimumLevel( builder.HostEnvironment.IsDevelopment() ? LogLevel.Debug: LogLevel.Information);
-builder.Logging.Configure(options => options.ActivityTrackingOptions = (ActivityTrackingOptions)127);
+builder.Logging.Configure(options => options.ActivityTrackingOptions = ActivityTrackingOptions.None/*(ActivityTrackingOptions)127*/);
 builder.RootComponents.Add<Routes>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

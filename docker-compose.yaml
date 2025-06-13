@@ -32,7 +32,7 @@ services:
       dockerfile: MigrationService/Dockerfile
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5433;Database=HomeAccounting;Username=postgres;Password=11111111;
+#      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5433;Database=HomeAccounting;Username=postgres;Password=11111111;
   api:
     image: api
     pull_policy: always
@@ -41,7 +41,7 @@ services:
     expose:
       - 80
     ports:
-      - 5080:80
+      - "5080:80"
     build:
       context: .
       dockerfile: Api/Dockerfile
@@ -51,8 +51,8 @@ services:
       - migrations
     environment:
       - DOTNET_ENVIRONMENT=Release
-      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5433;Database=HomeAccounting;Username=postgres;Password=11111111;
-      - ASPNETCORE_HTTP_PORTS=80
+#      - ConnectionStrings_DefaultConnection=Host=postgres;Port=5433;Database=HomeAccounting;Username=postgres;Password=11111111;
+#      - ASPNETCORE_HTTP_PORTS=80
   client:
     image: client
     pull_policy: always
@@ -67,26 +67,45 @@ services:
     expose:
       - 80
     ports:
-      - 5160:80
+      - "5160:80"
+  yarp_proxy:
+    image: yarp_proxy
+    container_name: yarp_proxy
+    pull_policy: always
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
+    networks:
+      - "my-network"
+    expose:
+      - 80
+      - 443
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+      - client
+#    environment:
+#      - ASPNETCORE_HTTP_PORTS=80
   #    environment:
   #      - VIRTUAL_HOST=homeaccounting.opolcheniya.keenetic.pro
   #      - VIRTUAL_PORT=80
   #      - LETSENCRYPT_HOST=homeaccounting.opolcheniya.keenetic.pro
   #      - LETSENCRYPT_EMAIL=myemail@mydomain.com
-  reverse_proxy:
-    image: nginx:latest
-    container_name: reverse_proxy
-    networks:
-      - "my-network"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    #      - "./proxy.conf:/etc/nginx/conf.d/proxy.conf"
-    ports:
-      - "80:80"
-    #      - "443:443"
-    depends_on:
-      - client
-      - api
+#  reverse_proxy:
+#    image: nginx:latest
+#    container_name: reverse_proxy
+#    networks:
+#      - "my-network"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf
+#    #      - "./proxy.conf:/etc/nginx/conf.d/proxy.conf"
+#    ports:
+#      - "80:80"
+#    #      - "443:443"
+#    depends_on:
+#      - client
+#      - api
 
 
 volumes:

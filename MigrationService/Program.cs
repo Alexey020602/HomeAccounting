@@ -1,3 +1,5 @@
+using Authorization;
+using Authorization.DependencyInjection;
 using Checks.Contracts;
 using Checks.Core;
 using Checks.DataBase;
@@ -15,17 +17,30 @@ builder.AddServiceDefaults();
 //     .ConfigureOpenTelemetry();
 // builder.Services.AddTransient<HttpLoggingHandler>();
 
-builder.Services.AddFnsModule();
+// builder.Services.AddFnsModule();
 
-builder.Services.AddScoped<ICheckRepository, CheckRepository>();
-builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
-builder.Services.AddTransient<ApplicationContextSeed>();
+// builder.Services.AddScoped<ICheckRepository, CheckRepository>();
+// builder.Services.AddScoped<ICheckUseCase, CheckUseCase>();
+// builder.Services.AddTransient<ApplicationContextSeed>();
 
 if (builder.Environment.IsDevelopment())
-    builder.AddNpgsqlDbContext<ApplicationContext>("HomeAccounting");
+{
+    builder.AddNpgsqlDbContext<ChecksContext>("HomeAccounting");
+    builder.AddNpgsqlDbContext<AuthorizationContext>(
+        "HomeAccounting",
+        configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
+    );
+}
 else
-    builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    builder.Services.AddDbContext<ChecksContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddDbContext<AuthorizationContext>(options =>
+        options
+            .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+            .SetUpAuthorization()
+    );
+}
 
 builder.Services.AddHostedService<Worker>();
 

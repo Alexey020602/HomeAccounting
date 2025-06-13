@@ -12,8 +12,12 @@ namespace Checks.DataBase.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Checks");
+
             migrationBuilder.CreateTable(
                 name: "Categories",
+                schema: "Checks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -27,6 +31,7 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Checks",
+                schema: "Checks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -36,7 +41,8 @@ namespace Checks.DataBase.Migrations
                     Fd = table.Column<string>(type: "text", nullable: false),
                     Fn = table.Column<string>(type: "text", nullable: false),
                     Fp = table.Column<string>(type: "text", nullable: false),
-                    S = table.Column<string>(type: "text", nullable: false)
+                    S = table.Column<string>(type: "text", nullable: false),
+                    Login = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,6 +51,7 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Subcategories",
+                schema: "Checks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -58,6 +65,7 @@ namespace Checks.DataBase.Migrations
                     table.ForeignKey(
                         name: "FK_Subcategories_Categories_CategoryId",
                         column: x => x.CategoryId,
+                        principalSchema: "Checks",
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -65,6 +73,7 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Products",
+                schema: "Checks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -82,11 +91,13 @@ namespace Checks.DataBase.Migrations
                     table.ForeignKey(
                         name: "FK_Products_Checks_CheckId",
                         column: x => x.CheckId,
+                        principalSchema: "Checks",
                         principalTable: "Checks",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_Subcategories_SubcategoryId",
                         column: x => x.SubcategoryId,
+                        principalSchema: "Checks",
                         principalTable: "Subcategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -94,33 +105,39 @@ namespace Checks.DataBase.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_Name",
+                schema: "Checks",
                 table: "Categories",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Checks_Fd_S_Fn_Fp_PurchaseDate",
+                schema: "Checks",
                 table: "Checks",
                 columns: new[] { "Fd", "S", "Fn", "Fp", "PurchaseDate" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CheckId",
+                schema: "Checks",
                 table: "Products",
                 column: "CheckId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SubcategoryId",
+                schema: "Checks",
                 table: "Products",
                 column: "SubcategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subcategories_CategoryId",
+                schema: "Checks",
                 table: "Subcategories",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subcategories_Name_CategoryId",
+                schema: "Checks",
                 table: "Subcategories",
                 columns: new[] { "Name", "CategoryId" },
                 unique: true);
@@ -130,16 +147,20 @@ namespace Checks.DataBase.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Products",
+                schema: "Checks");
 
             migrationBuilder.DropTable(
-                name: "Checks");
+                name: "Checks",
+                schema: "Checks");
 
             migrationBuilder.DropTable(
-                name: "Subcategories");
+                name: "Subcategories",
+                schema: "Checks");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Categories",
+                schema: "Checks");
         }
     }
 }

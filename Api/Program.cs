@@ -19,6 +19,7 @@ using Refit;
 using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
+using Shared.Infrastructure;
 using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,24 +53,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddAuthorization(builder.Configuration);
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.AddNpgsqlDbContext<ChecksContext>("HomeAccounting");
-    builder.AddNpgsqlDbContext<AuthorizationContext>(
-        "HomeAccounting",
-        configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
-    );
-}
-else
-{
-    builder.Services.AddDbContext<ChecksContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-    builder.Services.AddDbContext<AuthorizationContext>(options =>
-        options
-            .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-            .SetUpAuthorization()
-    );
-}
+builder.AddDbContexts();
 
 var app = builder.Build();
 

@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Authorization\Authorization.csproj" />
+      <ProjectReference Include="..\Checks.DataBase\Checks.DataBase.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -10,8 +10,8 @@ builder.Services.AddHealthChecks();
 builder.AddDockerComposeEnvironment("docker");
 
 var databaseConfigurationSection = builder.Configuration.GetSection("Database");
-var username = builder.AddParameter("username", databaseConfigurationSection.GetValue<string>("username")!, secret: true);
-var password = builder.AddParameter("password",databaseConfigurationSection.GetValue<string>("password")!, secret: true);
+var username = builder.AddParameter("Username", databaseConfigurationSection.GetValue<string>("username")!, secret: true);
+var password = builder.AddParameter("Password",databaseConfigurationSection.GetValue<string>("password")!, secret: true);
 // IResourceBuilder<ParameterResource> username = new  "home_accounting_user";
 // IResourceBuilder<ParameterResource> password = "654765as465gf4as";
 var db = builder

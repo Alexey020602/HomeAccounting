@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorShared.Components
 @inject NavigationManager NavigationManager
-<CascadingAuthenticationState>
+<CascadingAuthenticationState @rendermode="AssignedRenderMode">
     <AppErrorBoundary>
         @* <ChildContent> *@
             <Router AppAssembly="@typeof(MainLayout).Assembly">

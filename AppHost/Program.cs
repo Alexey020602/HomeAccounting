@@ -1,5 +1,7 @@
 using Aspire.Hosting.Docker.Resources.ComposeNodes;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Aspire.Hosting.Postgres;
 using Microsoft.Extensions.Hosting;
 using Projects;
 
@@ -7,11 +9,18 @@ var builder = DistributedApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.AddDockerComposeEnvironment("docker");
 
+var databaseConfigurationSection = builder.Configuration.GetSection("Database");
+var username = builder.AddParameter("username", databaseConfigurationSection.GetValue<string>("username")!, secret: true);
+var password = builder.AddParameter("password",databaseConfigurationSection.GetValue<string>("password")!, secret: true);
+// IResourceBuilder<ParameterResource> username = new  "home_accounting_user";
+// IResourceBuilder<ParameterResource> password = "654765as465gf4as";
 var db = builder
     .AddPostgres("db")
+    .WithUserName(username)
+    .WithPassword(password)
     .WithLifetime(ContainerLifetime.Persistent)
     .WithDataVolume()
-    .WithPgAdmin()
+    // .WithPgAdmin()
     .AddDatabase("HomeAccounting");
 
 var migrations = builder
@@ -27,11 +36,11 @@ var api = builder
     .WithHttpHealthCheck("/health");
 ;
 
-var client = builder.AddProject<Client>("client")
-    .WaitFor(api)
-    ;
+// var client = builder.AddProject<Client>("client")
+//     .WaitFor(api)
+//     ;
 
-var serverClient = builder.AddProject<WebClient>("webclient")
+var client = builder.AddProject<WebClient>("client")
     .WaitFor(api);
 
 var yarp = builder

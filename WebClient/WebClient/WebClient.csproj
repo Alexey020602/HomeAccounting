@@ -11,6 +11,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Error.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\BlazorShared\BlazorShared.csproj" />
       <ProjectReference Include="..\..\Client\Client.csproj" />
     </ItemGroup>
 

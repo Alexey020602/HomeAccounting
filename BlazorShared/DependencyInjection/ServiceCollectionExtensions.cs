@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
                 config.SnackbarConfiguration.PreventDuplicates = false;
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
-            .AddSingleton<IAuthenticationStorage, AuthenticationStorage>()
+            .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
             // .AddSingleton<IAuthenticationStorage, MemoryAuthenticationStorage>()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddScoped<HttpLoggingHandler>()

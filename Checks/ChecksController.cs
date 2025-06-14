@@ -6,12 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Model;
 using Shared.Model.Requests;
+using Shared.Web;
 
 namespace Checks.Api;
-
-[ApiController]
-[Route("[controller]")]
-public class ChecksController(ICheckUseCase checkUseCase) : ControllerBase
+public class ChecksController(ICheckUseCase checkUseCase) : ApiControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetChecks([FromQuery] GetChecksQuery checksQuery) => Ok(await checkUseCase.GetChecksAsync(checksQuery));

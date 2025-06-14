@@ -8,15 +8,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Web;
 using User = Checks.DataBase.Entities.User;
 
 namespace Authorization;
 
-[ApiController]
 [AllowAnonymous]
-[Route("[controller]")]
 public class AuthorizationController( /*IUserService userService, */UserManager<User> userManager,
-    ITokenService tokenService) : ControllerBase
+    ITokenService tokenService) : ApiControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest loginRequest)

@@ -7,26 +7,9 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Extensions;
 using WebClient.Components;
 
-
-// var webAssemblyHostBuilder = WebAssemblyHostBuilder.CreateDefault(args);
-// webAssemblyHostBuilder.Logging.SetMinimumLevel( webAssemblyHostBuilder.HostEnvironment.IsDevelopment() ? LogLevel.Debug: LogLevel.Information);
-// webAssemblyHostBuilder.Logging.Configure(options => options.ActivityTrackingOptions = ActivityTrackingOptions.None/*(ActivityTrackingOptions)127*/);
-// webAssemblyHostBuilder.RootComponents.Add<Routes>("#app");
-// webAssemblyHostBuilder.RootComponents.Add<HeadOutlet>("head::after");
-//
-// var apiUrl = webAssemblyHostBuilder.Configuration.GetValue<string>("ApiUrlHttps") ?? throw new Exception("Отсутствует адрес для api");
-// var apiUri = new Uri(apiUrl);
-//
-// webAssemblyHostBuilder.Services.AddBlazorShared(apiUri);
-// await webAssemblyHostBuilder.Build().RunAsync();
-
 var builder = WebApplication.CreateBuilder(args);
 
-var apiUrl = builder.Configuration.GetSection("Api").GetValue<string>("ApiUrlHttps") ?? throw new Exception("Отсутствует адрес для api");
-var apiUri = new Uri(apiUrl);
-// builder.Services.AddBlazorShared(apiUri);
-// builder.Services.AddAuthorization();
-// Add services to the container.
+
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 

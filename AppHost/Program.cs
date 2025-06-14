@@ -23,15 +23,15 @@ var db = builder
     // .WithPgAdmin()
     .AddDatabase("HomeAccounting");
 
-var migrations = builder
-    .AddProject<MigrationService>("migrations")
-    .WithReference(db)
-    .WaitFor(db);
+// var migrations = builder
+//     .AddProject<MigrationService>("migrations")
+//     .WithReference(db)
+//     .WaitFor(db);
 
 var api = builder
     .AddProject<Api>("api")
     .WithExternalHttpEndpoints()
-    .WaitForCompletion(migrations)
+    // .WaitForCompletion(migrations)
     .WithReference(db)
     .WithHttpHealthCheck("/health");
 ;
@@ -40,16 +40,16 @@ var api = builder
 //     .WaitFor(api)
 //     ;
 
-var client = builder.AddProject<WebClient>("client")
-    .WaitFor(api);
-
-var yarp = builder
-        .AddProject<Gateway>("gateway")
-        // .AddYarp("apigateway")
-        // .WithConfigFile("yarp.json")
-        .WithReference(api)
-        .WithReference(client)
-        .WithExternalHttpEndpoints()
-    ;
+// var client = builder.AddProject<WebClient>("client")
+//     .WaitFor(api);
+//
+// var yarp = builder
+//         .AddProject<Gateway>("gateway")
+//         // .AddYarp("apigateway")
+//         // .WithConfigFile("yarp.json")
+//         .WithReference(api)
+//         .WithReference(client)
+//         .WithExternalHttpEndpoints()
+//     ;
 
 builder.Build().Run();

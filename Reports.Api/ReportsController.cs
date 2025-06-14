@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Reports.Contracts;
 using Reports.Core;
+using Shared.Web;
 
 namespace Reports.Api;
 
-[ApiController]
-[Route("[controller]")]
-public class ReportsController(IReportUseCase reportUseCase): ControllerBase
+public class ReportsController(IReportUseCase reportUseCase): ApiControllerBase
 {
     [HttpPut("month")]
     public async Task<IActionResult> GetMonthReport(ReportRequest request) =>

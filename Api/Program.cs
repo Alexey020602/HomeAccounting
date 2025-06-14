@@ -2,6 +2,7 @@ using Accounting.Api;
 using Api;
 using Authorization;
 using Authorization.DependencyInjection;
+using BlazorShared.Layouts;
 using Checks.Api;
 using Checks.Core;
 using Checks.DataBase;
@@ -21,6 +22,7 @@ using Reports.Core;
 using Scalar.AspNetCore;
 using Shared.Infrastructure;
 using Shared.Utils;
+using WebClient.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,9 @@ builder.Services.AddLogging();
 builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 builder.Services.AddTransient<HttpLoggingHandler>();
 
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
 // builder.Services.AddRefitClient<ICheckService>()
 //     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
 //     .AddHttpMessageHandler<HttpLoggingHandler>();
@@ -55,8 +60,19 @@ builder.Services.AddAuthorization(builder.Configuration);
 
 builder.AddDbContexts();
 
-var app = builder.Build();
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.SuppressCheckForUnhandledSecurityMetadata = true;
+});
 
+var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var applicationContext = scope.ServiceProvider.GetRequiredService<ChecksContext>();
+    await applicationContext.Database.MigrateAsync();
+    var authorizationContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
+    await authorizationContext.Database.MigrateAsync();
+}
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyHeader()
     .AllowAnyMethod()
@@ -67,6 +83,7 @@ app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseWebAssemblyDebugging();
     app.UseDeveloperExceptionPage();
     app.MapOpenApi();
     app.MapScalarApiReference();
@@ -86,6 +103,12 @@ app.UseHttpLogging();
 app.MapControllers()
     .RequireAuthorization()
     ;
+// app.UseStaticFiles();
+app.MapStaticAssets();
+app.MapRazorComponents<App>()
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(MainLayout).Assembly)
+    .AllowAnonymous();
 
 app.Run();
 

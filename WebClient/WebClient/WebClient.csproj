@@ -20,4 +20,10 @@
       <ProjectReference Include="..\..\Client\Client.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Error.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
+      <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor" />
+    </ItemGroup>
+
 </Project>

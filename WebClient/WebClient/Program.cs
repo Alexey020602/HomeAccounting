@@ -1,7 +1,12 @@
+using BlazorShared.DependencyInjection;
+using MudBlazor.Extensions;
 using WebClient.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var apiUrl = builder.Configuration.GetSection("Api").GetValue<string>("ApiUrlHttps") ?? throw new Exception("Отсутствует адрес для api");
+var apiUri = new Uri(apiUrl);
+builder.Services.AddBlazorShared(apiUri);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
@@ -27,6 +32,7 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<Client.App>()
+    .AddAdditionalAssemblies(typeof(Program).Assembly)
     .AddInteractiveWebAssemblyRenderMode()
     // .AddAdditionalAssemblies(typeof(Client.App).Assembly)
     // .AddAdditionalAssemblies(typeof(WebClient.Client._Imports).Assembly)

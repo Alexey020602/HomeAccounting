@@ -37,6 +37,7 @@ public class AuthorizationController( /*IUserService userService, */UserManager<
                 Login = loginRequest.Login,
                 AccessToken = CreateAccessToken(user),
                 RefreshToken = userRefreshToken.Token,
+                
             }
         );
     }

@@ -1,5 +1,8 @@
 using Checks.Contracts;
 using Checks.Core;
+using Checks.DataBase;
+using Checks.DataBase.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp;
 using ZXing;

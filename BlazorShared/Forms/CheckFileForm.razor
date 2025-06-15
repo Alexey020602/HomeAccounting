@@ -74,7 +74,11 @@
     }
 
     private FormModel Model { get; set; } = new();
-    private async Task SendFileRequest() => await OnSubmit.InvokeAsync(Model.ToCheckFileRequest());
+    private async Task SendFileRequest()
+    {
+        await OnSubmit.InvokeAsync(Model.ToCheckFileRequest());
+        Model.SelectedFile = null;
+    }
 
     private Task OnChange(InputFileChangeEventArgs args)
     {

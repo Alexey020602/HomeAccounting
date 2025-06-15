@@ -39,8 +39,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<StorageLoginStateProvider>()
             .AddTransient<ILoginService, LoginService>()
             .AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
-            .AddScoped<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
-        ;
+            .AddScoped<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>());
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {
@@ -62,8 +61,10 @@ public static class ServiceCollectionExtensions
     {
         var httpClientBuilder = serviceCollection.AddRefitClient(type)
             .ConfigureHttpClient(client =>
-                client.BaseAddress = apiUri.AppendingPath(apiAttribute.BasePath))
-            .AddHttpMessageHandler<HttpLoggingHandler >();
+                    client.BaseAddress = apiUri//.AppendingPath("api", apiAttribute.BasePath)
+                .AppendingPath($"api/{apiAttribute.BasePath}")
+            )
+            .AddHttpMessageHandler<HttpLoggingHandler>();
 
         if (apiAttribute is not ApiAuthorizableAttribute) return serviceCollection;
 
@@ -71,6 +72,8 @@ public static class ServiceCollectionExtensions
             .AddHttpMessageHandler<AuthorizationHandler>();
         return serviceCollection;
     }
+    
+    
 
     private static Uri AppendingPath(this Uri uri, string? path)
     {
@@ -78,6 +81,19 @@ public static class ServiceCollectionExtensions
 
         var uriBuilder = new UriBuilder(uri);
         uriBuilder.Path += path;
+        return uriBuilder.Uri;
+    }
+
+    private static Uri AppendingPath(this Uri uri, params string[] path)
+    {
+        if (path.Length == 0) return uri;
+
+        var uriBuilder = new UriBuilder(uri);
+        foreach (var pathPart in path)
+        {
+            uriBuilder.Path += $"{pathPart}/";
+        }
+
         return uriBuilder.Uri;
     }
 }

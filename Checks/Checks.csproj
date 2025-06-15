@@ -9,14 +9,17 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
       <PackageReference Include="SkiaSharp" Version="3.119.0" />
       <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+      <PackageReference Include="WolverineFx" Version="4.2.0" />
       <PackageReference Include="ZXing.Net" Version="0.16.10" />
       <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.21" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Checks.Core\Checks.Core.csproj" />
+      <ProjectReference Include="..\Checks.DataBase\Checks.DataBase.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />
     </ItemGroup>
 

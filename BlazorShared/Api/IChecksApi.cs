@@ -15,11 +15,11 @@ public interface IChecksApi
     Task<List<CheckDto>> GetChecks();
 
     [Post("/")]
-    Task<CheckDto> GetReceipt(CheckRequest checkRequest);
+    Task GetReceipt(CheckRequest checkRequest);
 
     [Post("/file")]
     [Multipart]
-    Task<CheckDto> GetReceipt(Stream file, DateTimeOffset addedDate);
+    Task GetReceipt(Stream file, DateTimeOffset addedDate);
     
-    Task<CheckDto> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
+    Task GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
 }

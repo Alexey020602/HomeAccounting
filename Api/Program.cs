@@ -23,9 +23,17 @@ using Scalar.AspNetCore;
 using Shared.Infrastructure;
 using Shared.Utils;
 using WebClient.Components;
+using Wolverine;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseWolverine(opt =>
+{
+    opt.Discovery
+        .IncludeAssembly(typeof(ChecksHandler).Assembly)
+        .IncludeAssembly(typeof(SaveCheckHandler).Assembly);
+});
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors();
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());

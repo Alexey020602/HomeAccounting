@@ -16,7 +16,7 @@ public static class Extensions
 
     public static void AddDbContexts(this IHostApplicationBuilder builder)
     {
-        builder.AddDbContext<ChecksContext>("HomeAccounting");
+        builder.AddDbContext<ChecksContext>("HomeAccounting", options => options.SetupChecksForDevelopment());
         builder.AddDbContext<AuthorizationContext>("HomeAccounting", options => options.SetUpAuthorizationForDevelopment());
     }
 }

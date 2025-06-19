@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
         <PackageReference Include="Refit" Version="8.0.0"/>
         <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+        <PackageReference Include="WolverineFx" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>

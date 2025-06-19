@@ -2,6 +2,8 @@ using Authorization.Contracts;
 using Checks.Api.Requests;
 using Checks.Contracts;
 using Checks.Core;
+using Fns;
+using Fns.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Model;
@@ -33,19 +35,18 @@ public class ChecksController(ICheckUseCase checkUseCase, IMessageBus messageBus
             S = request.S,
             T = request.T
         };
-        await messageBus.InvokeAsync(checkRequest);
-        // await checkUseCase.SaveCheck(checkRequest.SaveCheckRequest(HttpContext.User.GetLogin()))
-        return Ok();
+        var storeCheck = await messageBus.InvokeAsync<StoreCheckCommand>(checkRequest);
+        return Ok(storeCheck);
     }
 
     [HttpPost("file")]
     public async Task<IActionResult> AddCheckWithFile(IFormFile file, DateTimeOffset addedDate,
         [FromServices] IBarcodeService barcodeService)
-    {   
+    {  
         var login = HttpContext.User.GetLogin();
         var qrResult = await barcodeService.ReadBarcodeAsync(file.OpenReadStream());
         var request = new CheckRequest(qrResult, addedDate);
-        await messageBus.InvokeAsync(new SaveCheckCommand()
+        var checkRequest = new SaveCheckCommand()
         {
             Login = login,
             Fn = request.Fn, 
@@ -53,12 +54,18 @@ public class ChecksController(ICheckUseCase checkUseCase, IMessageBus messageBus
             Fp = request.Fp, 
             S = request.S, 
             T = request.T
-        });
-        
-        return Ok();
-        // return Ok(await checkUseCase.SaveCheck(
-        //     new CheckRequest(qrResult, addedDate)
-        //         .SaveCheckRequest(HttpContext.User.GetLogin())
-        // ));
+        };
+        try
+        {
+            var storeCheck = await messageBus.InvokeAsync<LoadCheckCommand>(checkRequest);
+            if (storeCheck == null) return Conflict();
+            return Ok(storeCheck);
+        }
+        catch (TestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+        // await messageBus.PublishAsync(storeCheck);
     }
 }

@@ -33,7 +33,7 @@ public sealed class CheckSource(ICheckService checkService, IReceiptService rece
     {
         ArgumentNullException.ThrowIfNull(receipt);
 
-        if (receipt is BadAnswerReceipt badAnswerReceipt) throw new Exception($"{badAnswerReceipt.Data}");
+        FnsException.ThrowIfInvalidResponse(receipt);
 
         if (receipt is not Root root)
             throw new InvalidOperationException("Неправильный тип ответа ФНС");

@@ -1,7 +1,7 @@
 using Checks.Contracts;
+using Wolverine.Attributes;
 
 namespace Checks.Core;
-
 // public record GetChecks(GetChecksQuery Query);
 public record ChecksResponse(IReadOnlyList<CheckDto> Checks);
 public static class ChecksHandler

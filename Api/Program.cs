@@ -6,17 +6,14 @@ using BlazorShared.Layouts;
 using Checks.Api;
 using Checks.Core;
 using Checks.DataBase;
-using Checks.DataBase.Entities;
 using Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
-using Refit;
 using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
@@ -29,8 +26,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseWolverine(opt =>
 {
+    opt.Policies.LogMessageStarting(LogLevel.Trace);
+    opt.Policies.MessageExecutionLogLevel(LogLevel.Information);
+    opt.Policies.MessageSuccessLogLevel(LogLevel.Information);
+
+    opt.PublishAllMessages().ToLocalQueue("tracing").TelemetryEnabled(true);
+    
     opt.Discovery
-        .IncludeAssembly(typeof(ChecksHandler).Assembly)
+        .IncludeAssembly(typeof(LoadCheckHandler).Assembly)
         .IncludeAssembly(typeof(SaveCheckHandler).Assembly);
 });
 builder.Services.AddHttpContextAccessor();
@@ -38,7 +41,11 @@ builder.Services.AddCors();
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
 builder.Services.AddLogging();
-builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
+builder.Services.AddHttpLogging(logging =>
+{
+    // logging.
+    logging.LoggingFields = HttpLoggingFields.All;
+});
 builder.Services.AddTransient<HttpLoggingHandler>();
 
 
@@ -106,9 +113,10 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHttpLogging();
+// app.UseHttpLogging();
 
 app.MapControllers()
+    .WithHttpLogging(HttpLoggingFields.All)
     .RequireAuthorization()
     ;
 // app.UseStaticFiles();

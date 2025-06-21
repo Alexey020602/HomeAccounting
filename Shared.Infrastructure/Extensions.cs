@@ -1,7 +1,6 @@
 ﻿using Authorization;
 using Authorization.DependencyInjection;
 using Checks.DataBase;
-using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
@@ -12,16 +11,12 @@ public static class Extensions
     private static void AddDbContext<TContext>(this IHostApplicationBuilder builder, string serviceName, Action<DbContextOptionsBuilder>? optionsAction = null)
         where TContext: DbContext
     {
-        builder.AddNpgsqlDbContext<TContext>(serviceName, configureDbContextOptions: options =>
-        {
-            optionsAction?.Invoke(options);
-            options.UseExceptionProcessor();
-        });
+        builder.AddNpgsqlDbContext<TContext>(serviceName, configureDbContextOptions:  optionsAction);
     }
 
     public static void AddDbContexts(this IHostApplicationBuilder builder)
     {
-        builder.AddDbContext<ChecksContext>("HomeAccounting");
+        builder.AddDbContext<ChecksContext>("HomeAccounting", options => options.SetupChecksForDevelopment());
         builder.AddDbContext<AuthorizationContext>("HomeAccounting", options => options.SetUpAuthorizationForDevelopment());
     }
 }

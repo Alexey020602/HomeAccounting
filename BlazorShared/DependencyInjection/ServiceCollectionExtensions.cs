@@ -62,7 +62,9 @@ public static class ServiceCollectionExtensions
     {
         var httpClientBuilder = serviceCollection.AddRefitClient(type)
             .ConfigureHttpClient(client =>
-                client.BaseAddress = apiUri.AppendingPath(apiAttribute.BasePath))
+                client.BaseAddress = apiUri//.AppendingPath("api", apiAttribute.BasePath)
+                    .AppendingPath($"api/{apiAttribute.BasePath}")
+            )
             .AddHttpMessageHandler<HttpLoggingHandler >();
 
         if (apiAttribute is not ApiAuthorizableAttribute) return serviceCollection;

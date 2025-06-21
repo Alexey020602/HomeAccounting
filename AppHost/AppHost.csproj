@@ -18,6 +18,7 @@
         <PackageReference Include="Aspire.Hosting.Kubernetes" Version="9.3.0-preview.1.25265.20" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
         <PackageReference Include="Aspire.Hosting.Yarp" Version="9.3.0-preview.1.25265.20" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
     </ItemGroup>
 
     <ItemGroup>

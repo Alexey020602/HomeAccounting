@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
+
 builder.Services.AddHealthChecks();
 builder.AddDockerComposeEnvironment("docker");
 

@@ -6,31 +6,43 @@ using BlazorShared.Layouts;
 using Checks.Api;
 using Checks.Core;
 using Checks.DataBase;
-using Checks.DataBase.Entities;
 using Fns;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
-using Refit;
 using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.OpenTelemetry;
 using Shared.Infrastructure;
 using Shared.Utils;
 using WebClient.Components;
+using SerilogApplicationBuilderExtensions = Api.SerilogApplicationBuilderExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
-builder.Services.AddLogging();
-builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
+builder.Services.AddSerilog((configuration) =>
+{
+    configuration
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
+        .WriteTo.Console()
+        .WriteTo.OpenTelemetry(includedData: IncludedData.MessageTemplateTextAttribute | IncludedData.SpanIdField | IncludedData.TraceIdField)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("ApplicationName", "HomeAccounting");
+});
+
+// builder.Services.AddLogging();
+// builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 builder.Services.AddTransient<HttpLoggingHandler>();
 
 
@@ -98,7 +110,12 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHttpLogging();
+// app.UseHttpLogging();
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "Handled {RequestMethod} {RequestPath} {StatusCode} {Elapsed}";
+    options.GetLevel = SerilogApplicationBuilderExtensions.DefaultGetLevel;
+});
 
 app.MapControllers()
     .RequireAuthorization()
@@ -167,6 +184,24 @@ namespace Api
                     }
                 }
             );
+        }
+    }
+
+    internal static class SerilogApplicationBuilderExtensions
+    {
+        internal static LogEventLevel DefaultGetLevel(HttpContext httpContext, double elapsed, Exception? ex)
+        {
+            if (ex is not null || httpContext.Response.StatusCode >= 499) return LogEventLevel.Error;
+
+            return httpContext.IsApiEndpoint()
+                ? LogEventLevel.Information
+                : LogEventLevel.Debug;
+        }
+
+        private static bool IsApiEndpoint(this HttpContext httpContext)
+        {
+            var endpoint = httpContext.GetEndpoint();
+            return httpContext.Request.Path.StartsWithSegments("/api");
         }
     }
 }

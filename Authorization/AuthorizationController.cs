@@ -82,7 +82,16 @@ public class AuthorizationController( /*IUserService userService, */UserManager<
 
         if (user.RefreshTokenToken is null || user.RefreshTokenToken.Expires < DateTime.UtcNow)
         {
-            return BadRequest("Refresh Token Expired");
+            return Unauthorized(
+                new ProblemDetails()
+                {
+                    Extensions = new Dictionary<string, object?>  
+                    {
+                        {"error", "invalid_grant"},
+                        {"error_description", "The refresh token is invalid or expired."}
+                    }
+                }
+                );
         }
 
         var userRefreshToken = await CreateRefreshToken(user);
@@ -110,3 +119,4 @@ public class AuthorizationController( /*IUserService userService, */UserManager<
         return refreshToken;
     }
 }
+

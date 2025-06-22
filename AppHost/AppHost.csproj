@@ -26,7 +26,6 @@
         <ProjectReference Include="..\Gateway\Gateway.csproj" />
         <ProjectReference Include="..\MigrationService\MigrationService.csproj"/>
         <ProjectReference Include="..\Api\Api.csproj"/>
-        <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
         <ProjectReference Include="..\WebClient\WebClient\WebClient.csproj" />
     </ItemGroup>
 

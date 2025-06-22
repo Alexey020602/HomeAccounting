@@ -21,7 +21,7 @@ var db = builder
     .WithPassword(password)
     .WithLifetime(ContainerLifetime.Persistent)
     .WithDataVolume()
-    // .WithPgAdmin()
+    .WithPgAdmin()
     .AddDatabase("HomeAccounting");
 
 // var migrations = builder

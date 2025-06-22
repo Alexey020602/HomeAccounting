@@ -200,7 +200,6 @@ namespace Api
 
         private static bool IsApiEndpoint(this HttpContext httpContext)
         {
-            var endpoint = httpContext.GetEndpoint();
             return httpContext.Request.Path.StartsWithSegments("/api");
         }
     }

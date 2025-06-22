@@ -37,7 +37,7 @@ public class Worker(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while migrating the database");
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
 

@@ -1,4 +1,5 @@
 using Authorization.Contracts;
+using Checks.Api.BarCode;
 using Checks.Api.Requests;
 using Checks.Contracts;
 using Checks.Core;

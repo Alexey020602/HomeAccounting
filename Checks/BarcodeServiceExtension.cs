@@ -1,3 +1,4 @@
+using Checks.Api.BarCode;
 using Microsoft.AspNetCore.Http;
 
 namespace Checks.Api;

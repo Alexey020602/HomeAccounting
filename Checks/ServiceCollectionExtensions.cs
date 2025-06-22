@@ -1,3 +1,4 @@
+using Checks.Api.BarCode;
 using Checks.Contracts;
 using Checks.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,10 +12,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCheckModule(this IServiceCollection services/*, IConfiguration configuration*/)
     {
-        services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>();
-        services.AddScoped<ICheckUseCase, CheckUseCase>();
-        services.AddTransient<IBarcodeService, BarcodeService>();
-        // services.AddScoped<ICheckSource, FnsCheckSource>();
-        return services;
+        return services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>()
+            .AddScoped<ICheckUseCase, CheckUseCase>()
+            .AddTransient<IBarcodeService, BarcodeService>()
+            .Decorate<IBarcodeService, TelemetryBarcodeServiceDecorator>();
     }
 }

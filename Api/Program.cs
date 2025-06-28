@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
+using Rebus.Config;
+using Rebus.Transport.InMem;
 using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
@@ -40,33 +42,20 @@ builder.Services.AddSerilog((configuration) =>
         .Enrich.FromLogContext()
         .Enrich.WithProperty("ApplicationName", "HomeAccounting");
 });
-
-// builder.Services.AddLogging();
-// builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 builder.Services.AddTransient<HttpLoggingHandler>();
 
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
-// builder.Services.AddRefitClient<ICheckService>()
-//     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://proverkacheka.com"))
-//     .AddHttpMessageHandler<HttpLoggingHandler>();
-// builder.Services.AddRefitClient<IReceiptService>()
-//     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
-//     .AddHttpMessageHandler<HttpLoggingHandler>();
 
 builder.Services.AddScoped<ICheckRepository, CheckRepository>();
-// builder.Services.AddScoped<ICheckSource, CheckSource>();
 
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
 builder.Services.AddFnsModule();
 builder.Services.AddAccountingModule();
 
-builder.Services.AddControllers()
-    // .AddApplicationPart(typeof(ChecksController).Assembly)
-    // .AddApplicationPart(typeof(AuthorizationController).Assembly)
-    ;
+builder.Services.AddControllers();
 
 builder.Services.AddAuthorization(builder.Configuration);
 
@@ -76,6 +65,17 @@ builder.Services.Configure<RouteOptions>(options =>
 {
     options.SuppressCheckForUnhandledSecurityMetadata = true;
 });
+
+builder.Services.AddMediator();
+builder.Services.AddRebus(configure => 
+    configure
+        .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "HomeAccounting"))
+        .Logging(logging =>
+        {
+            logging.Serilog();
+            logging.Trace();
+        })
+    );
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

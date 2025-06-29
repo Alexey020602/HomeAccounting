@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
+    </ItemGroup>
+
 </Project>

@@ -4,9 +4,11 @@ using Authorization;
 using Authorization.DependencyInjection;
 using BlazorShared.Layouts;
 using Checks.Api;
+using Checks.Contracts;
 using Checks.Core;
 using Checks.DataBase;
 using Fns;
+using Mediator;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Rebus.Config;
+using Rebus.Routing.TypeBased;
 using Rebus.Transport.InMem;
 using Reports.Contracts;
 using Reports.Core;
@@ -48,7 +51,6 @@ builder.Services.AddTransient<HttpLoggingHandler>();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddScoped<ICheckRepository, CheckRepository>();
 
 builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
@@ -66,15 +68,26 @@ builder.Services.Configure<RouteOptions>(options =>
     options.SuppressCheckForUnhandledSecurityMetadata = true;
 });
 
-builder.Services.AddMediator();
-builder.Services.AddRebus(configure => 
-    configure
-        .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "HomeAccounting"))
+builder.Services.AddMediator((MediatorOptions options) =>
+{
+    options.Assemblies = [typeof(AddCheckHandler).Assembly, typeof(AddCheckCommand).Assembly];
+    options.ServiceLifetime = ServiceLifetime.Scoped;
+});
+builder.Services.AddRebus(configure =>
+    {
+        const string queueName = "HomeAccounting";
+        return configure
+        .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), queueName))
         .Logging(logging =>
         {
             logging.Serilog();
-            logging.Trace();
+            // logging.Trace();
         })
+        .Options(o => o.EnableDiagnosticSources())
+        .Routing(cofigurer => cofigurer
+            .TypeBased()
+            .MapAssemblyOf<ReceiptCategorized>(queueName));
+    }
     );
 
 var app = builder.Build();

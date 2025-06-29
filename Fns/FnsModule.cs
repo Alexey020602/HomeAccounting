@@ -16,7 +16,13 @@ public static class FnsModule
         services.AddRefitClient<IReceiptService>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://cheicheck.ru"))
             .AddHttpMessageHandler<HttpLoggingHandler>();
-        services.AddScoped<ICheckSource, CheckSource>();
+        
+        services.AddScoped<ICheckSource, CheckSource>();//todo Убрать, когда окончательно переделаю запросы
+
+        services.AddScoped<IProductCategorizationService, ProductCategorizationService>();
+        services.AddScoped<IReceiptDataService, ReceiptDataService>()
+            .Decorate<IReceiptDataService, TelemetryReceiptDataService>();
         return services;
+        
     }
 }

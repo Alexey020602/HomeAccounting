@@ -3,6 +3,7 @@ using Fns.Contracts;
 using Fns.ProverkaCheka.Dto;
 using Fns.Requests;
 using Shared.Model.Requests;
+using Receipt = Fns.Contracts.Receipt;
 using Root = Fns.ProverkaCheka.Dto.Root;
 
 namespace Fns;
@@ -29,7 +30,7 @@ public sealed class CheckSource(ICheckService checkService, IReceiptService rece
         return new NormalizedCheck(request.T, request.Fd, request.Fn, request.Fp, request.S, products.ToList());
     }
 
-    private static Root GetValidResponse(Receipt? receipt)
+    private static Root GetValidResponse(Fns.ProverkaCheka.Dto.Receipt? receipt)
     {
         ArgumentNullException.ThrowIfNull(receipt);
 

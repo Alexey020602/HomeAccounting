@@ -13,4 +13,10 @@
       <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Rebus" Version="8.8.0" />
+      <PackageReference Include="ZXing.Net" Version="0.16.10" />
+      <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.21" />
+    </ItemGroup>
+
 </Project>

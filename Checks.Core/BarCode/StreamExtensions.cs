@@ -1,4 +1,4 @@
-namespace Checks.Api;
+namespace Checks.Core.BarCode;
 
 public static class StreamExtensions
 {

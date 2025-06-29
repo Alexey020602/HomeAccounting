@@ -14,10 +14,10 @@ public interface IChecksApi
     [Get("/")]
     Task<List<CheckDto>> GetChecks();
 
-    [Post("/")]
+    [Put("/")]
     Task<CheckDto> GetReceipt(CheckRequest checkRequest);
 
-    [Post("/file")]
+    [Put("/file")]
     [Multipart]
     Task<CheckDto> GetReceipt(Stream file, DateTimeOffset addedDate);
     

@@ -12,12 +12,11 @@
       <PackageReference Include="Scrutor" Version="6.1.0" />
       <PackageReference Include="SkiaSharp" Version="3.119.0" />
       <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
-      <PackageReference Include="ZXing.Net" Version="0.16.10" />
-      <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.21" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Checks.Core\Checks.Core.csproj" />
+      <ProjectReference Include="..\Checks.DataBase\Checks.DataBase.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />
     </ItemGroup>
 

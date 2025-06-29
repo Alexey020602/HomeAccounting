@@ -1,18 +1,17 @@
 using SkiaSharp;
 using ZXing;
 
-namespace Checks.Api.BarCode;
+namespace Checks.Core.BarCode;
 
 public class BarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
 {
-    public async Task<string> ReadBarcodeAsync(Stream stream)
+    public Task<string> ReadBarcodeAsync(byte[] imageBytes)
     {
-        var imageBytes = await stream.ReadAsByteArrayAsync();
         var barcodeImage = SKImage.FromEncodedData(imageBytes) ??
                            throw new BarcodeException("Cannot create image from request");
         var bitmap = SKBitmap.FromImage(barcodeImage) ?? throw new BarcodeException("Cannot create Bitmap from image");
         var result = reader.Decode(bitmap) ?? throw new BarcodeException("Cannot decode image");
-        return result.Text ?? throw new BarcodeException("Result not contains text");
+        return Task.FromResult(result.Text) ?? throw new BarcodeException("Result not contains text");
     }
 }
 

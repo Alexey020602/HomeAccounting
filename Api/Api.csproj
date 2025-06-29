@@ -10,8 +10,8 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.3.1" />
-        <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
-        <PackageReference Include="Mediator.SourceGenerator" Version="2.1.7">
+        <PackageReference Include="Mediator.Abstractions" Version="3.0.0-preview.65" />
+        <PackageReference Include="Mediator.SourceGenerator" Version="3.0.0-preview.65">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -29,14 +29,12 @@
         <PackageReference Include="Rebus.ServiceProvider" Version="10.3.0" />
         <PackageReference Include="Refit" Version="8.0.0"/>
         <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0"/>
-        <PackageReference Include="Scalar.AspNetCore" Version="2.4.14" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.5.3" />
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
         <PackageReference Include="SkiaSharp" Version="3.119.0" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
-        <PackageReference Include="ZXing.Net" Version="0.16.10" />
-        <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.21" />
     </ItemGroup>
 
     <ItemGroup>

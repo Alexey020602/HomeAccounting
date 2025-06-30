@@ -4,9 +4,6 @@ using Authorization;
 using Authorization.DependencyInjection;
 using BlazorShared.Layouts;
 using Checks.Api;
-using Checks.Contracts;
-using Checks.Core;
-using Checks.DataBase;
 using Fns;
 using Mediator;
 using Microsoft.AspNetCore.Authentication;
@@ -18,6 +15,9 @@ using NSwag.AspNetCore;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Rebus.Transport.InMem;
+using Receipts.Contracts;
+using Receipts.Core;
+using Receipts.DataBase;
 using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
@@ -78,11 +78,7 @@ builder.Services.AddRebus(configure =>
         const string queueName = "HomeAccounting";
         return configure
         .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), queueName))
-        .Logging(logging =>
-        {
-            logging.Serilog();
-            // logging.Trace();
-        })
+        .Logging(logging => logging.Serilog())
         .Options(o => o.EnableDiagnosticSources())
         .Routing(cofigurer => cofigurer
             .TypeBased()
@@ -93,7 +89,7 @@ builder.Services.AddRebus(configure =>
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
-    var applicationContext = scope.ServiceProvider.GetRequiredService<ChecksContext>();
+    var applicationContext = scope.ServiceProvider.GetRequiredService<ReceiptsContext>();
     await applicationContext.Database.MigrateAsync();
     var authorizationContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
     await authorizationContext.Database.MigrateAsync();

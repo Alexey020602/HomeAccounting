@@ -40,7 +40,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Accounting.Api\Accounting.Api.csproj" />
         <ProjectReference Include="..\Authorization\Authorization.csproj" />
-        <ProjectReference Include="..\Checks\Checks.csproj" />
+        <ProjectReference Include="..\Receipts\Receipts.csproj" />
         <ProjectReference Include="..\Reports.Api\Reports.Api.csproj" />
         <ProjectReference Include="..\Fns\Fns.csproj" />
         <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />

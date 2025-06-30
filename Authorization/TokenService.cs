@@ -3,10 +3,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Authorization.Extensions;
 using Authorization.Models;
-using Checks.DataBase.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Receipts.DataBase.Entities;
 using User = Authorization.Contracts.User;
 
 namespace Authorization;

@@ -18,12 +18,12 @@ namespace Authorization.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Identity")
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Checks.DataBase.Entities.User", b =>
+            modelBuilder.Entity("Authorization.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -153,9 +153,9 @@ namespace Authorization.Migrations
                     b.ToTable("AspNetUserTokens", "Identity");
                 });
 
-            modelBuilder.Entity("Checks.DataBase.Entities.User", b =>
+            modelBuilder.Entity("Authorization.User", b =>
                 {
-                    b.OwnsOne("Checks.DataBase.Entities.RefreshToken", "RefreshTokenToken", b1 =>
+                    b.OwnsOne("Authorization.RefreshToken", "RefreshTokenToken", b1 =>
                         {
                             b1.Property<string>("UserId")
                                 .HasColumnType("text");
@@ -180,7 +180,7 @@ namespace Authorization.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Checks.DataBase.Entities.User", null)
+                    b.HasOne("Authorization.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -189,7 +189,7 @@ namespace Authorization.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Checks.DataBase.Entities.User", null)
+                    b.HasOne("Authorization.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -198,7 +198,7 @@ namespace Authorization.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Checks.DataBase.Entities.User", null)
+                    b.HasOne("Authorization.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

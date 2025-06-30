@@ -1,8 +1,8 @@
 ﻿using Authorization;
 using Authorization.DependencyInjection;
-using Checks.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Receipts.DataBase;
 
 namespace Shared.Infrastructure;
 
@@ -16,7 +16,7 @@ public static class Extensions
 
     public static void AddDbContexts(this IHostApplicationBuilder builder)
     {
-        builder.AddDbContext<ChecksContext>("HomeAccounting", options => options.SetupChecksForDevelopment());
+        builder.AddDbContext<ReceiptsContext>("HomeAccounting", options => options.SetupChecksForDevelopment());
         builder.AddDbContext<AuthorizationContext>("HomeAccounting", options => options.SetUpAuthorizationForDevelopment());
     }
 }

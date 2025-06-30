@@ -1,8 +1,7 @@
 using System.Diagnostics;
 using Authorization;
-using Checks.DataBase;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Trace;
+using Receipts.DataBase;
 
 namespace MigrationService;
 
@@ -23,7 +22,7 @@ public class Worker(
         {
             logger.LogInformation("Start prepare database");
             var scope = services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ChecksContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ReceiptsContext>();
             var authorizationContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
             // var applicationContextSeed = scope.ServiceProvider.GetRequiredService<ApplicationContextSeed>();
             logger.LogInformation("Prepare database");

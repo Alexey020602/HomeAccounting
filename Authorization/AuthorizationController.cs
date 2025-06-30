@@ -1,15 +1,11 @@
 using Authorization.Contracts;
 using Authorization.Extensions;
-using Authorization.Models;
-using Checks.DataBase;
-using Checks.DataBase.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Web;
-using User = Checks.DataBase.Entities.User;
 
 namespace Authorization;
 

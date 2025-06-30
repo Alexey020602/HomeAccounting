@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "AppHost\AppHost.csproj", "{4F61174D-926D-47D1-BE35-95D5FE85E748}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checks.DataBase", "Checks.DataBase\Checks.DataBase.csproj", "{03869DB1-6ADB-4CE6-91DB-2563D65B6395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Receipts.DataBase", "Receipts.DataBase\Receipts.DataBase.csproj", "{03869DB1-6ADB-4CE6-91DB-2563D65B6395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "MigrationService\MigrationService.csproj", "{7A3C4921-43B7-4B85-A0D5-EB891A6EC90D}"
 EndProject
@@ -25,11 +25,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui", "Maui\Maui.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization", "Authorization\Authorization.csproj", "{34ABE096-1D56-4849-9C75-C173F706823F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Checks", "Checks", "{0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Receipts", "Receipts", "{0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checks.Core", "Checks.Core\Checks.Core.csproj", "{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Receipts.Core", "Receipts.Core\Receipts.Core.csproj", "{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checks", "Checks\Checks.csproj", "{7BE676B9-EADC-44AD-904E-5ED733D3B18A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Receipts", "Receipts\Receipts.csproj", "{7BE676B9-EADC-44AD-904E-5ED733D3B18A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{DA538FD9-B3A5-4283-908C-5C94D04EC40F}"
 EndProject
@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{7C9B53CC-D8E1-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authorization", "Authorization", "{C066E501-F29E-42FB-B3D5-A3FDCA9F7334}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checks.Contracts", "Checks.Contracts\Checks.Contracts.csproj", "{FC22D7AF-D3A3-460F-B81F-D39F3E646D08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Receipts.Contracts", "Receipts.Contracts\Receipts.Contracts.csproj", "{FC22D7AF-D3A3-460F-B81F-D39F3E646D08}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fns", "Fns", "{4E5FBBB4-6E21-4BB5-A96F-AEBB91E2A53A}"
 EndProject
@@ -77,7 +77,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "WebClient\WebC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Web", "Shared.Web\Shared.Web.csproj", "{3FEEA541-D41F-4F16-BE28-0FDBCA207426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checks.Tests", "Checks.Tests\Checks.Tests.csproj", "{AA907064-DB4D-4609-A123-FAF758C77AD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Receipts.Tests", "Receipts.Tests\Receipts.Tests.csproj", "{AA907064-DB4D-4609-A123-FAF758C77AD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

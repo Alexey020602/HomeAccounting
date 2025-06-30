@@ -13,7 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Authorization\Authorization.csproj" />
-      <ProjectReference Include="..\Checks.DataBase\Checks.DataBase.csproj" />
+      <ProjectReference Include="..\Receipts.DataBase\Receipts.DataBase.csproj" />
     </ItemGroup>
 
 </Project>

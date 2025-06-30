@@ -1,4 +1,4 @@
-using Checks.Contracts;
+using Receipts.Contracts;
 using Reports.Contracts;
 
 namespace Reports.Core;

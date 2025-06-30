@@ -24,23 +24,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
-      <ProjectReference Include="..\Checks.Contracts\Checks.Contracts.csproj" />
+      <ProjectReference Include="..\Receipts.Contracts\Receipts.Contracts.csproj" />
       <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
       <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Components\CategoryComponent.razor" />
-      <AdditionalFiles Include="Components\MonthReportComponent.razor" />
-      <AdditionalFiles Include="Components\ProductComponent.razor" />
-      <AdditionalFiles Include="Components\ReceiptComponent.razor" />
-      <AdditionalFiles Include="Components\SubcategoryComponent.razor" />
-      <AdditionalFiles Include="Forms\CheckFileForm.razor" />
-      <AdditionalFiles Include="Forms\CheckManualForm.razor" />
-      <AdditionalFiles Include="Layouts\MainLayout.razor" />
-      <AdditionalFiles Include="Pages\Check.razor" />
-      <AdditionalFiles Include="Pages\Checks.razor" />
-      <AdditionalFiles Include="Pages\MonthReport.razor" />
     </ItemGroup>
 
     <ItemGroup>

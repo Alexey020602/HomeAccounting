@@ -1,5 +1,5 @@
 using BlazorShared.Api.Attributes;
-using Checks.Contracts;
+using Receipts.Contracts;
 using Refit;
 using Shared.Model.Checks;
 using Shared.Model.Requests;

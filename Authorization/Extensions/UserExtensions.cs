@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using Checks.DataBase.Entities;
-using CoreUser = Authorization.Contracts.User;
 
 namespace Authorization.Extensions;
 

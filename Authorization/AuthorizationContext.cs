@@ -1,4 +1,3 @@
-using Checks.DataBase.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

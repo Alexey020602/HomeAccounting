@@ -1,6 +1,6 @@
 using Receipts.Contracts;
 
-namespace Receipts.Core;
+namespace Receipts.Core.AddReceipt;
 
 public interface IReceiptService
 {

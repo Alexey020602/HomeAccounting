@@ -1,23 +1,11 @@
-using Authorization.Contracts;
-using Receipts.Contracts;
 using Receipts.Core.Model;
-using Shared.Model;
-using Shared.Model.Checks;
-using Category = Receipts.Contracts.Category;
-using Product = Receipts.Core.Model.Product;
 
-namespace Receipts.Core;
-
-using Product = Model.Product;
+namespace Receipts.Core.GetReceipts;
 
 //todo переделать репозиторий на классы Core
-public interface ICheckRepository
+public interface IGetReceiptsService
 {
-    Task<Check> SaveCheck(AddCheckRequest request);
-
-    Task<Check?> GetCheckByRequest(GetCheckRequest checkRequest);
-    Task<IReadOnlyList<Check>> GetChecksAsync(GetChecksQuery getChecksQuery);
-    Task<IReadOnlyList<Product>> GetProductsAsync(GetChecksQuery getChecksQuery);
+    Task<IReadOnlyList<Check>> GetChecksAsync(Contracts.GetChecks getChecksQuery);
 }
 
 public class GetCheckRequest(string fn, string fd, string fp, string s, DateTime t)

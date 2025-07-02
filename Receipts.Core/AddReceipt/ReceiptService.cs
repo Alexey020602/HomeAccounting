@@ -1,8 +1,9 @@
-using Receipts.Contracts;
 using Fns.Contracts;
 using Rebus.Bus;
+using Receipts.Contracts;
+using Receipts.Core.ReceiptCategorization;
 
-namespace Receipts.Core;
+namespace Receipts.Core.AddReceipt;
 
 public sealed class ReceiptService(ICheckReceiptService checkReceiptService, IReceiptDataService receiptDataService, IBus bus)
     : IReceiptService

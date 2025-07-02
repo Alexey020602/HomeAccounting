@@ -1,3 +1,4 @@
+using ServiceDefaults;
 using Yarp.ReverseProxy.Configuration;
 
 IReadOnlyList<RouteConfig> routes = [

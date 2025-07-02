@@ -1,4 +1,5 @@
 using MigrationService;
+using ServiceDefaults;
 using Shared.Infrastructure;
 
 var builder = Host.CreateApplicationBuilder(args);

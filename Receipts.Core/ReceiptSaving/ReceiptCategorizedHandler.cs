@@ -1,6 +1,8 @@
 using Rebus.Handlers;
+using Receipts.Core.GetReceipts;
+using Receipts.Core.ReceiptCategorization;
 
-namespace Receipts.Core;
+namespace Receipts.Core.ReceiptSaving;
 
 public sealed class ReceiptCategorizedHandler(IReceiptSaveService receiptSaveService): IHandleMessages<ReceiptCategorized>
 {

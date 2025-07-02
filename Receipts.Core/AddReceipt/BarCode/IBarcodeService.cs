@@ -1,4 +1,4 @@
-namespace Receipts.Core.BarCode;
+namespace Receipts.Core.AddReceipt.BarCode;
 
 public interface IBarcodeService
 {

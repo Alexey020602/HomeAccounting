@@ -1,6 +1,6 @@
-using Checks.DataBase;
 using Receipts.Core;
 using Fns.Contracts;
+using Receipts.Core.AddReceipt;
 
 namespace Receipts.DataBase;
 

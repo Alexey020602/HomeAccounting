@@ -1,7 +1,7 @@
 using SkiaSharp;
 using ZXing;
 
-namespace Receipts.Core.BarCode;
+namespace Receipts.Core.AddReceipt.BarCode;
 
 public class BarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
 {

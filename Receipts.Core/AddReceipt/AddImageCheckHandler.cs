@@ -1,9 +1,9 @@
-using Receipts.Contracts;
 using Fns.Contracts;
 using Mediator;
-using Receipts.Core.BarCode;
+using Receipts.Contracts;
+using Receipts.Core.AddReceipt.BarCode;
 
-namespace Receipts.Core;
+namespace Receipts.Core.AddReceipt;
 
 public sealed class AddImageCheckHandler(IBarcodeService barcodeService, IReceiptService receiptService): ICommandHandler<AddImageCheckCommand>
 {

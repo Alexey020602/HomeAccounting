@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Receipts.Core;
+using Receipts.Core.GetReceipts;
+using Receipts.Core.ReceiptCategorization;
 using Receipts.DataBase.Entities;
 
 namespace Receipts.DataBase;

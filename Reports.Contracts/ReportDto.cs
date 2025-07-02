@@ -13,14 +13,3 @@ public sealed class ReportDto
     public int PennySum => Categories.Sum(c => c.PennySum);
     public Sum Sum => new Sum(PennySum);
 }
-
-// public record CategoryDto(int Id, string Name, IReadOnlyList<SubcategoryDto> Subcategories)
-// {
-//     public int PennySum => Subcategories.Sum(s => s.PennySum);
-// }
-//
-// public record SubcategoryDto(int Id, string Name, IReadOnlyList<ProductDto> Products)
-// {
-//     public int PennySum => Products.Sum(p => p.PennySum);
-// }
-// public record ProductDto(int Id, string? Name, double Quantity, int PennySum, int Price);

@@ -17,13 +17,17 @@ using Rebus.Routing.TypeBased;
 using Rebus.Transport.InMem;
 using Receipts.Contracts;
 using Receipts.Core;
+using Receipts.Core.AddReceipt;
+using Receipts.Core.ReceiptSaving;
 using Receipts.DataBase;
+using Reports.Api;
 using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
+using ServiceDefaults;
 using Shared.Infrastructure;
 using Shared.Utils;
 using WebClient.Components;
@@ -51,11 +55,10 @@ builder.Services.AddTransient<HttpLoggingHandler>();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-
-builder.Services.AddScoped<IReportUseCase, ReportUseCase>();
 builder.Services.AddCheckModule();
 builder.Services.AddFnsModule();
 builder.Services.AddAccountingModule();
+builder.Services.AddReportsModule();
 
 builder.Services.AddControllers();
 

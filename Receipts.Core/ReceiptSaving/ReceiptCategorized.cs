@@ -1,6 +1,6 @@
 using Fns.Contracts;
 
-namespace Receipts.Core;
+namespace Receipts.Core.ReceiptSaving;
 
 public sealed class ReceiptCategorized
 {

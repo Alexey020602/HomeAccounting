@@ -1,7 +1,7 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Receipts.Contracts;
 using Receipts.Core;
+using Receipts.Core.GetReceipts;
 using Receipts.Core.Model;
 using Receipts.DataBase.Mappers;
 using Category = Receipts.DataBase.Entities.Category;
@@ -10,28 +10,19 @@ using Subcategory = Receipts.DataBase.Entities.Subcategory;
 
 namespace Receipts.DataBase;
 
-static class ReportRequestExtensions
+public class GetReceiptsService(ReceiptsContext context) : IGetReceiptsService
 {
-    public static Expression<Func<Entities.Check, bool>> GetPredicate(this GetChecksQuery request) =>
-        check => (!request.Range.Start.HasValue || check.PurchaseDate >= request.Range.Start.Value.ToUniversalTime())
-                 && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime());
-}
+    
 
-public class CheckRepository(ReceiptsContext context) : ICheckRepository
-{
-    public async Task<IReadOnlyList<Receipts.Core.Model.Product>> GetProductsAsync(GetChecksQuery getChecksQuery)
-    {
-        return (await GetChecksAsync(getChecksQuery)).SelectMany(check => check.Products).ToList();
-    }
-
-    public async Task<IReadOnlyList<Check>> GetChecksAsync(GetChecksQuery getChecksQuery)
+    public async Task<IReadOnlyList<Check>> GetChecksAsync(GetChecks getChecksQuery)
     {
         var checksQueryable = context.Checks
             .AsNoTracking()
             .Include(c => c.Products)
             .ThenInclude(p => p.Subcategory)
             .ThenInclude(sub => sub.Category)
-            .Where(getChecksQuery.GetPredicate());
+            .Where(getChecksQuery.GetPredicate())
+            ;
 
         if (getChecksQuery.Take.HasValue) 
             checksQueryable = checksQueryable.Take(getChecksQuery.Take.Value);

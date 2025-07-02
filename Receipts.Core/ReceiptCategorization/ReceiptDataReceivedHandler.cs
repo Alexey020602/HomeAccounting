@@ -1,8 +1,10 @@
 using Fns.Contracts;
 using Rebus.Bus;
 using Rebus.Handlers;
+using Receipts.Core.ReceiptSaving;
+using CategorizedProduct = Receipts.Core.ReceiptSaving.CategorizedProduct;
 
-namespace Receipts.Core;
+namespace Receipts.Core.ReceiptCategorization;
 
 public sealed class ReceiptDataReceivedHandler(IProductCategorizationService categorizationService, IBus bus)
     : IHandleMessages<ReceiptDataReceived>

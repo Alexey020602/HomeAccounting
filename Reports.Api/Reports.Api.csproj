@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
       <ProjectReference Include="..\Reports.Core\Reports.Core.csproj" />
       <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />

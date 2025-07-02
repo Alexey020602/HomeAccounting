@@ -1,8 +1,7 @@
 using Fns.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Receipts.DataBase;
 
-namespace Checks.DataBase;
+namespace Receipts.DataBase;
 
 internal static class ChecksContextExtensions
 {

@@ -1,7 +1,7 @@
-using Receipts.Contracts;
 using Mediator;
+using Receipts.Contracts;
 
-namespace Receipts.Core;
+namespace Receipts.Core.AddReceipt;
 
 public sealed class AddCheckHandler(IReceiptService receiptService) : ICommandHandler<AddCheckCommand>
 {

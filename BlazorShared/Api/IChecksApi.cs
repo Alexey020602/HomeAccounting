@@ -8,7 +8,7 @@ using Shared.Model.Requests;
 namespace BlazorShared.Api;
 
 [Headers("Authorization: Bearer")]
-[ApiAuthorizable("checks")]
+[ApiAuthorizable("receipts")]
 public interface IChecksApi
 {
     [Get("/")]

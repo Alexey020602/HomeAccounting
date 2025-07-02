@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace Receipts.Core.BarCode;
+namespace Receipts.Core.AddReceipt.BarCode;
 
 public sealed class TelemetryBarcodeServiceDecorator(
     IBarcodeService barcodeService,
@@ -9,7 +9,6 @@ public sealed class TelemetryBarcodeServiceDecorator(
     ActivitySource activitySource
 ) : IBarcodeService
 {
-    // private static readonly ActivitySource ActivitySource = new ("Receipts.Api.BarcodeService");
     public async Task<string> ReadBarcodeAsync(byte[] imageBytes)
     {
         using var activity = activitySource.StartActivity();

@@ -1,6 +1,6 @@
 using Fns.Contracts;
 
-namespace Receipts.Core;
+namespace Receipts.Core.AddReceipt;
 
 public interface ICheckReceiptService
 {

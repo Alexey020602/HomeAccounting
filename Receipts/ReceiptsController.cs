@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Receipts.Contracts;
 using Receipts.Core.AddReceipt.BarCode;
-using Shared.Model.Requests;
 using Shared.Web;
 
 namespace Checks.Api;

@@ -1,8 +1,6 @@
 using BlazorShared.Api.Attributes;
 using Receipts.Contracts;
 using Refit;
-using Shared.Model.Checks;
-using Shared.Model.Requests;
 
 
 namespace BlazorShared.Api;
@@ -19,7 +17,7 @@ public interface IChecksApi
 
     [Put("/file")]
     [Multipart]
-    Task<CheckDto> GetReceipt(Stream file, DateTimeOffset addedDate);
+    Task<CheckDto> GetReceipt(Stream file);
     
-    Task<CheckDto> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
+    // Task<CheckDto> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
 }

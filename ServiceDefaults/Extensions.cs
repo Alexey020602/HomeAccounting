@@ -8,6 +8,7 @@ using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Rebus.OpenTelemetry.Configuration;
+using Shared.Utils;
 
 namespace ServiceDefaults;
 
@@ -22,6 +23,7 @@ public static class Extensions
 
         builder.AddDefaultHealthChecks();
 
+        builder.Services.AddScoped<HttpLoggingHandler>();
         builder.Services.AddServiceDiscovery();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
@@ -31,6 +33,7 @@ public static class Extensions
 
             // Turn on service discovery by default
             http.AddServiceDiscovery();
+            http.AddHttpMessageHandler<HttpLoggingHandler>();
         });
 
         // Uncomment the following to restrict the allowed schemes for service discovery.

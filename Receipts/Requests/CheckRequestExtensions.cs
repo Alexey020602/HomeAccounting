@@ -1,5 +1,4 @@
 using Receipts.Contracts;
-using Shared.Model.Requests;
 
 namespace Checks.Api.Requests;
 

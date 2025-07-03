@@ -1,4 +1,5 @@
 using Fns.Contracts;
+using Fns.Contracts.Categorization;
 using Rebus.Bus;
 using Rebus.Handlers;
 using Receipts.Core.ReceiptSaving;

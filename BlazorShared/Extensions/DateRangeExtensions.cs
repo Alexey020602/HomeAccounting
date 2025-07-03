@@ -1,4 +1,5 @@
 using Shared.Model;
+using Shared.Model.Dates;
 using MudDateRange = MudBlazor.DateRange;
 namespace BlazorShared.Extensions;
 

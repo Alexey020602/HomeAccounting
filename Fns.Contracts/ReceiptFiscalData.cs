@@ -1,17 +1,12 @@
 using System.Text.Json.Serialization;
-using Shared.Model.Checks;
-using Shared.Model.Requests;
+using Shared.Model.Dates;
 
 namespace Fns.Contracts;
 
-public record ReceiptFiscalData
+[method: JsonConstructor]
+public record ReceiptFiscalData(string Fn, string Fd, string Fp, string S, DateTime T)
 {
     public ReceiptFiscalData(string raw): this(CreateDictionaryFromRawString(raw)) { }
-    public string Fn { get; init; }
-    public string Fd { get; init; }
-    public string Fp { get; init; }
-    public string S { get; init; }
-    public DateTime T { get; init; }
 
     public string RawCheck(string format = "yyyyMMddTHHmm")
     {
@@ -23,20 +18,6 @@ public record ReceiptFiscalData
         values["fp"],
         values["s"],
         new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds().ToUniversalTime()) {}
-
-    // public ReceiptFiscalData()
-    // {
-    // }
-
-    [JsonConstructor]
-    public ReceiptFiscalData( string Fn, string Fd, string Fp, string S, DateTime T)
-    {
-        this.Fn = Fn;
-        this.Fd = Fd;
-        this.Fp = Fp;
-        this.S = S;
-        this.T = T;
-    }
 
     private static Dictionary<string, string> CreateDictionaryFromRawString(string raw, char splitter = '&')
     {

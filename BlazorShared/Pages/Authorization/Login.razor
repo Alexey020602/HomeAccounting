@@ -2,12 +2,9 @@
 @using BlazorShared.Api
 @using BlazorShared.Authorization
 @using BlazorShared.Authorization.AuthenticationStateProvider
-@using BlazorShared.Services
 @using global::Authorization.Contracts
-@* @inject ILoginService LoginService *@
 @inject IAuthorizationApi AuthorizationApi
 @inject ILoginStateProvider LoginStateProvider
-@inject IAuthenticationStorage AuthenticationStorage
 @inject NavigationManager NavigationManager
 
 <MudCard Style="max-width: 600px; padding: 20px">

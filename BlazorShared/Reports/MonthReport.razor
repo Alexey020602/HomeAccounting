@@ -1,9 +1,7 @@
 @page "/MonthReport"
 @using BlazorShared.Api
-@using BlazorShared.Components
 @using BlazorShared.Forms
 @using Microsoft.AspNetCore.Authorization
-@using Reports.Contracts
 @using DateRange = Shared.Model.Dates.DateRange
 
 @attribute [Authorize]
@@ -81,7 +79,7 @@
         try
         {
             isLoading = true;
-            Report = await ReportsApi.GetMonthReport(new Reports.Contracts.ReportRequest(dateRange));
+            Report = await ReportsApi.GetMonthReport(new ReportRequest(dateRange));
         }
         finally
         {

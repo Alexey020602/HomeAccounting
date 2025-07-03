@@ -3,6 +3,7 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Reports.Contracts;
 using Reports.Core;
+using Shared.Model;
 using Shared.Web;
 
 namespace Reports.Api;

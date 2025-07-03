@@ -5,29 +5,31 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Authorization.DependencyInjection;
 
-public static class ServiceCollectionExtensions
+public static class AuthorizationModule
 {
-    public static IServiceCollection AddAuthorization(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuthorization(this IHostApplicationBuilder builder, string databaseServiceName)
     {
-        services.AddIdentityCore<User>()
+        builder.AddNpgsqlDbContext<AuthorizationContext>(databaseServiceName);
+        builder.Services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<AuthorizationContext>();
         
-        services.AddAuthorization();
-        services.AddAuthentication(options =>
+        builder.Services.AddAuthorization();
+        builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
         .AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = configuration.CreateJwtTokenSettings().TokenValidationParameters;
+            options.TokenValidationParameters = builder.Configuration.CreateJwtTokenSettings().TokenValidationParameters;
         });
 
-        services.AddTransient<ITokenService, TokenService>();
-        return services;
+        builder.Services.AddTransient<ITokenService, TokenService>();
+        return builder.Services;
     }
 
     public static DbContextOptionsBuilder SetUpAuthorization(this DbContextOptionsBuilder options) => 

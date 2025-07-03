@@ -11,9 +11,4 @@
       <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="8.1.3" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Authorization\Authorization.csproj" />
-      <ProjectReference Include="..\Receipts.DataBase\Receipts.DataBase.csproj" />
-    </ItemGroup>
-
 </Project>

@@ -7,7 +7,7 @@ builder.Services.AddLogging();
 builder.Services.AddHttpLogging();
 builder.AddServiceDefaults();
 
-builder.AddDbContexts();
+// builder.AddDbContexts();
 
 builder.Services.AddHostedService<Worker>();
 

@@ -17,6 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Receipts.Core\Receipts.Core.csproj" />
       <ProjectReference Include="..\Receipts.DataBase\Receipts.DataBase.csproj" />
+      <ProjectReference Include="..\Shared.Infrastructure\Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />
     </ItemGroup>
 

@@ -54,17 +54,15 @@ builder.Services.AddTransient<HttpLoggingHandler>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
-
-builder.Services.AddCheckModule();
+const string databaseName = "HomeAccounting";
+builder.AddReceiptsModule(databaseName);
 builder.Services.AddFnsModule();
 builder.Services.AddAccountingModule();
 builder.Services.AddReportsModule();
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthorization(builder.Configuration);
-
-builder.AddDbContexts();
+builder.AddAuthorization(databaseName);
 
 builder.Services.Configure<RouteOptions>(options =>
 {

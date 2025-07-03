@@ -1,6 +1,7 @@
 using Receipts.Core;
 using Receipts.DataBase;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Rebus.Handlers;
 using Receipts.Contracts;
 using Receipts.Core.AddReceipt;
@@ -14,11 +15,12 @@ using ZXing.SkiaSharp;
 
 namespace Checks.Api;
 
-public static class ServiceCollectionExtensions
+public static class ReceiptsModule
 {
-    public static IServiceCollection AddCheckModule(this IServiceCollection services/*, IConfiguration configuration*/)
+    public static IHostApplicationBuilder AddReceiptsModule(this IHostApplicationBuilder builder, string databaseServiceName/*, IConfiguration configuration*/)
     {
-        return services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>()
+        builder.AddNpgsqlDbContext<ReceiptsContext>(databaseServiceName);
+        builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>()
                 .AddScoped<IGetReceiptsService, GetReceiptsService>()
             .AddScoped<IReceiptSaveService, ReceiptSaveService>()
             .AddScoped<IReceiptService, ReceiptService>()
@@ -28,5 +30,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IHandleMessages<ReceiptDataReceived>, ReceiptDataReceivedHandler>()
             .AddTransient<IBarcodeService, BarcodeService>()
             .Decorate<IBarcodeService, TelemetryBarcodeServiceDecorator>();
+        return builder;
     }
 }

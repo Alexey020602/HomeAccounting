@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Authorization.DataBase;
 
 namespace Authorization.Extensions;
 

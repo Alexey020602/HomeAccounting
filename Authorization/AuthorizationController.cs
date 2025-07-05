@@ -1,118 +1,80 @@
 using Authorization.Contracts;
+using Authorization.Core;
+using Authorization.Core.Login;
+using Authorization.Core.Refresh;
+using Authorization.Core.Registration;
+using Authorization.DataBase;
 using Authorization.Extensions;
+using LightResults;
+using Mediator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Web;
+using User = Authorization.DataBase.User;
 
 namespace Authorization;
 
 [AllowAnonymous]
-public class AuthorizationController( /*IUserService userService, */UserManager<User> userManager,
-    ITokenService tokenService) : ApiControllerBase
+public class AuthorizationController(IMediator mediator) : ApiControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest loginRequest)
     {
-        var user = await userManager.FindByIdAsync(loginRequest.Login);
-        // var user = await userService.GetUserByLogin(loginRequest.Login);
+        var result = await mediator.Send(new LoginQuery(loginRequest.Login, loginRequest.Password));
+        if (result.IsFailure(out var error, out var authorizationResponse))
+        {
+            return BadRequest(error.Message);
+        }
 
-        if (user is null) return BadRequest("User not found");
-
-        if (!await userManager.CheckPasswordAsync(user, loginRequest.Password))
-            return BadRequest("Wrong Password");
-
-        var userRefreshToken = await CreateRefreshToken(user);
-        
-        return Ok(
-            new AuthorizationResponse
-            {
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Login = loginRequest.Login,
-                AccessToken = CreateAccessToken(user),
-                RefreshToken = userRefreshToken.Token,
-            }
-        );
+        return Ok(authorizationResponse);
     }
 
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegistrationRequest registrationRequest)
     {
-        var existingUser = await userManager.FindByIdAsync(registrationRequest.Login);
-        if (existingUser is not null) return BadRequest("User already exists");
+        var result = await mediator.Send(new RegisterCommand(registrationRequest.Login, registrationRequest.Username, registrationRequest.Password));
 
-        var creationResult = await userManager.CreateAsync(
-            new User
-            {
-                Id = registrationRequest.Login,
-                UserName = registrationRequest.Username,
-            },
-            registrationRequest.Password
-        );
-
-        if (creationResult.Succeeded)
+        if (result.IsSuccess())
         {
             return Created();
         }
 
-        foreach (var error in creationResult.Errors)
+        foreach (var error in result.Errors.OfType<UserCreationError>())
         {
-            ModelState.AddModelError(error.Code, error.Description);
+            ModelState.AddModelError(error.Code, error.Message);
         }
-
+        
         return BadRequest(ModelState);
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(string refreshToken)
     {
-        var user = await userManager.Users.FirstOrDefaultAsync(user =>
-            user.RefreshTokenToken != null && user.RefreshTokenToken.Token == refreshToken);
-        if (user is null)
+        var result = await mediator.Send(new RefreshTokenQuery(refreshToken));
+
+        if (result.IsSuccess(out var authorizationResponse, out var error))
         {
-            return BadRequest("User Not Found");
+            return Ok(authorizationResponse);
         }
 
-        if (user.RefreshTokenToken is null || user.RefreshTokenToken.Expires < DateTime.UtcNow)
+        if (error is not RefreshTokenError)
         {
-            return Unauthorized(
-                new ProblemDetails()
-                {
-                    Extensions = new Dictionary<string, object?>  
-                    {
-                        {"error", "invalid_grant"},
-                        {"error_description", "The refresh token is invalid or expired."}
-                    }
-                }
-                );
+            return BadRequest(error.Message);
         }
 
-        var userRefreshToken = await CreateRefreshToken(user);
-
-        return Ok(
-            new AuthorizationResponse()
+        return Unauthorized(
+            new ProblemDetails()
             {
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Login = user.Id,
-                AccessToken = CreateAccessToken(user),
-                RefreshToken = userRefreshToken.Token,
+                Extensions = new Dictionary<string, object?>
+                {
+                    { "error", "invalid_grant" },
+                    { "error_description", "The refresh token is invalid or expired." }
+                }
             }
         );
     }
-    private string CreateAccessToken(User user)
-    {
-        return tokenService.CreateToken(user.GetClaims());
-    }
-    private async Task<RefreshToken> CreateRefreshToken(User user)
-    {
-        var refreshToken = tokenService.CreateRefreshToken();
-        user.RefreshTokenToken = refreshToken;
-
-        await userManager.UpdateAsync(user);
-        return refreshToken;
-    }
 }
-

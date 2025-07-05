@@ -1,3 +1,5 @@
+using Authorization.Core;
+using Authorization.DataBase;
 using Authorization.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

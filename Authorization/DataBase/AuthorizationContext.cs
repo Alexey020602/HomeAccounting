@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Authorization;
+namespace Authorization.DataBase;
 
 public class AuthorizationContext(DbContextOptions<AuthorizationContext> options): IdentityUserContext<User, string>(options)
 {

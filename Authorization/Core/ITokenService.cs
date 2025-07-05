@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using Receipts.DataBase.Entities;
+using Authorization.DataBase;
 
-namespace Authorization;
+namespace Authorization.Core;
 
 public interface ITokenService
 {

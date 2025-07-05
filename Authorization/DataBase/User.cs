@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Authorization;
+namespace Authorization.DataBase;
 
 public class User: IdentityUser<string>
 {

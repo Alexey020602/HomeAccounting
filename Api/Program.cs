@@ -1,6 +1,7 @@
 using Accounting.Api;
 using Api;
-using Authorization;
+using Authorization.Core.Login;
+using Authorization.DataBase;
 using Authorization.DependencyInjection;
 using BlazorShared.Layouts;
 using Checks.Api;
@@ -71,7 +72,7 @@ builder.Services.Configure<RouteOptions>(options =>
 
 builder.Services.AddMediator((MediatorOptions options) =>
 {
-    options.Assemblies = [typeof(AddCheckHandler).Assembly, typeof(AddCheckCommand).Assembly];
+    options.Assemblies = [typeof(AddCheckHandler).Assembly, typeof(AddCheckCommand).Assembly, typeof(LoginQuery).Assembly];
     options.PipelineBehaviors = [typeof(TelemetryPipelineBehaviour<,>)];
     options.ServiceLifetime = ServiceLifetime.Scoped;
 });

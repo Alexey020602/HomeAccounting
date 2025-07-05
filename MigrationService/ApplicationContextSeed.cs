@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Receipts.Contracts;
 using Receipts.DataBase;
-using User = Authorization.User;
+using User = Authorization.DataBase.User;
 
 namespace MigrationService;
 

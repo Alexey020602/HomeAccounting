@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Authorization;
+using Authorization.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Receipts.DataBase;
 

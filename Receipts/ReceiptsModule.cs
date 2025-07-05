@@ -19,7 +19,10 @@ public static class ReceiptsModule
 {
     public static IHostApplicationBuilder AddReceiptsModule(this IHostApplicationBuilder builder, string databaseServiceName/*, IConfiguration configuration*/)
     {
-        builder.AddNpgsqlDbContext<ReceiptsContext>(databaseServiceName);
+        builder.AddNpgsqlDbContext<ReceiptsContext>(
+            databaseServiceName,
+            configureDbContextOptions: options => options.SetupChecksForDevelopment()
+            );
         builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>()
                 .AddScoped<IGetReceiptsService, GetReceiptsService>()
             .AddScoped<IReceiptSaveService, ReceiptSaveService>()

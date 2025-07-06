@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.6" />
+        <PackageReference Include="MudBlazor" Version="8.9.0" />
+        <PackageReference Include="Refit" Version="8.0.0"/>
+        <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
+      <ProjectReference Include="..\Authorization.UI\Authorization.UI.csproj" />
+      <ProjectReference Include="..\Receipts.Contracts\Receipts.Contracts.csproj" />
+      <ProjectReference Include="..\Receipts.UI\Receipts.UI.csproj" />
+      <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
+      <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Authorization\AuthenticationStateProvider\" />
+      <Folder Include="Authorization\Dto\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+</Project>

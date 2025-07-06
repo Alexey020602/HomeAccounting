@@ -1,10 +1,4 @@
-using BlazorShared;
-using BlazorShared.DependencyInjection;
-using BlazorShared.Layouts;
-using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MudBlazor.Extensions;
+using Shared.Blazor.Layouts;
 using WebClient.Components;
 
 var builder = WebApplication.CreateBuilder(args);

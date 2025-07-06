@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using BlazorShared.Api;
-using BlazorShared.DependencyInjection;
+using BlazorConsolidated.Api;
+using BlazorConsolidated.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

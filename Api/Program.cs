@@ -3,7 +3,9 @@ using Api;
 using Authorization.Core.Login;
 using Authorization.DataBase;
 using Authorization.DependencyInjection;
-using BlazorShared.Layouts;
+using Authorization.UI;
+using BlazorConsolidated.Pages;
+using BlazorConsolidated.Reports;
 using Checks.Api;
 using Fns;
 using Mediator;
@@ -16,20 +18,17 @@ using NSwag.AspNetCore;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Rebus.Transport.InMem;
-using Receipts.Contracts;
-using Receipts.Core;
 using Receipts.Core.AddReceipt;
 using Receipts.Core.ReceiptSaving;
 using Receipts.DataBase;
 using Reports.Api;
-using Reports.Contracts;
 using Reports.Core;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
 using ServiceDefaults;
-using Shared.Infrastructure;
+using Shared.Blazor.Layouts;
 using Shared.Utils;
 using WebClient.Components;
 using SerilogApplicationBuilderExtensions = Api.SerilogApplicationBuilderExtensions;
@@ -136,7 +135,8 @@ app.MapControllers()
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(MainLayout).Assembly)
+    .AddAdditionalAssemblies(typeof(MainLayout).Assembly, typeof(Login).Assembly, typeof(Receipts.UI.Receipts).Assembly, typeof(MonthReportComponent).Assembly/*, typeof(Home).Assembly*/)
+    // .AddAdditionalAssemblies(typeof(MainLayout).Assembly)
     .AllowAnonymous();
 
 app.Run();

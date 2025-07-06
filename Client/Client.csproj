@@ -20,13 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BlazorShared\BlazorShared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
+        <ProjectReference Include="..\BlazorConsolidated\BlazorConsolidated.csproj" />
     </ItemGroup>
 
     <ItemGroup>

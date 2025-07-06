@@ -1,0 +1,35 @@
+@using System.Net
+@using Authorization.UI
+@using Authorization.UI.AuthenticationStateProvider
+@using Microsoft.Extensions.Logging
+@using Refit
+@using Shared.Blazor
+@inherits ErrorBoundaryBase
+@inject ILogger<AppErrorBoundary> Logger
+@inject ILoginStateProvider LoginStateProvider
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+@ChildContent
+
+@code {
+    protected override async Task OnErrorAsync(Exception exception)
+    {
+        if (exception is not ApiException
+            {
+                StatusCode: HttpStatusCode.Unauthorized
+            })
+        {
+            Logger.LogError(exception.Message);
+            ProcessError(exception);
+            return;
+        }
+        await LoginStateProvider.Logout();
+        NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.GetCurrentPath()}");
+    }
+
+    private void ProcessError(Exception exception)
+    {
+        Snackbar.Add(exception.Message, Severity.Error);
+    }
+}

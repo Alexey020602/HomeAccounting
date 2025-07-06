@@ -1,0 +1,34 @@
+@using Authorization.UI
+@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorConsolidated.Components
+@using BlazorConsolidated.Pages
+@using BlazorConsolidated.Reports
+@using MudBlazor.Extensions
+@using Shared.Blazor.Layouts
+@inject NavigationManager NavigationManager
+<CascadingAuthenticationState @rendermode="AssignedRenderMode">
+    <AppErrorBoundary>
+        @* <ChildContent> *@
+            <Router AppAssembly="@typeof(Home).Assembly" AdditionalAssemblies="new []{ typeof(Login).Assembly, typeof(global::Receipts.UI.Receipts).Assembly, typeof(MainLayout).Assembly }" >
+                <Found Context="routeData">
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                        <Authorizing>
+                            Проверка авторизации
+                        </Authorizing>
+                        <NotAuthorized>
+                            <RedirectToLoginComponent
+                                ReturnUrl="@NavigationManager.GetCurrentPath()"></RedirectToLoginComponent>
+                        </NotAuthorized>
+                    </AuthorizeRouteView>
+                    <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+                </Found>
+                <NotFound>
+                    <PageTitle>Not found</PageTitle>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p role="alert">Sorry, there's nothing at this address.</p>
+                    </LayoutView>
+                </NotFound>
+            </Router>
+        @* </ChildContent> *@
+    </AppErrorBoundary>
+</CascadingAuthenticationState>

@@ -1,0 +1,103 @@
+@using System.ComponentModel.DataAnnotations
+@using System.Linq.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazor
+
+<MudCard Elevation="5">
+    <MudCardContent>
+        <EditForm Model="@Model" OnValidSubmit="SendFileRequest">
+            <DataAnnotationsValidator/>
+
+            <MudGrid Spacing="3" Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudInputLabel>Изображение чека *</MudInputLabel>
+                    <MudFileUpload
+                        T="IBrowserFile"
+                        For="Model.FileValidation"
+                        Accept="image/*"
+                        @bind-Files="Model.SelectedFile">
+                        <ActivatorContent>
+                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Primary" Text="Нажмите для выбора"/>
+                        </ActivatorContent>
+                        <SelectedTemplate Context="file">
+                            @if (file is not null)
+                            {
+                                <MudChip
+                                    Class="mt-2"
+                                    Icon="@Icons.Material.Filled.Image"
+                                    T="string"
+                                    Text="@file.Name"
+                                    OnClose="ClearFile"/>
+                            }
+                        </SelectedTemplate>
+                    </MudFileUpload>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack Row="true" Justify="Justify.FlexEnd">
+                        <MudButton
+                            Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            ButtonType="ButtonType.Submit">
+                            Сохранить чек
+                        </MudButton>
+                        <MudButton
+                            Variant="Variant.Outlined"
+                            Color="Color.Secondary"
+                            Disabled="@(Model.SelectedFile == null)"
+                            OnClick="Cancel">
+                            Отмена
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public EventCallback<Stream> OnSubmit { get; set; }
+
+    private sealed class FormModel
+    {
+        [Required(ErrorMessage = "Выберите файл с чеком")]
+        public IBrowserFile? SelectedFile { get; set; }
+
+        // public FileCheckRequest ToCheckFileRequest()
+        // {
+        //     return new FileCheckRequest
+        //     {
+        //         FileStream = GetReadStream(),
+        //         AddedTime = DateTimeOffset.Now
+        //     };
+        // }
+
+        public Stream GetReadStream()
+        {
+            return SelectedFile?.OpenReadStream() ?? throw new Exception("Не выбран файл");
+        }
+
+
+        public Expression<Func<IBrowserFile?>> FileValidation => () => SelectedFile;
+    }
+
+    private FormModel Model { get; set; } = new();
+    private async Task SendFileRequest() => await OnSubmit.InvokeAsync(Model.GetReadStream());
+
+    private Task OnChange(InputFileChangeEventArgs args)
+    {
+        Model.SelectedFile = args.File;
+
+        return Task.CompletedTask;
+    }
+
+    private void Cancel()
+    {
+        Model = new();
+    }
+
+    private void ClearFile()
+    {
+        Model.SelectedFile = null;
+    }
+
+}

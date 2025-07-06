@@ -17,7 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
+      <ProjectReference Include="..\Authorization.Core\Authorization.Core.csproj" />
+      <ProjectReference Include="..\Authorization.DataBase\Authorization.DataBase.csproj" />
       <ProjectReference Include="..\Receipts.DataBase\Receipts.DataBase.csproj" />
       <ProjectReference Include="..\Shared.Infrastructure\Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />

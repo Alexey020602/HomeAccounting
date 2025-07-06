@@ -1,7 +1,6 @@
-using Authorization.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace Authorization.Extensions;
+namespace Authorization.Core;
 
 public static class ConfigurationExtensions
 {

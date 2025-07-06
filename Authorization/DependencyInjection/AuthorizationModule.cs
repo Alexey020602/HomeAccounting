@@ -1,6 +1,5 @@
 using Authorization.Core;
 using Authorization.DataBase;
-using Authorization.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,7 @@ public static class AuthorizationModule
             databaseServiceName,
             configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
             );
-        builder.Services.AddIdentityCore<User>()
+        builder.Services.AddIdentityCore<DataBase.User>()
             .AddEntityFrameworkStores<AuthorizationContext>();
         
         builder.Services.AddAuthorization();
@@ -30,6 +29,7 @@ public static class AuthorizationModule
             options.TokenValidationParameters = builder.Configuration.CreateJwtTokenSettings().TokenValidationParameters;
         });
 
+        builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddTransient<ITokenService, TokenService>();
         builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
         return builder.Services;

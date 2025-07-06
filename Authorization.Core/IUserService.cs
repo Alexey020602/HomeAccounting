@@ -1,4 +1,3 @@
-using Authorization.DataBase;
 using LightResults;
 
 namespace Authorization.Core;

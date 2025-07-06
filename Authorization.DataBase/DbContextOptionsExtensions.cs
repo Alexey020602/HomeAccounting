@@ -1,9 +1,8 @@
-using Authorization.DataBase;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Authorization.DependencyInjection;
+namespace Authorization.DataBase;
 
 public static class DbContextOptionsExtensions
 {

@@ -3,17 +3,20 @@ using System;
 using Authorization.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Authorization.Migrations
+namespace Authorization.DataBase.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    partial class AuthorizationContextModelSnapshot : ModelSnapshot
+    [Migration("20250706192831_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

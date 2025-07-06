@@ -35,7 +35,7 @@ public static class UserMapper
         RefreshTokenToken = user.RefreshToken?.ConvertToRefreshToken(),
     };
 }
-public record UserRequest(string Login, string Password);
+
 public class UserService(UserManager<User> userManager): IUserService
 {
     public async Task<Result<Core.User>> GetUserByRequest(
@@ -51,16 +51,16 @@ public class UserService(UserManager<User> userManager): IUserService
         if (!await userManager.CheckPasswordAsync(user, request.Password))
             return Result.Failure<Core.User>("Wrong Password");
         
-        user.RefreshTokenToken = createRefreshToken().ConvertToRefreshToken();
+        user.RefreshTokenToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
         //todo Добавить обработку ошибок
         await userManager.UpdateAsync(user);
         
-        return user.ConvertToUser();
+        return UserMapper.ConvertToUser((User)user);
     }
 
     public async Task<Result> UpdateUser(Core.User user)
     {
-        var result = await userManager.UpdateAsync(user.ConvertToUser());
+        var result = await userManager.UpdateAsync(UserMapper.ConvertToUser(user));
 
         if (result.Succeeded)
         {
@@ -87,11 +87,11 @@ public class UserService(UserManager<User> userManager): IUserService
             return Result.Failure<Core.User>(new RefreshTokenError());
         }
         
-        user.RefreshTokenToken = createRefreshToken().ConvertToRefreshToken();
+        user.RefreshTokenToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
         
         await userManager.UpdateAsync(user);
 
-        return user.ConvertToUser();
+        return UserMapper.ConvertToUser((User)user);
     }
 
     public async Task<Result> AddUser(UnregisteredUser user, string password)

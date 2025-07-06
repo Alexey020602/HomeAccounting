@@ -1,12 +1,9 @@
 using Authorization.Contracts;
 using Authorization.Core.Login;
 using Authorization.Core.Registration;
-using Authorization.DataBase;
 using Authorization.Extensions;
 using LightResults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Authorization.Core;
 

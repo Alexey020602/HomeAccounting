@@ -3,8 +3,6 @@ using Authorization.Core;
 using Authorization.Core.Login;
 using Authorization.Core.Refresh;
 using Authorization.Core.Registration;
-using Authorization.DataBase;
-using Authorization.Extensions;
 using LightResults;
 using Mediator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

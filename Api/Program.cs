@@ -72,7 +72,7 @@ builder.Services.Configure<RouteOptions>(options =>
 
 builder.Services.AddMediator((MediatorOptions options) =>
 {
-    options.Assemblies = [typeof(AddCheckHandler).Assembly, typeof(AddCheckCommand).Assembly, typeof(LoginQuery).Assembly];
+    options.Assemblies = [typeof(AddCheckHandler).Assembly, typeof(GetReportHandler).Assembly, typeof(LoginHandler).Assembly];
     options.PipelineBehaviors = [typeof(TelemetryPipelineBehaviour<,>)];
     options.ServiceLifetime = ServiceLifetime.Scoped;
 });

@@ -14,11 +14,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MudBlazor.Extensions;
 using NSwag.AspNetCore;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Rebus.Transport.InMem;
+using Receipts.Contracts;
 using Receipts.Core.AddReceipt;
+using Receipts.Core.GetReceipts;
 using Receipts.Core.ReceiptSaving;
 using Receipts.DataBase;
 using Reports.Api;
@@ -30,7 +33,6 @@ using Serilog.Sinks.OpenTelemetry;
 using ServiceDefaults;
 using Shared.Blazor.Layouts;
 using Shared.Utils;
-using WebClient.Components;
 using SerilogApplicationBuilderExtensions = Api.SerilogApplicationBuilderExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,7 +47,8 @@ builder.Services.AddSerilog((configuration) =>
         .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
         .MinimumLevel.Override("System", LogEventLevel.Warning)
         .WriteTo.Console()
-        .WriteTo.OpenTelemetry(includedData: IncludedData.MessageTemplateTextAttribute | IncludedData.SpanIdField | IncludedData.TraceIdField)
+        .WriteTo.OpenTelemetry(includedData: IncludedData.MessageTemplateTextAttribute | IncludedData.SpanIdField |
+                                             IncludedData.TraceIdField)
         .Enrich.FromLogContext()
         .Enrich.WithProperty("ApplicationName", "HomeAccounting");
 });
@@ -64,14 +67,17 @@ builder.Services.AddControllers();
 
 builder.AddAuthorization(databaseName);
 
-builder.Services.Configure<RouteOptions>(options =>
-{
-    options.SuppressCheckForUnhandledSecurityMetadata = true;
-});
+builder.Services.Configure<RouteOptions>(options => { options.SuppressCheckForUnhandledSecurityMetadata = true; });
 
 builder.Services.AddMediator((MediatorOptions options) =>
 {
-    options.Assemblies = [typeof(AddCheckHandler).Assembly, typeof(GetReportHandler).Assembly, typeof(LoginHandler).Assembly];
+    options.Assemblies =
+    [
+        typeof(GetChecks).Assembly,
+        typeof(GetChecksHandler).Assembly,
+        typeof(GetReportHandler).Assembly,
+        typeof(LoginHandler).Assembly
+    ];
     options.PipelineBehaviors = [typeof(TelemetryPipelineBehaviour<,>)];
     options.ServiceLifetime = ServiceLifetime.Scoped;
 });
@@ -79,14 +85,14 @@ builder.Services.AddRebus(configure =>
     {
         const string queueName = "HomeAccounting";
         return configure
-        .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), queueName))
-        .Logging(logging => logging.Serilog())
-        .Options(o => o.EnableDiagnosticSources())
-        .Routing(cofigurer => cofigurer
-            .TypeBased()
-            .MapAssemblyOf<ReceiptCategorized>(queueName));
+            .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), queueName))
+            .Logging(logging => logging.Serilog())
+            .Options(o => o.EnableDiagnosticSources())
+            .Routing(cofigurer => cofigurer
+                .TypeBased()
+                .MapAssemblyOf<ReceiptCategorized>(queueName));
     }
-    );
+);
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -96,6 +102,7 @@ using (var scope = app.Services.CreateScope())
     var authorizationContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
     await authorizationContext.Database.MigrateAsync();
 }
+
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyHeader()
     .AllowAnyMethod()
@@ -131,12 +138,16 @@ app.UseSerilogRequestLogging(options =>
 app.MapControllers()
     .RequireAuthorization()
     ;
-// app.UseStaticFiles();
+app.UseStaticFiles();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(MainLayout).Assembly, typeof(Login).Assembly, typeof(Receipts.UI.Receipts).Assembly, typeof(MonthReportComponent).Assembly/*, typeof(Home).Assembly*/)
-    // .AddAdditionalAssemblies(typeof(MainLayout).Assembly)
+    .AddAdditionalAssemblies(
+        typeof(MainLayout).Assembly,
+        typeof(Login).Assembly,
+        typeof(Receipts.UI.Receipts).Assembly,
+        typeof(MonthReportComponent).Assembly
+    )
     .AllowAnonymous();
 
 app.Run();

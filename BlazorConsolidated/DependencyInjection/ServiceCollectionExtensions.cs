@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
+using Receipts.UI;
 using Refit;
 using Shared.Blazor;
 using Shared.Blazor.Attributes;
@@ -39,13 +40,20 @@ public static class ServiceCollectionExtensions
             .AddCascadingAuthenticationState()
             .AddScoped<StorageLoginStateProvider>()
             .AddTransient<ILoginService, LoginService>()
-            .AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
-            .AddScoped<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
+            .AddTransient<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
+            .AddTransient<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
+            .AddTransient<ILogoutService>(sp => sp.GetRequiredService<ILoginStateProvider>())
         ;
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsInterface))
+        List<Assembly> assemblies =
+        [
+            Assembly.GetExecutingAssembly(),
+            typeof(IAuthorizationApi).Assembly,
+            typeof(IChecksApi).Assembly,
+        ];
+        foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
         {
             var attributes = type.GetCustomAttributes();
 

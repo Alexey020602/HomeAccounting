@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <ScopedCssEnabled>true</ScopedCssEnabled>
     </PropertyGroup>
 
 
@@ -26,8 +27,11 @@
       <AdditionalFiles Include="Layouts\AppBar.razor" />
       <AdditionalFiles Include="Layouts\BaseLayout.razor" />
       <AdditionalFiles Include="Layouts\MainLayout.razor" />
-      <AdditionalFiles Include="Layouts\SidebarComponent.razor" />
       <AdditionalFiles Include="Layouts\UnauthorizedLayout.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>

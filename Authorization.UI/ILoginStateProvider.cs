@@ -1,9 +1,9 @@
 using Authorization.UI.Dto;
+using Shared.Blazor;
 
 namespace Authorization.UI;
 
-public interface ILoginStateProvider
+public interface ILoginStateProvider: ILogoutService
 {
-    Task Logout();
     Task Login(Authentication authentication);
 }

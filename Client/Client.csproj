@@ -23,21 +23,4 @@
         <ProjectReference Include="..\BlazorConsolidated\BlazorConsolidated.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\app.css" />
-      <_ContentIncludedByDefault Remove="Components\CategoryComponent.razor" />
-      <_ContentIncludedByDefault Remove="Components\MonthReportComponent.razor" />
-      <_ContentIncludedByDefault Remove="Components\ProductComponent.razor" />
-      <_ContentIncludedByDefault Remove="Components\ReceiptComponent.razor" />
-      <_ContentIncludedByDefault Remove="Components\SubcategoryComponent.razor" />
-      <_ContentIncludedByDefault Remove="Forms\CheckFileForm.razor" />
-      <_ContentIncludedByDefault Remove="Forms\CheckManualForm.razor" />
-      <_ContentIncludedByDefault Remove="Layout\MainLayout.razor" />
-      <_ContentIncludedByDefault Remove="Layout\NavMenu.razor" />
-      <_ContentIncludedByDefault Remove="Pages\Check.razor" />
-      <_ContentIncludedByDefault Remove="Pages\Checks.razor" />
-      <_ContentIncludedByDefault Remove="Pages\MonthReport.razor" />
-    </ItemGroup>
-
 </Project>

@@ -13,7 +13,7 @@ namespace Checks.Api;
 public class ReceiptsController(IMediator mediator) : ApiControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetChecks([FromQuery] GetChecks checksQuery) => Ok(await mediator.Send((GetChecks) checksQuery));
+    public async Task<IActionResult> GetChecks([FromQuery] GetChecks checksQuery) => Ok(await mediator.Send(checksQuery));
 
     [HttpPut]
     public async Task<IActionResult> AddCheck([FromBody] CheckRequest checkRequest)

@@ -1,4 +1,5 @@
 ﻿@using BlazorConsolidated
+@using Microsoft.AspNetCore.Components.Web
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,13 +7,10 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/"/>
-    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]"/>
-    <link rel="stylesheet" href="@Assets["app.css"]"/>
-    <link rel="stylesheet" href="@Assets["WebClient.styles.css"]"/>
+    <link rel="stylesheet" href="_content/MudBlazor/MudBlazor.min.css"/>
     <ImportMap/>
     <link rel="icon" type="image/png" href="favicon.png"/>
     <HeadOutlet @rendermode="RenderMode"/>
-    <link href="Client.styles.css" rel="stylesheet"/>
 </head>
 
 <body>

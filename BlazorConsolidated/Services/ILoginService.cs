@@ -1,7 +1,6 @@
 using Authorization.Contracts;
 using Authorization.UI;
 using Authorization.UI.AuthenticationStateProvider;
-using BlazorConsolidated.Api;
 using Shared.Blazor;
 
 namespace BlazorConsolidated.Services;

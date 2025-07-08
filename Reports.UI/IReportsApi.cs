@@ -3,7 +3,7 @@ using Reports.Contracts;
 using Shared.Blazor.Attributes;
 using ReportRequest = Reports.Contracts.ReportRequest;
 
-namespace BlazorConsolidated.Api;
+namespace Reports.UI;
 
 [ApiAuthorizable("reports/month")]
 [Headers("Authorization: Bearer")]

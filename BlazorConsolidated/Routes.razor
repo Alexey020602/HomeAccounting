@@ -3,6 +3,7 @@
 @using BlazorConsolidated.Components
 @using BlazorConsolidated.Pages
 @using BlazorConsolidated.Reports
+@using global::Reports.UI
 @using MudBlazor.Extensions
 @using Shared.Blazor.Layouts
 @inject NavigationManager NavigationManager
@@ -10,9 +11,11 @@
     <AppErrorBoundary>
         @* <ChildContent> *@
         <Router AppAssembly="@typeof(Home).Assembly"
-                AdditionalAssemblies="new []{ 
+                AdditionalAssemblies="new []
+                    { 
                     typeof(Login).Assembly, 
                     typeof(global::Receipts.UI.Receipts).Assembly, 
+                    typeof(MonthReport).Assembly
                     }"
         >
             <Found Context="routeData">

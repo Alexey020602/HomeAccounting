@@ -14,18 +14,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MudBlazor.Extensions;
 using NSwag.AspNetCore;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Rebus.Transport.InMem;
 using Receipts.Contracts;
-using Receipts.Core.AddReceipt;
 using Receipts.Core.GetReceipts;
 using Receipts.Core.ReceiptSaving;
 using Receipts.DataBase;
 using Reports.Api;
 using Reports.Core;
+using Reports.UI;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -128,7 +127,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-// app.UseHttpLogging();
 app.UseSerilogRequestLogging(options =>
 {
     options.MessageTemplate = "Handled {RequestMethod} {RequestPath} {StatusCode} {Elapsed}";
@@ -138,7 +136,6 @@ app.UseSerilogRequestLogging(options =>
 app.MapControllers()
     .RequireAuthorization()
     ;
-app.UseStaticFiles();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
@@ -146,7 +143,8 @@ app.MapRazorComponents<App>()
         typeof(MainLayout).Assembly,
         typeof(Login).Assembly,
         typeof(Receipts.UI.Receipts).Assembly,
-        typeof(MonthReportComponent).Assembly
+        typeof(MonthReportComponent).Assembly,
+        typeof(Home).Assembly
     )
     .AllowAnonymous();
 

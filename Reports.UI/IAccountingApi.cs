@@ -1,7 +1,7 @@
 using Refit;
 using Shared.Blazor.Attributes;
 
-namespace BlazorConsolidated.Api;
+namespace Reports.UI;
 
 [ApiAuthorizable("accounting")]
 [Headers("Authorization: Bearer")]

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using BlazorConsolidated.Api;
 using BlazorConsolidated.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

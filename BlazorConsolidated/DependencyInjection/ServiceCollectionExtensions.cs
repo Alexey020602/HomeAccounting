@@ -9,6 +9,7 @@ using MudBlazor;
 using MudBlazor.Services;
 using Receipts.UI;
 using Refit;
+using Reports.UI;
 using Shared.Blazor;
 using Shared.Blazor.Attributes;
 using Shared.Utils;
@@ -52,6 +53,7 @@ public static class ServiceCollectionExtensions
             Assembly.GetExecutingAssembly(),
             typeof(IAuthorizationApi).Assembly,
             typeof(IChecksApi).Assembly,
+            typeof(IReportsApi).Assembly
         ];
         foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
         {

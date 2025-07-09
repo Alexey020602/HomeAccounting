@@ -47,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fns", "Fns", "{4E5FBBB4-6E2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fns.Contracts", "Fns.Contracts\Fns.Contracts.csproj", "{4082758C-4065-4EF5-9C7D-F5B49929180E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Accounting", "Accounting", "{3E953E04-4892-4A65-8511-C2E2AD14E573}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Budgets", "Budgets", "{3E953E04-4892-4A65-8511-C2E2AD14E573}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reports", "Reports", "{0B1F655C-79A5-4A4B-9F27-ADB2DDBA5C42}"
 EndProject
@@ -59,11 +59,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Core", "Reports.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Contracts", "Reports.Contracts\Reports.Contracts.csproj", "{87AE9DD3-7EE8-450C-B706-A240FF402ADD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accounting.Core", "Accounting.Core\Accounting.Core.csproj", "{9552C116-F994-477E-8A49-BC7B404772D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budgets.Core", "Budgets.Core\Budgets.Core.csproj", "{9552C116-F994-477E-8A49-BC7B404772D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accounting.Contracts", "Accounting.Contracts\Accounting.Contracts.csproj", "{B1DC57FD-3961-4A03-9BC5-1F3B28CA319E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budgets.Contracts", "Budgets.Contracts\Budgets.Contracts.csproj", "{B1DC57FD-3961-4A03-9BC5-1F3B28CA319E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accounting.Api", "Accounting.Api\Accounting.Api.csproj", "{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budgets.Api", "Budgets.Api\Budgets.Api.csproj", "{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{D74C0A99-878F-4293-A590-76917F872F28}"
 EndProject

@@ -1,4 +1,4 @@
-namespace Accounting.Contracts;
+namespace Budgets.Contracts;
 
 public interface IAccountingSettingsService
 {

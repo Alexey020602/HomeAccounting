@@ -1,7 +1,7 @@
-using Accounting.Contracts;
+using Budgets.Contracts;
 using Microsoft.Extensions.Configuration;
 
-namespace Accounting.Core;
+namespace Budgets.Core;
 public sealed class ConfigurationAccountingSettingsService(IConfiguration configuration): IAccountingSettingsService
 {
     public Task<int> GetFirstDayOfAccountingPeriod()

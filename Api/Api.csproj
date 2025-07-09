@@ -39,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Accounting.Api\Accounting.Api.csproj" />
+        <ProjectReference Include="..\Budgets.Api\Budgets.Api.csproj" />
         <ProjectReference Include="..\Authorization\Authorization.csproj" />
 <!--        <ProjectReference Include="..\BlazorConsolidated\BlazorConsolidated.csproj" />-->
         <ProjectReference Include="..\Client\Client.csproj" />

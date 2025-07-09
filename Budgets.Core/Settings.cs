@@ -1,4 +1,4 @@
-namespace Accounting.Core;
+namespace Budgets.Core;
 
 public class Settings
 {

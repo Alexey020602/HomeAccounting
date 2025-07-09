@@ -1,4 +1,4 @@
-using Accounting.Api;
+using Budgets.Api;
 using Api;
 using Authorization.Core.Login;
 using Authorization.DataBase;

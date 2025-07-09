@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Configuration;
-namespace Accounting.Core;
+namespace Budgets.Core;
 
 public static class ConfigurationExtensions
 {

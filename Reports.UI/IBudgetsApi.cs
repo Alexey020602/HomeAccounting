@@ -3,9 +3,9 @@ using Shared.Blazor.Attributes;
 
 namespace Reports.UI;
 
-[ApiAuthorizable("accounting")]
+[ApiAuthorizable("budgets")]
 [Headers("Authorization: Bearer")]
-public interface IAccountingApi
+public interface IBudgetsApi
 {
     [Get("/period")] Task<int> GetPeriodAsync();
 }

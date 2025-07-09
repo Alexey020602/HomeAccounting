@@ -1,8 +1,8 @@
-using Accounting.Contracts;
-using Accounting.Core;
+using Budgets.Contracts;
+using Budgets.Core;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Accounting.Api;
+namespace Budgets.Api;
 
 public static class AccountingModule
 {

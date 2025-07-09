@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Accounting.Contracts\Accounting.Contracts.csproj" />
-      <ProjectReference Include="..\Accounting.Core\Accounting.Core.csproj" />
+      <ProjectReference Include="..\Budgets.Contracts\Budgets.Contracts.csproj" />
+      <ProjectReference Include="..\Budgets.Core\Budgets.Core.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />
     </ItemGroup>
 

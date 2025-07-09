@@ -1,10 +1,10 @@
-using Accounting.Contracts;
+using Budgets.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Web;
 
-namespace Accounting.Api;
+namespace Budgets.Api;
 
-public class AccountingController(IAccountingSettingsService accountingSettingsService): ApiControllerBase
+public class BudgetsController(IAccountingSettingsService accountingSettingsService): ApiControllerBase
 {
     [HttpGet("period")]
     public async Task<IActionResult> GetPeriod() => Ok(await accountingSettingsService.GetFirstDayOfAccountingPeriod());

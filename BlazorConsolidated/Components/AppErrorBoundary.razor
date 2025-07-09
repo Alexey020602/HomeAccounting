@@ -1,12 +1,11 @@
 @using System.Net
 @using Authorization.UI
-@using Authorization.UI.AuthenticationStateProvider
 @using Microsoft.Extensions.Logging
 @using Refit
 @using Shared.Blazor
 @inherits ErrorBoundaryBase
 @inject ILogger<AppErrorBoundary> Logger
-@inject ILoginStateProvider LoginStateProvider
+@inject ILogoutService LoginStateProvider
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 
@@ -20,7 +19,7 @@
                 StatusCode: HttpStatusCode.Unauthorized
             })
         {
-            Logger.LogError(exception.Message);
+            Logger.LogError(exception, "Error in app: {Message}",  exception.Message);
             ProcessError(exception);
             return;
         }

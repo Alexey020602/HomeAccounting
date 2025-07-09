@@ -1,11 +1,10 @@
 @page "/Login"
-@using Authorization.UI.AuthenticationStateProvider
 @using global::Authorization.Contracts
 @using MudBlazor
 @using Microsoft.AspNetCore.Components.Forms
 @using Shared.Blazor
 @inject IAuthorizationApi AuthorizationApi
-@inject ILoginStateProvider LoginStateProvider
+@inject ILoginService LoginStateProvider
 @inject NavigationManager NavigationManager
 
 <MudCard Style="max-width: 600px; padding: 20px">
@@ -45,11 +44,7 @@
 
     private async Task LoginAsync()
     {
-        Console.WriteLine(loginRequest);
-        var loginResponse = await AuthorizationApi.Login(loginRequest);
-        Console.WriteLine(loginResponse);
-        await LoginStateProvider.Login(loginResponse.ConvertToAuthentication());
-        Console.WriteLine($"Navigate to {ReturnUrl}");
+        await LoginStateProvider.Login(loginRequest);
         NavigationManager.NavigateTo(ReturnUrl);
     }
 

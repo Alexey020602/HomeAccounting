@@ -1,7 +1,5 @@
 using System.Reflection;
 using Authorization.UI;
-using Authorization.UI.AuthenticationStateProvider;
-using BlazorConsolidated.Services;
 using BlazorConsolidated.Utils;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +26,6 @@ public static class ServiceCollectionExtensions
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
             .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
-            // .AddSingleton<IAuthenticationStorage, MemoryAuthenticationStorage>()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
@@ -39,11 +36,10 @@ public static class ServiceCollectionExtensions
         serviceCollection
             .AddAuthorizationCore()
             .AddCascadingAuthenticationState()
-            .AddScoped<StorageLoginStateProvider>()
-            .AddTransient<ILoginService, LoginService>()
-            .AddTransient<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
-            .AddTransient<ILoginStateProvider>(sp => sp.GetRequiredService<StorageLoginStateProvider>())
-            .AddTransient<ILogoutService>(sp => sp.GetRequiredService<ILoginStateProvider>())
+            .AddScoped<StorageAuthenticationService>()
+            .AddTransient<ILoginService>(sp => sp.GetRequiredService<StorageAuthenticationService>())
+            .AddTransient<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageAuthenticationService>())
+            .AddTransient<ILogoutService>(sp => sp.GetRequiredService<StorageAuthenticationService>())
         ;
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)

@@ -36,11 +36,12 @@ public static class ServiceCollectionExtensions
         serviceCollection
             .AddAuthorizationCore()
             .AddCascadingAuthenticationState()
-            .AddScoped<StorageAuthenticationService>()
-            .AddTransient<ILoginService>(sp => sp.GetRequiredService<StorageAuthenticationService>())
-            .AddTransient<AuthenticationStateProvider>(sp => sp.GetRequiredService<StorageAuthenticationService>())
-            .AddTransient<ILogoutService>(sp => sp.GetRequiredService<StorageAuthenticationService>())
-        ;
+            .AddScopedAsMultipleServices<
+                ILoginService, 
+                AuthenticationStateProvider,
+                ILoginService, 
+                StorageAuthenticationService
+            >();
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {

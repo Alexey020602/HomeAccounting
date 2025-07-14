@@ -38,6 +38,11 @@ sealed class UserException(string message) : Exception(message);
 
 public class UserService(UserManager<User> userManager): IUserService
 {
+    public async Task<bool> CheckLoginExist(string login)
+    {
+        return await userManager.FindByIdAsync(login) != null;
+    }
+
     public async Task<Result<Core.User>> GetUserByRequest(
         UserRequest request, 
         Func<Core.RefreshToken> createRefreshToken

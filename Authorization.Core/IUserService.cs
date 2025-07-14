@@ -1,9 +1,11 @@
+using Authorization.Contracts;
 using LightResults;
 
 namespace Authorization.Core;
 
 public interface IUserService
 {
+    Task<bool> CheckLoginExist(string login);
     Task<Result<Core.User>> GetUserByRequest(
         UserRequest request, 
         Func<Core.RefreshToken> createRefreshToken

@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
             .AddScopedAsMultipleServices<
                 ILoginService, 
                 AuthenticationStateProvider,
-                ILoginService, 
+                ILogoutService, 
                 StorageAuthenticationService
             >();
 

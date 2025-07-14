@@ -1,5 +1,6 @@
 using Authorization.Contracts;
 using Authorization.Core;
+using Authorization.Core.CheckLoginExist;
 using Authorization.Core.Login;
 using Authorization.Core.Refresh;
 using Authorization.Core.Registration;
@@ -18,6 +19,9 @@ namespace Authorization;
 [AllowAnonymous]
 public class AuthorizationController(IMediator mediator) : ApiControllerBase
 {
+    [HttpGet("login/exist")]
+    public async Task<IActionResult> CheckLoginExist(string login) =>
+        Ok(await mediator.Send(new CheckLoginExistQuery { Login = login }));
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest loginRequest)
     {

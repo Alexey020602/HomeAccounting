@@ -1,0 +1,79 @@
+@page "/Register"
+@using Authorization.Contracts
+@using FluentValidation
+@using Blazored.FluentValidation
+@inject IAuthorizationApi AuthorizationApi
+<MudCard Style="max-width: 600px; padding: 20px">
+    <EditForm Model="model" OnValidSubmit="LoginAsync">
+        <FluentValidationValidator Validator="new ModelValidator(AuthorizationApi)"/>
+        <MudStack>
+            <MudTextField
+                @bind-Text="model.Login"
+                Variant="Variant.Outlined"
+                Label="Логин"
+                For="@(() => model.Login)"/>
+
+            <MudGrid Justify="Justify.SpaceBetween">
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary"
+                               Style="width: 100%">
+                        Отмена
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary"
+                               Style="width: 100%">
+                        Войти
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudStack>
+    </EditForm>
+</MudCard>
+
+@code {
+    private Model model = new();
+
+    private sealed class Model
+    {
+        public string Login { get; set; } = "";
+        public string UserName { get; set; } = "";
+        public string Password { get; set; } = "";
+
+        internal RegistrationRequest CreateRequest() => new RegistrationRequest()
+        {
+            Login = Login,
+            Username = UserName,
+            Password = Password
+        };
+    }
+
+    private sealed class ModelValidator : AbstractValidator<Model>
+    {
+        private readonly IAuthorizationApi authorizationApi;
+
+        public ModelValidator(IAuthorizationApi authorizationApi) : base()
+        {
+            this.authorizationApi = authorizationApi;
+            RuleFor(model => model.Login)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .WithMessage("Необходимо ввести логин")
+                .MustAsync(async (login, _) =>
+                    !await authorizationApi.CheckLoginExist(login)
+                )
+                .WithMessage("Логин {PropertyValue} уже существует")
+            ;
+            RuleFor(model => model.UserName).NotEmpty();
+            RuleFor(model => model.Password)
+                .NotEmpty()
+                ;
+        }
+    }
+
+
+    private Task LoginAsync()
+    {
+        return AuthorizationApi.Register(model.CreateRequest());
+    }
+}

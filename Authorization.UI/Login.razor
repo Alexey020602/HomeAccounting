@@ -22,20 +22,21 @@
                 Label="Пароль"
                 For="@(() => loginRequest.Password)"/>
 
-        <MudGrid Justify="Justify.SpaceBetween">
-            <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
-                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary" Style="width: 100%">
-                    Отмена
-                </MudButton>
-            </MudItem>
-            <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
-                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" Style="width: 100%">
-                    Войти
-                </MudButton>
-            </MudItem>
-        </MudGrid>
+            <MudGrid Justify="Justify.SpaceBetween">
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary" Style="width: 100%">
+                        Отмена
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" Style="width: 100%">
+                        Войти
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
         </MudStack>
     </EditForm>
+    <MudLink Href="register">Регистрация</MudLink>
 </MudCard>
 
 @code {

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Web;
-using User = Authorization.DataBase.User;
+using User = Authorization.Core.User;
 
 namespace Authorization;
 

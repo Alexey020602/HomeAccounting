@@ -11,15 +11,6 @@ public class JwtTokenSettings
     public required string Key { get; init; }
     public required int AccessTokenExpireMinutes { get; init; }
     public required int RefreshTokenExpireDays { get; init; }
-
-    public static JwtTokenSettings Default => new() 
-    {
-        Issuer = "ValidIssuer",
-        Audience = "ValidAudience",
-        Key = "SymmetricSecurityKey",
-        AccessTokenExpireMinutes = 60,
-        RefreshTokenExpireDays = 3,
-    };
     public DateTime AccessTokenExpirationDate => DateTime.UtcNow.AddMinutes(AccessTokenExpireMinutes);
     public DateTime RefreshTokenExpirationDate => DateTime.UtcNow.AddDays(RefreshTokenExpireDays);
     public SecurityKey SecurityKey  => new SymmetricSecurityKey(
@@ -32,5 +23,6 @@ public class JwtTokenSettings
         ValidateIssuerSigningKey = false,
         IssuerSigningKey = SecurityKey,
         ValidateLifetime = true,
+        
     };
 }

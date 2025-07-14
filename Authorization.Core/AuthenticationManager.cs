@@ -25,6 +25,11 @@ public sealed class AuthenticationManager(
             return Result.Failure<AuthorizationResponse>(error);
         }
 
+        if (user.RefreshToken is null)
+        {
+            return Result.Failure<AuthorizationResponse>("No refresh token found");
+        }
+
         return Result.Success(
             new AuthorizationResponse
             {
@@ -48,11 +53,16 @@ public sealed class AuthenticationManager(
             return Result.Failure<AuthorizationResponse>(error);
         }
 
+        if (user.RefreshToken is null)
+        {
+            return Result.Failure<AuthorizationResponse>("No refresh token found");
+        }
+
         return Result.Success(
             new AuthorizationResponse()
             {
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Login = user.Login,
+                Login = user.Id,
                 AccessToken = CreateAccessToken(user),
                 RefreshToken = user.RefreshToken.Token,
             }

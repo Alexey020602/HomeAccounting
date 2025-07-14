@@ -7,34 +7,34 @@ using Microsoft.EntityFrameworkCore;
 namespace Authorization.DataBase;
 
 sealed class UserException(string message) : Exception(message);
-public static class UserMapper
-{
-    public static Core.User ConvertToUser(this User user)
-    {
-        if (user.UserName == null)
-        {
-            throw new UserException("UserName not found");
-        }
-
-        if (user.RefreshTokenToken == null)
-        {
-            throw new UserException("RefreshToken not found");
-        }
-        return new Core.User()
-        {
-            Login = user.Id,
-            Username = user.UserName,
-            RefreshToken = user.RefreshTokenToken.ConvertToCoreRefreshToken(),
-        };
-    }
-
-    public static User ConvertToUser(this Core.User user) => new User()
-    {
-        Id = user.Login,
-        UserName = user.Username,
-        RefreshTokenToken = user.RefreshToken?.ConvertToRefreshToken(),
-    };
-}
+// public static class UserMapper
+// {
+//     public static Core.User ConvertToUser(this User user)
+//     {
+//         if (user.UserName == null)
+//         {
+//             throw new UserException("UserName not found");
+//         }
+//
+//         if (user.RefreshTokenToken == null)
+//         {
+//             throw new UserException("RefreshToken not found");
+//         }
+//         return new Core.User()
+//         {
+//             Login = user.Id,
+//             Username = user.UserName,
+//             RefreshToken = user.RefreshTokenToken.ConvertToCoreRefreshToken(),
+//         };
+//     }
+//
+//     public static User ConvertToUser(this Core.User user) => new User()
+//     {
+//         Id = user.Login,
+//         UserName = user.Username,
+//         RefreshTokenToken = user.RefreshToken?.ConvertToRefreshToken(),
+//     };
+// }
 
 public class UserService(UserManager<User> userManager): IUserService
 {
@@ -51,16 +51,16 @@ public class UserService(UserManager<User> userManager): IUserService
         if (!await userManager.CheckPasswordAsync(user, request.Password))
             return Result.Failure<Core.User>("Wrong Password");
         
-        user.RefreshTokenToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
+        user.RefreshToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
         //todo Добавить обработку ошибок
         await userManager.UpdateAsync(user);
         
-        return UserMapper.ConvertToUser((User)user);
+        return user;
     }
 
     public async Task<Result> UpdateUser(Core.User user)
     {
-        var result = await userManager.UpdateAsync(UserMapper.ConvertToUser(user));
+        var result = await userManager.UpdateAsync(user);
 
         if (result.Succeeded)
         {
@@ -76,22 +76,22 @@ public class UserService(UserManager<User> userManager): IUserService
         )
     {
         var user = await userManager.Users.FirstOrDefaultAsync(user =>
-            user.RefreshTokenToken != null && user.RefreshTokenToken.Token == refreshToken);
+            user.RefreshToken != null && user.RefreshToken.Token == refreshToken);
         if (user is null)
         {
             return Result.Failure<Core.User>("User Not Found");
         }
 
-        if (user.RefreshTokenToken is null || user.RefreshTokenToken.Expires < DateTime.UtcNow)
+        if (user.RefreshToken is null || user.RefreshToken.Expires < DateTime.UtcNow)
         {
             return Result.Failure<Core.User>(new RefreshTokenError());
         }
         
-        user.RefreshTokenToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
+        user.RefreshToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
         
         await userManager.UpdateAsync(user);
 
-        return UserMapper.ConvertToUser((User)user);
+        return user;
     }
 
     public async Task<Result> AddUser(UnregisteredUser user, string password)
@@ -100,7 +100,7 @@ public class UserService(UserManager<User> userManager): IUserService
         if (existingUser is not null) return Result.Failure("User already exists");
 
         var creationResult = await userManager.CreateAsync(
-            new DataBase.User
+            new User
             {
                 Id = user.Login,
                 UserName = user.UserName,

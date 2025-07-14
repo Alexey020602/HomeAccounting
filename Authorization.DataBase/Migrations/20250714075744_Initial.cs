@@ -21,8 +21,8 @@ namespace Authorization.DataBase.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    RefreshTokenToken_Token = table.Column<string>(type: "text", nullable: true),
-                    RefreshTokenToken_Expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RefreshToken_Token = table.Column<string>(type: "text", nullable: true),
+                    RefreshToken_Expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

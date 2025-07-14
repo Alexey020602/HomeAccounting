@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Authorization.DataBase.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    [Migration("20250706192831_Initial")]
+    [Migration("20250714075744_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace Authorization.DataBase.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Authorization.DataBase.User", b =>
+            modelBuilder.Entity("Authorization.Core.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -156,9 +156,9 @@ namespace Authorization.DataBase.Migrations
                     b.ToTable("AspNetUserTokens", "Identity");
                 });
 
-            modelBuilder.Entity("Authorization.DataBase.User", b =>
+            modelBuilder.Entity("Authorization.Core.User", b =>
                 {
-                    b.OwnsOne("Authorization.DataBase.RefreshToken", "RefreshTokenToken", b1 =>
+                    b.OwnsOne("Authorization.Core.RefreshToken", "RefreshToken", b1 =>
                         {
                             b1.Property<string>("UserId")
                                 .HasColumnType("text");
@@ -178,12 +178,12 @@ namespace Authorization.DataBase.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.Navigation("RefreshTokenToken");
+                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Authorization.DataBase.User", null)
+                    b.HasOne("Authorization.Core.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -192,7 +192,7 @@ namespace Authorization.DataBase.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Authorization.DataBase.User", null)
+                    b.HasOne("Authorization.Core.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -201,7 +201,7 @@ namespace Authorization.DataBase.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Authorization.DataBase.User", null)
+                    b.HasOne("Authorization.Core.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -15,7 +15,10 @@ public static class AuthorizationModule
             databaseServiceName,
             configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
             );
-        builder.Services.AddIdentityCore<DataBase.User>()
+        builder.Services.AddIdentityCore<User>(options =>
+            {
+                
+            })
             .AddEntityFrameworkStores<AuthorizationContext>();
         
         builder.Services.AddAuthorization();

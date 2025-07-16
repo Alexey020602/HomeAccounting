@@ -1,14 +1,38 @@
 using Authorization.Contracts;
 using LightResults;
 using Mediator;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Authorization.Core.Refresh;
 
-public sealed class RefreshTokenHandler(IAuthenticationManager authenticationManager)
+public sealed class RefreshTokenHandler(IUserService userService, ITokenService tokenService)
     : IRequestHandler<RefreshTokenQuery, Result<AuthorizationResponse>>
 {
-    public ValueTask<Result<AuthorizationResponse>> Handle(RefreshTokenQuery query, CancellationToken cancellationToken)
+    public async ValueTask<Result<AuthorizationResponse>> Handle(RefreshTokenQuery query, CancellationToken cancellationToken)
     {
-        return new ValueTask<Result<AuthorizationResponse>>(authenticationManager.Refresh(query.RefreshToken));
+        var result = await userService.GetUserByRefreshToken(
+            query.RefreshToken,
+            tokenService.CreateRefreshToken
+        );
+
+        if (result.IsFailure(out var error, out var user))
+        {
+            return Result.Failure<AuthorizationResponse>(error);
+        }
+
+        if (user.RefreshToken is null)
+        {
+            return Result.Failure<AuthorizationResponse>("No refresh token found");
+        }
+
+        return Result.Success(
+            new AuthorizationResponse()
+            {
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Login = user.Id,
+                AccessToken = tokenService.CreateTokenForUser(user),
+                RefreshToken = user.RefreshToken.Token,
+            }
+        );
     }
 }

@@ -34,7 +34,6 @@ public static class AuthorizationModule
 
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddTransient<ITokenService, TokenService>();
-        builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
         return builder.Services;
     }
 }

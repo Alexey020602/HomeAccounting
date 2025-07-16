@@ -1,4 +1,3 @@
-using Authorization.Contracts;
 using LightResults;
 
 namespace Authorization.Core;
@@ -6,14 +5,14 @@ namespace Authorization.Core;
 public interface IUserService
 {
     Task<bool> CheckLoginExist(string login);
-    Task<Result<Core.User>> GetUserByRequest(
+    Task<Result<User>> GetUserByRequest(
         UserRequest request, 
-        Func<Core.RefreshToken> createRefreshToken
+        Func<RefreshToken> createRefreshToken
     );
 
-    Task<Result<Core.User>> GetUserByRefreshToken(
+    Task<Result<User>> GetUserByRefreshToken(
         string refreshToken,
-        Func<Core.RefreshToken> createRefreshToken
+        Func<RefreshToken> createRefreshToken
     );
 
     Task<Result> AddUser(UnregisteredUser user, string password);

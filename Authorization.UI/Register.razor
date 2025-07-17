@@ -2,6 +2,7 @@
 @using Authorization.Contracts
 @using FluentValidation
 @using Blazored.FluentValidation
+@using Shared.Utils.Model
 @inject IAuthorizationApi AuthorizationApi
 <MudCard Style="max-width: 600px; padding: 20px">
     <EditForm Model="model" OnValidSubmit="LoginAsync">

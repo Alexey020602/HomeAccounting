@@ -1,4 +1,4 @@
-using Shared.Model;
+using Shared.Utils.Model;
 
 namespace Receipts.Contracts;
 

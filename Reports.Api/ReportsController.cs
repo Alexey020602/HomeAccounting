@@ -1,9 +1,8 @@
-using Authorization.Contracts;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Reports.Contracts;
 using Reports.Core;
-using Shared.Model;
+using Shared.Utils.Model;
 using Shared.Web;
 
 namespace Reports.Api;

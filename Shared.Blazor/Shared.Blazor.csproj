@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
+      <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
     </ItemGroup>
 
 </Project>

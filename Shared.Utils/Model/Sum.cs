@@ -1,4 +1,4 @@
-namespace Shared.Model;
+namespace Shared.Utils.Model;
 
 public record Sum(int FullPennySum)
 {

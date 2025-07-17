@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Shared.Model.Dates;
+using Shared.Utils.Model.Dates;
 
 namespace Fns.Contracts;
 

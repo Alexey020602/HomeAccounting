@@ -1,6 +1,5 @@
 using Mediator;
-using Shared.Model;
-using Shared.Model.Dates;
+using Shared.Utils.Model.Dates;
 
 namespace Receipts.Contracts;
 

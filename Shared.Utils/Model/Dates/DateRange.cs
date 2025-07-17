@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Shared.Model.Dates;
+namespace Shared.Utils.Model.Dates;
 
 public readonly record struct DateRange(DateTime? Start = null, DateTime? End = null)
 {

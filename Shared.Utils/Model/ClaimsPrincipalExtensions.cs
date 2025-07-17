@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Shared.Model;
+namespace Shared.Utils.Model;
 
 public static class ClaimsPrincipalExtensions
 {

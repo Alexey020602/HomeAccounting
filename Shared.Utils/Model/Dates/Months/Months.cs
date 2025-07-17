@@ -1,4 +1,4 @@
-namespace Shared.Model.Dates.Months;
+namespace Shared.Utils.Model.Dates.Months;
 
 internal enum Months
 {

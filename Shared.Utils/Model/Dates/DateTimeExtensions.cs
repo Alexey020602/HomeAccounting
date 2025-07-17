@@ -1,4 +1,4 @@
-namespace Shared.Model.Dates;
+namespace Shared.Utils.Model.Dates;
 
 public static class DateTimeExtensions
 {

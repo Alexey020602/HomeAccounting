@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Shared.Model.Dates;
+namespace Shared.Utils.Model.Dates;
 
 public sealed class DateTimeFnsParser
 {

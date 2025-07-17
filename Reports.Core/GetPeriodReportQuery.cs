@@ -1,8 +1,7 @@
 using Mediator;
 using Receipts.Contracts;
 using Reports.Contracts;
-using Shared.Model;
-using Shared.Model.Dates;
+using Shared.Utils.Model.Dates;
 
 namespace Reports.Core;
 

@@ -1,5 +1,4 @@
 using Receipts.Core.Model;
-using Shared.Model;
 using DBCheck = Receipts.DataBase.Entities.Check;
 using DBProduct = Receipts.DataBase.Entities.Product;
 using DBSubcategory = Receipts.DataBase.Entities.Subcategory;

@@ -10,7 +10,6 @@
       <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
       <ProjectReference Include="..\Receipts.Contracts\Receipts.Contracts.csproj" />
       <ProjectReference Include="..\Fns.Contracts\Fns.Contracts.csproj" />
-      <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
     </ItemGroup>
 
     <ItemGroup>

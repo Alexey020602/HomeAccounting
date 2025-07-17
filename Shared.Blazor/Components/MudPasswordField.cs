@@ -11,6 +11,7 @@ public class MudPasswordField: MudTextField<string> {
         base.OnParametersSet();
 
         OnAdornmentClick = OnAdornmentClickCallback;
+        
         SetTextFieldStyle();
     }
 
@@ -25,6 +26,7 @@ public class MudPasswordField: MudTextField<string> {
 
     private void SetTextFieldStyle()
     {
-        AdornmentIcon = isSecure ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility;
+        InputType = isSecure ? InputType.Password : InputType.Text;
+        AdornmentIcon = isSecure ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff;
     }
 }

@@ -13,18 +13,41 @@
                 Variant="Variant.Outlined"
                 Label="Логин"
                 For="@(() => model.Login)"/>
+            
+            <MudTextField
+                @bind-Text="model.UserName"
+                Variant="Variant.Outlined"
+                Label="Имя пользователя"
+                For="@(() => model.UserName)"
+                />
+            
+            <MudPasswordField
+                @bind-Text="model.Password"
+                InputType="InputType.Password"
+                Variant="Variant.Outlined"
+                Label="Пароль"
+                For="@(() => model.Password)"
+            />
+            
+            <MudPasswordField
+                @bind-Text="model.ConfirmPassword"
+                InputType="InputType.Password"
+                Variant="Variant.Outlined"
+                Label="Пароль"
+                For="@(() => model.ConfirmPassword)"
+            />
 
             <MudGrid Justify="Justify.SpaceBetween">
-                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
                     <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary"
                                Style="width: 100%">
                         Отмена
                     </MudButton>
                 </MudItem>
-                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
                     <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary"
                                Style="width: 100%">
-                        Войти
+                        Зарегистрироваться
                     </MudButton>
                 </MudItem>
             </MudGrid>
@@ -33,15 +56,16 @@
 </MudCard>
 
 @code {
-    private Model model = new();
+    private readonly Model model = new();
 
     private sealed class Model
     {
         public string Login { get; set; } = "";
         public string UserName { get; set; } = "";
         public string Password { get; set; } = "";
+        public string ConfirmPassword { get; set; } = "";
 
-        internal RegistrationRequest CreateRequest() => new RegistrationRequest()
+        internal RegistrationRequest CreateRequest() => new()
         {
             Login = Login,
             Username = UserName,
@@ -51,11 +75,8 @@
 
     private sealed class ModelValidator : AbstractValidator<Model>
     {
-        private readonly IAuthorizationApi authorizationApi;
-
-        public ModelValidator(IAuthorizationApi authorizationApi) : base()
+        public ModelValidator(IAuthorizationApi authorizationApi)
         {
-            this.authorizationApi = authorizationApi;
             RuleFor(model => model.Login)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
@@ -65,10 +86,19 @@
                 )
                 .WithMessage("Логин {PropertyValue} уже существует")
             ;
-            RuleFor(model => model.UserName).NotEmpty();
-            RuleFor(model => model.Password)
+            RuleFor(model => model.UserName)
                 .NotEmpty()
-                ;
+                .WithMessage("Необходимо ввести имя пользователя");
+            
+            RuleFor(model => model.Password)
+                .Cascade(CascadeMode.Continue)
+                .Password();
+
+            RuleFor(model => model.ConfirmPassword)
+                .NotEmpty()
+                .WithMessage("Необходимо подтвердить пароль")
+                .Equal(model => model.Password)
+                .WithMessage("Пароли не совпадают");
         }
     }
 

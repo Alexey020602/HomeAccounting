@@ -24,10 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Layouts\AppBar.razor" />
       <AdditionalFiles Include="Layouts\BaseLayout.razor" />
-      <AdditionalFiles Include="Layouts\MainLayout.razor" />
-      <AdditionalFiles Include="Layouts\UnauthorizedLayout.razor" />
     </ItemGroup>
 
     <ItemGroup>

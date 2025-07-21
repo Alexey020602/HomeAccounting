@@ -12,23 +12,23 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazored.FluentValidation" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.7" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.7" />
+        <PackageReference Include="Blazored.FluentValidation" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.7"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.7"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
-      <ProjectReference Include="..\Shared.Blazor\Shared.Blazor.csproj" />
+        <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj"/>
+        <ProjectReference Include="..\Shared.Blazor\Shared.Blazor.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\background.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
+        <_ContentIncludedByDefault Remove="wwwroot\background.png"/>
+        <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\" />
+        <Folder Include="wwwroot\"/>
     </ItemGroup>
 
 </Project>

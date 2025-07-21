@@ -34,6 +34,7 @@ public sealed class RefreshTokenHandler(IUserService userService, ITokenService 
             new AuthorizationResponse()
             {
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
+                UserId = user.Id,
                 Login = user.UserName,
                 AccessToken = tokenService.CreateTokenForUser(user),
                 RefreshToken = user.RefreshToken.Token,

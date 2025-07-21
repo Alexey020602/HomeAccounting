@@ -27,6 +27,7 @@ public sealed class LoginHandler(IUserService userService, ITokenService tokenSe
             new AuthorizationResponse
             {
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
+                UserId = user.Id,
                 Login = query.Login,
                 AccessToken = tokenService.CreateTokenForUser(user),
                 RefreshToken = user.RefreshToken.Token,

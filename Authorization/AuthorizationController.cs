@@ -1,3 +1,4 @@
+using System.Net;
 using Authorization.Contracts;
 using Authorization.Core;
 using Authorization.Core.CheckLoginExist;
@@ -10,19 +11,25 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Shared.Web;
 using User = Authorization.Core.User;
 
 namespace Authorization;
 
+
+
 [AllowAnonymous]
 public class AuthorizationController(IMediator mediator) : ApiControllerBase
 {
     [HttpGet("login/exist")]
+    [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> CheckLoginExist(string login) =>
         Ok(await mediator.Send(new CheckLoginExistQuery { Login = login }));
+    
     [HttpPost("login")]
+    [ProducesResponseType(typeof(AuthorizationResponse), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Login(LoginRequest loginRequest)
     {
         var result = await mediator.Send(new LoginQuery(loginRequest.Login, loginRequest.Password));
@@ -36,6 +43,8 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
 
 
     [HttpPost("register")]
+    [ProducesResponseType((int)HttpStatusCode.Created)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Register(RegistrationRequest registrationRequest)
     {
         var result = await mediator.Send(new RegisterCommand(registrationRequest.Login, registrationRequest.Username, registrationRequest.Password));
@@ -54,6 +63,9 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
     }
 
     [HttpPost("refresh")]
+    [ProducesResponseType(typeof (AuthorizationResponse), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof (string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails) ,(int)HttpStatusCode.Unauthorized)]
     public async Task<IActionResult> Refresh(string refreshToken)
     {
         var result = await mediator.Send(new RefreshTokenQuery(refreshToken));

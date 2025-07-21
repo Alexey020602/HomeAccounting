@@ -10,10 +10,6 @@ public sealed class StorageAuthenticationService(
 )
     : AuthenticationStateProvider, ILoginService, ILogoutService
 {
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync() =>
-        (await storage.GetAuthorizationAsync())?.GetAuthenticationState() ??
-        AuthenticationStateExtensions.GetAnonymous();
-
     public async Task Login(LoginRequest loginRequest)
     {
         var authentication = (await authorizationApi.Login(loginRequest)).ConvertToAuthentication();
@@ -27,5 +23,11 @@ public sealed class StorageAuthenticationService(
     {
         await storage.RemoveAuthorizationAsync();
         NotifyAuthenticationStateChanged(Task.FromResult(AuthenticationStateExtensions.GetAnonymous()));
+    }
+
+    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        return (await storage.GetAuthorizationAsync())?.GetAuthenticationState() ??
+               AuthenticationStateExtensions.GetAnonymous();
     }
 }

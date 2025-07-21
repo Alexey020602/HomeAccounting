@@ -4,6 +4,7 @@ using Authorization.Core.Login;
 using Authorization.DataBase;
 using Authorization.DependencyInjection;
 using Authorization.UI.Pages;
+using BlazorConsolidated.Layouts;
 using BlazorConsolidated.Pages;
 using Checks.Api;
 using Fns;
@@ -29,7 +30,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
 using ServiceDefaults;
-using Shared.Blazor.Layouts;
 using Shared.Utils;
 using SerilogApplicationBuilderExtensions = Api.SerilogApplicationBuilderExtensions;
 
@@ -139,7 +139,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(
-        typeof(MainLayout).Assembly,
         typeof(Login).Assembly,
         typeof(Receipts.UI.Receipts).Assembly,
         typeof(MonthReportComponent).Assembly,

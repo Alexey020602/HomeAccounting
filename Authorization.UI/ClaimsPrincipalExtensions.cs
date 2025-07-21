@@ -4,5 +4,8 @@ namespace Authorization.UI;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static ClaimsPrincipal GetAnonymousPrincipal() => new ClaimsPrincipal(new ClaimsIdentity());
+    public static ClaimsPrincipal GetAnonymousPrincipal()
+    {
+        return new ClaimsPrincipal(new ClaimsIdentity());
+    }
 }

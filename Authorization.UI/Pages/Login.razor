@@ -1,5 +1,5 @@
 @page "/Login"
-@using global::Authorization.Contracts
+@using Authorization.Contracts
 @using Blazored.FluentValidation
 @inject IAuthorizationApi AuthorizationApi
 @inject ILoginService LoginStateProvider
@@ -7,7 +7,7 @@
 
 <MudCard Style="max-width: 600px; padding: 20px">
     <EditForm Model="loginRequest" OnValidSubmit="LoginAsync">
-        <FluentValidationValidator />
+        <FluentValidationValidator/>
         <MudStack Justify="Justify.SpaceBetween">
             <MudTextField
                 @bind-Text="loginRequest.Login"
@@ -23,11 +23,12 @@
                 Adornment="Adornment.End"
                 AdornmentIcon="@Icons.Material.Filled.RemoveRedEye"
                 OnAdornmentClick="EventCallback.Empty"
-                />
+            />
 
             <MudGrid Justify="Justify.SpaceBetween">
                 <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
-                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary" Style="width: 100%">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary"
+                               Style="width: 100%">
                         Отмена
                     </MudButton>
                 </MudItem>
@@ -35,7 +36,8 @@
                     <MudButton Variant="Variant.Filled" Href="register">Регистрация</MudButton>
                 </MudItem>
                 <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
-                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" Style="width: 100%">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary"
+                               Style="width: 100%">
                         Войти
                     </MudButton>
                 </MudItem>
@@ -46,7 +48,7 @@
 
 @code {
     [SupplyParameterFromQuery] private string ReturnUrl { get; set; } = "/";
-    private LoginRequest loginRequest = new();
+    private readonly LoginRequest loginRequest = new();
 
     private async Task LoginAsync()
     {

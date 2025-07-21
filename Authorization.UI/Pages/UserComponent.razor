@@ -1,0 +1,29 @@
+@using Shared.Blazor
+@inject IAuthenticationStorage AuthenticationStorage
+@inject ILogoutService LogoutService
+<MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль">
+    @if (User is not null)
+    {
+        <MudButton Href="@($"/user/{User.Id}")" FullWidth="true">
+            @User.UserName
+        </MudButton>
+    }
+    <MudButton Color="Color.Error" OnClick="@Logout" StartIcon="@Icons.Material.Filled.Logout" FullWidth="true">
+        Выйти
+    </MudButton>
+</MudNavGroup>
+
+@code {
+    private Contracts.User? User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = (await AuthenticationStorage.GetAuthorizationAsync())?.User;
+    }
+
+    private Task Logout()
+    {
+        return LogoutService.Logout();
+    }
+
+}

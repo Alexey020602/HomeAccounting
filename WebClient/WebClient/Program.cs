@@ -1,4 +1,4 @@
-using Shared.Blazor.Layouts;
+
 using WebClient.Components;
 
 var builder = WebApplication.CreateBuilder(args);

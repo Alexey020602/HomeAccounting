@@ -1,18 +1,15 @@
 using System.Security.Claims;
+using Authorization.Contracts;
 
 namespace Authorization.Core;
 
-public static class ClaimsConstants
-{
-    public const string Fullname = "FullName";
-}
 public static class UserExtensions
 {
     public static IReadOnlyList<Claim> GetClaims(this Core.User user) =>
     [
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         new Claim(ClaimTypes.Name, user.UserName ?? throw UserException.NoUserName),
-        new Claim(ClaimsConstants.Fullname, user.FullName ?? throw UserException.NoFullName)
+        new Claim(ClaimsConstants.FullName, user.FullName ?? throw UserException.NoFullName)
     ];
 }
 

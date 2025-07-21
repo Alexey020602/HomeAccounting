@@ -7,8 +7,11 @@ namespace Authorization.UI;
 
 public static class AuthorizationResponseExtensions
 {
-    public static Authentication ConvertToAuthentication(this AuthorizationResponse response) =>
-        new(response.AccessToken, response.RefreshToken, response.Login);
+    public static Authentication ConvertToAuthentication(this AuthorizationResponse response)
+    {
+        return new Authentication(response.AccessToken, response.RefreshToken,
+            new User(response.UserId, response.Login));
+    }
 }
 
 public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, IAuthorizationApi authorizationApi)
@@ -18,10 +21,7 @@ public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, 
         CancellationToken cancellationToken)
     {
         var auth = request.Headers.Authorization;
-        if (auth is null)
-        {
-            return await base.SendAsync(request, cancellationToken);
-        }
+        if (auth is null) return await base.SendAsync(request, cancellationToken);
 
         var accessToken = await authenticationStorage.GetAuthorizationAsync(cancellationToken);
 
@@ -50,10 +50,12 @@ public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, 
         {
             response.Dispose();
         }
-        
+
         return await base.SendAsync(request, cancellationToken);
     }
 
-    private static HttpResponseMessage CreateUnauthorizedMessage(HttpRequestMessage? request) =>
-        new HttpResponseMessage(HttpStatusCode.Unauthorized) { RequestMessage = request };
+    private static HttpResponseMessage CreateUnauthorizedMessage(HttpRequestMessage? request)
+    {
+        return new HttpResponseMessage(HttpStatusCode.Unauthorized) { RequestMessage = request };
+    }
 }

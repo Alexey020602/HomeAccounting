@@ -1,7 +1,7 @@
 @page "/Register"
 @using Authorization.Contracts
-@using FluentValidation
 @using Blazored.FluentValidation
+@using FluentValidation
 @using Shared.Utils.Model
 @inject IAuthorizationApi AuthorizationApi
 <MudCard Style="max-width: 600px; padding: 20px">
@@ -13,14 +13,14 @@
                 Variant="Variant.Outlined"
                 Label="Логин"
                 For="@(() => model.Login)"/>
-            
+
             <MudTextField
                 @bind-Text="model.UserName"
                 Variant="Variant.Outlined"
                 Label="Имя пользователя"
                 For="@(() => model.UserName)"
-                />
-            
+            />
+
             <MudPasswordField
                 @bind-Text="model.Password"
                 InputType="InputType.Password"
@@ -28,7 +28,7 @@
                 Label="Пароль"
                 For="@(() => model.Password)"
             />
-            
+
             <MudPasswordField
                 @bind-Text="model.ConfirmPassword"
                 InputType="InputType.Password"
@@ -65,12 +65,15 @@
         public string Password { get; set; } = "";
         public string ConfirmPassword { get; set; } = "";
 
-        internal RegistrationRequest CreateRequest() => new()
+        internal RegistrationRequest CreateRequest()
         {
-            Login = Login,
-            Username = UserName,
-            Password = Password
-        };
+            return new RegistrationRequest
+            {
+                Login = Login,
+                Username = UserName,
+                Password = Password
+            };
+        }
     }
 
     private sealed class ModelValidator : AbstractValidator<Model>
@@ -85,11 +88,11 @@
                     !await authorizationApi.CheckLoginExist(login)
                 )
                 .WithMessage("Логин {PropertyValue} уже существует")
-            ;
+                ;
             RuleFor(model => model.UserName)
                 .NotEmpty()
                 .WithMessage("Необходимо ввести имя пользователя");
-            
+
             RuleFor(model => model.Password)
                 .Cascade(CascadeMode.Continue)
                 .Password();
@@ -107,4 +110,5 @@
     {
         return AuthorizationApi.Register(model.CreateRequest());
     }
+
 }

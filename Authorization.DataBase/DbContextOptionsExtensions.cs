@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Authorization.Contracts;
+// using Authorization.Contracts;
 using Authorization.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -44,7 +44,7 @@ public static class DbContextOptionsExtensions
     {
         var user = new User()
         {
-            Id = UserConstants.DefaultUserId,
+            Id = Contracts.UserConstants.DefaultUserId,
             UserName = "chillexey",
             FullName = "Федоров Алексей",
             NormalizedUserName = "CHILLEXEY",

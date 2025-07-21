@@ -33,8 +33,8 @@ public sealed class ReceiptDataReceivedHandler(IProductCategorizationService cat
         
         await bus.Send(new ReceiptCategorized()
         {
-            Login = message.Login,
-            FiscalData = message.FiscalData,
+            
+            ReceiptData = message.ReceiptData,
             Products = products.ToList()
         });
     }

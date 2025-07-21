@@ -1,5 +1,3 @@
-using Authorization.Extensions;
-
 namespace Authorization.Core;
 
 public static class TokenServiceExtensions

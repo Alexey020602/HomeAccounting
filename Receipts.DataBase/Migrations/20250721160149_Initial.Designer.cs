@@ -12,7 +12,7 @@ using Receipts.DataBase;
 namespace Receipts.DataBase.Migrations
 {
     [DbContext(typeof(ReceiptsContext))]
-    [Migration("20250630080631_Initial")]
+    [Migration("20250721160149_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -69,16 +69,15 @@ namespace Receipts.DataBase.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("S")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 

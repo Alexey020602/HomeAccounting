@@ -13,16 +13,24 @@ namespace Checks.Api;
 public class ReceiptsController(IMediator mediator) : ApiControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetChecks([FromQuery] GetChecks checksQuery) => Ok(await mediator.Send(checksQuery));
+    public async Task<IActionResult> GetChecks([FromQuery] GetChecks checksQuery) =>
+        Ok(await mediator.Send(checksQuery));
 
     [HttpPut]
     public async Task<IActionResult> AddCheck([FromBody] CheckRequest checkRequest)
     {
         await mediator.Send(new AddCheckCommand()
         {
-            Login = HttpContext.User.GetLogin(),
-            FiscalData = new ReceiptFiscalData(checkRequest.Fd, checkRequest.Fn, checkRequest.Fp, checkRequest.S,
-                checkRequest.T),
+            ReceiptData = new(
+                new ReceiptFiscalData(
+                    checkRequest.Fn,
+                    checkRequest.Fd,
+                    checkRequest.Fp,
+                    checkRequest.S,
+                    checkRequest.T
+                ),
+                HttpContext.User.GetUserId()
+            ),
         });
         return Ok();
     }
@@ -30,11 +38,10 @@ public class ReceiptsController(IMediator mediator) : ApiControllerBase
     [HttpPut("file")]
     public async Task<IActionResult> AddCheckWithFile(IFormFile file)
     {
-
         await mediator.Send(new AddImageCheckCommand()
         {
             ImageBytes = await file.OpenReadStream().ReadAsByteArrayAsync(),
-            Login = HttpContext.User.GetLogin(),
+            UserId = HttpContext.User.GetUserId(),
         });
         return Ok();
     }

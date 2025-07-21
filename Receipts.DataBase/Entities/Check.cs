@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ class Check
 
     // public string CheckRaw { get; set; } = null!;
     [MinLength(1)] public List<Product> Products { get; set; } = [];
-    public string Login { get; set; } = null!;
+    public Guid UserId { get; set; }
     public override string ToString()
     {
         return $"""

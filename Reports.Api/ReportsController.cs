@@ -11,5 +11,5 @@ public class ReportsController(IMediator mediator): ApiControllerBase
 {
     [HttpPut("month")]
     public async Task<IActionResult> GetMonthReport(ReportRequest request) =>
-        new JsonResult(await mediator.Send(new GetPeriodReportQuery(request.Range, HttpContext.User.GetLogin())));
+        new JsonResult(await mediator.Send(new GetPeriodReportQuery(request.Range, HttpContext.User.GetUserId())));
 }

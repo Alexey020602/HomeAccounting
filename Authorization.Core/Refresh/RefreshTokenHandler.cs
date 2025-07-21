@@ -25,11 +25,16 @@ public sealed class RefreshTokenHandler(IUserService userService, ITokenService 
             return Result.Failure<AuthorizationResponse>("No refresh token found");
         }
 
+        if (user.UserName is null)
+        {
+            return Result.Failure<AuthorizationResponse>("No user name found");
+        }
+
         return Result.Success(
             new AuthorizationResponse()
             {
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Login = user.Id,
+                Login = user.UserName,
                 AccessToken = tokenService.CreateTokenForUser(user),
                 RefreshToken = user.RefreshToken.Token,
             }

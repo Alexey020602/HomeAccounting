@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Authorization.DataBase;
 
-public class AuthorizationContext(DbContextOptions<AuthorizationContext> options): IdentityUserContext<User, string>(options)
+public class AuthorizationContext(DbContextOptions<AuthorizationContext> options): IdentityUserContext<User, Guid>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {

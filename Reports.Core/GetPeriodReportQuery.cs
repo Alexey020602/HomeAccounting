@@ -5,7 +5,7 @@ using Shared.Utils.Model.Dates;
 
 namespace Reports.Core;
 
-public record GetPeriodReportQuery(DateRange Range, string? Login = null) : IQuery<ReportDto>
+public record GetPeriodReportQuery(DateRange Range, Guid? UserId = null) : IQuery<ReportDto>
 {
-    public static explicit operator GetChecks (GetPeriodReportQuery query) => new(query.Range,  query.Login);
+    public static explicit operator GetChecks (GetPeriodReportQuery query) => new(query.Range,  query.UserId);
 };

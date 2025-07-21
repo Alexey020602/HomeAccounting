@@ -40,7 +40,7 @@ public class UserService(UserManager<User> userManager): IUserService
 {
     public async Task<bool> CheckLoginExist(string login)
     {
-        return await userManager.FindByIdAsync(login) != null;
+        return await userManager.FindByNameAsync(login) != null;
     }
 
     public async Task<Result<Core.User>> GetUserByRequest(
@@ -48,7 +48,7 @@ public class UserService(UserManager<User> userManager): IUserService
         Func<Core.RefreshToken> createRefreshToken
         )
     {
-        var user = await userManager.FindByIdAsync(request.Login);
+        var user = await userManager.FindByNameAsync(request.Login);
         // var user = await userService.GetUserByLogin(loginRequest.Login);
 
         if (user is null) return Result.Failure<Core.User>("User not found");
@@ -101,14 +101,14 @@ public class UserService(UserManager<User> userManager): IUserService
 
     public async Task<Result> AddUser(UnregisteredUser user, string password)
     {
-        var existingUser = await userManager.FindByIdAsync(user.Login);
+        var existingUser = await userManager.FindByNameAsync(user.Login);
         if (existingUser is not null) return Result.Failure("User already exists");
 
         var creationResult = await userManager.CreateAsync(
             new User
             {
-                Id = user.Login,
-                UserName = user.UserName,
+                UserName = user.Login,
+                FullName = user.UserName,
             },
             password
         );

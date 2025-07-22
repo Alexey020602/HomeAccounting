@@ -1,25 +1,23 @@
 @using Shared.Blazor
-@inject IAuthenticationStorage AuthenticationStorage
+@using Microsoft.AspNetCore.Components.Authorization
 @inject ILogoutService LogoutService
-<MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль">
-    @if (User is not null)
-    {
-        <MudButton Href="@($"/user/{User.Id}")" FullWidth="true">
-            @User.UserName
+
+<AuthorizeView Context="authenticationState">
+
+    <MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль">
+        @{
+            var user = (Contracts.User)authenticationState.User;
+        }
+        <MudButton Href="@($"/user/{user.Id}")" FullWidth="true">
+            <p style="width:100%;align-items: start">@user.UserName</p>
         </MudButton>
-    }
-    <MudButton Color="Color.Error" OnClick="@Logout" StartIcon="@Icons.Material.Filled.Logout" FullWidth="true">
-        Выйти
-    </MudButton>
-</MudNavGroup>
+        <MudButton Color="Color.Error" OnClick="@Logout" StartIcon="@Icons.Material.Filled.Logout" FullWidth="true">
+            Выйти
+        </MudButton>
+    </MudNavGroup>
+</AuthorizeView>
 
 @code {
-    private Contracts.User? User { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        User = (await AuthenticationStorage.GetAuthorizationAsync())?.User;
-    }
 
     private Task Logout()
     {

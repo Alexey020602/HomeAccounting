@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Authorization.DataBase;
 
-sealed class UserException(string message) : Exception(message);
 // public static class UserMapper
 // {
 //     public static Core.User ConvertToUser(this User user)

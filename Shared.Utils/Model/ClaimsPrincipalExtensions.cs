@@ -10,3 +10,4 @@ public static class ClaimsPrincipalExtensions
             claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Отсутствует Login");
     
 }
+

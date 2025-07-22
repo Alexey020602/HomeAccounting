@@ -6,16 +6,7 @@ namespace Authorization.UI.Dto;
 
 public record Authentication(string AccessToken, string RefreshToken, User User)
 {
-    [JsonIgnore] public ClaimsPrincipal Principal => new(Identity);
-
-    [JsonIgnore] private ClaimsIdentity Identity => new(Claims, "jwtAuthType");
-
-    [JsonIgnore]
-    private IReadOnlyList<Claim> Claims =>
-    [
-        new(ClaimTypes.NameIdentifier, User.Id.ToString()),
-        new(ClaimTypes.Name, User.UserName)
-    ];
+    [JsonIgnore] public ClaimsPrincipal Principal => (ClaimsPrincipal) User;
 
     public override string ToString()
     {

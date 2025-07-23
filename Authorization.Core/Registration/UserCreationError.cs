@@ -13,3 +13,5 @@ public sealed class UserCreationError(string code, string description) : Error(d
     
     
 }
+
+public sealed class UserNotFoundError(string description): Error(description);

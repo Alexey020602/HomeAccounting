@@ -1,5 +1,6 @@
 using Budgets.Api;
 using Api;
+using Authorization;
 using Authorization.Core.Login;
 using Authorization.DataBase;
 using Authorization.DependencyInjection;
@@ -133,8 +134,11 @@ app.UseSerilogRequestLogging(options =>
 });
 
 app.MapControllers()
-    .RequireAuthorization()
-    ;
+    .RequireAuthorization();
+
+app
+    .MapGroup("/api")
+    .MapAuthorization();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()

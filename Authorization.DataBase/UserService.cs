@@ -37,23 +37,29 @@ namespace Authorization.DataBase;
 
 public class UserService(UserManager<User> userManager): IUserService
 {
-    public async Task<bool> CheckLoginExist(string login)
+    public async Task<bool> CheckLoginExist(string login, CancellationToken cancellation = default)
     {
         return await userManager.FindByNameAsync(login) != null;
     }
 
-    public async Task<Result<Core.User>> GetUserByRequest(
+    public async Task<Result<User>> GetById(Guid id, CancellationToken cancellation = default) => 
+        await userManager.FindByIdAsync(id.ToString()) is {} user 
+            ? Result.Success(user) 
+            : Result.Failure<User>(new UserNotFoundError("User not found"));
+
+    public async Task<Result<User>> GetUserByRequest(
         UserRequest request, 
-        Func<Core.RefreshToken> createRefreshToken
+        Func<RefreshToken> createRefreshToken, 
+        CancellationToken cancellation = default
         )
     {
         var user = await userManager.FindByNameAsync(request.Login);
         // var user = await userService.GetUserByLogin(loginRequest.Login);
 
-        if (user is null) return Result.Failure<Core.User>("User not found");
+        if (user is null) return Result.Failure<User>("User not found");
 
         if (!await userManager.CheckPasswordAsync(user, request.Password))
-            return Result.Failure<Core.User>("Wrong Password");
+            return Result.Failure<User>("Wrong Password");
         
         user.RefreshToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
         //todo Добавить обработку ошибок
@@ -62,7 +68,7 @@ public class UserService(UserManager<User> userManager): IUserService
         return user;
     }
 
-    public async Task<Result> UpdateUser(Core.User user)
+    public async Task<Result> UpdateUser(User user, CancellationToken cancellation = default)
     {
         var result = await userManager.UpdateAsync(user);
 
@@ -74,21 +80,23 @@ public class UserService(UserManager<User> userManager): IUserService
         return Result.Failure(ConvertToErrors(result));
     } 
 
-    public async Task<Result<Core.User>> GetUserByRefreshToken(
+    public async Task<Result<User>> GetUserByRefreshToken(
         string refreshToken,
-        Func<Core.RefreshToken> createRefreshToken
+        Func<RefreshToken> createRefreshToken, 
+        CancellationToken cancellation = default
         )
     {
-        var user = await userManager.Users.FirstOrDefaultAsync(user =>
-            user.RefreshToken != null && user.RefreshToken.Token == refreshToken);
+        var user = await userManager.Users.FirstOrDefaultAsync(
+            user => user.RefreshToken != null && user.RefreshToken.Token == refreshToken, 
+            cancellation);
         if (user is null)
         {
-            return Result.Failure<Core.User>("User Not Found");
+            return Result.Failure<User>("User Not Found");
         }
 
         if (user.RefreshToken is null || user.RefreshToken.Expires < DateTime.UtcNow)
         {
-            return Result.Failure<Core.User>(new RefreshTokenError());
+            return Result.Failure<User>(new RefreshTokenError());
         }
         
         user.RefreshToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
@@ -98,7 +106,7 @@ public class UserService(UserManager<User> userManager): IUserService
         return user;
     }
 
-    public async Task<Result> AddUser(UnregisteredUser user, string password)
+    public async Task<Result> AddUser(UnregisteredUser user, string password, CancellationToken cancellation = default)
     {
         var existingUser = await userManager.FindByNameAsync(user.Login);
         if (existingUser is not null) return Result.Failure("User already exists");

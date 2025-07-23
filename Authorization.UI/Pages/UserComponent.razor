@@ -3,15 +3,19 @@
 @inject ILogoutService LogoutService
 
 <AuthorizeView Context="authenticationState">
-
-    <MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль">
+    <MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль" >
         @{
             var user = (Contracts.User)authenticationState.User;
         }
-        <MudButton Href="@($"/user/{user.Id}")" FullWidth="true">
-            <p style="width:100%;align-items: start">@user.UserName</p>
+        <MudButton Href="@($"/user/{user.Id}")" Style="justify-content: start" FullWidth="true">
+            @user.UserName
         </MudButton>
-        <MudButton Color="Color.Error" OnClick="@Logout" StartIcon="@Icons.Material.Filled.Logout" FullWidth="true">
+        <MudButton
+            Color="Color.Error"
+            OnClick="@Logout"
+            StartIcon="@Icons.Material.Filled.Logout"
+            Style="justify-content: start"
+            FullWidth="true">
             Выйти
         </MudButton>
     </MudNavGroup>
@@ -19,9 +23,6 @@
 
 @code {
 
-    private Task Logout()
-    {
-        return LogoutService.Logout();
-    }
+    private Task Logout() => LogoutService.Logout();
 
 }

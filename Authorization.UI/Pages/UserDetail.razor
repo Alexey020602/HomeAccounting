@@ -1,40 +1,33 @@
 @page "/User/{id:guid}"
-@using LightResults
-@using LightResults.Extensions.ExceptionHandling
+@using Authorization.Contracts
+@using MaybeResults
+@using Shared.Utils.Results
 @inject IUsersApi UsersApi
 
 <MudContainer MaxWidth="MaxWidth.Medium">
-    @if (!UserResult.HasValue)
+    @(UserMaybe switch
     {
-        <MudProgressCircular Indeterminate="true" />
-    }
-    else
-    {
-        @if (UserResult.Value.IsFailure(out var error, out var user))
-        {
-            <MudAlert Severity="Severity.Error">@error.Message</MudAlert>
-        }
-        else
-        {
-            <MudCard>
-                <MudCardHeader>
-                    <MudText Typo="Typo.h5">@user.UserName</MudText>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudText><strong>ID:</strong> @user.Id</MudText>
-                </MudCardContent>
-            </MudCard>
-        }
-    }
+        null => @<MudProgressCircular Indeterminate="true"/>,
+        Some<User> user => @<MudCard>
+                                    <MudCardHeader>
+                                        <MudText Typo="Typo.h5">@user.Value.UserName</MudText>
+                                    </MudCardHeader>
+                                    <MudCardContent>
+                                        <MudText><strong>ID:</strong> @user.Value.Id</MudText>
+                                    </MudCardContent>
+                                </MudCard>,
+    
+        INone<User> error => @<MudAlert Severity="Severity.Error">@error.Message</MudAlert>,
+        _ => @<MudAlert Severity="Severity.Error">Неизвестное состояние</MudAlert>})
 </MudContainer>
 
 @code {
     [Parameter] public Guid Id { get; set; }
-    private Result<Contracts.User>? UserResult { get; set; }
+    // private Result<Contracts.User>? UserResult { get; set; }
+    private IMaybe<User>? UserMaybe { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        
-        UserResult = await (UsersApi.GetUser(Id)).TryAsync();
+        UserMaybe = await UsersApi.GetUser(Id).TryAsync();
     }
 
 }

@@ -1,4 +1,5 @@
 using LightResults;
+using MaybeResults;
 
 namespace Authorization.Core;
 
@@ -19,5 +20,5 @@ public interface IUserService
 
     Task<Result> AddUser(UnregisteredUser user, string password, CancellationToken cancellation = default);
 
-    Task<Result<User>> GetById(Guid id, CancellationToken cancellation = default);
+    Task<IMaybe<User>> GetById(Guid id, CancellationToken cancellation = default);
 }

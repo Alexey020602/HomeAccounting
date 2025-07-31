@@ -1,6 +1,7 @@
 using Authorization.Core;
 using Authorization.Core.Registration;
 using LightResults;
+using MaybeResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,10 +43,10 @@ public class UserService(UserManager<User> userManager): IUserService
         return await userManager.FindByNameAsync(login) != null;
     }
 
-    public async Task<Result<User>> GetById(Guid id, CancellationToken cancellation = default) => 
+    public async Task<IMaybe<User>> GetById(Guid id, CancellationToken cancellation = default) => 
         await userManager.FindByIdAsync(id.ToString()) is {} user 
-            ? Result.Success(user) 
-            : Result.Failure<User>(new UserNotFoundError("User not found"));
+            ? Maybe.Create(user) 
+            : new UserNotFoundError<User>("User not found");
 
     public async Task<Result<User>> GetUserByRequest(
         UserRequest request, 

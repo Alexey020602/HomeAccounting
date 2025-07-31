@@ -4,6 +4,7 @@ using Authorization.Contracts;
 using Authorization.Core.CheckLoginExist;
 using Authorization.Core.Registration;
 using Authorization.Core.UserData;
+using MaybeResults;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -37,18 +38,15 @@ static class UserEndpoints
 
     private static async Task<IResult> GetUserData(Guid id, IMediator mediator)
     {
-        if ((await mediator.Send(new UserDataQuery(id))).IsFailure(out var error, out var user))
+        return await mediator.Send(new UserDataQuery(id)) switch
         {
-            return error is UserNotFoundError userNotFoundError 
-                ? Results.NotFound(new ProblemDetails()
-                {
-                    Detail = userNotFoundError.Message,
-                })
-                : Results.Problem(error.Message);
-        }
-        else
-        {
-            return Results.Ok(user);
-        }
+            Some<User> user => Results.Ok(user.Value),
+            UserNotFoundError<User> userNotFoundError => Results.NotFound(new ProblemDetails()
+            {
+                Detail = userNotFoundError.Message,
+            }),
+            INone<User> error => Results.Problem(error.Message),
+            _ => Results.InternalServerError()
+        };
     }
 }

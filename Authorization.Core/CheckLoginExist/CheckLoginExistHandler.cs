@@ -7,6 +7,6 @@ public sealed class CheckLoginExistHandler(IUserService userService): IQueryHand
 {
     public async ValueTask<bool> Handle(CheckLoginExistQuery query, CancellationToken cancellationToken)
     {
-        return await userService.CheckLoginExist(query.Login);
+        return await userService.CheckLoginExist(query.Login, cancellationToken);
     }
 }

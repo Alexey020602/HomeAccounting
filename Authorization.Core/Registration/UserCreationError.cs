@@ -1,4 +1,5 @@
 using LightResults;
+using MaybeResults;
 using Microsoft.AspNetCore.Identity;
 
 namespace Authorization.Core.Registration;
@@ -14,4 +15,5 @@ public sealed class UserCreationError(string code, string description) : Error(d
     
 }
 
-public sealed class UserNotFoundError(string description): Error(description);
+[None]
+public partial record UserNotFoundError;

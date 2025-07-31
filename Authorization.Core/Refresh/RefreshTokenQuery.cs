@@ -1,7 +1,6 @@
 using Authorization.Contracts;
-using LightResults;
-using Mediator;
+using Authorization.Core.Login;
 
 namespace Authorization.Core.Refresh;
 
-public record RefreshTokenQuery(string RefreshToken) : IRequest<Result<AuthorizationResponse>>;
+public record RefreshTokenQuery(string RefreshToken) : IMaybeRequest<AuthorizationResponse>;

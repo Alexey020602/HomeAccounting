@@ -11,7 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="LightResults" Version="9.0.5" />
       <PackageReference Include="Mediator.Abstractions" Version="3.0.0-preview.65" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
       <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.7" />

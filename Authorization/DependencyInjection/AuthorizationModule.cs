@@ -1,7 +1,6 @@
 using Authorization.Core;
 using Authorization.DataBase;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,7 +14,7 @@ public static class AuthorizationModule
             databaseServiceName,
             configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
             );
-        builder.Services.AddIdentityCore<User>(options =>
+        builder.Services.AddIdentityCore<User>(_ =>
             {
                 
             })

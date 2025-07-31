@@ -5,16 +5,12 @@ using Authorization.Core.CheckLoginExist;
 using Authorization.Core.Login;
 using Authorization.Core.Refresh;
 using Authorization.Core.Registration;
-using LightResults;
+using MaybeResults;
 using Mediator;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using Shared.Web;
-using User = Authorization.Core.User;
 
 namespace Authorization;
 
@@ -30,16 +26,13 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
     
     [HttpPost("login")]
     [ProducesResponseType(typeof(AuthorizationResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> Login(LoginRequest loginRequest)
-    {
-        var result = await mediator.Send(new LoginQuery(loginRequest.Login, loginRequest.Password));
-        if (result.IsFailure(out var error, out var authorizationResponse))
+    public async Task<IActionResult> Login(LoginRequest loginRequest) =>
+        await mediator.Send(new LoginQuery(loginRequest.Login, loginRequest.Password)) switch
         {
-            return BadRequest(error.Message);
-        }
-
-        return Ok(authorizationResponse);
-    }
+            Some<AuthorizationResponse> authorizationResponse => Ok(authorizationResponse.Value),
+            INone<AuthorizationResponse> error => BadRequest(error.Message),
+            _ => throw new InvalidOperationException("Unknown operation result")
+        };
 
 
     [HttpPost("register")]
@@ -47,19 +40,12 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Register(RegistrationRequest registrationRequest)
     {
-        var result = await mediator.Send(new RegisterCommand(registrationRequest.Login, registrationRequest.Username, registrationRequest.Password));
-
-        if (result.IsSuccess())
+        return await mediator.Send(new RegisterCommand(registrationRequest.Login, registrationRequest.Username, registrationRequest.Password)) switch
         {
-            return Created();
-        }
-
-        foreach (var error in result.Errors.OfType<UserCreationError>())
-        {
-            ModelState.AddModelError(error.Code, error.Message);
-        }
-        
-        return BadRequest(ModelState);
+            Some => Created(),
+            INone error => BadRequest(error.ToValidationProblemDetails()),
+            _ => throw new InvalidOperationException("Unknown operation result")
+        };
     }
 
     [HttpPost("refresh")]
@@ -68,27 +54,36 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails) ,(int)HttpStatusCode.Unauthorized)]
     public async Task<IActionResult> Refresh(string refreshToken)
     {
-        var result = await mediator.Send(new RefreshTokenQuery(refreshToken));
-
-        if (result.IsSuccess(out var authorizationResponse, out var error))
+        return await mediator.Send(new RefreshTokenQuery(refreshToken)) switch
         {
-            return Ok(authorizationResponse);
-        }
-
-        if (error is not RefreshTokenError)
-        {
-            return BadRequest(error.Message);
-        }
-
-        return Unauthorized(
-            new ProblemDetails()
-            {
-                Extensions = new Dictionary<string, object?>
+            Some<AuthorizationResponse> authorizationResponse => Ok(authorizationResponse.Value),
+            RefreshTokenError<AuthorizationResponse> => Unauthorized(
+                new ProblemDetails()
                 {
-                    { "error", "invalid_grant" },
-                    { "error_description", "The refresh token is invalid or expired." }
+                    Extensions = new Dictionary<string, object?>
+                    {
+                        { "error", "invalid_grant" },
+                        { "error_description", "The refresh token is invalid or expired." }
+                    }
                 }
-            }
-        );
+            ),
+            INone<AuthorizationResponse> error => BadRequest(error.Message),
+            _ => throw new InvalidOperationException("Unknown operation result")
+        };
+    }
+}
+
+static class UserErrorExtensions
+{
+    public static ValidationProblemDetails ToValidationProblemDetails(this INone error)
+    {
+        var modelState = new ModelStateDictionary();
+
+        foreach (var detail in error.Details)
+        {
+            modelState.AddModelError(detail.Code, detail.Description);
+        }
+        
+        return new ValidationProblemDetails(modelState);
     }
 }

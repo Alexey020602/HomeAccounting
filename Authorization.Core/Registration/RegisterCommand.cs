@@ -1,6 +1,7 @@
-using LightResults;
+using MaybeResults;
 using Mediator;
 
 namespace Authorization.Core.Registration;
 
-public record RegisterCommand(string Login, string Username, string Password) : ICommand<Result>;
+public interface IResultCommand : ICommand<IMaybe>;
+public record RegisterCommand(string Login, string Username, string Password) : IResultCommand;

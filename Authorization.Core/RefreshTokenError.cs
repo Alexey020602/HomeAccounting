@@ -1,5 +1,6 @@
-using LightResults;
+using MaybeResults;
 
 namespace Authorization.Core;
 
-public sealed class RefreshTokenError : Error;
+[None]
+public partial record RefreshTokenError;

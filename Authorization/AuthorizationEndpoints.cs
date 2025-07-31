@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Mime;
 using Authorization.Contracts;
 using Authorization.Core.CheckLoginExist;
 using Authorization.Core.Registration;
@@ -8,10 +7,8 @@ using MaybeResults;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace Authorization;
 
@@ -36,9 +33,8 @@ static class UserEndpoints
             .MapGet((string)"/{id:guid}", GetUserData)
             .Produces((int)HttpStatusCode.OK, typeof(User));
 
-    private static async Task<IResult> GetUserData(Guid id, IMediator mediator)
-    {
-        return await mediator.Send(new UserDataQuery(id)) switch
+    private static async Task<IResult> GetUserData(Guid id, IMediator mediator) =>
+        await mediator.Send(new UserDataQuery(id)) switch
         {
             Some<User> user => Results.Ok(user.Value),
             UserNotFoundError<User> userNotFoundError => Results.NotFound(new ProblemDetails()
@@ -48,5 +44,4 @@ static class UserEndpoints
             INone<User> error => Results.Problem(error.Message),
             _ => Results.InternalServerError()
         };
-    }
 }

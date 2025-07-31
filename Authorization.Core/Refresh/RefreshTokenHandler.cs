@@ -1,44 +1,41 @@
 using Authorization.Contracts;
-using LightResults;
+using Authorization.Core.Registration;
+using MaybeResults;
 using Mediator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Authorization.Core.Refresh;
 
 public sealed class RefreshTokenHandler(IUserService userService, ITokenService tokenService)
-    : IRequestHandler<RefreshTokenQuery, Result<AuthorizationResponse>>
+    : IRequestHandler<RefreshTokenQuery, IMaybe<AuthorizationResponse>>
 {
-    public async ValueTask<Result<AuthorizationResponse>> Handle(RefreshTokenQuery query, CancellationToken cancellationToken)
-    {
-        var result = await userService.GetUserByRefreshToken(
+    public async ValueTask<IMaybe<AuthorizationResponse>> Handle(RefreshTokenQuery query,
+        CancellationToken cancellationToken) =>
+        (await userService.GetUserByRefreshToken(
             query.RefreshToken,
-            tokenService.CreateRefreshToken
-        );
-
-        if (result.IsFailure(out var error, out var user))
+            tokenService.CreateRefreshToken,
+            cancellationToken))
+        .FlatMap(user =>
         {
-            return Result.Failure<AuthorizationResponse>(error);
-        }
-
-        if (user.RefreshToken is null)
-        {
-            return Result.Failure<AuthorizationResponse>("No refresh token found");
-        }
-
-        if (user.UserName is null)
-        {
-            return Result.Failure<AuthorizationResponse>("No user name found");
-        }
-
-        return Result.Success(
-            new AuthorizationResponse()
+            if (user.RefreshToken is null)
             {
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                UserId = user.Id,
-                Login = user.UserName,
-                AccessToken = tokenService.CreateTokenForUser(user),
-                RefreshToken = user.RefreshToken.Token,
+                return new UserError<AuthorizationResponse>("No refresh token found");
             }
-        );
-    }
+
+            if (user.UserName is null)
+            {
+                return new UserError<AuthorizationResponse>("No user name found");
+            }
+
+            return Maybe.Create(
+                new AuthorizationResponse()
+                {
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    UserId = user.Id,
+                    Login = user.UserName,
+                    AccessToken = tokenService.CreateTokenForUser(user),
+                    RefreshToken = user.RefreshToken.Token,
+                }
+            );
+        });
 }

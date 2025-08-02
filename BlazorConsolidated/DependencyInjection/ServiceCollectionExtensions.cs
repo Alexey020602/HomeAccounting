@@ -25,7 +25,6 @@ public static class ServiceCollectionExtensions
                 config.SnackbarConfiguration.PreventDuplicates = false;
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
-            .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
@@ -36,10 +35,12 @@ public static class ServiceCollectionExtensions
         serviceCollection
             .AddAuthorizationCore()
             .AddCascadingAuthenticationState()
+            .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
+            .Decorate<IAuthenticationStorage, TelemetryAuthenticationStorage>()
             .AddScopedAsMultipleServices<
                 ILoginService, 
                 AuthenticationStateProvider,
-                ILoginService, 
+                ILogoutService, 
                 StorageAuthenticationService
             >();
 

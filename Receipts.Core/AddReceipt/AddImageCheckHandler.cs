@@ -12,8 +12,7 @@ public sealed class AddImageCheckHandler(IBarcodeService barcodeService, IReceip
         var receiptRaw = await barcodeService.ReadBarcodeAsync(command.ImageBytes);
         await receiptService.AddCheckAsync(new AddCheckCommand()
         {
-            Login = command.Login,
-            FiscalData = new ReceiptFiscalData(receiptRaw)
+            ReceiptData = new (new ReceiptFiscalData(receiptRaw), command.UserId),
         }, cancellationToken);
         return Unit.Value;
     }

@@ -21,14 +21,14 @@ public sealed class ReceiptSaveService(ReceiptsContext context) : IReceiptSaveSe
 
         var check = new Check
         {
-            Fp = addCheckRequest.Fp,
-            Fn = addCheckRequest.Fn,
-            Fd = addCheckRequest.Fd,
-            S = addCheckRequest.S,
+            Fp = addCheckRequest.ReceiptData.FiscalData.Fp,
+            Fn = addCheckRequest.ReceiptData.FiscalData.Fn,
+            Fd = addCheckRequest.ReceiptData.FiscalData.Fd,
+            S = addCheckRequest.ReceiptData.FiscalData.S,
             AddedDate = DateTime.UtcNow,
-            PurchaseDate = addCheckRequest.PurchaseDate,
+            PurchaseDate = addCheckRequest.ReceiptData.FiscalData.T,
             Products = addCheckRequest.Products.Select(CreateProduct).ToList(),
-            Login = addCheckRequest.Login,
+            UserId = addCheckRequest.ReceiptData.UserId,
         };
 
         context.Checks.Add(check);

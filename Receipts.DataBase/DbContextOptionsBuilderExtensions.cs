@@ -1,3 +1,4 @@
+using Authorization.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Receipts.DataBase.Entities;
 
@@ -57,7 +58,7 @@ public static class DbContextOptionsBuilderExtensions
         Fp = check.Fp,
         S = check.S,
         Products = check.Products.Select(context.CreateProduct).ToList(),
-        Login = "chillexey",
+        UserId = UserConstants.DefaultUserId
     };
 
     private static Entities.Product CreateProduct(this ReceiptsContext context, Product product)

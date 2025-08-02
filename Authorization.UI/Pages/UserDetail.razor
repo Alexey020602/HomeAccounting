@@ -1,0 +1,28 @@
+@page "/User/{id:guid}"
+@using Authorization.Contracts
+@using MaybeResults
+@using Shared.Utils.Results
+@using Shared.Blazor.Components
+@inject IUsersApi UsersApi
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MaybeComponent Result="UserMaybe">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">@context.UserName</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText><strong>ID:</strong> @context.Id</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MaybeComponent>
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private IMaybe<User>? UserMaybe { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        UserMaybe = await UsersApi.GetUser(Id).TryAsync();
+    }
+}

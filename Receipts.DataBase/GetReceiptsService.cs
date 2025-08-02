@@ -43,10 +43,10 @@ public class GetReceiptsService(ReceiptsContext context) : IGetReceiptsService
             .ThenInclude(p => p.Subcategory)
             .ThenInclude(sub => sub.Category)
             .SingleOrDefaultAsync(c =>
-                c.Fn == checkRequest.Fn &&
-                c.PurchaseDate == checkRequest.T &&
-                c.Fd == checkRequest.Fd &&
-                c.Fp == checkRequest.Fp);
+                c.Fn == checkRequest.ReceiptData.FiscalData.Fn &&
+                c.PurchaseDate == checkRequest.ReceiptData.FiscalData.T &&
+                c.Fd == checkRequest.ReceiptData.FiscalData.Fd &&
+                c.Fp == checkRequest.ReceiptData.FiscalData.Fp);
         return dbCheck?.ConvertToCheck();
     }
 
@@ -65,14 +65,14 @@ public class GetReceiptsService(ReceiptsContext context) : IGetReceiptsService
 
         var check = new Receipts.DataBase.Entities.Check
         {
-            Fp = addCheckRequest.Fp,
-            Fn = addCheckRequest.Fn,
-            Fd = addCheckRequest.Fd,
-            S = addCheckRequest.S,
+            Fp = addCheckRequest.ReceiptData.FiscalData.Fp,
+            Fn = addCheckRequest.ReceiptData.FiscalData.Fn,
+            Fd = addCheckRequest.ReceiptData.FiscalData.Fd,
+            S = addCheckRequest.ReceiptData.FiscalData.S,
             AddedDate = DateTime.UtcNow,
-            PurchaseDate = addCheckRequest.PurchaseDate,
+            PurchaseDate = addCheckRequest.ReceiptData.FiscalData.T,
             Products = addCheckRequest.Products.Select(CreateProduct).ToList(),
-            Login = addCheckRequest.Login,
+            UserId = addCheckRequest.ReceiptData.UserId,
         };
 
         context.Checks.Add(check);

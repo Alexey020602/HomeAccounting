@@ -1,12 +1,18 @@
-using LightResults;
+using MaybeResults;
 using Mediator;
 
 namespace Authorization.Core.Registration;
 
-public sealed class RegisterHandler(IAuthenticationManager authenticationManager) : ICommandHandler<RegisterCommand, Result>
+public sealed class RegisterHandler(IUserService userService) : ICommandHandler<RegisterCommand, IMaybe>
 {
-    public ValueTask<Result> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    public ValueTask<IMaybe> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        return new ValueTask<Result>(authenticationManager.Register(command));
+        return new ValueTask<IMaybe>(userService.AddUser(
+            new UnregisteredUser()
+            {
+                Login = command.Login,
+                UserName = command.Username,
+            },
+            command.Password, cancellationToken));
     }
 }

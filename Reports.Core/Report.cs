@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Receipts.Contracts;
-using Shared.Model;
 
 namespace Reports.Core;
 

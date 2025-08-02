@@ -1,22 +1,19 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
+using Authorization.Contracts;
 
 namespace Authorization.UI.Dto;
 
-public record Authentication(string AccessToken, string RefreshToken, string Login)
+public record Authentication(string AccessToken, string RefreshToken, User User)
 {
-    [JsonIgnore]
-    public ClaimsPrincipal Principal => new ClaimsPrincipal(Identity);
-    [JsonIgnore]
-    private ClaimsIdentity Identity => new ClaimsIdentity(Claims, "jwtAuthType");
-    [JsonIgnore]
-    private IReadOnlyList<Claim> Claims =>
-    [
-        new Claim(ClaimTypes.NameIdentifier, Login)
-    ];
-    public override string ToString() => $"""
-                                         Access Token: {AccessToken}
-                                         RefreshToken: {RefreshToken}
-                                         Login: {Login}
-                                         """;
+    [JsonIgnore] public ClaimsPrincipal Principal => (ClaimsPrincipal) User;
+
+    public override string ToString()
+    {
+        return $"""
+                Access Token: {AccessToken}
+                RefreshToken: {RefreshToken}
+                Login: {User?.UserName}
+                """;
+    }
 }

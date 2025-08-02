@@ -1,20 +1,15 @@
+using Authorization.Contracts;
+using Microsoft.AspNetCore.Identity;
+
 namespace Authorization.Core;
 
-public class UnregisteredUser
+public class User: IdentityUser<Guid>
 {
-    public required string Login { get; init; }
-    public required string UserName { get; init; }
-}
-public class User
-{
-    public required string Login { get; init; }
-    public required string Username { get; init; }
-    // public required string Password { get; init; }
-    public required RefreshToken RefreshToken { get; init; }
+    public string? FullName { get; set; }
+    public RefreshToken? RefreshToken { get; set; }
+
+    public static implicit operator Contracts.User(User user) => new Contracts.User(
+        user.Id, 
+        user.UserName ?? throw UserException.NoUserName);
 }
 
-public class RefreshToken
-{
-    public required string Token { get; init; }
-    public required DateTime Expires { get; init; } 
-}

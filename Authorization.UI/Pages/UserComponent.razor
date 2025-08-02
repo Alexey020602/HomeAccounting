@@ -1,0 +1,28 @@
+@using Shared.Blazor
+@using Microsoft.AspNetCore.Components.Authorization
+@inject ILogoutService LogoutService
+
+<AuthorizeView Context="authenticationState">
+    <MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль" >
+        @{
+            var user = (Contracts.User)authenticationState.User;
+        }
+        <MudButton Href="@($"/user/{user.Id}")" Style="justify-content: start" FullWidth="true">
+            @user.UserName
+        </MudButton>
+        <MudButton
+            Color="Color.Error"
+            OnClick="@Logout"
+            StartIcon="@Icons.Material.Filled.Logout"
+            Style="justify-content: start"
+            FullWidth="true">
+            Выйти
+        </MudButton>
+    </MudNavGroup>
+</AuthorizeView>
+
+@code {
+
+    private Task Logout() => LogoutService.Logout();
+
+}

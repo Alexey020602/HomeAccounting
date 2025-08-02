@@ -8,12 +8,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Fns.Contracts\Fns.Contracts.csproj" />
-      <ProjectReference Include="..\Shared.Model\Shared.Model.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Mediator.Abstractions" Version="3.0.0-preview.65" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
     </ItemGroup>
 
 </Project>

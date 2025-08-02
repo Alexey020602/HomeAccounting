@@ -1,10 +1,10 @@
 using Fns.Contracts;
+using Receipts.Contracts;
 
 namespace Receipts.Core.ReceiptCategorization;
 
 public sealed class ReceiptDataReceived
 {
-    public required string Login { get; set; }
-    public required ReceiptFiscalData FiscalData { get; set; }
+    public required ReceiptData  ReceiptData { get; init; }
     public required IReadOnlyList<ReceivedProduct> Products { get; set; }
 }

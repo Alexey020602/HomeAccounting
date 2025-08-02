@@ -1,3 +1,5 @@
+using Authorization.Core;
+
 namespace Authorization.DataBase;
 
 public static class RefreshTokenMapper

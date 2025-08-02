@@ -11,13 +11,12 @@ public sealed class ReceiptService(ICheckReceiptService checkReceiptService, IRe
 {
     public async Task AddCheckAsync(AddCheckCommand command, CancellationToken token = default)
     {
-        if (await checkReceiptService.CheckExistAsync(command.FiscalData, token)) return;
+        if (await checkReceiptService.CheckExistAsync(command.ReceiptData.FiscalData, token)) return;
 
-        var receipt = await receiptDataService.GetReceipt(command.FiscalData);
+        var receipt = await receiptDataService.GetReceipt(command.ReceiptData.FiscalData);
         await bus.Send(new ReceiptDataReceived()
             {
-                Login = command.Login,
-                FiscalData = receipt.ReceiptFiscalData,
+                ReceiptData = command.ReceiptData,
                 Products = receipt.Products
                     .Select(p => new ReceivedProduct()
                     {

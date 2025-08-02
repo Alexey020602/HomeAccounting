@@ -1,18 +1,21 @@
-using LightResults;
+using MaybeResults;
 
 namespace Authorization.Core;
 
 public interface IUserService
 {
-    Task<Result<Core.User>> GetUserByRequest(
-        UserRequest request, 
-        Func<Core.RefreshToken> createRefreshToken
-    );
+    Task<bool> CheckLoginExist(string login, CancellationToken cancellation = default);
+    Task<IMaybe<User>> GetUserByRequest(UserRequest request,
+        Func<RefreshToken> createRefreshToken,
+        CancellationToken cancellation = default);
 
-    Task<Result<Core.User>> GetUserByRefreshToken(
+    Task<IMaybe<User>> GetUserByRefreshToken(
         string refreshToken,
-        Func<Core.RefreshToken> createRefreshToken
+        Func<RefreshToken> createRefreshToken,
+        CancellationToken cancellation = default
     );
 
-    Task<Result> AddUser(UnregisteredUser user, string password);
+    Task<IMaybe> AddUser(UnregisteredUser user, string password, CancellationToken cancellation = default);
+
+    Task<IMaybe<User>> GetById(Guid id, CancellationToken cancellation = default);
 }

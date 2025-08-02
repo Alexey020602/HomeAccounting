@@ -1,11 +1,12 @@
 using Budgets.Api;
 using Api;
+using Authorization;
 using Authorization.Core.Login;
 using Authorization.DataBase;
 using Authorization.DependencyInjection;
-using Authorization.UI;
+using Authorization.UI.Pages;
+using BlazorConsolidated.Layouts;
 using BlazorConsolidated.Pages;
-using BlazorConsolidated.Reports;
 using Checks.Api;
 using Fns;
 using Mediator;
@@ -30,7 +31,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
 using ServiceDefaults;
-using Shared.Blazor.Layouts;
 using Shared.Utils;
 using SerilogApplicationBuilderExtensions = Api.SerilogApplicationBuilderExtensions;
 
@@ -134,13 +134,15 @@ app.UseSerilogRequestLogging(options =>
 });
 
 app.MapControllers()
-    .RequireAuthorization()
-    ;
+    .RequireAuthorization();
+
+app
+    .MapGroup("/api")
+    .MapAuthorization();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(
-        typeof(MainLayout).Assembly,
         typeof(Login).Assembly,
         typeof(Receipts.UI.Receipts).Assembly,
         typeof(MonthReportComponent).Assembly,

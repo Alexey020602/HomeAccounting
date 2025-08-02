@@ -1,11 +1,9 @@
-@using Authorization.UI
+@using Authorization.UI.Pages
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorConsolidated.Components
+@using BlazorConsolidated.Layouts
 @using BlazorConsolidated.Pages
-@using BlazorConsolidated.Reports
 @using global::Reports.UI
-@using MudBlazor.Extensions
-@using Shared.Blazor.Layouts
 @inject NavigationManager NavigationManager
 <CascadingAuthenticationState @rendermode="AssignedRenderMode">
     <AppErrorBoundary>
@@ -23,7 +21,7 @@
                     <Authorizing>
                         Проверка авторизации
                     </Authorizing>
-                    <NotAuthorized>
+                    <NotAuthorized Context="AuthenticationState">
                         <RedirectToLoginComponent
                             ReturnUrl="@NavigationManager.GetCurrentPath()"></RedirectToLoginComponent>
                     </NotAuthorized>

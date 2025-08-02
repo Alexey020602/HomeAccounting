@@ -65,41 +65,13 @@ public static class ExceptionHandler
     }
     public static Task<IMaybe<T>> TryAsync<T>(this Task<T> task) => TryAsync(task, HandleException<T>);
     
-    private static ExceptionError HandleException(Exception ex) => new ExceptionError(
-        ex.ErrorMessage(),
-        ex.GetNoneDetails());
-    private static ExceptionError<TResult> HandleException<TResult>(Exception ex) => new ExceptionError<TResult>(
-        ex.ErrorMessage(),
-        ex.GetNoneDetails());
-    private static string ErrorMessage(this Exception ex) => ex.Message; //$"{ex.GetType().Name}: {ex.Message}";
-    private static IEnumerable<NoneDetail> GetNoneDetails(this Exception ex)
-    {
-        List<NoneDetail> details = new List<NoneDetail>(5)
-        {
-            new NoneDetail("Message", ex.Message),
-            new NoneDetail("ExceptionType", ex.GetType().Name),
-        };
-        
-        if (ex.StackTrace != null)
-        {
-            details.Add(new NoneDetail("StackTrace", ex.StackTrace));
-        }
-        
-        if (ex.Source != null) 
-        {
-            details.Add(new NoneDetail("Source", ex.Source));
-        }
-        
-        if (ex.HelpLink != null) 
-        {
-            details.Add(new NoneDetail("HelpLink", ex.HelpLink));
-        }
-        
-        return details;
-    }
+    private static ExceptionError HandleException(Exception ex) => new ExceptionError(ex);
+
+    private static ExceptionError<TResult> HandleException<TResult>(Exception ex) => new ExceptionError<TResult>(ex);
+        // new ExceptionError<TResult>(
+        // ex.ErrorMessage(),
+        // ex.GetNoneDetails());
 }
 
-[None]
-public partial record ExceptionError;
 // public partial record ExceptionError<TResult>(string Message, Exception Exception);
 // [None] public partial record ExceptionError<TResult>(string Message, Exception Exception);

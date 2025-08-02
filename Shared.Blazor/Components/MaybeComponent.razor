@@ -1,0 +1,16 @@
+@using MaybeResults
+@typeparam TResult
+
+@(Result switch
+{
+    null => @<MudProgressCircular Indeterminate="true"/>,
+    Some<TResult> result => ChildContent(result.Value),
+    INone<TResult> error => ErrorContent is not null ? ErrorContent(error) : @<MudAlert Severity="Severity.Error">@error.Message</MudAlert>,
+    _ => @<MudAlert Severity="Severity.Error">Неизвестное состояние</MudAlert>})
+})
+
+@code {
+    [Parameter] public IMaybe<TResult>? Result { get; set; }
+    [Parameter] public RenderFragment<TResult> ChildContent { get; set; } = null!;
+    [Parameter] public RenderFragment<INone<TResult>>? ErrorContent { get; set; }
+}

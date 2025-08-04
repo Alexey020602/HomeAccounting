@@ -29,20 +29,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
             .AddRefitClients(apiUri)
-            .AddAuthorizationState();
-
-    private static IServiceCollection AddAuthorizationState(this IServiceCollection serviceCollection) =>
-        serviceCollection
-            .AddAuthorizationCore()
-            .AddCascadingAuthenticationState()
-            .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
-            .Decorate<IAuthenticationStorage, TelemetryAuthenticationStorage>()
-            .AddScopedAsMultipleServices<
-                ILoginService, 
-                AuthenticationStateProvider,
-                ILogoutService, 
-                StorageAuthenticationService
-            >();
+            .AddAuthorizationModule();
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {

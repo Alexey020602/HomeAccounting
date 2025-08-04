@@ -1,0 +1,11 @@
+@page "/User/{id:guid}/edit"
+
+@using Microsoft.AspNetCore.Authorization
+@rendermode RenderMode.InteractiveWebAssembly
+@attribute [Authorize(Policy = "UserById")]
+
+Content
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+}

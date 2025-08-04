@@ -1,8 +1,13 @@
 @page "/User/{id:guid}"
+
 @using Authorization.Contracts
 @using MaybeResults
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Utils.Results
 @using Shared.Blazor.Components
+
+@attribute [Authorize]
+
 @inject IUsersApi UsersApi
 
 <MudContainer MaxWidth="MaxWidth.Medium">

@@ -10,13 +10,17 @@ namespace Authorization.UI;
 
 public static class AuthorizationModule
 {
+    internal const string UserbyidPolicyName = "UserById";
+
     public static IServiceCollection AddAuthorizationModule(this IServiceCollection serviceCollection) =>
         serviceCollection
             .AddAuthorizationCore(options =>
                 options.AddPolicy(
-                    "UserById",
+                    UserbyidPolicyName,
                     policy =>
-                        policy.RequireClaim(ClaimTypes.NameIdentifier)
+                        policy
+                            .RequireAuthenticatedUser()
+                            .RequireClaim(ClaimTypes.NameIdentifier)
                             .Requirements.Add(new UserRequirement())
                 ))
             .AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>()

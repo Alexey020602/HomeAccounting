@@ -1,5 +1,6 @@
 using Budgets.Contracts;
 using Budgets.Core;
+using Budgets.DataBase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Budgets.Api;
@@ -7,5 +8,7 @@ namespace Budgets.Api;
 public static class AccountingModule
 {
     public static IServiceCollection AddAccountingModule(this IServiceCollection services) =>
-        services.AddSingleton<IAccountingSettingsService, ConfigurationAccountingSettingsService>();
+        services
+            .AddDbContext<BudgetsContext>()
+            .AddSingleton<IAccountingSettingsService, ConfigurationAccountingSettingsService>();
 }

@@ -18,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Authorization.Core\Authorization.Core.csproj" />
       <ProjectReference Include="..\Authorization.DataBase\Authorization.DataBase.csproj" />
+      <ProjectReference Include="..\Authorization.UI\Authorization.UI.csproj" />
       <ProjectReference Include="..\Receipts.DataBase\Receipts.DataBase.csproj" />
       <ProjectReference Include="..\Shared.Infrastructure\Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />

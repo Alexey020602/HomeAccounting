@@ -10,7 +10,7 @@ namespace Authorization.UI;
 
 public static class AuthorizationModule
 {
-    internal const string UserbyidPolicyName = "UserById";
+    public const string UserbyidPolicyName = "UserById";
 
     public static IServiceCollection AddAuthorizationModule(this IServiceCollection serviceCollection) =>
         serviceCollection
@@ -39,14 +39,12 @@ public sealed class UserRequirement : IAuthorizationRequirement
 {
 }
 
-public sealed class UserAuthorizationHandler : AuthorizationHandler<UserRequirement>
+public sealed class UserAuthorizationHandler : AuthorizationHandler<UserRequirement, Guid>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UserRequirement requirement)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UserRequirement requirement, Guid userId)
     {
         if (
-            context.Resource is not RouteData routeData
-            || GetUserIdFromContext(routeData, out var userId)
-            || GetUserIdFormClaimsPrincipal(context.User, out var claimsUserId)
+            !GetUserIdFormClaimsPrincipal(context.User, out var claimsUserId)
             || !(userId == claimsUserId)
         )
         {
@@ -57,20 +55,20 @@ public sealed class UserAuthorizationHandler : AuthorizationHandler<UserRequirem
         return Task.CompletedTask;
     }
 
-    private static bool GetUserIdFromContext(RouteData routeData, out Guid userId)
-    {
-        if (
-            !routeData.RouteValues.TryGetValue("id", out var idValue)
-            || Convert.ToString(idValue) is not { } idString
-            || !Guid.TryParse(idString, out userId)
-            )
-        {
-            userId = default;
-            return false;
-        }
-
-        return true;
-    }
+    // private static bool GetUserIdFromContext(RouteData routeData, out Guid userId)
+    // {
+    //     if (
+    //         !routeData.RouteValues.TryGetValue("id", out var idValue)
+    //         || Convert.ToString(idValue) is not { } idString
+    //         || !Guid.TryParse(idString, out userId)
+    //         )
+    //     {
+    //         userId = default;
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
 
     private static bool GetUserIdFormClaimsPrincipal(ClaimsPrincipal claimsPrincipal, out Guid userId)
     {

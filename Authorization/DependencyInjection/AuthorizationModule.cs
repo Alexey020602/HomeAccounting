@@ -1,6 +1,8 @@
 using Authorization.Core;
 using Authorization.DataBase;
+using Authorization.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -20,7 +22,14 @@ public static class AuthorizationModule
             })
             .AddEntityFrameworkStores<AuthorizationContext>();
         
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options => options.AddPolicy(
+            Authorization.UI.AuthorizationModule.UserbyidPolicyName,
+            policy =>
+            {
+                policy.RequireAuthenticatedUser()
+                    .AddRequirements(new UserRequirement());
+            })
+        );
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -30,7 +39,7 @@ public static class AuthorizationModule
         {
             options.TokenValidationParameters = builder.Configuration.CreateJwtTokenSettings().TokenValidationParameters;
         });
-
+        builder.Services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddTransient<ITokenService, TokenService>();
         return builder.Services;

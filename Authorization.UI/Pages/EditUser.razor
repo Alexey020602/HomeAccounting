@@ -1,10 +1,8 @@
 @page "/User/{id:guid}/edit"
 
 @using Microsoft.AspNetCore.Authorization
-@rendermode RenderMode
 
-@RouteData?.Template ?? Шаблона пути нема
-<AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="RouteData">
+<AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="Id">
     <Authorized>
         @foreach (var claim in @context.User.Claims)
         {
@@ -26,7 +24,6 @@
 </AuthorizeView>
 
 @code {
-    private static readonly IComponentRenderMode RenderMode = new InteractiveWebAssemblyRenderMode(false);
+    // private static readonly IComponentRenderMode RenderMode = new InteractiveWebAssemblyRenderMode(false);
     [Parameter] public Guid Id { get; set; }
-    [CascadingParameter(Name = "RouteData")] public RouteData? RouteData { get; set; }
 }

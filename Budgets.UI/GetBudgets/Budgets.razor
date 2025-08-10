@@ -1,0 +1,39 @@
+@page "/Budgets"
+@using global::Budgets.Contracts.GetBudgets
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+@using Shared.Utils.Results
+@using Shared.Blazor.Components
+@attribute [Authorize]
+@inject IBudgetsApi BudgetsApi
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MaybeComponent TResult="IReadOnlyCollection<Budget>" Result="BudgetsResult" Context="budgets">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">Выберите бюджет, с которым вы хотите работать</MudText>
+            </MudCardHeader>
+            
+            <MudCardContent>
+                <MudList T="Budget" ReadOnly="true">
+                    @foreach (var budget in budgets)
+                    {
+                        <MudListItem T="Budget" Text="@budget.Name"/>
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MaybeComponent>
+</MudContainer>
+
+@code {
+    private IMaybe<IReadOnlyCollection<Budget>>? BudgetsResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync();
+    }
+
+}

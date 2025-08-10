@@ -2,9 +2,9 @@ using MaybeResults;
 
 namespace Shared.Utils.Results;
 
-
+public interface IMyError: INone;
 [None]
-public partial record ExceptionError
+public partial record ExceptionError: IMyError
 {
     public ExceptionError(Exception exception)
     {
@@ -13,7 +13,7 @@ public partial record ExceptionError
     }
 }
 
-public partial record ExceptionError<T>
+public partial record ExceptionError<T>: IMyError
 {
     public ExceptionError(Exception exception)
     {
@@ -28,10 +28,10 @@ public static class ExceptionForErrorExtensions
 
     internal static IReadOnlyCollection<NoneDetail> GetNoneDetails(this Exception ex)
     {
-        List<NoneDetail> details = new List<NoneDetail>(5)
+        var details = new List<NoneDetail>(5)
         {
-            new NoneDetail("Message", ex.Message),
-            new NoneDetail("ExceptionType", ex.GetType().Name),
+            new("Message", ex.Message),
+            new("ExceptionType", ex.GetType().Name),
         };
         
         if (ex.StackTrace != null)

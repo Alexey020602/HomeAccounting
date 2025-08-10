@@ -3,6 +3,7 @@
 @using BlazorConsolidated.Components
 @using BlazorConsolidated.Layouts
 @using BlazorConsolidated.Pages
+@using Budgets.UI.GetBudgets
 @using global::Reports.UI
 @inject NavigationManager NavigationManager
 <CascadingAuthenticationState @rendermode="AssignedRenderMode">
@@ -10,10 +11,11 @@
         @* <ChildContent> *@
         <Router AppAssembly="@typeof(Home).Assembly"
                 AdditionalAssemblies="new []
-                    { 
+                { 
                     typeof(Login).Assembly, 
                     typeof(global::Receipts.UI.Receipts).Assembly, 
-                    typeof(MonthReport).Assembly
+                    typeof(MonthReport).Assembly,
+                    typeof(Budgets).Assembly
                     }"
         >
             <Found Context="routeData">

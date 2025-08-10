@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Authorization.UI\Authorization.UI.csproj" />
+      <ProjectReference Include="..\Budgets.UI\Budgets.UI.csproj" />
       <ProjectReference Include="..\Receipts.UI\Receipts.UI.csproj" />
       <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
       <ProjectReference Include="..\Reports.UI\Reports.UI.csproj" />

@@ -3,8 +3,12 @@ using Authorization.DataBase;
 using Authorization.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
+using Shared.Infrastructure;
 
 namespace Authorization.DependencyInjection;
 
@@ -12,9 +16,15 @@ public static class AuthorizationModule
 {
     public static IServiceCollection AddAuthorization(this IHostApplicationBuilder builder, string databaseServiceName)
     {
-        builder.AddNpgsqlDbContext<AuthorizationContext>(
+        builder.AddDbContext<AuthorizationContext>(
             databaseServiceName,
-            configureDbContextOptions: options => options.SetUpAuthorizationForDevelopment()
+            optionsAction: options =>
+            {
+                options
+                    .SetUpAuthorizationForDevelopment();
+            },
+            npgsqlOptionsAction:options => options
+                    .MigrationsHistoryTable(DbConstants.MigrationTableName, AuthorizationDbConstants.ShemaName)
             );
         builder.Services.AddIdentityCore<User>(_ =>
             {

@@ -10,6 +10,11 @@ public class AuthorizationContext(DbContextOptions<AuthorizationContext> options
     {
         base.OnModelCreating(builder);
         builder.ApplyConfiguration(new UserConfiguration());
-        builder.HasDefaultSchema("Identity");
+        builder.HasDefaultSchema(AuthorizationDbConstants.ShemaName);
     }
-} 
+}
+
+public static class AuthorizationDbConstants
+{
+    public const string? ShemaName = "Identity";
+}

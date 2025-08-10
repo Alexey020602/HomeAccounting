@@ -9,6 +9,7 @@ using Receipts.Core.AddReceipt.BarCode;
 using Receipts.Core.GetReceipts;
 using Receipts.Core.ReceiptCategorization;
 using Receipts.Core.ReceiptSaving;
+using Shared.Infrastructure;
 using SkiaSharp;
 using ZXing;
 using ZXing.SkiaSharp;
@@ -19,9 +20,10 @@ public static class ReceiptsModule
 {
     public static IHostApplicationBuilder AddReceiptsModule(this IHostApplicationBuilder builder, string databaseServiceName/*, IConfiguration configuration*/)
     {
-        builder.AddNpgsqlDbContext<ReceiptsContext>(
+        builder.AddDbContext<ReceiptsContext>(
             databaseServiceName,
-            configureDbContextOptions: options => options.SetupChecksForDevelopment()
+            optionsAction: options => options.SetupChecksForDevelopment(),
+            npgsqlOptionsAction: options => options.MigrationsHistoryTable(DbConstants.MigrationTableName, ReceiptsDbConstants.ShemaName)
             );
         builder.Services.AddTransient<IBarcodeReader<SKBitmap>, BarcodeReader>()
                 .AddScoped<IGetReceiptsService, GetReceiptsService>()

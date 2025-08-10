@@ -14,6 +14,11 @@ public class ReceiptsContext(DbContextOptions<ReceiptsContext> options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.HasDefaultSchema("Receipts");
+        modelBuilder.HasDefaultSchema(ReceiptsDbConstants.ShemaName);
     }
+}
+
+public static class ReceiptsDbConstants
+{
+    public const string? ShemaName = "Receipts";
 }

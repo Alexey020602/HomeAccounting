@@ -2,11 +2,12 @@ using Authorization.Contracts;
 using Authorization.Core.Registration;
 using MaybeResults;
 using Mediator;
+using Shared.Utils.MediatorWithResults;
 
 namespace Authorization.Core.Login;
 
 public sealed class LoginHandler(IUserService userService, ITokenService tokenService)
-    : IRequestHandler<LoginQuery, IMaybe<LoginResponse>>
+    : IResultRequestHandler<LoginQuery, LoginResponse>
 {
     public async ValueTask<IMaybe<LoginResponse>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {

@@ -1,9 +1,10 @@
 using MaybeResults;
 using Mediator;
+using Shared.Utils.MediatorWithResults;
 
 namespace Authorization.Core.UserData;
 
-public sealed class UserDataHandler(IUserService userService): IQueryHandler<UserDataQuery, IMaybe<Contracts.User>>
+public sealed class UserDataHandler(IUserService userService): IResultQueryHandler<UserDataQuery, Contracts.User>
 {
     public async ValueTask<IMaybe<Contracts.User>> Handle(UserDataQuery query, CancellationToken cancellationToken)
     {

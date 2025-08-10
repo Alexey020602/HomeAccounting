@@ -3,11 +3,12 @@ using Authorization.Core.Login;
 using Authorization.Core.Registration;
 using MaybeResults;
 using Mediator;
+using Shared.Utils.MediatorWithResults;
 
 namespace Authorization.Core.Refresh;
 
 public sealed class RefreshTokenHandler(IUserService userService, ITokenService tokenService)
-    : IRequestHandler<RefreshTokenQuery, IMaybe<LoginResponse>>
+    : IResultRequestHandler<RefreshTokenQuery, LoginResponse>
 {
     public async ValueTask<IMaybe<LoginResponse>> Handle(RefreshTokenQuery query,
         CancellationToken cancellationToken) =>

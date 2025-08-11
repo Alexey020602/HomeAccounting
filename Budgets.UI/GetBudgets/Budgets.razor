@@ -1,10 +1,12 @@
 @page "/Budgets"
 @using global::Budgets.Contracts.GetBudgets
+@using global::Budgets.UI.BudgetState
 @using MaybeResults
 @using Microsoft.AspNetCore.Authorization
 @using Shared.Utils.Results
 @using Shared.Blazor.Components
 @attribute [Authorize]
+@inject IBudgetsStateService BudgetsStateService
 @inject IBudgetsApi BudgetsApi
 
 <MudContainer MaxWidth="MaxWidth.Medium">
@@ -18,7 +20,14 @@
                 <MudList T="Budget" ReadOnly="true">
                     @foreach (var budget in budgets)
                     {
-                        <MudListItem T="Budget" Text="@budget.Name"/>
+                        @{
+                            var selected = SelectedBudget == budget
+                                @<MudListItem 
+                                     T="Budget" 
+                                     Text="@budget.Name"
+                                     Icon="@(selected ? @Icons.Material.Filled.Check : null)" 
+                                     OnClick="@(async () => await SelectBudget(budget))"/>
+                        }
                     }
                 </MudList>
             </MudCardContent>
@@ -28,7 +37,7 @@
 
 @code {
     private IMaybe<IReadOnlyCollection<Budget>>? BudgetsResult { get; set; }
-
+    private Budget? SelectedBudget { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -36,4 +45,9 @@
         BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync();
     }
 
+    private async ValueTask SelectBudget(Budget budget)
+    {
+        await BudgetsStateService.SelectBudget(budget);
+        SelectedBudget = budget;
+    }
 }

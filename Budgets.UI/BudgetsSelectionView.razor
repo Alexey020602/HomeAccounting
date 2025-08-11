@@ -1,0 +1,29 @@
+@using Budgets.UI.BudgetState
+
+@(budgetState switch 
+{
+    null => DeterminingBudgetState,
+    SelectedBudgetState selectedBudgetState => SelectedBudgetContent?.Invoke(selectedBudgetState),
+    _ => BudgetNotSelected?.Invoke(budgetState)
+})
+
+@code {
+    private BudgetState.BudgetState? budgetState;
+    [Parameter] public RenderFragment<SelectedBudgetState>? ChildContent { get; set; }
+    [Parameter] public RenderFragment<BudgetState.BudgetState>? BudgetNotSelected { get; set; }
+    [Parameter] public RenderFragment<SelectedBudgetState>? BudgetSelected { get; set; }
+    [Parameter] public RenderFragment? DeterminingBudgetState { get; set; }
+    [CascadingParameter] private Task<BudgetState.BudgetState>? BudgetState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (BudgetState is null)
+        {
+            throw new InvalidOperationException($"Budgets requires a cascading parameter of type Task<{nameof(BudgetState)}>.");
+        }
+
+        budgetState = await BudgetState;
+    }
+
+    private RenderFragment<SelectedBudgetState>? SelectedBudgetContent => BudgetSelected ?? ChildContent;
+}

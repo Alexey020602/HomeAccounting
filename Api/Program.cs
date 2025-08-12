@@ -5,8 +5,9 @@ using Authorization.Core.Login;
 using Authorization.DataBase;
 using Authorization.DependencyInjection;
 using Authorization.UI.Pages;
-using BlazorConsolidated.Layouts;
-using BlazorConsolidated.Pages;
+using BlazorConsolidated;
+using Budgets.DataBase;
+using Budgets.UI.GetBudgets;
 using Checks.Api;
 using Fns;
 using Mediator;
@@ -59,7 +60,7 @@ builder.Services.AddRazorComponents()
 const string databaseName = "HomeAccounting";
 builder.AddReceiptsModule(databaseName);
 builder.Services.AddFnsModule();
-builder.Services.AddAccountingModule();
+builder.AddBudgetsModule(databaseName);
 builder.Services.AddReportsModule();
 
 builder.Services.AddControllers();
@@ -100,6 +101,8 @@ using (var scope = app.Services.CreateScope())
     await applicationContext.Database.MigrateAsync();
     var authorizationContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
     await authorizationContext.Database.MigrateAsync();
+    var budgetContext = scope.ServiceProvider.GetRequiredService<BudgetsContext>();
+    await budgetContext.Database.MigrateAsync();
 }
 
 app.UseCors(policyBuilder => policyBuilder
@@ -146,7 +149,8 @@ app.MapRazorComponents<App>()
         typeof(Login).Assembly,
         typeof(Receipts.UI.Receipts).Assembly,
         typeof(MonthReportComponent).Assembly,
-        typeof(Home).Assembly
+        typeof(BudgetsPage).Assembly,
+        typeof(Routes).Assembly
     )
     .AllowAnonymous();
 

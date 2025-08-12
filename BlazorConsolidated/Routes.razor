@@ -2,20 +2,19 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorConsolidated.Components
 @using BlazorConsolidated.Layouts
-@using BlazorConsolidated.Pages
 @using Budgets.UI.GetBudgets
 @using global::Reports.UI
 @inject NavigationManager NavigationManager
 <CascadingAuthenticationState @rendermode="AssignedRenderMode">
     <AppErrorBoundary>
         @* <ChildContent> *@
-        <Router AppAssembly="@typeof(Home).Assembly"
+        <Router AppAssembly="@typeof(MainLayout).Assembly"
                 AdditionalAssemblies="new []
                 { 
                     typeof(Login).Assembly, 
                     typeof(global::Receipts.UI.Receipts).Assembly, 
                     typeof(MonthReport).Assembly,
-                    typeof(Budgets).Assembly
+                    typeof(BudgetsPage).Assembly
                     }"
         >
             <Found Context="routeData">

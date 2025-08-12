@@ -51,7 +51,8 @@ public static class ServiceCollectionExtensions
             Assembly.GetExecutingAssembly(),
             typeof(IAuthorizationApi).Assembly,
             typeof(IChecksApi).Assembly,
-            typeof(IReportsApi).Assembly
+            typeof(IReportsApi).Assembly,
+            typeof(IBudgetsApi).Assembly
         ];
         foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
         {

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Budgets.DataBase\Budgets.DataBase.csproj" />
+      <ProjectReference Include="..\Shared.Infrastructure\Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared.Web\Shared.Web.csproj" />
     </ItemGroup>
     

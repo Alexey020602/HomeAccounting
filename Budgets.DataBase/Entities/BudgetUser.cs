@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Budgets.DataBase.Entities;
 
-[Index(nameof(UserId), nameof(BudgetId), nameof(BudgetRoleId), IsUnique = true)]
+[PrimaryKey(nameof(UserId), nameof(BudgetId), nameof(BudgetRoleId))]
 public class BudgetUser
 {
     public Guid UserId { get; set; }

@@ -1,10 +1,12 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Shared.Blazor.Components
 @inject NavigationManager NavigationManager
+<RedirectComponent RedirectUrl="@($"{PathConstants.Login}?returnUrl={ReturnUrl}")" />
 @code {
     [Parameter] public string ReturnUrl { get; set; } = string.Empty;
     protected override void OnInitialized()
     {
-        NavigationManager.NavigateToLogin($"/{PathConstants.Login}?returnUrl={ReturnUrl}");
+        // NavigationManager.NavigateToLogin($"/{PathConstants.Login}?returnUrl={ReturnUrl}");
     }
 
 }

@@ -1,0 +1,25 @@
+@inherits BudgetsSelectionView
+@{
+    base.BuildRenderTree(__builder);
+}
+@code {
+    // private IMaybe<SelectedBudgetState>? Budget { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        BudgetNotSelected = _ => RedirectToBudgetsFragment;
+    }
+
+    private RenderFragment RedirectToBudgetsFragment //=> @<RedirectComponent RedirectUrl="budgets" />
+    {
+        get
+        {
+            return builder =>
+            {
+                builder.OpenComponent<RedirectComponent>(0);
+                builder.AddComponentParameter(1, nameof(RedirectComponent.RedirectUrl), "budgets");
+                builder.CloseComponent();
+            };
+        }
+    }
+}

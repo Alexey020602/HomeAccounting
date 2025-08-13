@@ -27,10 +27,11 @@ public static class BudgetsEndpoints
         .MapGet("", GetBudgets)
         .Produces( (int) HttpStatusCode.OK, typeof(IReadOnlyCollection<Budget>))
         .ProducesProblem((int) HttpStatusCode.BadRequest);
-    private static async Task<IResult> GetBudgets(GetBudgetsHttpRequest request, ClaimsPrincipal user, IMediator mediator)
+    private static async Task<IResult> GetBudgets([AsParameters] GetBudgetsHttpRequest request, ClaimsPrincipal user, IMediator mediator)
     {
         return await mediator.Send(new GetBudgetsQuery(user.GetUserId())) switch
         {
+            // Some<List<Budget>> otherSomeBudgets => TypedResults.Ok(otherSomeBudgets.Value),
             Some<IReadOnlyCollection<Budget>> someBudgets => Results.Ok(someBudgets),
             INone<IReadOnlyCollection<Budget>> error => error.MapToProblemResult(),
             _ => throw new InvalidOperationException("Unknown result type")

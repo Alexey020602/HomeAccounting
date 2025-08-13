@@ -1,6 +1,7 @@
 using System.Reflection;
 using Authorization.UI;
 using BlazorConsolidated.Utils;
+using Budgets.UI;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
@@ -28,6 +29,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
+            .AddBudgetsModule()
             .AddRefitClients(apiUri)
             .AddAuthorizationState();
 
@@ -52,7 +54,7 @@ public static class ServiceCollectionExtensions
             typeof(IAuthorizationApi).Assembly,
             typeof(IChecksApi).Assembly,
             typeof(IReportsApi).Assembly,
-            typeof(IBudgetsApi).Assembly
+            typeof(Budgets.UI.GetBudgets.IBudgetsApi).Assembly
         ];
         foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
         {

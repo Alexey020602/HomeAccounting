@@ -64,7 +64,22 @@ public static class ExceptionHandler
         }
     }
     public static Task<IMaybe<T>> TryAsync<T>(this Task<T> task) => TryAsync(task, HandleException<T>);
-    
+
+    public static Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task) where TResult : class
+        where
+        T : TResult => TryAsync(task, HandleException<TResult>);
+    public static async Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler) where TResult: class where T: TResult
+    {
+        try
+        {
+            return Maybe.Create(await task as TResult);
+        }
+        catch (Exception e)
+        {
+            return exceptionHandler(e);
+        }
+    }
     private static ExceptionError HandleException(Exception ex) => new ExceptionError(ex);
 
     private static ExceptionError<TResult> HandleException<TResult>(Exception ex) => new ExceptionError<TResult>(ex);

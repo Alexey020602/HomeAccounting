@@ -6,6 +6,7 @@ using Authorization.DataBase;
 using Authorization.DependencyInjection;
 using Authorization.UI.Pages;
 using BlazorConsolidated;
+using Budgets.Core.GetBudgets;
 using Budgets.DataBase;
 using Budgets.UI.GetBudgets;
 using Checks.Api;
@@ -76,7 +77,8 @@ builder.Services.AddMediator((MediatorOptions options) =>
         typeof(GetChecks).Assembly,
         typeof(GetChecksHandler).Assembly,
         typeof(GetReportHandler).Assembly,
-        typeof(LoginHandler).Assembly
+        typeof(LoginHandler).Assembly,
+        typeof(GetBudgetsHandler).Assembly
     ];
     options.PipelineBehaviors = [typeof(TelemetryPipelineBehaviour<,>)];
     options.ServiceLifetime = ServiceLifetime.Scoped;
@@ -139,9 +141,12 @@ app.UseSerilogRequestLogging(options =>
 app.MapControllers()
     .RequireAuthorization();
 
-app
-    .MapGroup("/api")
-    .MapAuthorization();
+var apiGroup = app
+    .MapGroup("/api");
+    apiGroup
+        .MapAuthorization();
+apiGroup
+    .MapBudgets();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()

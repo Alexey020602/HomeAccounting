@@ -16,7 +16,9 @@ public sealed class GetBudgetsService(BudgetsContext dbContext): IGetBudgetsServ
             .Include(user => user.Budget)
             .Select(budgetUser => ConvertToBudget(budgetUser.Budget))
             .ToListAsync()
-            .TryAsync();
+            .TryAsync() 
+            .FlatMap(Maybe.Create<IReadOnlyCollection<Budget>>)
+            ;
     }
     
     private static Budget ConvertToBudget(Entities.Budget? budget)

@@ -20,7 +20,7 @@
             </MudCardHeader>
             
             <MudCardContent>
-                <MudList T="Budget" ReadOnly="true">
+                <MudList T="Budget">
                     @foreach (var budget in budgets)
                     {
                         <MudListItem 
@@ -36,7 +36,7 @@
 </MudContainer>
 
 @code {
-    [SupplyParameterFromQuery] private string ReturnUrl { get; set; } = "/";
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
     private IMaybe<IReadOnlyCollection<Budget>>? BudgetsResult { get; set; }
     private Budget? SelectedBudget { get; set; }
     protected override async Task OnInitializedAsync()
@@ -50,6 +50,6 @@
     {
         await BudgetsStateService.SelectBudget(budget);
         SelectedBudget = budget;
-        NavigationManager.NavigateTo(ReturnUrl);
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
     }
 }

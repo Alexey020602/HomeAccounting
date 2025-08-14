@@ -10,6 +10,7 @@
         <MudButton Href="@($"/user/{user.Id}")" Style="justify-content: start" FullWidth="true">
             @user.UserName
         </MudButton>
+        @ChildContent?.Invoke(authenticationState)
         <MudButton
             Color="Color.Error"
             OnClick="@Logout"
@@ -22,7 +23,6 @@
 </AuthorizeView>
 
 @code {
-
     private Task Logout() => LogoutService.Logout();
-
+    [Parameter] public RenderFragment<AuthenticationState>? ChildContent { get; set; }
 }

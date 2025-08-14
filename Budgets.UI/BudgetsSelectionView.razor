@@ -1,5 +1,4 @@
 @using Budgets.UI.BudgetState
-@inject NavigationManager NavigationManager
 
 @(budgetState switch 
 {
@@ -16,7 +15,7 @@
     [Parameter] public RenderFragment? DeterminingBudgetState { get; set; }
     [CascadingParameter] private Task<BudgetState.BudgetState>? BudgetState { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         if (BudgetState is null)
         {

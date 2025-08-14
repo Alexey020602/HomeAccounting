@@ -5,12 +5,13 @@
 @code {
     // private IMaybe<SelectedBudgetState>? Budget { get; set; }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        await base.OnParametersSetAsync();
         BudgetNotSelected = _ => RedirectToBudgetsFragment;
     }
 
-    private RenderFragment RedirectToBudgetsFragment //=> @<RedirectComponent RedirectUrl="budgets" />
+    private static RenderFragment RedirectToBudgetsFragment //=> @<RedirectComponent RedirectUrl="budgets" />
     {
         get
         {

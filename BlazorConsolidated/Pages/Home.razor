@@ -1,0 +1,23 @@
+@page "/"
+@using Budgets.UI
+
+<BudgetRequiredView Context="budgetState">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Вы работаете с бюджетом @budgetState.Name</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudList T="string">
+                @foreach (var menuItem in MenuItem.Menu)
+                {
+                    <MudListItem
+                        Href="@menuItem.Href" 
+                        Text="@menuItem.Name" 
+                        SecondaryText="@menuItem.Description"
+                        Icon="@menuItem.Icon"
+                        Ripple="true"/>
+                }
+            </MudList>
+        </MudCardContent>
+    </MudCard>
+</BudgetRequiredView>

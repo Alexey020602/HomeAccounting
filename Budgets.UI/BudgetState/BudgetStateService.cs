@@ -16,7 +16,7 @@ internal sealed class BudgetStateService(IBudgetStateStorage budgetStateStorage)
     }
 
     public ValueTask SelectBudget(Budget budget) =>
-        budgetStateStorage.SaveBudgetState(new SelectedBudgetState(budget.Id));
+        budgetStateStorage.SaveBudgetState(new SelectedBudgetState(budget.Id, budget.Name));
 
     public ValueTask UnselectBudget() => budgetStateStorage.DeleteBudgetState();
 }

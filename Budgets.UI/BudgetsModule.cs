@@ -14,6 +14,7 @@ public static class BudgetsModule
             .AddCascadingBudgetsState();
 
     private static IServiceCollection AddCascadingBudgetsState(this IServiceCollection services) =>
-        services.AddCascadingValue(services =>
-            new BudgetCascadingValueSource(services.GetRequiredService<BudgetsStateProvider>()));
+        services.AddCascadingValue/*<Task<BudgetState.BudgetState>>*/( sourceFactory: services =>
+            new BudgetCascadingValueSource(services.GetRequiredService<BudgetsStateProvider>())
+        );
 }

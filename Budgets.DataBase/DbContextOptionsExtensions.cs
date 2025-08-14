@@ -110,15 +110,45 @@ public static class DbContextOptionsExtensions
 
     private static List<BudgetRole> CreateDefaultBudgetRoles() =>
     [
+        new()
+        {
+            Id = BudgetsSeedingConstants.UserBudgetRoleId,
+            Name = "Пользователь"
+        },
+        new()
+        {
+            Id = BudgetsSeedingConstants.AdminBudgetRoleId,
+            Name = "Администратор",
+        },
+        new()
+        {
+            Id = BudgetsSeedingConstants.OwnerBudgetRoleId,
+            Name = "Владелец",
+        },
     ];
 
     private static List<BudgetUser> CreateDefaultBudgetUsers() =>
     [
+        new()
+        {
+          BudgetId  = BudgetsSeedingConstants.FirstBudgetId,
+          UserId = UserConstants.DefaultUserId,
+          BudgetRoleId = BudgetsSeedingConstants.OwnerBudgetRoleId,
+        },
+        new()
+        {   
+            BudgetId  = BudgetsSeedingConstants.SecondBudgetId,
+            UserId = UserConstants.DefaultUserId,
+            BudgetRoleId = BudgetsSeedingConstants.OwnerBudgetRoleId,
+        },
     ];
 }
 
 internal static class BudgetsSeedingConstants
 {
-    public readonly static Guid FirstBudgetId = Guid.Parse("01989e7d-5251-759b-b91a-1b51403e8039");
-    public readonly static Guid SecondBudgetId = Guid.Parse("01989e7d-8b91-75e8-91a1-7edc1f9b3385");
+    public static readonly Guid FirstBudgetId = Guid.Parse("01989e7d-5251-759b-b91a-1b51403e8039");
+    public static readonly Guid SecondBudgetId = Guid.Parse("01989e7d-8b91-75e8-91a1-7edc1f9b3385");
+    public static readonly Guid UserBudgetRoleId = Guid.Parse("0198a727-9fcf-724a-b1bb-0595bf865d29");
+    public static readonly Guid AdminBudgetRoleId = Guid.Parse("0198a728-70bd-78c4-85fc-2b44c20a5293");
+    public static readonly Guid OwnerBudgetRoleId = Guid.Parse("0198a772-70d8-7739-bdd9-692a8b808d5a");
 }

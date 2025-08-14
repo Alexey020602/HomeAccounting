@@ -32,7 +32,7 @@ public static class BudgetsEndpoints
         return await mediator.Send(new GetBudgetsQuery(user.GetUserId())) switch
         {
             // Some<List<Budget>> otherSomeBudgets => TypedResults.Ok(otherSomeBudgets.Value),
-            Some<IReadOnlyCollection<Budget>> someBudgets => Results.Ok(someBudgets),
+            Some<IReadOnlyCollection<Budget>> someBudgets => Results.Ok(someBudgets.Value),
             INone<IReadOnlyCollection<Budget>> error => error.MapToProblemResult(),
             _ => throw new InvalidOperationException("Unknown result type")
         };

@@ -52,28 +52,45 @@ public static class ExceptionHandler
 
     public static Task<IMaybe> TryAsync(this Task task) => TryAsync(task, HandleException);
 
-    public static async Task<IMaybe<T>> TryAsync<T>(this Task<T> task, Func<Exception, IMaybe<T>> exceptionHandler)
-    {
-        try
-        {
-            return Maybe.Create(await task);
-        }
-        catch (Exception  e)
-        {
-            return exceptionHandler(e);
-        }
-    }
+    // public static async Task<IMaybe<T>> TryAsync<T>(this Task<T> task, Func<Exception, IMaybe<T>> exceptionHandler)
+    // {
+    //     try
+    //     {
+    //         return Maybe.Create(await task);
+    //     }
+    //     catch (Exception  e)
+    //     {
+    //         return exceptionHandler(e);
+    //     }
+    // }
     public static Task<IMaybe<T>> TryAsync<T>(this Task<T> task) => TryAsync(task, HandleException<T>);
-
+    public static Task<IMaybe<TResult>> TryAsync<TResult>(this Task<TResult> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler) =>
+        TryAsync<TResult, TResult>(
+            task,
+            exceptionHandler,
+            resultSelector: t => t
+        );
     public static Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task) where TResult : class
         where
         T : TResult => TryAsync(task, HandleException<TResult>);
-    public static async Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task,
-        Func<Exception, IMaybe<TResult>> exceptionHandler) where TResult: class where T: TResult
+
+    public static Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler) where TResult : class where T : TResult => TryAsync<TResult, T>(
+        task,
+        exceptionHandler,
+        resultSelector: t => t
+    );
+
+    public static async Task<IMaybe<TResult>> TryAsync<TResult, T>(
+        this Task<T> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler,
+        Func<T, TResult> resultSelector
+        )
     {
         try
         {
-            return Maybe.Create(await task as TResult);
+            return Maybe.Create(resultSelector(await task));
         }
         catch (Exception e)
         {

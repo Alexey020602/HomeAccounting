@@ -42,7 +42,8 @@ namespace Receipts.DataBase.Migrations
                     Fn = table.Column<string>(type: "text", nullable: false),
                     Fp = table.Column<string>(type: "text", nullable: false),
                     S = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BudgetId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {

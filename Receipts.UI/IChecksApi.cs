@@ -5,18 +5,18 @@ using Shared.Blazor.Attributes;
 namespace Receipts.UI;
 
 [Headers("Authorization: Bearer")]
-[ApiAuthorizable("receipts")]
+[ApiAuthorizable("budgets")]
 public interface IChecksApi
 {
-    [Get("/")]
-    Task<List<CheckDto>> GetChecks();
+    [Get("/{id}/receipts")]
+    Task<List<CheckDto>> GetChecks(Guid id);
 
-    [Put("/")]
-    Task<CheckDto> GetReceipt(CheckRequest checkRequest);
+    [Put("/{id}/receipts")]
+    Task<CheckDto> GetReceipt(Guid id, CheckRequest checkRequest);
 
-    [Put("/file")]
+    [Put("/{id}/receipts/file")]
     [Multipart]
-    Task<CheckDto> GetReceipt(Stream file);
+    Task<CheckDto> GetReceipt(Guid id, Stream file);
     
     // Task<CheckDto> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
 }

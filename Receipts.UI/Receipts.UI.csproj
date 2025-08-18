@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Budgets.UI\Budgets.UI.csproj" />
       <ProjectReference Include="..\Receipts.Contracts\Receipts.Contracts.csproj" />
       <ProjectReference Include="..\Shared.Blazor\Shared.Blazor.csproj" />
     </ItemGroup>

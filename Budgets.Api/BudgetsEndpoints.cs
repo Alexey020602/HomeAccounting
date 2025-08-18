@@ -15,14 +15,19 @@ namespace Budgets.Api;
 
 public static class BudgetsEndpoints
 {
-    public static void MapBudgets(this IEndpointRouteBuilder endpoints)
+    public static RouteGroupBuilder MapBudgetGroup(this IEndpointRouteBuilder endpoints) => endpoints.MapBudgetsGroup().MapGroup("{budgetId:guid}");
+    public static RouteHandlerBuilder MapBudgets(this IEndpointRouteBuilder endpoints)
     {
-        endpoints
-            .MapGroup("/budgets")
-            .RequireAuthorization()
+        return endpoints
+            .MapBudgetsGroup()
             .MapGetBudgets();
     }
-
+    private static RouteGroupBuilder MapBudgetsGroup(this IEndpointRouteBuilder endpoints)
+    {
+        return endpoints
+            .MapGroup("/budgets")
+            .RequireAuthorization();
+    }
     private static RouteHandlerBuilder MapGetBudgets(this IEndpointRouteBuilder endpoints) => endpoints
         .MapGet("", GetBudgets)
         .Produces( (int) HttpStatusCode.OK, typeof(IReadOnlyCollection<Budget>))

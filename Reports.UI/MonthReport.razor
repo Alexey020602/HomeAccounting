@@ -3,7 +3,8 @@
 @using MudBlazor
 @using Reports.Contracts
 @using DateRange = Shared.Utils.Model.Dates.DateRange
-
+@using Budgets.UI
+@inherits BudgetPage
 @attribute [Authorize]
 
 @inject IReportsApi ReportsApi
@@ -13,64 +14,50 @@
         <MudCardHeader>
             <MudText Typo="Typo.h5" Color="Color.Primary">Отчет за период</MudText>
         </MudCardHeader>
+        <BudgetRequiredView Context="selectedBudgetsState">
+            <MudCardContent>
+                <MudGrid Spacing="3">
+                    <MudItem xs="12" md="5">
+                        <MonthPeriodFilter @bind-Range="dateRange"/>
+                        @* <MudDatePicker Label="Год" *@
+                        @*                OpenTo="OpenTo.Month" *@
+                        @*                FixDay="1" *@
+                        @*                @bind-Date="yearAndMonth" *@
+                        @*                Variant="Variant.Outlined" *@
+                        @*                DateFormat="MMMM yyyy" *@
+                        @*                Editable="true"/> *@
+                    </MudItem>
 
-        <MudCardContent>
-            <MudGrid Spacing="3">
-                <MudItem xs="12" md="5">
-                    <MonthPeriodFilter @bind-Range="dateRange"/>
-                    @* <MudDatePicker Label="Год" *@
-                    @*                OpenTo="OpenTo.Month" *@
-                    @*                FixDay="1" *@
-                    @*                @bind-Date="yearAndMonth" *@
-                    @*                Variant="Variant.Outlined" *@
-                    @*                DateFormat="MMMM yyyy" *@
-                    @*                Editable="true"/> *@
-                </MudItem>
+                    <MudItem xs="12" md="2">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   FullWidth="true"
+                                   StartIcon="@Icons.Material.Filled.CalendarMonth"
+                                   OnClick="LoadReport">
+                            @* TODO Разобраться с поведением onclick в компоненте *@
+                            Загрузить
+                        </MudButton>
+                    </MudItem>
 
-                <MudItem xs="12" md="2" >
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               FullWidth="true"
-                               StartIcon="@Icons.Material.Filled.CalendarMonth"
-                               OnClick="LoadReport">
-                        Загрузить
-                    </MudButton>
-                </MudItem>
+                    <MudItem xs="12">
+                        @if (Report is not null)
+                        {
+                            <MonthReportComponent Report="Report"/>
+                        }
+                        else if (isLoading)
+                        {
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </BudgetRequiredView>
 
-                <MudItem xs="12">
-                    @if (Report is not null)
-                    {
-                        <MonthReportComponent Report="Report"/>
-                    }
-                    else if (isLoading)
-                    {
-                        <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
-                    }
-                </MudItem>
-            </MudGrid>
-        </MudCardContent>
     </MudCard>
 </MudContainer>
 
 @code {
-
-    // private Months month = MonthsExtensions.GetCurrentMonth();
-
     private DateRange dateRange;
-    // private DateTime begin = DateTimeExtensions.DayOfCurrentMonth(7);
-    //
-    // private DateTime? Begin
-    // {
-    //     get => begin;
-    //     set => begin = value ?? DateTimeExtensions.DayOfCurrentMonth(7);
-    // }
-    // private DateTime end = DateTime.Now;
-    //
-    // private DateTime? End
-    // {
-    //     get => end;
-    //     set => end = value ?? DateTime.Now;
-    // }
     private ReportDto? Report { get; set; }
     private bool isLoading;
 
@@ -79,11 +66,12 @@
         try
         {
             isLoading = true;
-            Report = await ReportsApi.GetMonthReport(new ReportRequest(dateRange));
+            Report = await ReportsApi.GetMonthReport(new ReportRequest(BudgetId, dateRange));
         }
         finally
         {
             isLoading = false;
         }
     }
+
 }

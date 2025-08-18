@@ -147,6 +147,8 @@ var apiGroup = app
         .MapAuthorization();
 apiGroup
     .MapBudgets();
+
+apiGroup.MapBudgetGroup().MapReceiptEndpoints();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()

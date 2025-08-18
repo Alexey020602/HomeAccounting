@@ -9,6 +9,6 @@ namespace Reports.UI;
 [Headers("Authorization: Bearer")]
 public interface IReportsApi
 {
-    [Put("/")]
-    Task<ReportDto> GetMonthReport(ReportRequest request);
+    [Get("/")]
+    Task<ReportDto> GetMonthReport([Query] ReportRequest request);
 }

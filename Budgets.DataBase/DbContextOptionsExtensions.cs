@@ -144,7 +144,7 @@ public static class DbContextOptionsExtensions
     ];
 }
 
-internal static class BudgetsSeedingConstants
+public static class BudgetsSeedingConstants
 {
     public static readonly Guid FirstBudgetId = Guid.Parse("01989e7d-5251-759b-b91a-1b51403e8039");
     public static readonly Guid SecondBudgetId = Guid.Parse("01989e7d-8b91-75e8-91a1-7edc1f9b3385");

@@ -47,13 +47,13 @@
 </MudCard>
 
 @code {
-    [SupplyParameterFromQuery] private string ReturnUrl { get; set; } = "/";
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
     private readonly LoginRequest loginRequest = new();
 
     private async Task LoginAsync()
     {
         await LoginStateProvider.Login(loginRequest);
-        NavigationManager.NavigateTo(ReturnUrl);
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
     }
 
 }

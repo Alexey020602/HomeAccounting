@@ -20,6 +20,7 @@ class Check
     // public string CheckRaw { get; set; } = null!;
     [MinLength(1)] public List<Product> Products { get; set; } = [];
     public Guid UserId { get; set; }
+    public Guid BudgetId { get; set; }
     public override string ToString()
     {
         return $"""

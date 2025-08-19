@@ -30,6 +30,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Receipts.DataBase\Receipts.DataBase.csproj" />
+      <ProjectReference Include="..\Shared.Tests\Shared.Tests.csproj" />
     </ItemGroup>
 
 </Project>

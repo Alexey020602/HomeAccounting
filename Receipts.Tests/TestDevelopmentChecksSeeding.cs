@@ -2,11 +2,13 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Shared.Tests;
 
 namespace Receipts.Tests;
 
 public class TestDevelopmentChecksSeeding : IDisposable
 {
+    private readonly TestDatabaseContextFactory contextFactory = new();
     private readonly SqliteConnection conntection;
 
     private DbContextOptions Options => new DbContextOptionsBuilder()
@@ -31,7 +33,7 @@ public class TestDevelopmentChecksSeeding : IDisposable
     [Fact]
     public async Task TestSeedAsync()
     {
-        await using var context = Context;
+        await using var context = contextFactory.CreateContext<ReceiptsContext>(optionsAction: options => options.SetupChecksForDevelopment());
 
         await context.Database.MigrateAsync();
     }

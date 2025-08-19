@@ -1,0 +1,17 @@
+@page "/budgets/create"
+@using Budgets.Contracts.CreateBudget
+@using Budgets.Contracts.GetBudgetDetail
+@using Budgets.UI.GetBudgets
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject IBudgetsApi BudgetsApi
+
+<MudContainer>
+    <MudCard>
+        <BudgetForm OnSubmit="@CreateBudget"/>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private Task CreateBudget(BudgetDetail budgetDetail) => BudgetsApi.CreateBudget(new CreateBudgetHttpRequest(budgetDetail.Name, budgetDetail.Limit, budgetDetail.BeginOfPeriod));
+}

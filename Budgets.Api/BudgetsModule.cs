@@ -1,3 +1,4 @@
+using Budgets.Core.CreateBudget;
 using Budgets.Core.GetBudgets;
 using Budgets.DataBase;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public static class BudgetsModule
                     .MigrationsHistoryTable(DbConstants.MigrationTableName, BudgetsDbConstants.SchemaName)
             );
 
-        builder.Services.AddScoped<IGetBudgetsService, GetBudgetsService>();
+        builder.Services
+            .AddScoped<IGetBudgetsService, GetBudgetsService>()
+            .AddScoped<ICreateBudgetService, CreateBudgetService>();
     }
 }

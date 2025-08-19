@@ -16,8 +16,4 @@
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Model\" />
-    </ItemGroup>
-
 </Project>

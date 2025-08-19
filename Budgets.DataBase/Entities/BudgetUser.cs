@@ -10,5 +10,4 @@ public class BudgetUser
     public Guid BudgetRoleId { get; set; }
     public Budget? Budget { get; set; }
     public BudgetRole? BudgetRole { get; set; }
-    
 }

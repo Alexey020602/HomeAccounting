@@ -1,3 +1,4 @@
+using Budgets.Contracts.CreateBudget;
 using Budgets.Contracts.GetBudgets;
 using Refit;
 using Shared.Blazor.Attributes;
@@ -10,4 +11,7 @@ public interface IBudgetsApi
 {
     [Get("/")]
     public Task<IReadOnlyCollection<Budget>> GetBudgets(GetBudgetsHttpRequest request);
+
+    [Post("/")]
+    public Task CreateBudget(CreateBudgetHttpRequest request);
 }

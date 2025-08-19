@@ -113,17 +113,17 @@ public static class DbContextOptionsExtensions
         new()
         {
             Id = BudgetsSeedingConstants.UserBudgetRoleId,
-            Name = "Пользователь"
+            Name = BudgetRole.UserRoleName
         },
         new()
         {
             Id = BudgetsSeedingConstants.AdminBudgetRoleId,
-            Name = "Администратор",
+            Name = BudgetRole.AdminRoleName,
         },
         new()
         {
             Id = BudgetsSeedingConstants.OwnerBudgetRoleId,
-            Name = "Владелец",
+            Name = BudgetRole.OwnerRoleName,
         },
     ];
 

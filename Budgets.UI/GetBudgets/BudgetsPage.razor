@@ -24,12 +24,17 @@
                     @foreach (var budget in budgets)
                     {
                         <MudListItem 
-                                     T="Budget" 
-                                     Text="@budget.Name"
-                                     Icon="@(SelectedBudget == budget ? @Icons.Material.Filled.Check : null)" 
-                                     OnClick="@(async () => await SelectBudget(budget))"/>
+                            T="Budget" 
+                            Text="@budget.Name"
+                            Icon="@(SelectedBudget == budget ? @Icons.Material.Filled.Check : null)" 
+                            OnClick="@(async () => await SelectBudget(budget))"/>
                     }
+                    <MudListItem
+                        Href="/budgets/create"
+                        Text="Создать новый бюджет"
+                        Icon="@Icons.Material.Filled.AddCircle"/>
                 </MudList>
+                
             </MudCardContent>
         </MudCard>
     </MaybeComponent>

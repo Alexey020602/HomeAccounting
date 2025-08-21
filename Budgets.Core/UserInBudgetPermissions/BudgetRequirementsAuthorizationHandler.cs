@@ -3,7 +3,7 @@ using Shared.Utils.Model;
 
 namespace Budgets.Core.UserInBudgetPermissions;
 
-public sealed class BudgetRequirementsHandler(IUserBudgetPermissionsService permissionsService)
+public sealed class BudgetRequirementsAuthorizationHandler(IUserBudgetPermissionsService permissionsService)
     : AuthorizationHandler<BudgetRequirements, Guid>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,

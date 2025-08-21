@@ -26,7 +26,7 @@ public static class BudgetsModule
             .AddScoped<IGetBudgetsService, GetBudgetsService>()
             .AddScoped<ICreateBudgetService, CreateBudgetService>()
             .AddScoped<IGetBudgetDetailService, GetBudgetDetailService>()
-            .AddScoped <IAuthorizationHandler, BudgetRequirementsHandler>()
+            .AddScoped <IAuthorizationHandler, BudgetRequirementsAuthorizationHandler>()
             .AddScoped<IUserBudgetPermissionsService, UserBudgetPermissionsService>();
     }
 }

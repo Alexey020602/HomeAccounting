@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Budgets.DataBase.Migrations
 {
     [DbContext(typeof(BudgetsContext))]
-    [Migration("20250812143340_Initial")]
+    [Migration("20250821082927_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -66,6 +66,9 @@ namespace Budgets.DataBase.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Permissions")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

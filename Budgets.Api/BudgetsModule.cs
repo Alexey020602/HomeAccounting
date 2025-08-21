@@ -1,6 +1,8 @@
 using Budgets.Core.CreateBudget;
 using Budgets.Core.GetBudgets;
+using Budgets.Core.UserInBudgetPermissions;
 using Budgets.DataBase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shared.Infrastructure;
@@ -21,6 +23,8 @@ public static class BudgetsModule
 
         builder.Services
             .AddScoped<IGetBudgetsService, GetBudgetsService>()
-            .AddScoped<ICreateBudgetService, CreateBudgetService>();
+            .AddScoped<ICreateBudgetService, CreateBudgetService>()
+            .AddScoped <IAuthorizationHandler, BudgetRequirementsHandler>()
+            .AddScoped<IUserBudgetPermissionsService, UserBudgetPermissionsService>();
     }
 }

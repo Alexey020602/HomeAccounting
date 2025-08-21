@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using Budgets.Core.GetBudgetDetail;
+using Budgets.Core.UserInBudgetPermissions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Budgets.DataBase.Entities;
@@ -11,5 +13,6 @@ public class BudgetRole
     public const string UserRoleName = "Пользователь";
     public Guid Id { get; set; }
     [StringLength(100)] [Required] public string? Name { get; set; }
+    public BudgetPermissions Permissions { get; set; }
     public List<BudgetUser> BudgetUsers { get; set; } = [];
 }

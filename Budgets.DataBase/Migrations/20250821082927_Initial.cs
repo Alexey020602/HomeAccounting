@@ -20,7 +20,8 @@ namespace Budgets.DataBase.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Permissions = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

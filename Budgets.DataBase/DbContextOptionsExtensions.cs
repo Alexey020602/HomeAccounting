@@ -1,4 +1,6 @@
 using Authorization.Contracts;
+using Budgets.Core.GetBudgetDetail;
+using Budgets.Core.UserInBudgetPermissions;
 using Budgets.DataBase.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -113,17 +115,20 @@ public static class DbContextOptionsExtensions
         new()
         {
             Id = BudgetsSeedingConstants.UserBudgetRoleId,
-            Name = BudgetRole.UserRoleName
+            Name = BudgetRole.UserRoleName,
+            Permissions = BudgetPermissions.Read
         },
         new()
         {
             Id = BudgetsSeedingConstants.AdminBudgetRoleId,
             Name = BudgetRole.AdminRoleName,
+            Permissions = BudgetPermissions.Read | BudgetPermissions.Edit
         },
         new()
         {
             Id = BudgetsSeedingConstants.OwnerBudgetRoleId,
             Name = BudgetRole.OwnerRoleName,
+            Permissions = BudgetPermissions.Read | BudgetPermissions.Edit | BudgetPermissions.Delete
         },
     ];
 

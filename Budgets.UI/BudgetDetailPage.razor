@@ -1,0 +1,54 @@
+@page "/budgets/{id:guid}"
+@using Budgets.Contracts.GetBudgetDetail
+@using Budgets.UI.GetBudgets
+@using MaybeResults
+@using Shared.Blazor.RefitWithResult
+@inject IBudgetsApi BudgetsApi
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="my-4">
+    <MudCard Elevation="4" Class="pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Детали бюджета</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Secondary"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"/>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MaybeComponent Result="budgetResult" Context="budget">
+                <MudGrid>
+                    <MudItem xs="12" sm="4">
+                        <MudText Typo="Typo.body1"><b>Название:</b> @budget.Name</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudText Typo="Typo.body1"><b>Лимит:</b> @(budget.Limit?.ToString("N0") ?? "Без лимита")</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudText Typo="Typo.body1"><b>Начало периода:</b> @budget.BeginOfPeriod </MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTable Items="@budget.Users" Hover="true" Striped="true" Dense="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>Имя пользователя</MudTh>
+                                <MudTh>Роль</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd>@context.UserName</MudTd>
+                                <MudTd>@context.Role</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                </MudGrid>
+            </MaybeComponent>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private IMaybe<BudgetFullDetail>? budgetResult;
+    protected override async Task OnParametersSetAsync() =>
+        budgetResult = (await BudgetsApi.GetBudgetDetail(Id)).ToMaybe();
+}

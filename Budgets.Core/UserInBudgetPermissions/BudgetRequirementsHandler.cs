@@ -11,15 +11,16 @@ public sealed class BudgetRequirementsHandler(IUserBudgetPermissionsService perm
     {
         if (requirement.Permission == BudgetPermissions.Undefined)
         {
-            context.Fail();
+            context.Fail(new AuthorizationFailureReason(this, "User permissions not set"));
         }
 
         if (await permissionsService.UserHasPermissionInBudget(context.User.GetUserId(), resource,
                 requirement.Permission))
         {
+            context.Succeed(requirement);
             return;
         }
 
-        context.Fail();
+        context.Fail(new  AuthorizationFailureReason(this, "User has no required permission"));
     }
 }

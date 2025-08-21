@@ -1,4 +1,5 @@
 using Budgets.Core.CreateBudget;
+using Budgets.Core.Model;
 using Budgets.DataBase.Entities;
 using MaybeResults;
 using Microsoft.EntityFrameworkCore;

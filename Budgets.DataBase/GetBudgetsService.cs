@@ -19,7 +19,7 @@ public sealed class GetBudgetsService(BudgetsContext dbContext): IGetBudgetsServ
             .TryAsync<IReadOnlyCollection<Budget>, List<Budget>>();
     }
     
-    private static Budget ConvertToBudget(Entities.Budget? budget)
+    private static Budget ConvertToBudget(Core.Model.Budget? budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (budget.Name is null)

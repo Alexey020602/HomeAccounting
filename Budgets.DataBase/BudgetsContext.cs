@@ -1,3 +1,4 @@
+using Budgets.Core.Model;
 using Budgets.DataBase.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,10 @@ public class BudgetsContext(DbContextOptions<BudgetsContext> dbContextOptions): 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.HasDefaultSchema(BudgetsDbConstants.SchemaName);
+        modelBuilder
+            .HasDefaultSchema(BudgetsDbConstants.SchemaName)
+            .ApplyConfiguration(new BudgetConfiguration())
+            .ApplyConfiguration(new BudgetRolesConfiguration())
+            .ApplyConfiguration(new BudgetUserConfiguration());
     }
 }

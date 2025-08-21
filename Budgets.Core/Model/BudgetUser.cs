@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore;
+namespace Budgets.Core.Model;
 
-namespace Budgets.DataBase.Entities;
-
-[PrimaryKey(nameof(UserId), nameof(BudgetId), nameof(BudgetRoleId))]
 public class BudgetUser
 {
     public Guid UserId { get; set; }

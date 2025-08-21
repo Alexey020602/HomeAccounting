@@ -1,11 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.UserInBudgetPermissions;
-using Microsoft.EntityFrameworkCore;
 
-namespace Budgets.DataBase.Entities;
+namespace Budgets.Core.Model;
 
-[Index(nameof(Name), IsUnique = true)]
 public class BudgetRole
 {
     public const string OwnerRoleName = "Владелец";

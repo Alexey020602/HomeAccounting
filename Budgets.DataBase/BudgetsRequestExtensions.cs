@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Budgets.Core.GetBudgets;
+using Budgets.Core.Model;
 using Budgets.DataBase.Entities;
 
 namespace Budgets.DataBase;

@@ -1,9 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
-namespace Budgets.DataBase.Entities;
-
-[Index(nameof(Name))]
+namespace Budgets.Core.Model;
 public class Budget
 {
     public Guid Id { get; set; }

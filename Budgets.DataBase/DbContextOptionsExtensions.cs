@@ -1,5 +1,6 @@
 using Authorization.Contracts;
 using Budgets.Core.GetBudgetDetail;
+using Budgets.Core.Model;
 using Budgets.Core.UserInBudgetPermissions;
 using Budgets.DataBase.Entities;
 using Microsoft.EntityFrameworkCore;

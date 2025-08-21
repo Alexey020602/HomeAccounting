@@ -13,5 +13,5 @@
 </MudContainer>
 
 @code {
-    private Task CreateBudget(BudgetDetail budgetDetail) => BudgetsApi.CreateBudget(new CreateBudgetHttpRequest(budgetDetail.Name, budgetDetail.Limit, budgetDetail.BeginOfPeriod));
+    private Task CreateBudget(BudgetDetail budgetFullDetail) => BudgetsApi.CreateBudget(new CreateBudgetHttpRequest(budgetFullDetail.Name, budgetFullDetail.Limit, budgetFullDetail.BeginOfPeriod));
 }

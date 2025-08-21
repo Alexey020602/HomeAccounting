@@ -1,8 +1,10 @@
+using Authorization.Contracts;
 using Authorization.Core;
 using Authorization.Core.Registration;
 using MaybeResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using User = Authorization.Core.User;
 
 namespace Authorization.DataBase;
 
@@ -41,6 +43,9 @@ public class UserService(UserManager<User> userManager): IUserService
     {
         return await userManager.FindByNameAsync(login) != null;
     }
+
+    public async Task<IMaybe<IReadOnlyCollection<User>>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellation = default) =>
+        Maybe.Create(await userManager.Users.Where(u => ids.Contains(u.Id)).ToListAsync(cancellation));
 
     public async Task<IMaybe<User>> GetById(Guid id, CancellationToken cancellation = default) => 
         await userManager.FindByIdAsync(id.ToString()) is {} user 

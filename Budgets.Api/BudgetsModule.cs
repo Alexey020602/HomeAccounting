@@ -1,4 +1,5 @@
 using Budgets.Core.CreateBudget;
+using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
 using Budgets.Core.UserInBudgetPermissions;
 using Budgets.DataBase;
@@ -24,6 +25,7 @@ public static class BudgetsModule
         builder.Services
             .AddScoped<IGetBudgetsService, GetBudgetsService>()
             .AddScoped<ICreateBudgetService, CreateBudgetService>()
+            .AddScoped<IGetBudgetDetailService, GetBudgetDetailService>()
             .AddScoped <IAuthorizationHandler, BudgetRequirementsHandler>()
             .AddScoped<IUserBudgetPermissionsService, UserBudgetPermissionsService>();
     }

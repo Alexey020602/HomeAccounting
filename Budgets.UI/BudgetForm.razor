@@ -77,13 +77,13 @@
             BeginOfPeriod = 1;
         }
 
-        public void ResetWithBudget(BudgetDetail budget)
+        public void ResetWithBudget(BudgetDetail budgetFull)
         {
-            Name = budget.Name;
-            Limit = budget.Limit;
-            BeginOfPeriod = budget.BeginOfPeriod;
+            Name = budgetFull.Name;
+            Limit = budgetFull.Limit;
+            BeginOfPeriod = budgetFull.BeginOfPeriod;
         }
-        public BudgetDetail Result(BudgetDetail budget) => new(budget.Id, Name, Limit, BeginOfPeriod);
+        public BudgetDetail Result(BudgetDetail budgetFull) => new(budgetFull.Id, Name, Limit, BeginOfPeriod);
     }
 
     private sealed class CreateBudgetModelValidator : AbstractValidator<FormBudgetModel>

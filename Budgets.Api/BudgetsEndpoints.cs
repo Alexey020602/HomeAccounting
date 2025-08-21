@@ -1,8 +1,10 @@
 using System.Net;
 using System.Security.Claims;
 using Budgets.Contracts.CreateBudget;
+using Budgets.Contracts.GetBudgetDetail;
 using Budgets.Contracts.GetBudgets;
 using Budgets.Core.CreateBudget;
+using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
 using MaybeResults;
 using Mediator;
@@ -19,31 +21,47 @@ namespace Budgets.Api;
 public static class BudgetsEndpoints
 {
     public static RouteGroupBuilder MapBudgetGroup(this IEndpointRouteBuilder endpoints) =>
-        endpoints.MapBudgetsGroup().MapGroup("{budgetId:guid}");
+        endpoints.MapBudgetsGroup().MapBudgetDetailGroup();
 
+    private static RouteGroupBuilder MapBudgetDetailGroup(this IEndpointRouteBuilder endpoints) =>
+        endpoints.MapGroup("{budgetId:guid}");
     public static void MapBudgets(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapBudgetsGroup();
         group.MapGetBudgets();
         group.MapCreateBudget();
+
+        var budgetGroup = group.MapBudgetDetailGroup();
+        budgetGroup
+            .MapGetBudgetDetail();
     }
 
     private static RouteGroupBuilder MapBudgetsGroup(this IEndpointRouteBuilder endpoints)
     {
         return endpoints
             .MapGroup("/budgets")
+            // .WithGroupName("Budgets")
             .RequireAuthorization();
     }
     private static RouteHandlerBuilder MapCreateBudget(this IEndpointRouteBuilder endpoints) => endpoints
         .MapPost("", EndpointDelegates.CreateBudget)
+        // .WithName("Create budget")
         .Produces((int)HttpStatusCode.Created)
         .ProducesValidationProblem()
         .Produces((int)HttpStatusCode.InternalServerError);
 
     private static RouteHandlerBuilder MapGetBudgets(this IEndpointRouteBuilder endpoints) => endpoints
         .MapGet("", EndpointDelegates.GetBudgets)
+        // .WithName("Get budgets")
         .Produces((int)HttpStatusCode.OK, typeof(IReadOnlyCollection<Budget>))
         .ProducesProblem((int)HttpStatusCode.BadRequest);
+
+    private static RouteHandlerBuilder MapGetBudgetDetail(this IEndpointRouteBuilder endpoints) => endpoints
+        .MapGet("", EndpointDelegates.GetBudgetDetail)
+        // .WithName("Get budget detail")
+        .Produces((int)HttpStatusCode.OK, typeof(BudgetFullDetail))
+        .ProducesProblem((int)HttpStatusCode.BadRequest)
+        .ProducesProblem((int)HttpStatusCode.InternalServerError);
 }
 
 internal static class EndpointDelegates
@@ -72,6 +90,23 @@ internal static class EndpointDelegates
             // Some<List<Budget>> otherSomeBudgets => TypedResults.Ok(otherSomeBudgets.Value),
             Some<IReadOnlyCollection<Budget>> someBudgets => TypedResults.Ok(someBudgets.Value),
             INone<IReadOnlyCollection<Budget>> error => error.MapToProblemResult(),
+            _ => throw new InvalidOperationException("Unknown result type")
+        };
+    }
+
+    public static async Task<Results<Ok<BudgetFullDetail>, ForbidHttpResult, NotFound, InternalServerError<BudgetFullDetail>>>
+        GetBudgetDetail(
+            Guid budgetId,
+            ClaimsPrincipal user,
+            IMediator mediator
+        )
+    {
+        return await mediator.Send(new GetBudgetQuery(budgetId, user)) switch
+        {
+            Some<BudgetFullDetail> detail => TypedResults.Ok(detail.Value),
+            Core.UserInBudgetPermissions.UserHasNoPermission<BudgetFullDetail> => TypedResults.Forbid(),
+            BudgetNotFoundError<BudgetFullDetail> => TypedResults.NotFound(),
+            // INone<BudgetDetail> error => error.MapToProblemResult(),
             _ => throw new InvalidOperationException("Unknown result type")
         };
     }

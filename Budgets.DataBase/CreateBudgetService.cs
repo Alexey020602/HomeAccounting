@@ -18,10 +18,10 @@ public sealed class CreateBudgetService(BudgetsContext dbContext): ICreateBudget
         
         dbContext.Budgets.Add(new Budget()
         {
-            BeginOfPeriod = budget.BeginOfPeriod,
+            BeginOfPeriod = budget.BudgetData.BeginOfPeriod,
             CreatorId = budget.UserId,
-            Name = budget.Name,
-            Limit = budget.Limit,
+            Name = budget.BudgetData.Name,
+            Limit = budget.BudgetData.Limit,
             CreationDate = budget.CreationDate,
             BudgetUsers = [
                 new()

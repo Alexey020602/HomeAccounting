@@ -7,10 +7,8 @@ namespace Budgets.Core.GetBudgetDetail;
 
 public static class AuthorizationServiceExtensions
 {
-    public static async Task<IMaybe> CheckUserHasPermission(this IAuthorizationService authorizationService,
+    public static async Task<bool> CheckUserHasPermission(this IAuthorizationService authorizationService,
         ClaimsPrincipal user, Guid budgetId,
         BudgetPermissions permissions) =>
-        (await authorizationService.AuthorizeAsync(user, budgetId, new BudgetRequirements(permissions))).Succeeded
-            ? Maybe.Create()
-            : new UserInBudgetPermissions.UserHasNoPermission($"User has no permission {BudgetPermissions.Read}");
+        (await authorizationService.AuthorizeAsync(user, budgetId, new BudgetRequirements(permissions))).Succeeded;
 }

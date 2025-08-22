@@ -17,12 +17,6 @@ public sealed class GetBudgetDetailHandler(
 {
     public async ValueTask<IMaybe<BudgetFullDetail>> Handle(GetBudgetQuery query, CancellationToken cancellationToken)
     {
-        if (await authorizationService.CheckUserHasPermission(query.User, query.Id, BudgetPermissions.Read) is INone
-            permissionError)
-        {
-            return permissionError.Cast<BudgetFullDetail>();
-        }
-
         return await (
             from budget in service.GetBudgetFullDetail(query.Id, cancellationToken)
             from users in GetBudgetUsers(budget.BudgetUsers ?? [])

@@ -1,8 +1,12 @@
+using Budgets.Core;
 using Budgets.Core.CreateBudget;
+using Budgets.Core.EditBudget;
 using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
 using Budgets.Core.UserInBudgetPermissions;
 using Budgets.DataBase;
+using MaybeResults;
+using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,7 +30,14 @@ public static class BudgetsModule
             .AddScoped<IGetBudgetsService, GetBudgetsService>()
             .AddScoped<ICreateBudgetService, CreateBudgetService>()
             .AddScoped<IGetBudgetDetailService, GetBudgetDetailService>()
-            .AddScoped <IAuthorizationHandler, BudgetRequirementsAuthorizationHandler>()
-            .AddScoped<IUserBudgetPermissionsService, UserBudgetPermissionsService>();
+            .AddScoped<IAuthorizationHandler, BudgetRequirementsAuthorizationHandler>()
+            .AddScoped<IUserBudgetPermissionsService, UserBudgetPermissionsService>()
+            .AddScoped<IUpdateBudgetService,  UpdateBudgetService>()
+            .AddPipelineBehaviors()
+            ;
     }
+
+    private static IServiceCollection AddPipelineBehaviors(this IServiceCollection services) => services
+        // .AddScoped(typeof(IPipelineBehavior<,IMaybe>), typeof(BudgetUsersPipelineBehavior<>))
+        .AddScoped(typeof(IPipelineBehavior<,>), typeof(BudgetUsersResultedPipelineBehavior<,>));
 }

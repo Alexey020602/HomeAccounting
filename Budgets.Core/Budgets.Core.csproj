@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="EditBudget\" />
+      <Folder Include="GetBudgetUsers\" />
     </ItemGroup>
 
 </Project>

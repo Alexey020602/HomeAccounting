@@ -3,9 +3,11 @@ using System.Security.Claims;
 using Budgets.Contracts.CreateBudget;
 using Budgets.Contracts.GetBudgetDetail;
 using Budgets.Contracts.GetBudgets;
+using Budgets.Contracts.UserInBudgetPermissions;
 using Budgets.Core.CreateBudget;
 using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
+using Budgets.Core.UserInBudgetPermissions;
 using MaybeResults;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
@@ -110,4 +112,11 @@ internal static class EndpointDelegates
             _ => throw new InvalidOperationException("Unknown result type")
         };
     }
+
+    public static async Task<Results<Ok<UserInBudgetPermissions>, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult> >> GetUserInBudgetPermissions(
+        Guid budgetId,
+        ClaimsPrincipal user,
+        IMediator mediator
+        ) =>
+        (await mediator.Send(new UserInBudgetPermissionsQuery(user.GetUserId(), budgetId))).MapToResult();
 }

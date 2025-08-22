@@ -1,11 +1,12 @@
 using Budgets.Contracts.CreateBudget;
 using Budgets.Contracts.GetBudgetDetail;
 using Budgets.Contracts.GetBudgets;
+using Budgets.Contracts.UserInBudgetPermissions;
 using Refit;
 using Shared.Blazor.Attributes;
 using Shared.Utils;
 
-namespace Budgets.UI.GetBudgets;
+namespace Budgets.UI;
 
 [ApiAuthorizable("budgets")]
 [Headers("Authorization: Bearer")]
@@ -19,4 +20,6 @@ public interface IBudgetsApi
 
     [Get("/{id}")]
     public Task<ApiResponse<BudgetFullDetail>> GetBudgetDetail(Guid id);
+    [Get("/{id}/permissions")]
+    public Task<ApiResponse<UserInBudgetPermissions>> GetUserPermissions(Guid id);
 }

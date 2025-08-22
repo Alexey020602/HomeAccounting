@@ -8,7 +8,7 @@ using Authorization.UI.Pages;
 using BlazorConsolidated;
 using Budgets.Core.GetBudgets;
 using Budgets.DataBase;
-using Budgets.UI.GetBudgets;
+using Budgets.UI.BudgetsList;
 using Checks.Api;
 using Fns;
 using Mediator;

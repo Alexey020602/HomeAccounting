@@ -5,4 +5,4 @@ using Shared.Utils.MediatorWithResults;
 
 namespace Budgets.Core.GetBudgetDetail;
 
-public sealed record GetBudgetQuery(Guid Id, ClaimsPrincipal User): UserBudgetMessage(Id, User, BudgetPermissions.Read), IResultQuery<BudgetFullDetail>;
+public sealed record GetBudgetQuery(Guid Id, ClaimsPrincipal User): UserBudgetMessage(Id, User, BudgetPermissions.Read), IResultQuery<BudgetDetail>;

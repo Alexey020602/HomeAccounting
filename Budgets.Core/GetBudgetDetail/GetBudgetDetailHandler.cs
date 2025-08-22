@@ -13,22 +13,18 @@ public sealed class GetBudgetDetailHandler(
     IGetBudgetDetailService service,
     IUsersService usersService,
     IAuthorizationService authorizationService)
-    : IResultQueryHandler<GetBudgetQuery, BudgetFullDetail>
+    : IResultQueryHandler<GetBudgetQuery, BudgetDetail>
 {
-    public async ValueTask<IMaybe<BudgetFullDetail>> Handle(GetBudgetQuery query, CancellationToken cancellationToken)
-    {
-        return await (
+    public async ValueTask<IMaybe<BudgetDetail>> Handle(GetBudgetQuery query, CancellationToken cancellationToken) =>
+        await (
             from budget in service.GetBudgetFullDetail(query.Id, cancellationToken)
-            from users in GetBudgetUsers(budget.BudgetUsers ?? [])
-            select new BudgetFullDetail(
+            select new BudgetDetail(
                 budget.Id,
                 budget.Name ?? throw new InvalidOperationException(),
                 budget.Limit,
-                budget.BeginOfPeriod,
-                users
+                budget.BeginOfPeriod
             )
         );
-    }
 
     private async Task<IMaybe<IReadOnlyCollection<Contracts.GetBudgetDetail.BudgetUser>>> GetBudgetUsers(
         IReadOnlyCollection<BudgetUser> budgetUsers)

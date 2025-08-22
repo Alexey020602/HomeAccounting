@@ -19,7 +19,9 @@ public interface IBudgetsApi
     public Task<ApiResponse<Unit>> CreateBudget(CreateBudgetHttpRequest request);
 
     [Get("/{id}")]
-    public Task<ApiResponse<BudgetFullDetail>> GetBudgetDetail(Guid id);
+    public Task<ApiResponse<BudgetDetail>> GetBudgetDetail(Guid id);
+    [Get("/{id}/users")]
+    public Task<ApiResponse<IReadOnlyCollection<BudgetUser>>> GetBudgetUsers(Guid id);
     [Get("/{id}/permissions")]
     public Task<ApiResponse<UserInBudgetPermissions>> GetUserPermissions(Guid id);
 }

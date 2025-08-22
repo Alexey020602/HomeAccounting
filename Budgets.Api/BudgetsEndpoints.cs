@@ -8,6 +8,7 @@ using Budgets.Core.CreateBudget;
 using Budgets.Core.EditBudget;
 using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
+using Budgets.Core.GetBudgetUsers;
 using Budgets.Core.UserInBudgetPermissions;
 using MaybeResults;
 using Mediator;
@@ -39,6 +40,10 @@ public static class BudgetsEndpoints
             .MapGetBudgetDetail();
         budgetGroup
             .MapUpdateBudget();
+        budgetGroup
+            .MapGetUserInBudgetPermissions();
+        budgetGroup
+            .MapGetBudgetUsers();
     }
 
     private static RouteGroupBuilder MapBudgetsGroup(this IEndpointRouteBuilder endpoints)
@@ -73,10 +78,30 @@ public static class BudgetsEndpoints
     .Produces((int)HttpStatusCode.NoContent)
     .Produces((int) HttpStatusCode.Forbidden)
     .ProducesValidationProblem();
+    private static RouteHandlerBuilder MapGetUserInBudgetPermissions(this IEndpointRouteBuilder endpoints) => endpoints
+    .MapGet("/permissions", EndpointDelegates.GetUserInBudgetPermissions)
+    .Produces((int)HttpStatusCode.OK, typeof(UserInBudgetPermissions))
+    .ProducesValidationProblem()
+    .Produces((int)HttpStatusCode.Forbidden);
+    private static RouteHandlerBuilder MapGetBudgetUsers(this IEndpointRouteBuilder endpoints) => endpoints
+        .MapGet("/users", EndpointDelegates.GetBudgetUsers)
+        // .Produces((int)HttpStatusCode.OK, typeof(IReadOnlyCollection<BudgetUser>))
+        // .ProducesValidationProblem()
+        // .Produces((int)HttpStatusCode.Forbidden)
+    ;
 }
 
 internal static class EndpointDelegates
 {
+    public static Task<
+        Results<
+            Ok<IReadOnlyCollection<BudgetUser>>, 
+            Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>
+    > GetBudgetUsers(
+        Guid budgetId,
+        ClaimsPrincipal user,
+        IMediator mediator
+    ) => mediator.Send(new GetBudgetUsersQuery(budgetId, user)).AsTask().MapToResultAsync();
     public static Task<Results<NoContent, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> UpdateBudget(
         Guid budgetId,
         ClaimsPrincipal user, 
@@ -111,7 +136,7 @@ internal static class EndpointDelegates
         };
     }
 
-    public static async Task<Results<Ok<BudgetFullDetail>, ForbidHttpResult, NotFound, InternalServerError<BudgetFullDetail>>>
+    public static async Task<Results<Ok<BudgetDetail>, ForbidHttpResult, NotFound, InternalServerError<BudgetFullDetail>>>
         GetBudgetDetail(
             Guid budgetId,
             ClaimsPrincipal user,
@@ -120,9 +145,9 @@ internal static class EndpointDelegates
     {
         return await mediator.Send(new GetBudgetQuery(budgetId, user)) switch
         {
-            Some<BudgetFullDetail> detail => TypedResults.Ok(detail.Value),
+            Some<BudgetDetail> detail => TypedResults.Ok(detail.Value),
             Core.UserInBudgetPermissions.UserHasNoPermission<BudgetFullDetail> => TypedResults.Forbid(),
-            BudgetNotFoundError<BudgetFullDetail> => TypedResults.NotFound(),
+            BudgetNotFoundError<BudgetDetail> => TypedResults.NotFound(),
             // INone<BudgetDetail> error => error.MapToProblemResult(),
             _ => throw new InvalidOperationException("Unknown result type")
         };

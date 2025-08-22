@@ -52,12 +52,7 @@ public static class MaybeResultMapper
     )
         where TSuccessResult : IResult
         where TFailureResult : IResult
-        => (await maybeTask) switch
-        {
-            Some => onSuccess(),
-            INone error => onFailure(error),
-            _ => throw new InvalidOperationException("Unknown IMaybe state"),
-        };
+        => (await maybeTask).MapToResult(onSuccess, onFailure);
     public static async Task<Results<TSuccessResult, TFailureResult>> MapToResultAsync<TSuccessResult, TFailureResult,
         T>(
         this Task<IMaybe<T>> maybeTask,
@@ -66,12 +61,7 @@ public static class MaybeResultMapper
     )
         where TSuccessResult : IResult
         where TFailureResult : IResult
-        => (await maybeTask) switch
-        {
-            Some<T> some => onSuccess(some.Value),
-            INone<T> error => onFailure(error),
-            _ => throw new InvalidOperationException($"Unknown IMaybe<{nameof(T)}> state"),
-        };
+        => (await maybeTask).MapToResult(onSuccess, onFailure);
     public static Results<TSuccessResult, TFailureResult> MapToResult<TSuccessResult, TFailureResult>(
         this IMaybe maybe, Func<TSuccessResult> onSuccess, Func<INone, TFailureResult> onFailure)
         where TSuccessResult : IResult
@@ -90,7 +80,9 @@ public static class MaybeResultMapper
         {
             Some<T> some => onSuccess(some.Value),
             INone<T> error => onFailure(error),
-            _ => throw new InvalidOperationException($"Unknown IMaybe<{nameof(T)}> state"),
+            _ => maybe.ToMaybe() is Some 
+                ? throw new InvalidOperationException($"Unhandled successful state of result with type {maybe.GetType()}")
+                : throw new InvalidOperationException($"Unknown IMaybe<{nameof(T)}> state"),
         };
 
     public static Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult> MapToFailureResult(this INone error) => error switch

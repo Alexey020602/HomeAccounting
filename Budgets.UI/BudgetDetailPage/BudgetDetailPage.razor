@@ -70,9 +70,11 @@
         var budgetTask = BudgetsApi.GetBudgetDetail(Id);
         var permissionsTask = BudgetsApi.GetUserPermissions(Id);
         var budgetUsersTask = BudgetsApi.GetBudgetUsers(Id);
-        budgetResult = (await budgetTask).ToMaybe();
-        permissions = (await permissionsTask).Content;
-        budgetUsersResult = (await budgetUsersTask).ToMaybe();
+        budgetResult = await budgetTask.ToMaybe();
+        permissions = await permissionsTask.ToMaybe() is Some<UserInBudgetPermissions> some 
+            ? some.Value
+            : null;
+        budgetUsersResult = await budgetUsersTask.ToMaybe();
     }
     
     private Task DeleteBudget() => Task.CompletedTask;

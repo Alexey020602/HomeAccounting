@@ -47,5 +47,5 @@ public sealed class GetBudgetUsersQueryHandler(
                 ? budgetUser.BudgetRole.Name ?? throw new InvalidOperationException(
                     $"{nameof(BudgetUser)}.{nameof(Model.BudgetUser.BudgetRole)}.{nameof(Model.BudgetUser.BudgetRole.Name)} must have a value")
                 : throw new InvalidOperationException(
-                    $"{nameof(BudgetUser)} must have loaded {nameof(BudgetRole.Name)} property"));
+                    $"{nameof(BudgetUser)} must have loaded {nameof(BudgetRole)} property"));
 }

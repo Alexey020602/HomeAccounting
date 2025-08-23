@@ -8,6 +8,7 @@ public sealed class GetBudgetUsersService(BudgetsContext budgetsContext): IGetBu
 {
     public async Task<IReadOnlyCollection<BudgetUser>> GetUsersForBudget(Guid budgetId) => await budgetsContext
         .BudgetUsers
+        .Include(user => user.BudgetRole)
         .Where(user => user.BudgetId == budgetId)
         .ToListAsync();
 }

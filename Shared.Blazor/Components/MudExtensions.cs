@@ -6,8 +6,8 @@ namespace Shared.Blazor.Components;
 
 public static class MudExtensions
 {
-    public static void ProcessError(this ISnackbar snackbar, INone error, Action<SnackbarOptions>? configure = null)
+    public static Snackbar? ProcessError(this ISnackbar snackbar, INone error, Action<SnackbarOptions>? configure = null)
     {
-        snackbar.Add(error.Message, Severity.Error, configure);
+        return snackbar.Add(error.Message, Severity.Error, configure);
     }
 }

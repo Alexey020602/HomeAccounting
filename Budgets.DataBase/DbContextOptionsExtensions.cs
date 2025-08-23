@@ -147,6 +147,12 @@ public static class DbContextOptionsExtensions
             UserId = UserConstants.DefaultUserId,
             BudgetRoleId = BudgetsSeedingConstants.OwnerBudgetRoleId,
         },
+        new()
+        {
+            BudgetId  = BudgetsSeedingConstants.FirstBudgetId,
+            UserId = UserConstants.SecondUserId,
+            BudgetRoleId = BudgetsSeedingConstants.AdminBudgetRoleId,
+        }
     ];
 }
 

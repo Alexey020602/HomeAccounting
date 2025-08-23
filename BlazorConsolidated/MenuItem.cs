@@ -25,6 +25,13 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
         Icons.Material.Filled.Report
     );
 
+    public static readonly MenuItem Budget = new(
+        "Бюджеты",
+        "Страница выбора бюджетов",
+        RoutesConstants.Budgets,
+        Icons.Material.Filled.AttachMoney
+        );
+
     public static readonly IReadOnlyList<MenuItem> Menu =
     [
         AddReceipt,

@@ -7,18 +7,16 @@
         @{
             var user = (Contracts.User)authenticationState.User;
         }
-        <MudButton Href="@($"/user/{user.Id}")" Style="justify-content: start" FullWidth="true">
+        <MudNavLink Href="@($"/user/{user.Id}")">
             @user.UserName
-        </MudButton>
+        </MudNavLink>
         @ChildContent?.Invoke(authenticationState)
-        <MudButton
-            Color="Color.Error"
+        <MudNavLink
+            IconColor="Color.Error"
             OnClick="@Logout"
-            StartIcon="@Icons.Material.Filled.Logout"
-            Style="justify-content: start"
-            FullWidth="true">
-            Выйти
-        </MudButton>
+            Icon="@Icons.Material.Filled.Logout">
+            <MudText Color="Color.Error">Выйти</MudText>
+        </MudNavLink>
     </MudNavGroup>
 </AuthorizeView>
 

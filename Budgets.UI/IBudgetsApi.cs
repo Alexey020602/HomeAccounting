@@ -1,3 +1,4 @@
+using Budgets.Contracts;
 using Budgets.Contracts.CreateBudget;
 using Budgets.Contracts.GetBudgetDetail;
 using Budgets.Contracts.GetBudgets;
@@ -16,12 +17,15 @@ public interface IBudgetsApi
     public Task<IReadOnlyCollection<Budget>> GetBudgets(GetBudgetsHttpRequest request);
 
     [Post("/")] 
-    public Task<ApiResponse<Unit>> CreateBudget(CreateBudgetHttpRequest request);
+    public Task CreateBudget(CreateBudgetHttpRequest request);
 
     [Get("/{id}")]
-    public Task<ApiResponse<BudgetDetail>> GetBudgetDetail(Guid id);
+    public Task<BudgetDetail> GetBudgetDetail(Guid id);
+
+    [Put("/{id}")]
+    public Task UpdateBudget(Guid id, BudgetData budgetData);
     [Get("/{id}/users")]
-    public Task<ApiResponse<IReadOnlyCollection<BudgetUser>>> GetBudgetUsers(Guid id);
+    public Task<IReadOnlyCollection<BudgetUser>> GetBudgetUsers(Guid id);
     [Get("/{id}/permissions")]
-    public Task<ApiResponse<UserInBudgetPermissions>> GetUserPermissions(Guid id);
+    public Task<UserInBudgetPermissions> GetUserPermissions(Guid id);
 }

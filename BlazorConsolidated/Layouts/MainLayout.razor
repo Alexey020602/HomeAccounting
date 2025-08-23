@@ -1,5 +1,6 @@
 ﻿@using Shared.Blazor.Layouts
 @using Authorization.UI.Pages
+@using Budgets.UI
 @using Shared.Blazor
 @inherits LayoutComponentBase
 @layout BaseLayout
@@ -23,7 +24,9 @@
             <MudNavLink Href="@menuItem.Href" Icon="@menuItem.Icon">@menuItem.Name</MudNavLink>
         }
         
-        <UserComponent/>
+        <UserComponent>
+            <SelectedBudgetInfo />
+        </UserComponent>
     </MudNavMenu>
 </MudDrawer>
 

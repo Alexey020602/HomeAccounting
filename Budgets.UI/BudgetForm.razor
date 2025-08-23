@@ -4,7 +4,7 @@
 @using FluentValidation
 @using Shared.Blazor.Validation
 <MudForm Model="Model" @ref="form" Validation="@createBudgetModelValidator.ValidateValueAsyncDelegate()">
-    <FluentValidationValidator Validator="createBudgetModelValidator"/>
+    @* <FluentValidationValidator Validator="createBudgetModelValidator"/> *@
     <MudTextField 
         @bind-Value="Model.Name" 
         Variant="Variant.Outlined" 
@@ -50,8 +50,14 @@
     [Parameter] public BudgetDetail EditedBudget { get; set; } = DefaultBudgetDetail;
     [Parameter] public EventCallback<BudgetDetail> OnSubmit { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        Reset();
+    }
+
     private void Reset()
     {
+        form.ResetValidation();
         Model.ResetWithBudget(EditedBudget);
     }
     

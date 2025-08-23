@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Authorization.UI;
 using BlazorConsolidated.Utils;
 using Budgets.UI;
@@ -68,10 +70,20 @@ public static class ServiceCollectionExtensions
 
         return serviceCollection;
     }
-
     private static IServiceCollection AddRefitClient(this IServiceCollection serviceCollection, Type type, Uri apiUri,
         ApiAttribute apiAttribute)
     {
+        var jsonSerializerOptions = SystemTextJsonContentSerializer.GetDefaultJsonSerializerOptions();
+        
+        jsonSerializerOptions.Converters.Add(new UnitJsonConverter());
+        
+        var jsonContentSerializer = new SystemTextJsonContentSerializer(
+            jsonSerializerOptions
+        );
+        var settings = new RefitSettings
+        {
+            ContentSerializer = jsonContentSerializer
+        };
         var httpClientBuilder = serviceCollection.AddRefitClient(type)
             .ConfigureHttpClient(client =>
                 client.BaseAddress = apiUri//.AppendingPath("api", apiAttribute.BasePath)

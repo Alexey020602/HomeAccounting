@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Budgets.Contracts;
 using Budgets.Core.CreateBudget;
 using Budgets.Core.UserInBudgetPermissions;
 using Shared.Utils.MediatorWithResults;

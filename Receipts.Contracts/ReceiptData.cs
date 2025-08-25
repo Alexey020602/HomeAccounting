@@ -4,4 +4,4 @@ using Fns.Contracts;
 namespace Receipts.Contracts;
 
 [method:JsonConstructor]
-public record ReceiptData(ReceiptFiscalData FiscalData, Guid UserId);
+public record ReceiptData(ReceiptFiscalData FiscalData, Guid UserId, Guid BudgetId);

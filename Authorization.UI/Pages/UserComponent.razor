@@ -7,22 +7,25 @@
         @{
             var user = (Contracts.User)authenticationState.User;
         }
-        <MudButton Href="@($"/user/{user.Id}")" Style="justify-content: start" FullWidth="true">
+        <MudNavLink Href="@($"/user/{user.Id}")">
             @user.UserName
-        </MudButton>
-        <MudButton
-            Color="Color.Error"
+        </MudNavLink>
+        @if (ChildContent is not null)
+        {
+            <MudDivider/>
+            @ChildContent(authenticationState)
+            <MudDivider/>
+        }
+        <MudNavLink
+            IconColor="Color.Error"
             OnClick="@Logout"
-            StartIcon="@Icons.Material.Filled.Logout"
-            Style="justify-content: start"
-            FullWidth="true">
-            Выйти
-        </MudButton>
+            Icon="@Icons.Material.Filled.Logout">
+            <MudText Color="Color.Error">Выйти</MudText>
+        </MudNavLink>
     </MudNavGroup>
 </AuthorizeView>
 
 @code {
-
     private Task Logout() => LogoutService.Logout();
-
+    [Parameter] public RenderFragment<AuthenticationState>? ChildContent { get; set; }
 }

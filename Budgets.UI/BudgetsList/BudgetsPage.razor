@@ -1,0 +1,60 @@
+@page "/budgets"
+@using global::Budgets.Contracts.GetBudgets
+@using global::Budgets.UI.BudgetState
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+@using Shared.Utils.Results
+@using Shared.Blazor.Components
+@using Shared.Blazor.Layouts
+@attribute [Authorize]
+@layout UnauthorizedLayout
+@inject IBudgetsStateService BudgetsStateService
+@inject IBudgetsApi BudgetsApi
+@inject NavigationManager NavigationManager
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MaybeComponent TResult="IReadOnlyCollection<Budget>" Result="BudgetsResult" Context="budgets">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">Выберите бюджет, с которым вы хотите работать</MudText>
+            </MudCardHeader>
+            
+            <MudCardContent>
+                <MudList T="Budget">
+                    @foreach (var budget in budgets)
+                    {
+                        <MudListItem 
+                            T="Budget" 
+                            Text="@budget.Name"
+                            Icon="@(SelectedBudget == budget ? @Icons.Material.Filled.Check : null)" 
+                            OnClick="@(async () => await SelectBudget(budget))"/>
+                    }
+                    <MudListItem
+                        Href="/budgets/create"
+                        Text="Создать новый бюджет"
+                        Icon="@Icons.Material.Filled.AddCircle"/>
+                </MudList>
+                
+            </MudCardContent>
+        </MudCard>
+    </MaybeComponent>
+</MudContainer>
+
+@code {
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+    private IMaybe<IReadOnlyCollection<Budget>>? BudgetsResult { get; set; }
+    private Budget? SelectedBudget { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync();
+    }
+
+    private async ValueTask SelectBudget(Budget budget)
+    {
+        await BudgetsStateService.SelectBudget(budget);
+        SelectedBudget = budget;
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+}

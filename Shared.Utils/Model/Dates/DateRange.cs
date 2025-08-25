@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Shared.Utils.Model.Dates;
 
+[method: JsonConstructor]
 public readonly record struct DateRange(DateTime? Start = null, DateTime? End = null)
 {
     public static DateRange CreateMonthRange(int firstDay, int month, int year) =>
@@ -13,10 +15,10 @@ public readonly record struct DateRange(DateTime? Start = null, DateTime? End = 
     {
         return !(date < Start || date > End);
     }
-    public bool IsSameYear => Start?.Year == End?.Year;
-    public bool IsSameMonth => IsSameYear && Start?.Month == End?.Month;
-    public bool IsSameDay => IsSameMonth && Start?.Day == End?.Day;
-    public bool IsSameHour => IsSameDay && Start?.Hour == End?.Hour;
+    [JsonIgnore] public bool IsSameYear => Start?.Year == End?.Year;
+    [JsonIgnore] public bool IsSameMonth => IsSameYear && Start?.Month == End?.Month;
+    [JsonIgnore] public bool IsSameDay => IsSameMonth && Start?.Day == End?.Day;
+    [JsonIgnore] public bool IsSameHour => IsSameDay && Start?.Hour == End?.Hour;
     public override string ToString() => ToString(null, null);
     public string ToString([StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string? format) => ToString(format, null);
     public string ToString([StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string? format, IFormatProvider? provider)

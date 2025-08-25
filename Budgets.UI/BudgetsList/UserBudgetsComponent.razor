@@ -1,0 +1,47 @@
+@using Budgets.Contracts.GetBudgets
+@using Budgets.UI.BudgetState
+@using MaybeResults
+@using Shared.Utils.Results
+@inject IBudgetsStateService BudgetsStateService
+@inject IBudgetsApi BudgetsApi
+@inject ISnackbar Snackbar
+
+<MudList T="Budget">
+    @foreach (var budget in budgets)
+    {
+        <MudListItem 
+            T="Budget" 
+            Text="@budget.Name"
+            Icon="@(selectedBudget == budget ? @Icons.Material.Filled.Check : null)"/>
+    }
+</MudList>
+
+@code {
+    private IReadOnlyCollection<Budget> budgets = [];
+    private Budget? selectedBudget;
+    [CascadingParameter] private Task<BudgetState> BudgetState { get; set; } = null!;
+    protected override async Task OnParametersSetAsync()
+    {
+        if (BudgetState is null)
+        {
+            throw new InvalidOperationException($"Cascading value of type Task<{nameof(BudgetState)}> required");
+        }
+        (await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync())
+            .Match(
+                onSome: b => budgets = b,
+                onNone: error => Snackbar.ProcessError(error)
+            );
+        if ((await BudgetState) is not SelectedBudgetState selectedBudgetState)
+        {
+            return;
+        }
+
+        selectedBudget = budgets.SingleOrDefault(b => b.Id == selectedBudgetState.BudgetId);
+        // {
+        //     Some<IReadOnlyCollection<Budget>> some => this.budgets = some.Value,
+        //         INone<IReadOnlyCollection<Budget>> error => Snackbar.ProcessError(error),
+        //         _ => throw new InvaLi
+        // } 
+    }
+
+}

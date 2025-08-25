@@ -1,5 +1,6 @@
 ﻿@using Shared.Blazor.Layouts
 @using Authorization.UI.Pages
+@using Budgets.UI
 @using Shared.Blazor
 @inherits LayoutComponentBase
 @layout BaseLayout
@@ -18,17 +19,14 @@
            Variant="DrawerVariant.Responsive"
            ClipMode="DrawerClipMode.Always">
     <MudNavMenu>
-        <MudNavLink Href="newreceipt" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Receipt">
-            Добавление чека
-        </MudNavLink>
-        <MudNavLink Href="receipts" Icon="@Icons.Material.Filled.List">
-            Чеки
-        </MudNavLink>
-        <MudNavLink Href="monthreport" Icon="@Icons.Material.Filled.Assessment">
-            Отчет
-        </MudNavLink>
+        @foreach (var menuItem in MenuItem.Menu)
+        {
+            <MudNavLink Href="@menuItem.Href" Icon="@menuItem.Icon">@menuItem.Name</MudNavLink>
+        }
         
-        <UserComponent/>
+        <UserComponent>
+            <SelectedBudgetInfo />
+        </UserComponent>
     </MudNavMenu>
 </MudDrawer>
 

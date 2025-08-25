@@ -1,4 +1,5 @@
 using Authorization.Contracts;
+using Budgets.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Receipts.DataBase.Entities;
 
@@ -58,7 +59,8 @@ public static class DbContextOptionsBuilderExtensions
         Fp = check.Fp,
         S = check.S,
         Products = check.Products.Select(context.CreateProduct).ToList(),
-        UserId = UserConstants.DefaultUserId
+        UserId = UserConstants.DefaultUserId,
+        BudgetId = BudgetsSeedingConstants.FirstBudgetId,
     };
 
     private static Entities.Product CreateProduct(this ReceiptsContext context, Product product)

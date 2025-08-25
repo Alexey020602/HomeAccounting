@@ -29,6 +29,7 @@ public sealed class ReceiptSaveService(ReceiptsContext context) : IReceiptSaveSe
             PurchaseDate = addCheckRequest.ReceiptData.FiscalData.T,
             Products = addCheckRequest.Products.Select(CreateProduct).ToList(),
             UserId = addCheckRequest.ReceiptData.UserId,
+            BudgetId = addCheckRequest.ReceiptData.BudgetId
         };
 
         context.Checks.Add(check);

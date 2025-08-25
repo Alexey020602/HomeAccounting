@@ -1,0 +1,12 @@
+@using System.Diagnostics.CodeAnalysis
+@inject NavigationManager NavigationManager
+
+@code {
+    [Parameter] [StringSyntax("Uri")] public string RedirectUrl { get; set; } = string.Empty;
+    [Parameter] public NavigationOptions NavigationOptions { get; set; }
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo(RedirectUrl, NavigationOptions);
+    }
+
+}

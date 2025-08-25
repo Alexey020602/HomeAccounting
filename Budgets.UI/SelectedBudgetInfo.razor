@@ -1,0 +1,7 @@
+<BudgetsSelectionView Context="budgetState">
+    <MudNavLink Href="/budgets">Бюджеты</MudNavLink>
+    @{
+        var selectedBudgetHref = $"/budgets/{budgetState.BudgetId}";
+    }
+    <MudNavLink Href="@selectedBudgetHref">Выбранный бюджет: @budgetState.Name</MudNavLink>
+</BudgetsSelectionView>

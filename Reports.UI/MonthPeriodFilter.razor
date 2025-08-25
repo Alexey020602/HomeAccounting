@@ -1,6 +1,5 @@
 @using DateTime = System.DateTime
 @using DateRange = Shared.Utils.Model.Dates.DateRange
-@inject IBudgetsApi BudgetsApi
 
 @* <MudDatePicker Label="Отчетный месяц" *@
 @*                OpenTo="OpenTo.Month" *@
@@ -33,11 +32,11 @@
     private IReadOnlyList<DateRange> dateRanges = [];
     private int accountingPeriod = 1;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        accountingPeriod = await BudgetsApi.GetPeriodAsync();
+        accountingPeriod = 7;
         InitializeDateRanges();
-        
+        return Task.CompletedTask;
     }
 
     private void InitializeDateRanges()

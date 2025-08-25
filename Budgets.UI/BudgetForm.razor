@@ -1,0 +1,106 @@
+@using Budgets.Contracts.GetBudgetDetail
+@using FluentValidation
+@using Shared.Blazor.Validation
+<MudForm Model="Model" @ref="form" Validation="@createBudgetModelValidator.ValidateValueAsyncDelegate()">
+    @* <FluentValidationValidator Validator="createBudgetModelValidator"/> *@
+    <MudTextField 
+        @bind-Value="Model.Name" 
+        Variant="Variant.Outlined" 
+        Label="Название бюджета"
+        OnlyValidateIfDirty="true"
+        For="@(() => Model.Name)"/>
+            
+    <MudNumericField 
+        @bind-Value="Model.BeginOfPeriod" 
+        Variant="Variant.Outlined"
+        Label="Начало месячного периода"
+        OnlyValidateIfDirty="true"
+        For="@(() => Model.BeginOfPeriod)"/>
+            
+    <MudNumericField 
+        @bind-Value="Model.Limit"
+        Variant="Variant.Outlined"
+        Label="Ограничение для расходов за месяц"
+        OnlyValidateIfDirty="true"
+        For="@(() => Model.Limit)"/>
+            
+    <MudGrid Justify="Justify.SpaceBetween">
+        <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@Reset"
+                       Style="width: 100%">
+                Очистить
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Submit"
+                       Style="width: 100%">
+                Добавить
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    private static readonly BudgetDetail DefaultBudgetDetail = new(Guid.Empty, string.Empty, null, 1);
+    private readonly CreateBudgetModelValidator createBudgetModelValidator = new();
+    private FormBudgetModel Model { get; } = new();
+    private MudForm form = new();
+    [Parameter] public BudgetDetail EditedBudget { get; set; } = DefaultBudgetDetail;
+    [Parameter] public EventCallback<BudgetDetail> OnSubmit { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Reset();
+    }
+
+    private void Reset()
+    {
+        form.ResetValidation();
+        Model.ResetWithBudget(EditedBudget);
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+        if (!form.IsValid) return;
+        await OnSubmit.InvokeAsync(Model.Result(EditedBudget));
+        
+    }
+
+    // public sealed record BudgetFormResult(string Name, int? Limit, int BeginOfPeriod); 
+    
+    private sealed class FormBudgetModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public int? Limit { get; set; }
+        public int BeginOfPeriod { get; set; } = 1;
+
+        public void Reset()
+        {
+            Name = string.Empty;
+            Limit = null;
+            BeginOfPeriod = 1;
+        }
+
+        public void ResetWithBudget(BudgetDetail budgetFull)
+        {
+            Name = budgetFull.Name;
+            Limit = budgetFull.Limit;
+            BeginOfPeriod = budgetFull.BeginOfPeriod;
+        }
+        public BudgetDetail Result(BudgetDetail budgetFull) => new(budgetFull.Id, Name, Limit, BeginOfPeriod);
+    }
+
+    private sealed class CreateBudgetModelValidator : AbstractValidator<FormBudgetModel>
+    {
+        public CreateBudgetModelValidator()
+        {
+            RuleFor(model => model.Name)
+                .MinimumLength(5)
+                .MaximumLength(100);
+            RuleFor(model => model.BeginOfPeriod)
+                .GreaterThanOrEqualTo(1)
+                .LessThanOrEqualTo(31);
+        }
+    }
+}

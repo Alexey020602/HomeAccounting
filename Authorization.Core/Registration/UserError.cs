@@ -24,6 +24,3 @@ static class IdentityErrorExtensions
         result.Errors.Select(ConvertToNoneDetail).ToList();
     public static NoneDetail ConvertToNoneDetail(this IdentityError identityError) => new NoneDetail(identityError.Code, identityError.Description);
 }
-
-[None]
-public partial record UserNotFoundError;

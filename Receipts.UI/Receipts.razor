@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
 @using Microsoft.AspNetCore.Components.Web
-
+@inherits Budgets.UI.BudgetPage
 @attribute [Authorize]
 
 <PageTitle>Список чеков</PageTitle>
@@ -29,9 +29,10 @@
 @code {
     private List<CheckDto> LoadedReceipts { get; set; } = [];
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        LoadedReceipts = await ChecksApi.GetChecks();
+        await base.OnParametersSetAsync();
+        LoadedReceipts = await ChecksApi.GetChecks(BudgetId);
         LoadedReceipts.Sort(new DateComparer());
     }
 

@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Budgets.DataBase\Budgets.DataBase.csproj" />
       <ProjectReference Include="..\Receipts.Core\Receipts.Core.csproj" />
     </ItemGroup>
 

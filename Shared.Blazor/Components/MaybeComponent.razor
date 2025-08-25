@@ -6,7 +6,7 @@
     null => @<MudProgressCircular Indeterminate="true"/>,
     Some<TResult> result => ChildContent(result.Value),
     INone<TResult> error => ErrorContent is not null ? ErrorContent(error) : @<MudAlert Severity="Severity.Error">@error.Message</MudAlert>,
-    _ => @<MudAlert Severity="Severity.Error">Неизвестное состояние</MudAlert>})
+    _ => @<MudAlert Severity="Severity.Error">Неизвестное состояние</MudAlert>
 })
 
 @code {

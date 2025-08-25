@@ -1,3 +1,4 @@
+using Authorization.Contracts;
 using Authorization.Core;
 using Authorization.DataBase;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Shared.Infrastructure;
+using User = Authorization.Core.User;
 
 namespace Authorization.DependencyInjection;
 
@@ -41,8 +43,10 @@ public static class AuthorizationModule
             options.TokenValidationParameters = builder.Configuration.CreateJwtTokenSettings().TokenValidationParameters;
         });
 
-        builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddTransient<ITokenService, TokenService>();
+        builder.Services
+            .AddScoped<IUserService, UserService>()
+            .AddTransient<ITokenService, TokenService>()
+            .AddScoped<IUsersService, UsersService>();
         return builder.Services;
     }
 }

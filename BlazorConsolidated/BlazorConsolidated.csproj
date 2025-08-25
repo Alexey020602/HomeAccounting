@@ -18,11 +18,11 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.8" />
         <PackageReference Include="Refit" Version="8.0.0"/>
         <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-        <PackageReference Include="Scrutor" Version="6.1.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Authorization.UI\Authorization.UI.csproj" />
+      <ProjectReference Include="..\Budgets.UI\Budgets.UI.csproj" />
       <ProjectReference Include="..\Receipts.UI\Receipts.UI.csproj" />
       <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
       <ProjectReference Include="..\Reports.UI\Reports.UI.csproj" />

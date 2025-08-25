@@ -1,7 +1,7 @@
 @page "/newreceipt"
 @using global::Receipts.Contracts
 @using Microsoft.AspNetCore.Authorization
-@using MudBlazor
+@inherits Budgets.UI.BudgetPage
 
 @attribute [Authorize]
 
@@ -57,7 +57,7 @@
 
     private void ToggleInputMode() => ManualInput = !ManualInput;
 
-    private async Task SendFileRequest(Stream request) => SavedCheck = await ChecksApi.GetReceipt(request);
+    private async Task SendFileRequest(Stream request) => SavedCheck = await ChecksApi.GetReceipt(BudgetId,  request);
 
-    private async Task SendManualRequest(CheckRequest request) => SavedCheck = await ChecksApi.GetReceipt(request);
+    private async Task SendManualRequest(CheckRequest request) => SavedCheck = await ChecksApi.GetReceipt(BudgetId, request);
 }

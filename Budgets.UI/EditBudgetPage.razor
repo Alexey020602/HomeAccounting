@@ -1,0 +1,51 @@
+@page "/budgets/{id:guid}/edit"
+@using Budgets.Contracts.GetBudgetDetail
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+@using Shared.Blazor.RefitWithResult
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+@inject IBudgetsApi BudgetsApi
+@inject NavigationManager NavigationManager
+
+<MudContainer>
+    <MudCard>
+        <MudCardContent>
+            <MaybeComponent Result="budgetResult" Context="budget">
+                <BudgetForm EditedBudget="@budget" OnSubmit="@UpdateBudget"/>
+            </MaybeComponent>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private IMaybe<BudgetDetail>? budgetResult;
+    protected override async Task OnParametersSetAsync() => budgetResult = await BudgetsApi.GetBudgetDetail(Id).ToMaybe();
+    private Snackbar? snackbar;
+
+    private async Task UpdateBudget(BudgetDetail budgetDetail)
+    {
+        snackbar = await BudgetsApi.UpdateBudget(
+                Id,
+                new BudgetData(
+                    budgetDetail.Name,
+                    budgetDetail.BeginOfPeriod,
+                    budgetDetail.Limit
+                )
+            ).ToMaybe() switch
+            {
+                INone error => OnFailureUpdate(error),
+                _ => OnSuccessUpdate()
+            };
+    }
+
+    private Snackbar? OnFailureUpdate(INone error) => Snackbar.ProcessError(error);
+
+    private Snackbar? OnSuccessUpdate()
+    {
+        NavigationManager.NavigateTo($"/budgets/{Id}");
+        return Snackbar.Add("Бюджет успешно изменен", Severity.Success);
+    }
+
+}

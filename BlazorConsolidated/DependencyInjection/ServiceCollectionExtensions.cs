@@ -1,6 +1,9 @@
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Authorization.UI;
 using BlazorConsolidated.Utils;
+using Budgets.UI;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
@@ -28,6 +31,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
+            .AddBudgetsModule()
             .AddRefitClients(apiUri)
             .AddAuthorizationState();
 
@@ -51,7 +55,8 @@ public static class ServiceCollectionExtensions
             Assembly.GetExecutingAssembly(),
             typeof(IAuthorizationApi).Assembly,
             typeof(IChecksApi).Assembly,
-            typeof(IReportsApi).Assembly
+            typeof(IReportsApi).Assembly,
+            typeof(IBudgetsApi).Assembly
         ];
         foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
         {
@@ -65,10 +70,20 @@ public static class ServiceCollectionExtensions
 
         return serviceCollection;
     }
-
     private static IServiceCollection AddRefitClient(this IServiceCollection serviceCollection, Type type, Uri apiUri,
         ApiAttribute apiAttribute)
     {
+        var jsonSerializerOptions = SystemTextJsonContentSerializer.GetDefaultJsonSerializerOptions();
+        
+        jsonSerializerOptions.Converters.Add(new UnitJsonConverter());
+        
+        var jsonContentSerializer = new SystemTextJsonContentSerializer(
+            jsonSerializerOptions
+        );
+        var settings = new RefitSettings
+        {
+            ContentSerializer = jsonContentSerializer
+        };
         var httpClientBuilder = serviceCollection.AddRefitClient(type)
             .ConfigureHttpClient(client =>
                 client.BaseAddress = apiUri//.AppendingPath("api", apiAttribute.BasePath)

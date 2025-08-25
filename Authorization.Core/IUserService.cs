@@ -18,4 +18,5 @@ public interface IUserService
     Task<IMaybe> AddUser(UnregisteredUser user, string password, CancellationToken cancellation = default);
 
     Task<IMaybe<User>> GetById(Guid id, CancellationToken cancellation = default);
+    Task<IMaybe<IReadOnlyCollection<User>>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellation = default);
 }

@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Budgets.UI\Budgets.UI.csproj" />
       <ProjectReference Include="..\Receipts.UI\Receipts.UI.csproj" />
       <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
       <ProjectReference Include="..\Shared.Blazor\Shared.Blazor.csproj" />

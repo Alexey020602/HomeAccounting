@@ -1,0 +1,98 @@
+@page "/budgets/{id:guid}"
+@using Budgets.Contracts.GetBudgetDetail
+@using Budgets.Contracts.UserInBudgetPermissions
+@using MaybeResults
+@using Shared.Blazor.RefitWithResult
+@inject IBudgetsApi BudgetsApi
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="my-4">
+    <MudCard Elevation="4" Class="pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Детали бюджета</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                @if (permissions is not null)
+                {
+                    @if (permissions.CanEdit)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Secondary" Href="@EditHref"/>
+                    }
+
+                    @if (permissions.CanDelete)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                       OnClick="@DeleteBudget"/>
+                    }
+                }
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MaybeComponent Result="budgetResult" Context="budget">
+                <MudGrid>
+                    <MudItem xs="12" sm="4">
+                        <MudText Typo="Typo.body1"><b>Название:</b> @budget.Name</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudText Typo="Typo.body1"><b>Лимит:</b> @(budget.Limit?.ToString("N0") ?? "Без лимита")
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudText Typo="Typo.body1"><b>Начало периода:</b> @budget.BeginOfPeriod </MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MaybeComponent Result="budgetUsersResult" Context="budgetUsers">
+                            <MudTable Items="@budgetUsers" Hover="true" Striped="true" Dense="true" Elevation="0">
+                                <HeaderContent>
+                                    <MudTh>Имя пользователя</MudTh>
+                                    <MudTh>Роль</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd>@context.UserName</MudTd>
+                                    <MudTd>@context.Role</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MaybeComponent>
+                    </MudItem>
+                </MudGrid>
+            </MaybeComponent>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private IMaybe<BudgetDetail>? budgetResult;
+    private IMaybe<IReadOnlyCollection<BudgetUser>>? budgetUsersResult;
+    private UserInBudgetPermissions? permissions;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var budgetTask = BudgetsApi.GetBudgetDetail(Id);
+        var permissionsTask = BudgetsApi.GetUserPermissions(Id);
+        var budgetUsersTask = BudgetsApi.GetBudgetUsers(Id);
+        budgetResult = await budgetTask.ToMaybe();
+        permissions = await permissionsTask.ToMaybe() is Some<UserInBudgetPermissions> some
+            ? some.Value
+            : null;
+        budgetUsersResult = await budgetUsersTask.ToMaybe();
+    }
+
+    private async Task DeleteBudget()
+    {
+        switch (await BudgetsApi.DeleteBudget(Id).ToMaybe())
+        {
+            case INone error:
+                Snackbar.ProcessError(error);
+                break;
+            default:
+                Snackbar.Add("Бюджет успешно удален", Severity.Success);
+                NavigationManager.NavigateTo("/budgets");
+                break;
+        }
+    }
+
+    private string EditHref => $"/budgets/{Id}/edit";
+}

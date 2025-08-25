@@ -7,6 +7,7 @@ using Authorization.Core.Refresh;
 using Authorization.Core.Registration;
 using MaybeResults;
 using Mediator;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -14,7 +15,17 @@ using Shared.Web;
 
 namespace Authorization;
 
-
+internal static class LoginResponseExtensions
+{
+    public static AuthorizationResponse
+        ConvertToAuthorizationResponse(this LoginResponse loginResponse, string scheme = JwtBearerDefaults.AuthenticationScheme) => new AuthorizationResponse(
+        scheme,
+        loginResponse.UserId,
+        loginResponse.Login,
+        loginResponse.AccessToken,
+        loginResponse.RefreshToken
+        );
+}
 
 [AllowAnonymous]
 public class AuthorizationController(IMediator mediator) : ApiControllerBase
@@ -29,8 +40,8 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
     public async Task<IActionResult> Login(LoginRequest loginRequest) =>
         await mediator.Send(new LoginQuery(loginRequest.Login, loginRequest.Password)) switch
         {
-            Some<AuthorizationResponse> authorizationResponse => Ok(authorizationResponse.Value),
-            INone<AuthorizationResponse> error => BadRequest(error.Message),
+            Some<LoginResponse> authorizationResponse => Ok(authorizationResponse.Value.ConvertToAuthorizationResponse()),
+            INone<LoginResponse> error => BadRequest(error.Message),
             _ => throw new InvalidOperationException("Unknown operation result")
         };
 
@@ -56,8 +67,8 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
     {
         return await mediator.Send(new RefreshTokenQuery(refreshToken)) switch
         {
-            Some<AuthorizationResponse> authorizationResponse => Ok(authorizationResponse.Value),
-            RefreshTokenError<AuthorizationResponse> => Unauthorized(
+            Some<LoginResponse> authorizationResponse => Ok(authorizationResponse.Value.ConvertToAuthorizationResponse()),
+            RefreshTokenError<LoginResponse> => Unauthorized(
                 new ProblemDetails()
                 {
                     Extensions = new Dictionary<string, object?>

@@ -1,0 +1,29 @@
+@page "/User/{id:guid}/edit"
+
+@using Microsoft.AspNetCore.Authorization
+
+<AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="Id">
+    <Authorized>
+        @foreach (var claim in @context.User.Claims)
+        {
+            <p>Type: @claim.Type</p>
+            <p>Value: @claim.Value</p>
+            <p>ValueType: @claim.ValueType</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        Нет прав
+        
+        @foreach (var claim in @context.User.Claims)
+        {
+            <p>Type: @claim.Type</p>
+            <p>Value: @claim.Value</p>
+            <p>ValueType: @claim.ValueType</p>
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    // private static readonly IComponentRenderMode RenderMode = new InteractiveWebAssemblyRenderMode(false);
+    [Parameter] public Guid Id { get; set; }
+}

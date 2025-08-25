@@ -1,9 +1,10 @@
 using MaybeResults;
 using Mediator;
+using Shared.Utils.MediatorWithResults;
 
 namespace Authorization.Core.Registration;
 
-public sealed class RegisterHandler(IUserService userService) : ICommandHandler<RegisterCommand, IMaybe>
+public sealed class RegisterHandler(IUserService userService) : IResultCommandHandler<RegisterCommand>
 {
     public ValueTask<IMaybe> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {

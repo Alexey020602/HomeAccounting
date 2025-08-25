@@ -1,4 +1,3 @@
-using Authorization.Contracts;
 using Mediator;
 
 namespace Authorization.Core.CheckLoginExist;

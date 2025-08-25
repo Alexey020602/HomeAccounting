@@ -3,7 +3,6 @@ using Budgets.Contracts.GetBudgetDetail;
 using Budgets.Core.Model;
 using Budgets.Core.UserInBudgetPermissions;
 using MaybeResults;
-using Microsoft.AspNetCore.Authorization;
 using Shared.Utils.MediatorWithResults;
 using BudgetUser = Budgets.Core.Model.BudgetUser;
 
@@ -11,8 +10,7 @@ namespace Budgets.Core.GetBudgetDetail;
 
 public sealed class GetBudgetDetailHandler(
     IGetBudgetDetailService service,
-    IUsersService usersService,
-    IAuthorizationService authorizationService)
+    IUsersService usersService)
     : IResultQueryHandler<GetBudgetQuery, BudgetDetail>
 {
     public async ValueTask<IMaybe<BudgetDetail>> Handle(GetBudgetQuery query, CancellationToken cancellationToken) =>

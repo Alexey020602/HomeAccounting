@@ -12,6 +12,13 @@ public static class AuthenticationStateExtensions
 
     public static AuthenticationState GetAuthenticationState(this Authentication authentication)
     {
-        return new AuthenticationState(authentication.Principal);
+        try
+        {
+            return new AuthenticationState(authentication.Principal);
+        }
+        catch (Exception)
+        {
+            return GetAnonymous();
+        }
     }
 }

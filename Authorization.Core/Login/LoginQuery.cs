@@ -1,8 +1,8 @@
 using Authorization.Contracts;
 using MaybeResults;
 using Mediator;
+using Shared.Utils.MediatorWithResults;
 
 namespace Authorization.Core.Login;
 
-public interface IMaybeRequest<out TResponse> : IRequest<IMaybe<TResponse>>;
-public record LoginQuery(string Login, string Password) : IMaybeRequest<AuthorizationResponse>;
+public record LoginQuery(string Login, string Password) : IResultRequest<LoginResponse>;

@@ -42,6 +42,11 @@ public class BudgetUsersResultedPipelineBehavior<TMessage, TResponse>(IAuthoriza
         {
             return (TResponse)UserHasNoPermission.Create(errorMessage);
         }
+
+        if (genericArguments.Length != 1)
+        {
+            throw new InvalidOperationException("Generic IMaybe must have exactly 1 generic argument");
+        }
             
         var genericErrorType = typeof(UserHasNoPermission<>).MakeGenericType(genericArguments);
         return (TResponse) Activator.CreateInstance(type: genericErrorType, errorMessage, Array.Empty<NoneDetail>())!;

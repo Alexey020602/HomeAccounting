@@ -1,5 +1,6 @@
 using Budgets.Core;
 using Budgets.Core.CreateBudget;
+using Budgets.Core.DeleteBudget;
 using Budgets.Core.EditBudget;
 using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
@@ -34,6 +35,7 @@ public static class BudgetsModule
             .AddScoped<IAuthorizationHandler, BudgetRequirementsAuthorizationHandler>()
             .AddScoped<IUserBudgetPermissionsService, UserBudgetPermissionsService>()
             .AddScoped<IUpdateBudgetService,  UpdateBudgetService>()
+            .AddScoped<IDeleteBudgetService,  DeleteBudgetService>()
             .AddScoped<IGetBudgetUsersService, GetBudgetUsersService>()
             .AddPipelineBehaviors()
             ;

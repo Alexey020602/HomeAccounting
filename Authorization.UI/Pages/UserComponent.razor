@@ -10,7 +10,12 @@
         <MudNavLink Href="@($"/user/{user.Id}")">
             @user.UserName
         </MudNavLink>
-        @ChildContent?.Invoke(authenticationState)
+        @if (ChildContent is not null)
+        {
+            <MudDivider/>
+            @ChildContent(authenticationState)
+            <MudDivider/>
+        }
         <MudNavLink
             IconColor="Color.Error"
             OnClick="@Logout"

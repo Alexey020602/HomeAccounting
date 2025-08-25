@@ -6,6 +6,7 @@ using Budgets.Contracts.GetBudgetDetail;
 using Budgets.Contracts.GetBudgets;
 using Budgets.Contracts.UserInBudgetPermissions;
 using Budgets.Core.CreateBudget;
+using Budgets.Core.DeleteBudget;
 using Budgets.Core.EditBudget;
 using Budgets.Core.GetBudgetDetail;
 using Budgets.Core.GetBudgets;
@@ -42,6 +43,8 @@ public static class BudgetsEndpoints
             .MapGetBudgetDetail();
         budgetGroup
             .MapUpdateBudget();
+        budgetGroup
+            .MapDeleteBudget();
         budgetGroup
             .MapGetUserInBudgetPermissions();
         budgetGroup
@@ -82,6 +85,12 @@ public static class BudgetsEndpoints
         .Produces((int)HttpStatusCode.Forbidden)
         .ProducesValidationProblem();
 
+    private static RouteHandlerBuilder MapDeleteBudget(this IEndpointRouteBuilder endpoints) => endpoints
+        .MapDelete("", EndpointDelegates.DeleteBudget)
+        .Produces((int)HttpStatusCode.NoContent)
+        .ProducesProblem((int)HttpStatusCode.Forbidden)
+        .ProducesValidationProblem();
+
     private static RouteHandlerBuilder MapGetUserInBudgetPermissions(this IEndpointRouteBuilder endpoints) => endpoints
         .MapGet("/permissions", EndpointDelegates.GetUserInBudgetPermissions)
         .Produces((int)HttpStatusCode.OK, typeof(UserInBudgetPermissions))
@@ -106,7 +115,7 @@ internal static class EndpointDelegates
         Guid budgetId,
         ClaimsPrincipal user,
         IMediator mediator
-    ) => mediator.Send(new GetBudgetUsersQuery(budgetId, user)).AsTask().MapToResultAsync();
+    ) => mediator.Send(new GetBudgetUsersQuery(budgetId, user)).MapToResultAsync();
 
     public static Task<Results<NoContent, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>>
         UpdateBudget(
@@ -114,7 +123,7 @@ internal static class EndpointDelegates
             ClaimsPrincipal user,
             BudgetData budget,
             IMediator mediator
-        ) => mediator.Send(new UpdateBudgetCommand(budgetId, user, budget)).AsTask()
+        ) => mediator.Send(new UpdateBudgetCommand(budgetId, user, budget))
         .MapToResultAsync(TypedResults.NoContent);
 
     public static async Task<Results<Created, ValidationProblem, InternalServerError>> CreateBudget(
@@ -133,6 +142,13 @@ internal static class EndpointDelegates
             };
     }
 
+    public static async Task<Results<NoContent, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>>
+        DeleteBudget(
+            Guid budgetId, ClaimsPrincipal user, IMediator mediator)
+    {
+        return await mediator.Send(new DeleteBudgetCommand(budgetId, user)).MapToResultAsync(TypedResults.NoContent);
+    }
+
     public static async Task<Results<Ok<IReadOnlyCollection<Budget>>, ProblemHttpResult>> GetBudgets(
         [AsParameters] GetBudgetsHttpRequest request, ClaimsPrincipal user, IMediator mediator)
     {
@@ -146,21 +162,14 @@ internal static class EndpointDelegates
     }
 
     public static async
-        Task<Results<Ok<BudgetDetail>, ForbidHttpResult, NotFound, InternalServerError<BudgetFullDetail>>>
+        Task<Results<Ok<BudgetDetail>, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>>
         GetBudgetDetail(
             Guid budgetId,
             ClaimsPrincipal user,
             IMediator mediator
         )
     {
-        return await mediator.Send(new GetBudgetQuery(budgetId, user)) switch
-        {
-            Some<BudgetDetail> detail => TypedResults.Ok(detail.Value),
-            Core.UserInBudgetPermissions.UserHasNoPermission<BudgetFullDetail> => TypedResults.Forbid(),
-            BudgetNotFoundError<BudgetDetail> => TypedResults.NotFound(),
-            // INone<BudgetDetail> error => error.MapToProblemResult(),
-            _ => throw new InvalidOperationException("Unknown result type")
-        };
+        return await mediator.Send(new GetBudgetQuery(budgetId, user)).MapToResultAsync();
     }
 
     public static async

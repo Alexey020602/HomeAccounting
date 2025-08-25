@@ -4,6 +4,8 @@
 @using MaybeResults
 @using Shared.Blazor.RefitWithResult
 @inject IBudgetsApi BudgetsApi
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="my-4">
     <MudCard Elevation="4" Class="pa-4">
@@ -14,14 +16,15 @@
             <CardHeaderActions>
                 @if (permissions is not null)
                 {
-                    @if(permissions.CanEdit) 
+                    @if (permissions.CanEdit)
                     {
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Secondary" Href="@EditHref"/>
                     }
 
-                    @if(permissions.CanDelete)
+                    @if (permissions.CanDelete)
                     {
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@DeleteBudget"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                       OnClick="@DeleteBudget"/>
                     }
                 }
             </CardHeaderActions>
@@ -41,16 +44,16 @@
                     </MudItem>
                     <MudItem xs="12">
                         <MaybeComponent Result="budgetUsersResult" Context="budgetUsers">
-                        <MudTable Items="@budgetUsers" Hover="true" Striped="true" Dense="true" Elevation="0">
-                            <HeaderContent>
-                                <MudTh>Имя пользователя</MudTh>
-                                <MudTh>Роль</MudTh>
-                            </HeaderContent>
-                            <RowTemplate>
-                                <MudTd>@context.UserName</MudTd>
-                                <MudTd>@context.Role</MudTd>
-                            </RowTemplate>
-                        </MudTable>
+                            <MudTable Items="@budgetUsers" Hover="true" Striped="true" Dense="true" Elevation="0">
+                                <HeaderContent>
+                                    <MudTh>Имя пользователя</MudTh>
+                                    <MudTh>Роль</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd>@context.UserName</MudTd>
+                                    <MudTd>@context.Role</MudTd>
+                                </RowTemplate>
+                            </MudTable>
                         </MaybeComponent>
                     </MudItem>
                 </MudGrid>
@@ -71,13 +74,25 @@
         var permissionsTask = BudgetsApi.GetUserPermissions(Id);
         var budgetUsersTask = BudgetsApi.GetBudgetUsers(Id);
         budgetResult = await budgetTask.ToMaybe();
-        permissions = await permissionsTask.ToMaybe() is Some<UserInBudgetPermissions> some 
+        permissions = await permissionsTask.ToMaybe() is Some<UserInBudgetPermissions> some
             ? some.Value
             : null;
         budgetUsersResult = await budgetUsersTask.ToMaybe();
     }
-    
-    private Task DeleteBudget() => Task.CompletedTask;
+
+    private async Task DeleteBudget()
+    {
+        switch (await BudgetsApi.DeleteBudget(Id).ToMaybe())
+        {
+            case INone error:
+                Snackbar.ProcessError(error);
+                break;
+            default:
+                Snackbar.Add("Бюджет успешно удален", Severity.Success);
+                NavigationManager.NavigateTo("/budgets");
+                break;
+        }
+    }
 
     private string EditHref => $"/budgets/{Id}/edit";
 }

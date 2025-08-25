@@ -24,6 +24,8 @@ public interface IBudgetsApi
 
     [Put("/{id}")]
     public Task UpdateBudget(Guid id, BudgetData budgetData);
+    [Delete("/{id}")]
+    public Task DeleteBudget(Guid id);
     [Get("/{id}/users")]
     public Task<IReadOnlyCollection<BudgetUser>> GetBudgetUsers(Guid id);
     [Get("/{id}/permissions")]

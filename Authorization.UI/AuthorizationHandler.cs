@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using Authorization.Contracts;
 using Authorization.UI.Dto;
+using Refit;
+using Shared.Blazor;
 
 namespace Authorization.UI;
 
@@ -9,12 +11,19 @@ public static class AuthorizationResponseExtensions
 {
     public static Authentication ConvertToAuthentication(this AuthorizationResponse response)
     {
-        return new Authentication(response.AccessToken, response.RefreshToken,
-            new User(response.UserId, response.Login));
+        return new Authentication(
+            response.AccessToken,
+            response.RefreshToken,
+            response.User,
+            response.ExpiresAt
+        );
     }
 }
 
-public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, IAuthorizationApi authorizationApi)
+public class AuthorizationHandler(
+    IAuthenticationStorage authenticationStorage,
+    IAuthorizationApi authorizationApi,
+    ILogoutService logoutService)
     : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
@@ -26,7 +35,10 @@ public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, 
         var accessToken = await authenticationStorage.GetAuthorizationAsync(cancellationToken);
 
         if (accessToken is null)
+        {
+            await logoutService.Logout();
             return CreateUnauthorizedMessage(request);
+        }
 
         request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, accessToken.AccessToken);
         var response = await base.SendAsync(request, cancellationToken);
@@ -44,6 +56,7 @@ public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, 
         }
         catch (Exception)
         {
+            await logoutService.Logout();
             return CreateUnauthorizedMessage(request);
         }
         finally
@@ -51,7 +64,19 @@ public class AuthorizationHandler(IAuthenticationStorage authenticationStorage, 
             response.Dispose();
         }
 
-        return await base.SendAsync(request, cancellationToken);
+        try
+        {
+            return await base.SendAsync(request, cancellationToken);
+        }
+        catch (ApiException apiException)
+        {
+            if (apiException.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await logoutService.Logout();
+            }
+
+            throw;
+        }
     }
 
     private static HttpResponseMessage CreateUnauthorizedMessage(HttpRequestMessage? request)

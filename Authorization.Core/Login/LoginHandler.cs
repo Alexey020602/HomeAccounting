@@ -19,10 +19,10 @@ public sealed class LoginHandler(IUserService userService, ITokenService tokenSe
             secondMaybe: user => user.RefreshToken is null
                 ? new UserError<LoginResponse>("No refresh token found")
                 : Maybe.Create(new LoginResponse(
-                    user.Id,
-                    query.Login,
+                    user,
                     tokenService.CreateTokenForUser(user),
-                    user.RefreshToken.Token
+                    user.RefreshToken.Token,
+                    user.RefreshToken.Expires
                 )),
             resultSelector: (_, response) => response
         );

@@ -1,0 +1,88 @@
+@using Authorization.Contracts
+@using FluentValidation
+@using Shared.Blazor.Validation
+
+<MudForm @ref="@form" Model="model" Validation="@editModelValidator.ValidateValueDelegate()">
+    <MudTextField
+        @bind-Value="model.UserName"
+        Variant="Variant.Outlined"
+        Label="Логин"
+        OnlyValidateIfDirty="true"
+        For="@(() => model.UserName)"/>
+
+    <MudTextField
+        @bind-Value="model.FullName"
+        Variant="Variant.Outlined"
+        Label="Имя пользователя"
+        OnlyValidateIfDirty="true"
+        For="@(() => model.FullName)"/>
+
+    <MudGrid Justify="Justify.SpaceBetween">
+        <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@Reset"
+                       Style="width: 100%">
+                Очистить
+            </MudButton>
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Submit"
+                       Style="width: 100%">
+                Сохранить
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    [Parameter] public User User { get; set; } = null!;
+    [Parameter] public EventCallback<User> OnSubmit { get; set; }
+    private MudForm form = new();
+    private readonly EditUserModel model = new();
+    private readonly EditModelValidator editModelValidator = new();
+
+    protected override void OnParametersSet()
+    {
+        model.SetValuesFromUser(User);
+    }
+
+    private void Reset() => model.SetValuesFromUser(User);
+
+    private async Task Submit()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            await OnSubmit.InvokeAsync(model.CreateUser(User.Id));
+        }
+    }
+
+    private sealed class EditUserModel
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+
+        public void SetValuesFromUser(User user)
+        {
+            UserName = user.UserName;
+            FullName = user.FullName;
+        }
+
+        public User CreateUser(Guid id) => new User(id, UserName, FullName);
+    }
+
+    private sealed class EditModelValidator : AbstractValidator<EditUserModel>
+    {
+        public EditModelValidator()
+        {
+            RuleFor(u => u.UserName)
+                .NotEmpty()
+                .MaximumLength(256);
+
+            RuleFor(u => u.FullName)
+                .NotEmpty()
+                .MaximumLength(256);
+        }
+    }
+
+}

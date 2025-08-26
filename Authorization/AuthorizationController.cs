@@ -20,10 +20,10 @@ internal static class LoginResponseExtensions
     public static AuthorizationResponse
         ConvertToAuthorizationResponse(this LoginResponse loginResponse, string scheme = JwtBearerDefaults.AuthenticationScheme) => new AuthorizationResponse(
         scheme,
-        loginResponse.UserId,
-        loginResponse.Login,
+        loginResponse.User,
         loginResponse.AccessToken,
-        loginResponse.RefreshToken
+        loginResponse.RefreshToken,
+        loginResponse.ExpiresAt
         );
 }
 

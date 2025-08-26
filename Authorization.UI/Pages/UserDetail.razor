@@ -11,13 +11,16 @@
 @inject IUsersApi UsersApi
 
 <MudContainer MaxWidth="MaxWidth.Medium">
-    <MaybeComponent Result="UserMaybe">
+    <MaybeComponent Result="UserMaybe" Context="user">
         <MudCard>
             <MudCardHeader>
-                <MudText Typo="Typo.h5">@context.UserName</MudText>
+                <MudText Typo="Typo.h5">@user.UserName</MudText>
+                <AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="@Id">
+                    <MudLink Href="@UserEditHref">Редактировать</MudLink>
+                </AuthorizeView>
             </MudCardHeader>
             <MudCardContent>
-                <MudText><strong>ID:</strong> @context.Id</MudText>
+                <MudText><strong>Имя пользователя:</strong> @user.FullName</MudText>
             </MudCardContent>
         </MudCard>
     </MaybeComponent>
@@ -30,4 +33,6 @@
     {
         UserMaybe = await UsersApi.GetUser(Id).TryAsync();
     }
+
+    private string UserEditHref => $"/user/{Id}/edit";
 }

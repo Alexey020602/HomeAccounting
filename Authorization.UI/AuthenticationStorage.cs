@@ -47,6 +47,12 @@ public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthent
         try
         {
             var authentication = await localStorage.GetAsync<Authentication>(AuthorizationKey, cancellationToken);
+
+            if (authentication is not null && authentication.Expired)
+            {
+                return null;
+            }
+            
             return authentication;
         }
         finally

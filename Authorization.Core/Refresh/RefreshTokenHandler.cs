@@ -30,10 +30,10 @@ public sealed class RefreshTokenHandler(IUserService userService, ITokenService 
 
             return Maybe.Create(
                 new LoginResponse(
-                    user.Id,
-                    user.UserName,
+                    user,
                     tokenService.CreateTokenForUser(user),
-                    user.RefreshToken.Token
+                    user.RefreshToken.Token,
+                    user.RefreshToken.Expires
                 )
             );
         });

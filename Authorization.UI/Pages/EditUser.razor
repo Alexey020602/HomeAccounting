@@ -1,29 +1,34 @@
 @page "/User/{id:guid}/edit"
-
-@using Microsoft.AspNetCore.Authorization
+@using Authorization.Contracts
+@using FluentValidation
+@using MaybeResults
+@using Shared.Blazor.Components
+@using Shared.Blazor.RefitWithResult
+@inject ISnackbar Snackbar
+@inject IUsersApi UsersApi
 
 <AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="Id">
     <Authorized>
-        @foreach (var claim in @context.User.Claims)
-        {
-            <p>Type: @claim.Type</p>
-            <p>Value: @claim.Value</p>
-            <p>ValueType: @claim.ValueType</p>
-        }
+        <MaybeComponent Result="UserMaybe" Context="user">
+            <UserEditForm User="user" OnSubmit=""/>
+        </MaybeComponent>
     </Authorized>
     <NotAuthorized>
-        Нет прав
-        
-        @foreach (var claim in @context.User.Claims)
-        {
-            <p>Type: @claim.Type</p>
-            <p>Value: @claim.Value</p>
-            <p>ValueType: @claim.ValueType</p>
-        }
+        У вас нет прав редактировать данного пользоа=вателя
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    // private static readonly IComponentRenderMode RenderMode = new InteractiveWebAssemblyRenderMode(false);
     [Parameter] public Guid Id { get; set; }
+    private IMaybe<User>? UserMaybe { get; set; }
+
+    private Task Update(User user)
+    {
+        return Task.CompletedTask;
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        UserMaybe = await UsersApi.GetUser(Id).ToMaybe();
+    }
 }

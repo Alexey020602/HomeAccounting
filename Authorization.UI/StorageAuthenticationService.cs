@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Blazor;
 
 namespace Authorization.UI;
-
 public sealed class StorageAuthenticationService(
     IAuthorizationApi authorizationApi,
-    IAuthenticationStorage storage
+    IAuthenticationStorage storage,
+    ILocalStorage localStorage
 )
     : AuthenticationStateProvider, ILoginService, ILogoutService
 {
@@ -22,6 +22,7 @@ public sealed class StorageAuthenticationService(
     public async Task Logout()
     {
         await storage.RemoveAuthorizationAsync();
+        await localStorage.ClearAsync();
         NotifyAuthenticationStateChanged(Task.FromResult(AuthenticationStateExtensions.GetAnonymous()));
     }
 

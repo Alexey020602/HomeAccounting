@@ -10,9 +10,9 @@ public static class MaybeResultMapper
 {
     #region Async with ValueTask results mapping
     public static Task<Results<Ok, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync(this ValueTask<IMaybe> maybeTask) =>
-        maybeTask.MapToResultAsync(TypedResults.Ok);
+        maybeTask.MapToResultAsync(onSuccess: TypedResults.Ok);
     public static Task<Results<Ok<T>, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<T>(this ValueTask<IMaybe<T>> maybeTask) =>
-        maybeTask.MapToResultAsync(TypedResults.Ok);
+        maybeTask.MapToResultAsync(onSuccess: TypedResults.Ok);
     public static Task<Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<TResult>(
         this ValueTask<IMaybe> maybeTask,
         Func<TResult> onSuccess) where TResult : IResult
@@ -21,6 +21,10 @@ public static class MaybeResultMapper
         this ValueTask<IMaybe<T>> maybeTask,
         Func<T, TResult> onSuccess) where TResult : IResult
         => maybeTask.MapToResultAsync(onSuccess, error => error.MapToFailureResult());
+    public static Task<Results<Ok, TFailureResult>> MapToResultAsync<TFailureResult>(this ValueTask<IMaybe> maybeTask, Func<INone, TFailureResult> onFailure) where TFailureResult : IResult =>
+    maybeTask.MapToResultAsync(onSuccess: TypedResults.Ok, onFailure: onFailure);
+    public static Task<Results<Ok<T>, TFailureResult>> MapToResultAsync<T, TFailureResult>(this ValueTask<IMaybe<T>> maybeTask, Func<INone<T>, TFailureResult> onFailure)  where TFailureResult : IResult =>
+    maybeTask.MapToResultAsync(onSuccess: TypedResults.Ok, onFailure: onFailure);
     public static async Task<Results<TSuccessResult, TFailureResult>> MapToResultAsync<TSuccessResult, TFailureResult>(
         this ValueTask<IMaybe> maybeTask,
         Func<TSuccessResult> onSuccess,

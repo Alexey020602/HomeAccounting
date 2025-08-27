@@ -48,12 +48,14 @@ public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthent
         {
             var authentication = await localStorage.GetAsync<Authentication>(AuthorizationKey, cancellationToken);
 
-            if (authentication is not null && authentication.Expired)
+            if (authentication is null || !authentication.Expired)
             {
-                return null;
+                return authentication;
             }
             
-            return authentication;
+            await RemoveAuthorizationAsync(cancellationToken);
+            return null;
+
         }
         finally
         {

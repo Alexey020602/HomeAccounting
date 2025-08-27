@@ -4,13 +4,15 @@
 @using MaybeResults
 @using Shared.Blazor.Components
 @using Shared.Blazor.RefitWithResult
+@using Severity = MudBlazor.Severity
 @inject ISnackbar Snackbar
 @inject IUsersApi UsersApi
+@inject NavigationManager NavigationManager
 
 <AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="Id">
     <Authorized>
         <MaybeComponent Result="UserMaybe" Context="user">
-            <UserEditForm User="user" OnSubmit=""/>
+            <UserEditForm User="user" OnSubmit="@Update"/>
         </MaybeComponent>
     </Authorized>
     <NotAuthorized>
@@ -22,9 +24,17 @@
     [Parameter] public Guid Id { get; set; }
     private IMaybe<User>? UserMaybe { get; set; }
 
-    private Task Update(User user)
+    private async Task Update(UpdatedUserDto user)
     {
-        return Task.CompletedTask;
+        if (await UsersApi.UpdateUser(Id, user).ToMaybe() is INone error)
+        {
+            Snackbar.ProcessError(error);
+        }
+        else
+        {
+            Snackbar.Add("Данные пользователя успешно обновлены", Severity.Success);
+            NavigationManager.NavigateTo($"/user/{Id}");
+        }
     }
     
     protected override async Task OnInitializedAsync()

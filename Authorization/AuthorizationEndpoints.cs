@@ -2,13 +2,16 @@ using System.Net;
 using Authorization.Contracts;
 using Authorization.Core.CheckLoginExist;
 using Authorization.Core.Registration;
+using Authorization.Core.UpdateUser;
 using Authorization.Core.UserData;
 using MaybeResults;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Shared.Web;
 
 namespace Authorization;
 
@@ -18,8 +21,8 @@ public static class AuthorizationEndpoints
     public static void MapAuthorization(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGroup("/users")
-            .MapUserEndpoint()
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .MapUserEndpoints();
     }
 
     private static async Task<IResult> CheckLoginExist(string login, IMediator mediator) =>
@@ -28,10 +31,27 @@ public static class AuthorizationEndpoints
 
 static class UserEndpoints
 {
-    public static RouteHandlerBuilder MapUserEndpoint(this IEndpointRouteBuilder endpoints) =>
+    public static RouteHandlerBuilder MapGetUser(this IEndpointRouteBuilder endpoints) =>
         endpoints
-            .MapGet((string)"/{id:guid}", GetUserData)
+            .MapGet("", GetUserData)
             .Produces((int)HttpStatusCode.OK, typeof(User));
+
+    public static RouteHandlerBuilder MapUpdateUser(this IEndpointRouteBuilder endpoints) =>
+        endpoints
+            .MapPut("", UpdateUser)
+            .Produces((int)HttpStatusCode.NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem((int)HttpStatusCode.NotFound);
+
+    public static void MapUserEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        var userGroup = endpoints.MapGroup("/{id:guid}");
+        userGroup
+            .MapGetUser();
+
+        userGroup
+            .MapUpdateUser();
+    }
 
     private static async Task<IResult> GetUserData(Guid id, IMediator mediator) =>
         await mediator.Send(new UserDataQuery(id)) switch
@@ -44,4 +64,10 @@ static class UserEndpoints
             INone<User> error => Results.Problem(error.Message),
             _ => Results.InternalServerError()
         };
+
+    private static Task<Results<NoContent, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> UpdateUser(
+        Guid id,
+        UpdatedUserDto user,
+        IMediator mediator
+    ) => mediator.Send(new UpdateUserCommand(id, user)).MapToResultAsync(onSuccess: TypedResults.NoContent);
 }

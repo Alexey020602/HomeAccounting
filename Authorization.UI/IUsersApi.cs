@@ -9,4 +9,5 @@ namespace Authorization.UI;
 public interface IUsersApi
 {
     [Get("/{id}")] public Task<User> GetUser(Guid id);
+    [Put("/{id}")] public Task UpdateUser(Guid id, UpdatedUserDto user);
 }

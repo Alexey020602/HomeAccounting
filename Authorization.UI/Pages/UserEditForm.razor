@@ -36,7 +36,7 @@
 
 @code {
     [Parameter] public User User { get; set; } = null!;
-    [Parameter] public EventCallback<User> OnSubmit { get; set; }
+    [Parameter] public EventCallback<UpdatedUserDto> OnSubmit { get; set; }
     private MudForm form = new();
     private readonly EditUserModel model = new();
     private readonly EditModelValidator editModelValidator = new();
@@ -68,7 +68,7 @@
             FullName = user.FullName;
         }
 
-        public User CreateUser(Guid id) => new User(id, UserName, FullName);
+        public UpdatedUserDto CreateUser(Guid id) => new UpdatedUserDto(UserName, FullName);
     }
 
     private sealed class EditModelValidator : AbstractValidator<EditUserModel>

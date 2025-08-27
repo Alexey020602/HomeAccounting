@@ -57,23 +57,27 @@ public class UserService(UserManager<User> userManager): IUserService
         CancellationToken cancellation = default)
     {
         var user = await userManager.FindByNameAsync(request.Login);
-        // var user = await userService.GetUserByLogin(loginRequest.Login);
-
         if (user is null) return new UserNotFoundError<User>("User not found");
 
         if (!await userManager.CheckPasswordAsync(user, request.Password))
             return new UserError<User>("Wrong Password");
         
         user.RefreshToken = RefreshTokenMapper.ConvertToRefreshToken(createRefreshToken());
-        //todo Добавить обработку ошибок
-        await userManager.UpdateAsync(user);
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded) return new UserError("Error while updating user", result).Cast<User>();
         
         return Maybe.Create(user);
     }
 
-    public async Task<IMaybe> UpdateUser(User user, CancellationToken cancellation = default)
+    public async Task<IMaybe> UpdateUser(Guid userId, Contracts.UpdatedUserDto user, CancellationToken cancellation = default)
     {
-        var result = await userManager.UpdateAsync(user);
+        if (await userManager.FindByIdAsync(userId.ToString()) is not { } existingUser)
+        {
+            return new UserError("User not found");
+        }
+        existingUser.FullName = user.FullName;
+        existingUser.UserName = user.UserName;
+        var result = await userManager.UpdateAsync(existingUser);
 
         if (result.Succeeded)
         {

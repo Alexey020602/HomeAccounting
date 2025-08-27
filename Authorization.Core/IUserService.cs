@@ -19,4 +19,5 @@ public interface IUserService
 
     Task<IMaybe<User>> GetById(Guid id, CancellationToken cancellation = default);
     Task<IMaybe<IReadOnlyCollection<User>>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellation = default);
+    Task<IMaybe> UpdateUser(Guid userId, Contracts.UpdatedUserDto user, CancellationToken cancellation = default);
 }

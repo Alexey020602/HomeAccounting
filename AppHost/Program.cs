@@ -1,4 +1,5 @@
 using Aspire.Hosting.Docker.Resources.ComposeNodes;
+using Aspire.Hosting.Docker.Resources.ServiceNodes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Aspire.Hosting.Postgres;
@@ -22,32 +23,51 @@ builder.AddDockerComposeEnvironment("docker")
 var username = builder.AddParameter("Username", secret: true);
 var password = builder.AddParameter("Password", secret: true);
 
-builder.Services.AddHealthChecks()
-    .AddNpgSql();
-
-
 var db = builder
     .AddPostgres("db")
     .WithUserName(username)
     .WithPassword(password)
     .WithLifetime(ContainerLifetime.Persistent)
-    .WithHealthCheck("npgsql")
     .WithDataVolume()
     .WithPgAdmin()
+    
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        service.Healthcheck = new Healthcheck()
+        {
+            Test = [
+                "[",
+                "CMD", 
+                "pg_isready",
+                "-U ${USERNAME}",
+                "-d HomeAccounting",
+                "]"
+            ],
+            Interval = "10s",
+            Timeout = "5s",
+            Retries = 5,
+            StartPeriod = "20s"
+        };
+    })
     .AddDatabase("HomeAccounting");
 
 var api = builder
     .AddProject<Api>("api")
+    // .WithHttpEndpoint()
     .WithExternalHttpEndpoints()
     .PublishAsDockerComposeService((resource, service) =>
     {
-        // service.DependsOn.Add("db", new ServiceDependency(){ Condition = "service_healthy"}); 
-        // service.Ports.Add("80:${API_PORT}");
+        if (builder.ExecutionContext.IsPublishMode)
+        {
+            service.DependsOn.Add("db", new ServiceDependency() { Condition = "service_healthy"});
+        }
     })
     .WithReference(db)
-    .WaitFor(db)
-    .WaitForCompletion(db)
     .WithHttpHealthCheck("/health");
-;
+if (!builder.ExecutionContext.IsPublishMode)
+{
+    api = api
+            .WaitFor(db);
+}
 
 builder.Build().Run();

@@ -1,20 +1,28 @@
 using Aspire.Hosting.Docker.Resources.ComposeNodes;
+using Aspire.Hosting.Docker.Resources.ServiceNodes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Aspire.Hosting.Postgres;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.Services.AddHealthChecks();
-builder.AddDockerComposeEnvironment("docker");
+builder.AddDockerComposeEnvironment("docker")
+    .WithDashboard(dashboard =>
+    {
+        dashboard.PublishAsDockerComposeService((_, service) =>
+        {
+            service.Expose.Add("11111");
+            service.Ports.Add("11111:11111");
+        });
+    });
 
-var databaseConfigurationSection = builder.Configuration.GetSection("Database");
-var username = builder.AddParameter("Username", databaseConfigurationSection.GetValue<string>("username")!, secret: true);
-var password = builder.AddParameter("Password",databaseConfigurationSection.GetValue<string>("password")!, secret: true);
-// IResourceBuilder<ParameterResource> username = new  "home_accounting_user";
-// IResourceBuilder<ParameterResource> password = "654765as465gf4as";
+var username = builder.AddParameter("Username", secret: true);
+var password = builder.AddParameter("Password", secret: true);
+
 var db = builder
     .AddPostgres("db")
     .WithUserName(username)
@@ -22,35 +30,44 @@ var db = builder
     .WithLifetime(ContainerLifetime.Persistent)
     .WithDataVolume()
     .WithPgAdmin()
+    
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        service.Healthcheck = new Healthcheck()
+        {
+            Test = [
+                "[",
+                "CMD", 
+                "pg_isready",
+                "-U ${USERNAME}",
+                "-d HomeAccounting",
+                "]"
+            ],
+            Interval = "10s",
+            Timeout = "5s",
+            Retries = 5,
+            StartPeriod = "20s"
+        };
+    })
     .AddDatabase("HomeAccounting");
-
-// var migrations = builder
-//     .AddProject<MigrationService>("migrations")
-//     .WithReference(db)
-//     .WaitFor(db);
 
 var api = builder
     .AddProject<Api>("api")
+    // .WithHttpEndpoint()
     .WithExternalHttpEndpoints()
-    // .WaitForCompletion(migrations)
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        if (builder.ExecutionContext.IsPublishMode)
+        {
+            service.DependsOn.Add("db", new ServiceDependency() { Condition = "service_healthy"});
+        }
+    })
     .WithReference(db)
     .WithHttpHealthCheck("/health");
-;
-
-// var client = builder.AddProject<Client>("client")
-//     .WaitFor(api)
-//     ;
-
-// var client = builder.AddProject<WebClient>("client")
-//     .WaitFor(api);
-//
-// var yarp = builder
-//         .AddProject<Gateway>("gateway")
-//         // .AddYarp("apigateway")
-//         // .WithConfigFile("yarp.json")
-//         .WithReference(api)
-//         .WithReference(client)
-//         .WithExternalHttpEndpoints()
-//     ;
+if (!builder.ExecutionContext.IsPublishMode)
+{
+    api = api
+            .WaitFor(db);
+}
 
 builder.Build().Run();

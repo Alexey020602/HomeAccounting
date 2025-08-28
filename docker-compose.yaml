@@ -33,7 +33,9 @@ services:
       retries: 5
       start_period: "20s"
   api:
-    image: "${API_IMAGE}"
+    build:
+      context: .
+      dockerfile: ./Api/Dockerfile
     environment:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"

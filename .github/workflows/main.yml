@@ -35,3 +35,31 @@ jobs:
 
       - name: Push Docker images to GHCR
         run: docker compose push
+
+deploy:
+  runs-on: ubuntu-latest
+  need: build-push
+  steps:
+      - name: Copy files to server 
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose.yaml, .env"
+          target: "C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting"
+      - name: Deploy to Windows Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ./RiderProjects/HomeAccounting 
+            docker compose pull
+            docker compose down
+            docker compose up
+            
+          

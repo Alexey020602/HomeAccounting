@@ -20,11 +20,11 @@ builder.AddDockerComposeEnvironment("docker")
         });
     });
 
-var username = builder.AddParameter("Username", secret: true);
-var password = builder.AddParameter("Password", secret: true);
+var username = builder.AddParameter("Username", secret: true, value: "myuser");
+var password = builder.AddParameter("Password", secret: true, value: "sdadfgsqafasdfas");
 
 var db = builder
-    .AddPostgres("db")
+    .AddPostgres("db", username, password)
     .WithUserName(username)
     .WithPassword(password)
     .WithLifetime(ContainerLifetime.Persistent)

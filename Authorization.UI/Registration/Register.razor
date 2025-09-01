@@ -1,9 +1,7 @@
 @page "/Register"
-@using Authorization.Contracts
-@using Authorization.UI.Registration.Validators
 @using FluentValidation
 @using Shared.Blazor.Validation
-@using Shared.Utils.Model
+@using Shared.Utils
 @inject IAuthorizationApi AuthorizationApi
 @inject IValidator<RegistrationModel> ModelValidator
 <MudCard Style="max-width: 600px; padding: 20px">
@@ -29,27 +27,36 @@
                 Label="Имя пользователя"
                 For="@(() => registrationModel.UserName)"/>
 
-            <MudPasswordField
+
+            <MudTextField
                 @bind-Value="registrationModel.Password"
-                InputType="InputType.Password"
+                InputType="@showPasswordFieldText.PasswordFieldType()"
                 Variant="Variant.Outlined"
                 Clearable="Clearable"
                 Immediate="Immediate"
+                Adornment="Adornment.End"
+                AdornmentIcon="@showPasswordFieldText.PasswordFieldIcon()"
+                OnAdornmentClick="@(() => showPasswordFieldText.Toggle())"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
                 Validation="@ModelValidator.ValidateValueAsyncDelegate()"
                 Label="Пароль"
                 For="@(() => registrationModel.Password)"/>
 
-            <MudPasswordField
+
+            <MudTextField
                 @bind-Value="registrationModel.ConfirmPassword"
-                InputType="InputType.Password"
+                InputType="@showPasswordConfirmationFieldText.PasswordFieldType()"
                 Variant="Variant.Outlined"
-                 Clearable="Clearable"
+                Clearable="Clearable"
                 Immediate="Immediate"
+                Adornment="Adornment.End"
+                AdornmentIcon="@showPasswordConfirmationFieldText.PasswordFieldIcon()"
+                OnAdornmentClick="@(() => showPasswordConfirmationFieldText.Toggle())"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
                 Validation="@ModelValidator.ValidateValueAsyncDelegate()"
-                Label="Пароль"
+                Label="Подтвержидение пароля"
                 For="@(() => registrationModel.ConfirmPassword)"/>
+
 
             <MudGrid Justify="Justify.SpaceBetween">
                 <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
@@ -73,6 +80,8 @@
     private const bool OnlyValidateIfDirty = true;
     private const bool Immediate = true;
     private const bool Clearable = true;
+    private bool showPasswordFieldText = false;
+    private bool showPasswordConfirmationFieldText = false;
     private readonly RegistrationModel registrationModel = new();
     private MudForm form = new();
 
@@ -85,6 +94,7 @@
             await LoginAsync();
         }
     }
+
     private Task LoginAsync()
     {
         return AuthorizationApi.Register(registrationModel.CreateRequest());

@@ -8,7 +8,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Logging.SetMinimumLevel( builder.HostEnvironment.IsDevelopment() ? LogLevel.Debug: LogLevel.Information);
 builder.Logging.Configure(options => options.ActivityTrackingOptions = ActivityTrackingOptions.None/*(ActivityTrackingOptions)127*/);
 
-var apiUrl = builder.Configuration.GetValue<string>("ApiUrlHttp") ?? throw new Exception("Отсутствует адрес для api");
+var apiUrl = builder.HostEnvironment.BaseAddress;
 var apiUri = new Uri(apiUrl);
 
 builder.Services.AddBlazorShared(apiUri);

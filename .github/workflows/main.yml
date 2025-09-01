@@ -53,7 +53,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ./RiderProjects/HomeAccounting 
+            cd C:/Users/${{ secrets.SSH_USER }}/RiderProjects/HomeAccounting 
             docker compose pull
             docker compose down
             docker compose up -d

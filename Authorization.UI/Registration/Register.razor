@@ -1,0 +1,93 @@
+@page "/Register"
+@using Authorization.Contracts
+@using Authorization.UI.Registration.Validators
+@using FluentValidation
+@using Shared.Blazor.Validation
+@using Shared.Utils.Model
+@inject IAuthorizationApi AuthorizationApi
+@inject IValidator<RegistrationModel> ModelValidator
+<MudCard Style="max-width: 600px; padding: 20px">
+    <MudForm @ref="form" Model="registrationModel">
+        <MudStack>
+            <MudTextField
+                @bind-Value="registrationModel.Login"
+                Variant="Variant.Outlined"
+                Clearable="Clearable"
+                Immediate="Immediate"
+                OnlyValidateIfDirty="OnlyValidateIfDirty"
+                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
+                Label="Логин"
+                For="@(() => registrationModel.Login)"/>
+
+            <MudTextField
+                @bind-Value="registrationModel.UserName"
+                Variant="Variant.Outlined"
+                Clearable="Clearable"
+                Immediate="Immediate"
+                OnlyValidateIfDirty="OnlyValidateIfDirty"
+                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
+                Label="Имя пользователя"
+                For="@(() => registrationModel.UserName)"/>
+
+            <MudPasswordField
+                @bind-Value="registrationModel.Password"
+                InputType="InputType.Password"
+                Variant="Variant.Outlined"
+                Clearable="Clearable"
+                Immediate="Immediate"
+                OnlyValidateIfDirty="OnlyValidateIfDirty"
+                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
+                Label="Пароль"
+                For="@(() => registrationModel.Password)"/>
+
+            <MudPasswordField
+                @bind-Value="registrationModel.ConfirmPassword"
+                InputType="InputType.Password"
+                Variant="Variant.Outlined"
+                 Clearable="Clearable"
+                Immediate="Immediate"
+                OnlyValidateIfDirty="OnlyValidateIfDirty"
+                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
+                Label="Пароль"
+                For="@(() => registrationModel.ConfirmPassword)"/>
+
+            <MudGrid Justify="Justify.SpaceBetween">
+                <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary"
+                               Style="width: 100%">
+                        Очистить
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Submit"
+                               Style="width: 100%">
+                        Зарегистрироваться
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudStack>
+    </MudForm>
+</MudCard>
+
+@code {
+    private const bool OnlyValidateIfDirty = true;
+    private const bool Immediate = true;
+    private const bool Clearable = true;
+    private readonly RegistrationModel registrationModel = new();
+    private MudForm form = new();
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            await LoginAsync();
+        }
+    }
+    private Task LoginAsync()
+    {
+        return AuthorizationApi.Register(registrationModel.CreateRequest());
+    }
+
+}

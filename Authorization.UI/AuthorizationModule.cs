@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using Authorization.UI.Registration;
+using Authorization.UI.Registration.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -27,6 +30,7 @@ public static class AuthorizationModule
             .AddCascadingAuthenticationState()
             .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
             .Decorate<IAuthenticationStorage, TelemetryAuthenticationStorage>()
+            .AddScoped<IValidator<RegistrationModel>, RegistrationModelValidator>()
             .AddScopedAsMultipleServices<
                 ILoginService,
                 AuthenticationStateProvider,

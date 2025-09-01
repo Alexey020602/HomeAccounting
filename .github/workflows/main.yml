@@ -45,17 +45,19 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: "docker-compose.yaml, .env"
           target: "C:\\Users\\${{ secrets.SSH_USER }}\\RiderProjects\\HomeAccounting"
-      - name: Deploy to Windows Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Docker Compose Deployment (SSH)
+  # You may pin to the exact commit or the version.
+  # uses: humbertocrispim/ssh-docker-compose-action@1f8a21e589697bd9ba348a7b49cd3252d6181af5
+        uses: humbertocrispim/ssh-docker-compose-action@v1.0.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd C:/Users/${{ secrets.SSH_USER }}/RiderProjects/HomeAccounting 
-            docker compose pull
-            docker compose down
-            docker compose up -d
-            
+    # Private SSH key used for logging into remote system.
+          ssh_private_key: ${{ secrets.SSH_KEY }}
+    # Remote host name.
+          ssh_host: ${{ secrets.SSH_HOST }}
+    # Remote SSH port.
+          ssh_port:  ${{ secrets.SSH_PORT }}
+    # Remote user name.
+          ssh_user:  ${{ secrets.SSH_USER }}
+    # Docker Compose pull images.
+          pull: true
           

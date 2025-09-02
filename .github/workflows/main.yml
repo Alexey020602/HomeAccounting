@@ -53,14 +53,11 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            powershell -Command "
-            docker info --format '{{.ServerVersion}}';
-            docker context ls;
-            echo '${{ secrets.GHCR_PAT }}' | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin;
-            cd 'C:\\Users\\${{ secrets.SSH_USER }}\\RiderProjects\\HomeAccounting';
-            docker compose pull;
-            docker compose down;
-            docker compose up -d --remove-orphans;
-            docker compose ps;
-            docker compose logs -t;
-            "
+            cd "C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting"
+            docker --version
+            docker compose version
+            docker compose pull
+            docker compose down
+            docker compose up -d --remove-orphans
+            docker compose ps
+

@@ -31,10 +31,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker images
-        run: docker compose build
+        run: docker build . -f ./Api/Dockerfile -t ghcr.io/alexey020602/homeaccounting-web:latest
 
       - name: Push Docker images to GHCR
-        run: docker compose push
+        run: docker push ghcr.io/alexey020602/homeaccounting-web:latest
         
       - name: Copy files to server 
         uses: appleboy/scp-action@v0.1.7

@@ -1,0 +1,30 @@
+name: Test ssh commands
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Windows Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd "C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting"
+            docker compose down
+            docker compose up -d --remove-orphans
+            echo "===== Compose ps ====="
+            docker compose ps -a | Out-String
+            echo "===== Compose logs (last 100 lines) ====="
+            docker compose logs --tail=100 | Out-String

@@ -40,7 +40,6 @@
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       ASPNETCORE_HTTP_PORTS: "${API_PORT}"
-      ASPNETCORE_HTTPS_PORTS: "${API_HTTPS_PORTS}"
       ConnectionStrings__HomeAccounting: "Host=db;Port=5432;Username=${USERNAME};Password=${PASSWORD};Database=HomeAccounting"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://docker-dashboard:18889"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"

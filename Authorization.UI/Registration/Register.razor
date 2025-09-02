@@ -1,6 +1,7 @@
 @page "/Register"
 @using FluentValidation
 @using MaybeResults
+@using Microsoft.Extensions.Logging
 @using Shared.Blazor.Components
 @using Shared.Blazor.RefitWithResult
 @using Shared.Blazor.Validation
@@ -10,6 +11,7 @@
 @inject IValidator<RegistrationModel> ModelValidator
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@inject ILogger<Register> Logger
 
 <MudCard Style="max-width: 600px; padding: 20px">
     <MudForm @ref="form" Model="registrationModel">
@@ -94,21 +96,26 @@
 
     private async Task Submit()
     {
+        Logger.LogInformation("Валидация формы регистрации");
         await form.Validate();
 
         if (!form.IsValid)
         {
+            Logger.LogInformation("Форма регистрации не валидна");
             return;
         }
 
         if (await LoginAsync().ToMaybe() is INone error)
         {
+            Logger.LogError("Ошибка {Error} при отправке формы регистрации", error.Message);
             Snackbar.ProcessError(error);
             return;
         }
-
+        Logger.LogInformation("Успешная отправка");
         Snackbar.Add("Вы зарегистрированы", Severity.Success);
+        Logger.LogInformation("Снэкбар показан");
         NavigationManager.NavigateTo("login");
+        Logger.LogInformation("Редирект произошел");
     }
 
     private Task LoginAsync()

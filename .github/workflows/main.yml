@@ -31,10 +31,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker images
-        run: docker compose build
+        run: docker build . -f ./Api/Dockerfile -t ghcr.io/alexey020602/homeaccounting-web:latest
 
       - name: Push Docker images to GHCR
-        run: docker compose push
+        run: docker push ghcr.io/alexey020602/homeaccounting-web:latest
         
       - name: Copy files to server 
         uses: appleboy/scp-action@v0.1.7
@@ -53,7 +53,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd C:/Users/${{ secrets.SSH_USER }}/RiderProjects/HomeAccounting 
-            docker compose pull
-            docker compose down
-            docker compose up -d
+            powershell -Command "cd C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting; docker compose pull; docker compose down; docker compose up -d --remove-orphans; docker compose ps -a"
+

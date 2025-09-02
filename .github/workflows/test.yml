@@ -1,0 +1,24 @@
+name: Test ssh commands
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Windows Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            powershell -Command "cd C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting; docker compose pull; docker compose down; docker compose up -d --remove-orphans; docker compose ps -a"

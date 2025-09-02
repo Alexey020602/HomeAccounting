@@ -1,9 +1,16 @@
 @page "/Register"
 @using FluentValidation
+@using MaybeResults
+@using Shared.Blazor.Components
+@using Shared.Blazor.RefitWithResult
 @using Shared.Blazor.Validation
 @using Shared.Utils
+@using Severity = MudBlazor.Severity
 @inject IAuthorizationApi AuthorizationApi
 @inject IValidator<RegistrationModel> ModelValidator
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
 <MudCard Style="max-width: 600px; padding: 20px">
     <MudForm @ref="form" Model="registrationModel">
         <MudStack>
@@ -89,10 +96,19 @@
     {
         await form.Validate();
 
-        if (form.IsValid)
+        if (!form.IsValid)
         {
-            await LoginAsync();
+            return;
         }
+
+        if (await LoginAsync().ToMaybe() is INone error)
+        {
+            Snackbar.ProcessError(error);
+            return;
+        }
+
+        Snackbar.Add("Вы зарегистрированы", Severity.Success);
+        NavigationManager.NavigateTo("login");
     }
 
     private Task LoginAsync()

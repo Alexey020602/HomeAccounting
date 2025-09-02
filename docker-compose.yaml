@@ -33,9 +33,6 @@
       retries: 5
       start_period: "20s"
   api:
-    build:
-      context: .
-      dockerfile: ./Api/Dockerfile
     image: ghcr.io/alexey020602/homeaccounting-web:latest
     environment:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"

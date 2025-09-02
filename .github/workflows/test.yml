@@ -21,4 +21,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cmd /c "cd C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting && docker compose ps -a && docker compose logs --tail=100"
+            cmd /c "cd C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting && docker compose pull && docker compose down && docker compose up -d --remove-orphans && docker compose ps -a && docker compose logs --tail=100"

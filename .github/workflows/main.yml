@@ -54,9 +54,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd "C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting"
-            docker --version
-            docker compose version
             docker compose down
             docker compose up -d --remove-orphans
-            docker compose ps
+            echo "===== Compose ps ====="
+            docker compose ps -a
+            echo "===== Compose logs (last 100 lines) ====="
+            docker compose logs --tail=100
 

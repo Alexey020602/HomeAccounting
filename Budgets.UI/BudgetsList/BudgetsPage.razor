@@ -42,13 +42,23 @@
 
 @code {
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+    [CascadingParameter] public Task<BudgetState>? BudgetState { get; set; }
     private IMaybe<IReadOnlyCollection<Budget>>? BudgetsResult { get; set; }
     private Budget? SelectedBudget { get; set; }
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await base.OnInitializedAsync();
-
+        if (BudgetState is null)
+        {
+            throw new InvalidOperationException($"Budgets page must have Task<{nameof(Budgets.UI.BudgetState.BudgetState)}> cascading parameter");
+        }
+        
+        await base.OnParametersSetAsync();
+        var selectedBudgetId = 
         BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync();
+        if (await BudgetState is SelectedBudgetState selectedBudgetState && BudgetsResult is Some<IReadOnlyCollection<Budget>> result)
+        {
+            SelectedBudget = result.Value.FirstOrDefault(budget => budget.Id == selectedBudgetState.BudgetId);
+        }
     }
 
     private async ValueTask SelectBudget(Budget budget)

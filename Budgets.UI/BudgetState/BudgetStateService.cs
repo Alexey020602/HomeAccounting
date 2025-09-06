@@ -15,8 +15,15 @@ internal sealed class BudgetStateService(IBudgetStateStorage budgetStateStorage)
         return budget.Id == selectedBudgetState.BudgetId;
     }
 
-    public ValueTask SelectBudget(Budget budget) =>
-        budgetStateStorage.SaveBudgetState(new SelectedBudgetState(budget.Id, budget.Name));
+    public async ValueTask SelectBudget(Budget budget)
+    {
+        await budgetStateStorage.SaveBudgetState(new SelectedBudgetState(budget.Id, budget.Name));
+        await NotifyBudgetStateChanged(Task.FromResult<BudgetState>(new SelectedBudgetState(budget.Id, budget.Name)));
+    }
 
-    public ValueTask UnselectBudget() => budgetStateStorage.DeleteBudgetState();
+    public async ValueTask UnselectBudget()
+    {
+        await budgetStateStorage.DeleteBudgetState();
+        await NotifyBudgetStateChanged(Task.FromResult(new BudgetState()));
+    }
 }

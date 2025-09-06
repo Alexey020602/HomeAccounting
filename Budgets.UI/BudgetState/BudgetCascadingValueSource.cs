@@ -12,7 +12,7 @@ public class BudgetCascadingValueSource :
         budgetsStateProvider.BudgetStateChanged += HandleBudgetsStateChanged;
     }
 
-    private void HandleBudgetsStateChanged(Task<BudgetState> newBudgetsStateTask) =>
+    private Task HandleBudgetsStateChanged(Task<BudgetState> newBudgetsStateTask) =>
         NotifyChangedAsync(newBudgetsStateTask);
 
     void IDisposable.Dispose()

@@ -2,13 +2,13 @@ namespace Budgets.UI.BudgetState;
 
 public abstract class BudgetsStateProvider
 {
-    public event Action<Task<BudgetState>>? BudgetStateChanged; 
+    public event BudgetStateChangedHandler? BudgetStateChanged; 
     public abstract Task<BudgetState> GetBudgetStateAsync();
 
-    public void NotifyBudgetStateChanged(Task<BudgetState> task)
+    public Task NotifyBudgetStateChanged(Task<BudgetState> task)
     {
-        BudgetStateChanged?.Invoke(task);
+        return BudgetStateChanged?.Invoke(task) ??  Task.CompletedTask;
     }
 }
 
-public delegate void BudgetStateChangedHandler(Task<BudgetState> task);
+public delegate Task BudgetStateChangedHandler(Task<BudgetState> task);

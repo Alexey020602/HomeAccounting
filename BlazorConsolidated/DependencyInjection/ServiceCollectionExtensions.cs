@@ -13,6 +13,7 @@ using Refit;
 using Reports.UI;
 using Shared.Blazor;
 using Shared.Blazor.Attributes;
+using Shared.Blazor.Logout;
 using Shared.Utils;
 
 namespace BlazorConsolidated.DependencyInjection;
@@ -28,6 +29,7 @@ public static class ServiceCollectionExtensions
                 config.SnackbarConfiguration.PreventDuplicates = false;
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
+            .AddDefaultLogoutService()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddScoped<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()

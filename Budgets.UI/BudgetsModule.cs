@@ -1,5 +1,6 @@
 using Budgets.UI.BudgetState;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Blazor.Logout;
 using Shared.Utils;
 
 namespace Budgets.UI;
@@ -9,6 +10,7 @@ public static class BudgetsModule
     public static IServiceCollection AddBudgetsModule(this IServiceCollection services) =>
         services
             .AddSingletonAsMultipleServices<IBudgetsStateService, BudgetsStateProvider, BudgetStateService>()
+            .AddScoped<ILogoutAction, BudgetsLogoutAction>()
             .AddSingleton<IBudgetStateStorage, BudgetStateStorage>()
             .Decorate<IBudgetStateStorage, TelemetryBudgetStateStorage>()
             .AddCascadingBudgetsState();

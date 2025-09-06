@@ -35,7 +35,7 @@ public static class AuthorizationModule
             .AddScopedAsMultipleServices<
                 ILoginService,
                 AuthenticationStateProvider,
-                ILogoutService,
+                ILogoutAction,
                 StorageAuthenticationService
             >();
 }

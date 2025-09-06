@@ -1,5 +1,7 @@
 @page "/"
 @using Budgets.UI
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <BudgetRequiredView Context="budgetState">
     <MudCard>

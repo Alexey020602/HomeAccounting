@@ -9,7 +9,7 @@ public sealed class StorageAuthenticationService(
     IAuthenticationStorage storage,
     ILocalStorage localStorage
 )
-    : AuthenticationStateProvider, ILoginService, ILogoutService
+    : AuthenticationStateProvider, ILoginService, ILogoutAction
 {
     public async Task Login(LoginRequest loginRequest)
     {
@@ -20,7 +20,7 @@ public sealed class StorageAuthenticationService(
         NotifyAuthenticationStateChanged(Task.FromResult(authentication.GetAuthenticationState()));
     }
 
-    public async Task Logout()
+    public async Task Logout(CancellationToken cancellationToken = default)
     {
         await storage.RemoveAuthorizationAsync();
         await localStorage.ClearAsync();

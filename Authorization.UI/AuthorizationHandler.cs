@@ -4,6 +4,7 @@ using Authorization.Contracts;
 using Authorization.UI.Dto;
 using Refit;
 using Shared.Blazor;
+using Shared.Blazor.Logout;
 
 namespace Authorization.UI;
 

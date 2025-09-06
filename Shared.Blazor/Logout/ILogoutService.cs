@@ -1,4 +1,4 @@
-namespace Shared.Blazor;
+namespace Shared.Blazor.Logout;
 
 public interface ILogoutService
 {

@@ -1,6 +1,7 @@
 using Authorization.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Blazor;
+using Shared.Blazor.Logout;
 
 namespace Authorization.UI;
 public sealed class StorageAuthenticationService(

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Blazor;
+using Shared.Blazor.Logout;
 using Shared.Utils;
 
 namespace Authorization.UI;

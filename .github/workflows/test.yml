@@ -21,5 +21,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-              powershell -Command "Set-Content -Path 'C:\Users\${{ secrets.SSH_USER }}\RiderProjects\HomeAccounting\deploy.sh' -Value 'cd /mnt/c/Users/${{ secrets.SSH_USER }}/RiderProjects/HomeAccounting && docker compose pull && docker compose down && docker compose up -d --remove-orphans && docker compose ps -a'"
-              wsl -d Ubuntu -e bash /mnt/c/Users/${{ secrets.SSH_USER }}/RiderProjects/HomeAccounting/deploy.sh
+              wsl -d Ubuntu -e bash -lc "
+              cd /mnt/c/Users/${{ secrets.SSH_USER }}/RiderProjects/HomeAccounting && \
+              pwd && ls -la && \
+              which docker && docker compose version && \
+              docker compose pull && \
+              docker compose down && \
+              docker compose up -d --remove-orphans && \
+              docker compose ps -a
+              "

@@ -13,6 +13,8 @@ public static class RuleBuilderExtensions
         .WithMessage("Пароль должен содержать одну заглавную букву")
         .Matches("[a-z]")
         .WithMessage("Пароль должен содержать одну строчную букву")
+        .Matches("[0-9]")
+        .WithMessage("Пароль должен содержать одну цифру")
         .Matches("[^a-zA-Z0-9]")
         .WithMessage("Пароль должен содержать один символ не букву и не цифру");
 }

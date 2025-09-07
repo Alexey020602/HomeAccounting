@@ -6,8 +6,7 @@ using Shared.Blazor.Logout;
 namespace Authorization.UI;
 public sealed class StorageAuthenticationService(
     IAuthorizationApi authorizationApi,
-    IAuthenticationStorage storage,
-    ILocalStorage localStorage
+    IAuthenticationStorage storage
 )
     : AuthenticationStateProvider, ILoginService, ILogoutAction
 {
@@ -22,8 +21,7 @@ public sealed class StorageAuthenticationService(
 
     public async Task Logout(CancellationToken cancellationToken = default)
     {
-        await storage.RemoveAuthorizationAsync();
-        await localStorage.ClearAsync();
+        await storage.RemoveAuthorizationAsync(cancellationToken);
         NotifyAuthenticationStateChanged(Task.FromResult(AuthenticationStateExtensions.GetAnonymous()));
     }
 

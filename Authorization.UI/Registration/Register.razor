@@ -11,18 +11,18 @@
 @inject IValidator<RegistrationModel> ModelValidator
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
-@inject ILogger<Register> Logger
 
 <MudCard Style="max-width: 600px; padding: 20px">
-    <MudForm @ref="form" Model="registrationModel">
+    <MudForm @ref="form" Model="registrationModel" 
+             Validation="@ModelValidator.ValidateValueAsyncDelegate()">
         <MudStack>
             <MudTextField
+                @ref="loginTextField"
                 @bind-Value="registrationModel.Login"
                 Variant="Variant.Outlined"
                 Clearable="Clearable"
                 Immediate="Immediate"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
-                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
                 Label="Логин"
                 For="@(() => registrationModel.Login)"/>
 
@@ -32,7 +32,6 @@
                 Clearable="Clearable"
                 Immediate="Immediate"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
-                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
                 Label="Имя пользователя"
                 For="@(() => registrationModel.UserName)"/>
 
@@ -47,7 +46,6 @@
                 AdornmentIcon="@showPasswordFieldText.PasswordFieldIcon()"
                 OnAdornmentClick="@(() => showPasswordFieldText.Toggle())"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
-                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
                 Label="Пароль"
                 For="@(() => registrationModel.Password)"/>
 
@@ -62,8 +60,7 @@
                 AdornmentIcon="@showPasswordConfirmationFieldText.PasswordFieldIcon()"
                 OnAdornmentClick="@(() => showPasswordConfirmationFieldText.Toggle())"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
-                Validation="@ModelValidator.ValidateValueAsyncDelegate()"
-                Label="Подтвержидение пароля"
+                Label="Подтверждение пароля"
                 For="@(() => registrationModel.ConfirmPassword)"/>
 
 
@@ -93,29 +90,36 @@
     private bool showPasswordConfirmationFieldText = false;
     private readonly RegistrationModel registrationModel = new();
     private MudForm form = new();
+    private MudTextField<string> loginTextField = new();
 
     private async Task Submit()
     {
-        Logger.LogInformation("Валидация формы регистрации");
         await form.Validate();
 
         if (!form.IsValid)
         {
-            Logger.LogInformation("Форма регистрации не валидна");
+            return;
+        }
+
+        if (await AuthorizationApi.CheckLoginExist(registrationModel.Login))
+        {
+            var errorText = $"Логин {registrationModel.Login} уже существует";
+            loginTextField.ValidationErrors.Add(errorText);
+            #pragma warning disable BL0005
+            loginTextField.Error = true;
+            loginTextField.ErrorText = errorText;
+            #pragma warning restore BL0005
+            StateHasChanged();
             return;
         }
 
         if (await LoginAsync().ToMaybe() is INone error)
         {
-            Logger.LogError("Ошибка {Error} при отправке формы регистрации", error.Message);
             Snackbar.ProcessError(error);
             return;
         }
-        Logger.LogInformation("Успешная отправка");
         Snackbar.Add("Вы зарегистрированы", Severity.Success);
-        Logger.LogInformation("Снэкбар показан");
         NavigationManager.NavigateTo("login");
-        Logger.LogInformation("Редирект произошел");
     }
 
     private Task LoginAsync()

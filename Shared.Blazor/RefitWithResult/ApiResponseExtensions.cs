@@ -4,7 +4,7 @@ using Shared.Utils;
 
 namespace Shared.Blazor.RefitWithResult;
 
-public static class ApiExceptionExtensions
+static class ApiExceptionExtensions
 {
     public static IEnumerator<NoneDetail> GetEnumerator(this ApiException apiException)
     {

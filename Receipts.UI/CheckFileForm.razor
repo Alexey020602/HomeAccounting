@@ -56,32 +56,23 @@
 
 @code {
     [Parameter] public EventCallback<Stream> OnSubmit { get; set; }
-
+    private const int MaxFileSize = 10 * 1024 * 1024;
     private sealed class FormModel
     {
         [Required(ErrorMessage = "Выберите файл с чеком")]
         public IBrowserFile? SelectedFile { get; set; }
 
-        // public FileCheckRequest ToCheckFileRequest()
-        // {
-        //     return new FileCheckRequest
-        //     {
-        //         FileStream = GetReadStream(),
-        //         AddedTime = DateTimeOffset.Now
-        //     };
-        // }
-
-        public Stream GetReadStream()
-        {
-            return SelectedFile?.OpenReadStream() ?? throw new Exception("Не выбран файл");
-        }
-
+        public Stream GetReadStream() => SelectedFile?.OpenReadStream(maxAllowedSize: MaxFileSize) ?? throw new Exception("Не выбран файл");
 
         public Expression<Func<IBrowserFile?>> FileValidation => () => SelectedFile;
     }
 
     private FormModel Model { get; set; } = new();
-    private async Task SendFileRequest() => await OnSubmit.InvokeAsync(Model.GetReadStream());
+    private async Task SendFileRequest()
+    {
+        await using var stream = Model.GetReadStream();
+        await OnSubmit.InvokeAsync(stream);
+    }
 
     private Task OnChange(InputFileChangeEventArgs args)
     {

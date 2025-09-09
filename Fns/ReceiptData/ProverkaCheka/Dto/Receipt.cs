@@ -1,9 +1,38 @@
-using System.Text.Json.Serialization;
-
 namespace Fns.ReceiptData.ProverkaCheka.Dto;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "code")]
-[JsonDerivedType(typeof(Root), 1)]
-// [JsonDerivedType(typeof(BadAnswerReceipt), 4)]
-[JsonDerivedType(typeof(BadAnswerReceipt), 3)]
-public abstract record Receipt(int Code, Request Request);
+public record Receipt(
+    // int Code,
+    // string User,
+    IReadOnlyList<ReceiptItem> Items
+    // int Nds10,
+    // string FnsUrl,
+    // string Region,
+    // string UserInn,
+    // DateTime DateTime,
+    // string KktRegId,
+    // Metadata Metadata,
+    // string Operator,
+    // int TotalSum,
+    // int CreditSum,
+    // string NumberKkt,
+    // long FiscalSign,
+    // int PrepaidSum,
+    // string OperatorInn,
+    // string RetailPlace,
+    // int ShiftNumber,
+    // int CashTotalSum,
+    // int ProvisionSum,
+    // int EcashTotalSum,
+    // string MachineNumber,
+    // int OperationType,
+    // int RedefineMask,
+    // int RequestNumber,
+    // string SellerAddress,
+    // string FiscalDriveNumber,
+    // double MessageFiscalSign,
+    // string RetailPlaceAddress,
+    // int AppliedTaxationType,
+    // int FiscalDocumentNumber,
+    // int FiscalDocumentFormatVer,
+    // int CheckingLabeledProdResult
+);

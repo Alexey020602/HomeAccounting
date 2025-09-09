@@ -12,6 +12,6 @@ public class Product
     /// <summary>
     /// Наименование продукта
     /// </summary>
-    [JsonPropertyName("extended_description")]
+    [JsonPropertyName("full_description")]
     public required string? ExtendedDescription { get; init; }
 }

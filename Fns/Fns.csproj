@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="ReceiptData\Mapper\" />
+    </ItemGroup>
+
 </Project>

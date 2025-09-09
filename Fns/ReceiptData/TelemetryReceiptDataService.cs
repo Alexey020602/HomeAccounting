@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Fns.Contracts;
 using Fns.Contracts.ReceiptData;
+using MaybeResults;
 using Microsoft.Extensions.Logging;
 
 namespace Fns.ReceiptData;
@@ -11,7 +12,7 @@ sealed class TelemetryReceiptDataService(
     ActivitySource activitySource
     ): IReceiptDataService
 {
-    public async Task<Receipt> GetReceipt(ReceiptFiscalData receiptFiscalData)
+    public async Task<IMaybe<Receipt>> GetReceipt(ReceiptFiscalData receiptFiscalData)
     {
         using var activity = activitySource.StartActivity();
         activity?.SetTag("ReceiptRaw", receiptFiscalData.RawCheck());

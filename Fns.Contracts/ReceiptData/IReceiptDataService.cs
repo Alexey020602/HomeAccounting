@@ -1,8 +1,10 @@
+using MaybeResults;
+
 namespace Fns.Contracts.ReceiptData;
 
 public interface IReceiptDataService
 {
-    public Task<Receipt> GetReceipt(ReceiptFiscalData  receiptFiscalData);
+    public Task<IMaybe<Receipt>> GetReceipt(ReceiptFiscalData  receiptFiscalData);
 }
 
 public record Receipt(ReceiptFiscalData ReceiptFiscalData, IReadOnlyList<ReceiptProduct> Products);

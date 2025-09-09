@@ -57,7 +57,7 @@
 
     private void ToggleInputMode() => ManualInput = !ManualInput;
 
-    private async Task SendFileRequest(Stream request) => SavedCheck = await ChecksApi.GetReceipt(BudgetId,  request);
+    private async Task SendFileRequest(Stream file) => SavedCheck = await ChecksApi.SaveReceipt(BudgetId,  file);
 
-    private async Task SendManualRequest(CheckRequest request) => SavedCheck = await ChecksApi.GetReceipt(BudgetId, request);
+    private async Task SendManualRequest(CheckRequest request) => SavedCheck = await ChecksApi.SaveReceipt(BudgetId, request);
 }

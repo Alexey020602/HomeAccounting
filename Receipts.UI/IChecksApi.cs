@@ -12,11 +12,11 @@ public interface IChecksApi
     Task<List<CheckDto>> GetChecks(Guid id);
 
     [Put("/{id}/receipts")]
-    Task<CheckDto> GetReceipt(Guid id, CheckRequest checkRequest);
+    Task<CheckDto> SaveReceipt(Guid id, CheckRequest checkRequest);
 
     [Put("/{id}/receipts/file")]
     [Multipart]
-    Task<CheckDto> GetReceipt(Guid id, Stream file);
+    Task<CheckDto> SaveReceipt(Guid id, Stream file);
     
     // Task<CheckDto> GetReceipt(FileCheckRequest request) => GetReceipt(request.FileStream, request.AddedTime);
 }

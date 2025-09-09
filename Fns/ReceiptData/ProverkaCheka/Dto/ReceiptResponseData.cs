@@ -1,6 +1,6 @@
 namespace Fns.ReceiptData.ProverkaCheka.Dto;
 
-public record Data(
-    Json Json,
+public record ReceiptResponseData(
+    Receipt Json,
     string Html
 );

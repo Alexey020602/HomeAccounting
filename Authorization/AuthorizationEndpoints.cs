@@ -33,12 +33,17 @@ static class UserEndpoints
 {
     public static RouteHandlerBuilder MapGetUser(this IEndpointRouteBuilder endpoints) =>
         endpoints
-            .MapGet("", GetUserData)
+            .MapGet(
+                "", 
+                (Guid id, IMediator mediator) => mediator.Send(new UserDataQuery(id)).MapToResultAsync())
             .Produces((int)HttpStatusCode.OK, typeof(User));
 
     public static RouteHandlerBuilder MapUpdateUser(this IEndpointRouteBuilder endpoints) =>
         endpoints
-            .MapPut("", UpdateUser)
+            .MapPut(
+                "",
+                (Guid id, UpdatedUserDto user, IMediator mediator) =>
+                    mediator.Send(new UpdateUserCommand(id, user)).MapToResultAsync(onSuccess: TypedResults.NoContent))
             .Produces((int)HttpStatusCode.NoContent)
             .ProducesValidationProblem()
             .ProducesProblem((int)HttpStatusCode.NotFound);
@@ -52,22 +57,4 @@ static class UserEndpoints
         userGroup
             .MapUpdateUser();
     }
-
-    private static async Task<IResult> GetUserData(Guid id, IMediator mediator) =>
-        await mediator.Send(new UserDataQuery(id)) switch
-        {
-            Some<User> user => Results.Ok(user.Value),
-            UserNotFoundError<User> userNotFoundError => Results.NotFound(new ProblemDetails()
-            {
-                Detail = userNotFoundError.Message,
-            }),
-            INone<User> error => Results.Problem(error.Message),
-            _ => Results.InternalServerError()
-        };
-
-    private static Task<Results<NoContent, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> UpdateUser(
-        Guid id,
-        UpdatedUserDto user,
-        IMediator mediator
-    ) => mediator.Send(new UpdateUserCommand(id, user)).MapToResultAsync(onSuccess: TypedResults.NoContent);
 }

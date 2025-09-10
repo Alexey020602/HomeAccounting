@@ -8,7 +8,9 @@ namespace Checks.Api;
 public record struct GetChecksRequest(
     Guid? Login = null,
     int? Take = null,
-    int? Skip = null)
+    int? Skip = null,
+    DateTime? Start = null,
+    DateTime? End = null)
 {
-    public GetChecks ConvertToChecksQuery(Guid budgetId, DateRange range) => new GetChecks(budgetId, range, Login, Take, Skip);
+    public GetChecks ConvertToChecksQuery(Guid budgetId) => new GetChecks(budgetId, (Start, End), Login, Take, Skip);
 }

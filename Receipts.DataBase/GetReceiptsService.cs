@@ -18,9 +18,6 @@ public class GetReceiptsService(ReceiptsContext context) : IGetReceiptsService
     {
         var checksQueryable = context.Checks
             .AsNoTracking()
-            .Include(c => c.Products)
-            .ThenInclude(p => p.Subcategory)
-            .ThenInclude(sub => sub.Category)
             .Where(getChecksQuery.GetPredicate())
             ;
 
@@ -30,12 +27,9 @@ public class GetReceiptsService(ReceiptsContext context) : IGetReceiptsService
         if (getChecksQuery.Skip.HasValue) 
             checksQueryable = checksQueryable.Skip(getChecksQuery.Skip.Value);
         
-        var checks = await checksQueryable
+        return await checksQueryable.Select(CheckListMapper.ConvertToCheckExpression)
                 .ToListAsync();
-
-        return checks.ConvertAll(check => check.ConvertToCheck());
     }
-
     public async Task<Check?> GetCheckByRequest(GetCheckRequest checkRequest)
     {
         var dbCheck = await context.Checks

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Fns.Contracts;
+using MaybeResults;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -7,9 +8,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Receipts.Contracts;
+using Receipts.Core.AddReceipt;
 using Receipts.Core.AddReceipt.BarCode;
 using Shared.Utils.Model;
 using Shared.Utils.Model.Dates;
+using Shared.Web;
 
 namespace Checks.Api;
 
@@ -19,51 +22,64 @@ public static class ReceiptsEndpoints
     {
         var receiptsGroup = endpoints
             .MapGroup("/receipts");
-        
+
         receiptsGroup
             .MapGet("", GetReceipts);
         receiptsGroup
-            .MapPut("", AddReceipt);
+            .MapAddReceipt();
 
         receiptsGroup
-            .MapPut("/file", AddReceiptWithFile);
+            .MapPut(
+                "/file",
+                async (
+                        [FromRoute] Guid budgetId,
+                        ClaimsPrincipal user,
+                        [FromForm] IFormFile file,
+                        [FromServices] IMediator mediator) =>
+                    await mediator.Send(new AddImageCheckCommand(
+                        budgetId,
+                        user.GetUserId(),
+                        await file.OpenReadStream().ReadAsByteArrayAsync())).MapToResultAsync());
     }
 
     private static async Task<Ok<IReadOnlyList<CheckDto>>> GetReceipts(
         [FromRoute] Guid budgetId,
-        [AsParameters] GetChecksRequest checksQuery,
-        [AsParameters] DateRange range,
+        [AsParameters] GetChecksRequest getChecks,
+        // [AsParameters] GetChecksRequest checksQuery,
+        // [AsParameters] DateRange range,
         [FromServices] IMediator mediator
-        ) => 
-        TypedResults.Ok(await mediator.Send(checksQuery.ConvertToChecksQuery(budgetId, range)));
+    ) =>
+        TypedResults.Ok(await mediator.Send(getChecks.ConvertToChecksQuery(budgetId)));
 
-    private static async Task<Ok> AddReceipt([FromRoute] Guid budgetId, ClaimsPrincipal user, [FromBody] CheckRequest checkRequest, [FromServices] IMediator mediator)
+    public record struct AddReceiptParameters(
+        [FromRoute] Guid BudgetId,
+        ClaimsPrincipal User,
+        [FromBody] CheckRequest CheckRequest,
+        [FromServices] IMediator Mediator)
     {
-        await mediator.Send(new AddCheckCommand()
-        {  
+        public AddCheckCommand CreateCommand => new AddCheckCommand()
+        {
             ReceiptData = new(
                 new ReceiptFiscalData(
-                    checkRequest.Fn,
-                    checkRequest.Fd,
-                    checkRequest.Fp,
-                    checkRequest.S,
-                    checkRequest.T
+                    CheckRequest.Fn,
+                    CheckRequest.Fd,
+                    CheckRequest.Fp,
+                    CheckRequest.S,
+                    CheckRequest.T
                 ),
-                user.GetUserId(),
-                budgetId
+                User.GetUserId(),
+                BudgetId
             ),
-        });
-        return TypedResults.Ok();
+        };
+
+        public ValueTask<IMaybe> PerformOperation() => Mediator.Send(CreateCommand);
     }
 
-    private static async Task<Ok> AddReceiptWithFile([FromRoute] Guid budgetId, ClaimsPrincipal user, [FromForm] IFormFile file, [FromServices] IMediator mediator)
-    {
-        await mediator.Send(new AddImageCheckCommand()
-        {
-            ImageBytes = await file.OpenReadStream().ReadAsByteArrayAsync(),
-            UserId = user.GetUserId(),
-            BudgetId = budgetId
-        });
-        return TypedResults.Ok();
-    }
+    private static void MapAddReceipt(this IEndpointRouteBuilder endpoints) =>
+        endpoints.MapPut(
+            "",
+            ([AsParameters] AddReceiptParameters receiptParameters) => receiptParameters
+                .PerformOperation()
+                .MapToResultAsync(onSuccess: TypedResults.Created)
+        );
 }

@@ -1,10 +1,6 @@
 using Mediator;
+using Shared.Utils.MediatorWithResults;
 
 namespace Receipts.Contracts;
 
-public sealed class AddImageCheckCommand: ICommand
-{
-    public required Guid BudgetId { get; set; }
-    public required Guid UserId { get; init; }
-    public required byte[] ImageBytes { get; init; }
-}
+public sealed record AddImageCheckCommand(Guid BudgetId, Guid UserId, byte[] ImageBytes) : IResultCommand;

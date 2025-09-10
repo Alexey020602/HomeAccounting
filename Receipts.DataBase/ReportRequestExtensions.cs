@@ -11,4 +11,9 @@ internal static class ReportRequestExtensions
                  && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime())
                  && (request.Login == null || request.Login == check.UserId)
                  && (request.BudgetId == check.BudgetId);
+    
+    public static bool FilterCheck(this GetChecks request, Entities.Check check) => (!request.Range.Start.HasValue || check.PurchaseDate >= request.Range.Start.Value.ToUniversalTime())
+        && (!request.Range.End.HasValue || check.PurchaseDate <= request.Range.End.Value.ToUniversalTime())
+        && (request.Login == null || request.Login == check.UserId)
+        && (request.BudgetId == check.BudgetId);
 }

@@ -2,22 +2,28 @@ using System.Net;
 using MaybeResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Shared.Utils;
 using Shared.Utils.Results;
+using DefaultFailureResult = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.ForbidHttpResult, 
+    Microsoft.AspNetCore.Http.HttpResults.ValidationProblem, 
+    Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult,
+Microsoft.AspNetCore.Http.HttpResults.StatusCodeHttpResult>;
 
 namespace Shared.Web;
 
 public static class MaybeResultMapper
 {
     #region Async with ValueTask results mapping
-    public static Task<Results<Ok, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync(this ValueTask<IMaybe> maybeTask) =>
+    public static Task<Results<Ok, DefaultFailureResult>> MapToResultAsync(this ValueTask<IMaybe> maybeTask) =>
         maybeTask.MapToResultAsync(onSuccess: TypedResults.Ok);
-    public static Task<Results<Ok<T>, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<T>(this ValueTask<IMaybe<T>> maybeTask) =>
+    public static Task<Results<Ok<T>, DefaultFailureResult>> MapToResultAsync<T>(this ValueTask<IMaybe<T>> maybeTask) =>
         maybeTask.MapToResultAsync(onSuccess: TypedResults.Ok);
-    public static Task<Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<TResult>(
+    public static Task<Results<TResult, DefaultFailureResult>> MapToResultAsync<TResult>(
         this ValueTask<IMaybe> maybeTask,
         Func<TResult> onSuccess) where TResult : IResult
         => maybeTask.MapToResultAsync(onSuccess, error => error.MapToFailureResult());
-    public static Task<Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<TResult, T>(
+    public static Task<Results<TResult, DefaultFailureResult>> MapToResultAsync<TResult, T>(
         this ValueTask<IMaybe<T>> maybeTask,
         Func<T, TResult> onSuccess) where TResult : IResult
         => maybeTask.MapToResultAsync(onSuccess, error => error.MapToFailureResult());
@@ -45,15 +51,15 @@ public static class MaybeResultMapper
     #endregion
     
     #region Async with Task results mapping
-    public static Task<Results<Ok, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync(this Task<IMaybe> maybeTask) =>
+    public static Task<Results<Ok, DefaultFailureResult>> MapToResultAsync(this Task<IMaybe> maybeTask) =>
         maybeTask.MapToResultAsync(TypedResults.Ok);
-    public static Task<Results<Ok<T>, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<T>(this Task<IMaybe<T>> maybeTask) =>
+    public static Task<Results<Ok<T>, DefaultFailureResult>> MapToResultAsync<T>(this Task<IMaybe<T>> maybeTask) =>
         maybeTask.MapToResultAsync(TypedResults.Ok);
-    public static Task<Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<TResult>(
+    public static Task<Results<TResult, DefaultFailureResult>> MapToResultAsync<TResult>(
         this Task<IMaybe> maybeTask,
         Func<TResult> onSuccess) where TResult : IResult
         => maybeTask.MapToResultAsync(onSuccess, error => error.MapToFailureResult());
-    public static Task<Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>>> MapToResultAsync<TResult, T>(
+    public static Task<Results<TResult, DefaultFailureResult>> MapToResultAsync<TResult, T>(
         this Task<IMaybe<T>> maybeTask,
         Func<T, TResult> onSuccess) where TResult : IResult
         => maybeTask.MapToResultAsync(onSuccess, error => error.MapToFailureResult());
@@ -77,15 +83,15 @@ public static class MaybeResultMapper
     #endregion
     
     #region Syncronious results mapping
-    public static Results<Ok, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>> MapToResult(
+    public static Results<Ok, DefaultFailureResult> MapToResult(
         this IMaybe maybe
     ) => maybe.MapToResult(onSuccess: TypedResults.Ok);
-    public static Results<Ok<T>, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>> MapToResult<T>(
+    public static Results<Ok<T>, DefaultFailureResult> MapToResult<T>(
         this IMaybe<T> maybe
     ) => maybe.MapToResult(onSuccess: TypedResults.Ok);
 
     
-    public static Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>> MapToResult<TResult>(
+    public static Results<TResult, DefaultFailureResult> MapToResult<TResult>(
         this IMaybe maybe,
         Func<TResult> onSuccess
     ) where TResult : IResult
@@ -94,7 +100,7 @@ public static class MaybeResultMapper
                 onSuccess: onSuccess,
                 onFailure: error => error.MapToFailureResult()
             );
-    public static Results<TResult, Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult>> MapToResult<TResult, T>(
+    public static Results<TResult, DefaultFailureResult> MapToResult<TResult, T>(
         this IMaybe<T> maybe,
         Func<T, TResult> onSuccess
     ) where TResult : IResult
@@ -127,10 +133,11 @@ public static class MaybeResultMapper
         };
 
     #endregion
-    public static Results<ForbidHttpResult, ValidationProblem, ProblemHttpResult> MapToFailureResult(this INone error) => error switch
+    public static DefaultFailureResult MapToFailureResult(this INone error) => error switch
     {
         IForbiddenError => TypedResults.Forbid(),
         INotFoundError notFoundError => notFoundError.MapToProblemResult((int) HttpStatusCode.NotFound),
+        IManyRequestsError manyRequestsError => TypedResults.StatusCode((int) HttpStatusCode.TooManyRequests),
         _ => error.MapToValidationProblemResult(),
     };
 }

@@ -1,13 +1,12 @@
+using MaybeResults;
 using Mediator;
 using Receipts.Contracts;
+using Shared.Utils.MediatorWithResults;
 
 namespace Receipts.Core.AddReceipt;
 
-public sealed class AddCheckHandler(IReceiptService receiptService) : ICommandHandler<AddCheckCommand>
+public sealed class AddCheckHandler(IReceiptService receiptService) : IResultCommandHandler<AddCheckCommand>
 {
-    public async ValueTask<Unit> Handle(AddCheckCommand command, CancellationToken cancellationToken)
-    {
-        await receiptService.AddCheckAsync(command, cancellationToken);
-        return Unit.Value;
-    }
+    public ValueTask<IMaybe> Handle(AddCheckCommand command, CancellationToken cancellationToken) =>
+        new (receiptService.AddCheckAsync(command, cancellationToken));
 }

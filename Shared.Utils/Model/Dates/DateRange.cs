@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Shared.Utils.Model.Dates;
 
 [method: JsonConstructor]
-public readonly record struct DateRange(DateTime? Start = null, DateTime? End = null)
+public readonly partial record struct DateRange(DateTime? Start = null, DateTime? End = null)
 {
     public static DateRange CreateMonthRange(int firstDay, int month, int year) =>
         CreateMonthRangeFromDateTime(new DateTime(year, month, firstDay));
@@ -19,6 +19,14 @@ public readonly record struct DateRange(DateTime? Start = null, DateTime? End = 
     [JsonIgnore] public bool IsSameMonth => IsSameYear && Start?.Month == End?.Month;
     [JsonIgnore] public bool IsSameDay => IsSameMonth && Start?.Day == End?.Day;
     [JsonIgnore] public bool IsSameHour => IsSameDay && Start?.Hour == End?.Hour;
+
+    public void Deconstruct(out DateTime? start, out DateTime? end)
+    {
+        start = Start;
+        end = End;
+    }
+    
+    public static implicit operator DateRange((DateTime?, DateTime?) datesTuple) => new(datesTuple.Item1, datesTuple.Item2);
     public override string ToString() => ToString(null, null);
     public string ToString([StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string? format) => ToString(format, null);
     public string ToString([StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string? format, IFormatProvider? provider)

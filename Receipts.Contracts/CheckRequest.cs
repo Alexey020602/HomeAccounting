@@ -1,7 +1,9 @@
+using System.Text.Json.Serialization;
 using Shared.Utils.Model.Dates;
 
 namespace Receipts.Contracts;
 
+[method: JsonConstructor]
 public class CheckRequest(string Fn, string Fd, string Fp, string S, DateTime T/*, DateTime AddedDate*/)
 {
     public CheckRequest(string rawCheckValue, DateTimeOffset addedDate, char splitter = '&'): this(CreateDictionaryFromRawString(rawCheckValue, splitter), addedDate)

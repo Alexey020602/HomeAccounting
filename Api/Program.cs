@@ -65,6 +65,7 @@ builder.AddBudgetsModule(databaseName);
 builder.Services.AddReportsModule();
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 
 builder.AddAuthorization(databaseName);
 
@@ -112,13 +113,13 @@ app.UseCors(policyBuilder => policyBuilder
     .AllowAnyMethod()
     .AllowAnyOrigin()
 );
-
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.UseDeveloperExceptionPage();
     app.MapOpenApi();
     app.MapScalarApiReference();
     app.UseSwaggerUi(options =>

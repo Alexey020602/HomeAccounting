@@ -30,20 +30,18 @@ public class AuthorizationHandler(
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        var auth = request.Headers.Authorization;
-        if (auth is null) return await base.SendAsync(request, cancellationToken);
+        if (request.Headers.Authorization is not {} auth) 
+            return await base.SendAsync(request, cancellationToken);
 
-        var accessToken = await authenticationStorage.GetAuthorizationAsync(cancellationToken);
-
-        if (accessToken is null)
+        if (await authenticationStorage.GetAuthorizationAsync(cancellationToken) is not {} accessToken)
         {
-            await logoutService.Logout();
+            await logoutService.Logout(cancellationToken);
             return CreateUnauthorizedMessage(request);
         }
 
         request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, accessToken.AccessToken);
         var response = await base.SendAsync(request, cancellationToken);
-        if (response.StatusCode != HttpStatusCode.Unauthorized)
+        if (response is not { StatusCode: HttpStatusCode.Unauthorized})
             return response;
 
         try
@@ -55,9 +53,9 @@ public class AuthorizationHandler(
             request.Headers.Authorization =
                 new AuthenticationHeaderValue(auth.Scheme, authorizationResponse.AccessToken);
         }
-        catch (Exception)
+        catch 
         {
-            await logoutService.Logout();
+            await logoutService.Logout(cancellationToken);
             return CreateUnauthorizedMessage(request);
         }
         finally
@@ -65,19 +63,10 @@ public class AuthorizationHandler(
             response.Dispose();
         }
 
-        try
-        {
-            return await base.SendAsync(request, cancellationToken);
-        }
-        catch (ApiException apiException)
-        {
-            if (apiException.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                await logoutService.Logout();
-            }
-
-            throw;
-        }
+        var secondResponse = await base.SendAsync(request, cancellationToken);
+        if (secondResponse.StatusCode == HttpStatusCode.Unauthorized) 
+            await logoutService.Logout(cancellationToken);
+        return secondResponse;
     }
 
     private static HttpResponseMessage CreateUnauthorizedMessage(HttpRequestMessage? request)

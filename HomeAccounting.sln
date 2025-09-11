@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nginx.conf = nginx.conf
 		docker-compose.yaml = docker-compose.yaml
 		.env = .env
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorConsolidated", "BlazorConsolidated\BlazorConsolidated.csproj", "{DE45B88C-3F6B-4A4C-97AD-27F6ECAD969B}"
@@ -63,6 +64,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budgets.Api", "Budgets.Api\Budgets.Api.csproj", "{9AF5DCDD-727C-4476-9EAF-7CD8B1132BC7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{D74C0A99-878F-4293-A590-76917F872F28}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{C7C24919-DDD8-4F83-BADE-022BF0DBDB15}"
 EndProject
@@ -93,6 +97,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budgets.DataBase", "Budgets.DataBase\Budgets.DataBase.csproj", "{9FC6B5C8-28A8-49C1-A4D4-C5577194C74C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budgets.UI", "Budgets.UI\Budgets.UI.csproj", "{4B2144B2-5D5C-402D-BB26-1D376ED6C23B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{27FD2E33-2A50-4846-BF1E-5D1E486183C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.UI.Tests", "Authorization.UI.Tests\Authorization.UI.Tests.csproj", "{6F153A74-2A6B-4F67-A18E-90B10C6B7918}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,6 +240,10 @@ Global
 		{4B2144B2-5D5C-402D-BB26-1D376ED6C23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B2144B2-5D5C-402D-BB26-1D376ED6C23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B2144B2-5D5C-402D-BB26-1D376ED6C23B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F153A74-2A6B-4F67-A18E-90B10C6B7918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F153A74-2A6B-4F67-A18E-90B10C6B7918}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F153A74-2A6B-4F67-A18E-90B10C6B7918}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F153A74-2A6B-4F67-A18E-90B10C6B7918}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B} = {0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}
@@ -266,5 +278,7 @@ Global
 		{EFA3BBBD-50BE-49BD-87E9-BDCB69C18587} = {DA538FD9-B3A5-4283-908C-5C94D04EC40F}
 		{9FC6B5C8-28A8-49C1-A4D4-C5577194C74C} = {3E953E04-4892-4A65-8511-C2E2AD14E573}
 		{4B2144B2-5D5C-402D-BB26-1D376ED6C23B} = {3E953E04-4892-4A65-8511-C2E2AD14E573}
+		{27FD2E33-2A50-4846-BF1E-5D1E486183C9} = {C066E501-F29E-42FB-B3D5-A3FDCA9F7334}
+		{6F153A74-2A6B-4F67-A18E-90B10C6B7918} = {27FD2E33-2A50-4846-BF1E-5D1E486183C9}
 	EndGlobalSection
 EndGlobal

@@ -4,43 +4,7 @@ using Shared.Utils;
 
 namespace Shared.Blazor.RefitWithResult;
 
-static class ApiExceptionExtensions
-{
-    public static IEnumerator<NoneDetail> GetEnumerator(this ApiException apiException)
-    {
-        yield return new NoneDetail("StatusCode", apiException.StatusCode.ToString());
-        if (apiException.Source is not null) {
-            yield return new NoneDetail("Source", apiException.Source);
-        }
-
-        if (apiException.Content is not null)
-        {
-            yield return new NoneDetail("Content", apiException.Content);
-        }
-    }
-
-    public static List<NoneDetail> GetDetails(this ApiException apiException)
-    {
-        var details = new List<NoneDetail>();
-        foreach (var detail in apiException)
-        {
-            details.Add(detail);    
-        }
-        return details;
-    }
-}
-
-[None]
-public partial record ApiError
-{
-    public ApiError(ApiException apiException)
-    {
-        Message = apiException.Message;
-        Details = apiException.GetDetails();
-    }
-}
-
-public static class ApiResponseExtensions
+public static class ApiResponseErrorHandler
 {
     public static async Task<IMaybe> ToMaybe(this Task task)
     {
@@ -51,7 +15,7 @@ public static class ApiResponseExtensions
         }
         catch (ApiException apiException)
         {
-            return apiException.CreateApiError();
+            return await apiException.CreateFromApiError();
         }
     }
 
@@ -63,7 +27,7 @@ public static class ApiResponseExtensions
         }
         catch (ApiException apiException)
         {
-            return apiException.CreateApiError().Cast<T>();
+            return (await apiException.CreateFromApiError()).Cast<T>();
         }
     }
     public static async Task<IMaybe> ToMaybe(this Task<ApiResponse<Unit>> apiResponse) => (await apiResponse).ToMaybe();

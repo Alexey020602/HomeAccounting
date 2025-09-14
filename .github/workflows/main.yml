@@ -53,6 +53,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-               wsl -e bash -lc "cd RiderProjects/HomeAccounting && docker compose pull && docker compose down && docker compose up -d --remove-orphans && docker compose ps -a"
+               bash -lc "cd RiderProjects/HomeAccounting && docker compose pull && docker compose down && docker compose up -d --remove-orphans && docker compose ps -a"
 
 

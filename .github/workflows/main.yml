@@ -44,7 +44,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "docker-compose.yaml, .env"
-          target: "C:\\Users\\${{ secrets.SSH_USER }}\\RiderProjects\\HomeAccounting"
+          target: "~/Applications/HomeAccounting"
       - name: Deploy to Windows Server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -53,6 +53,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-               bash -lc "cd RiderProjects/HomeAccounting && docker compose pull && docker compose down && docker compose up -d --remove-orphans && docker compose ps -a"
+               bash -lc "cd Applications/HomeAccounting && docker compose pull && docker compose down && docker compose up -d --remove-orphans && docker compose ps -a"
 
 

@@ -1,29 +1,11 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Authorization.Contracts;
-using Authorization.UI.Dto;
-using Refit;
-using Shared.Blazor;
 using Shared.Blazor.Logout;
 
-namespace Authorization.UI;
-
-public static class AuthorizationResponseExtensions
-{
-    public static Authentication ConvertToAuthentication(this AuthorizationResponse response)
-    {
-        return new Authentication(
-            response.AccessToken,
-            response.RefreshToken,
-            response.User,
-            response.ExpiresAt
-        );
-    }
-}
+namespace Authorization.UI.Infrastructure;
 
 public class AuthorizationHandler(
-    IAuthenticationStorage authenticationStorage,
-    IAuthorizationApi authorizationApi,
+    ITokenService tokenService,
     ILogoutService logoutService)
     : DelegatingHandler
 {
@@ -33,25 +15,21 @@ public class AuthorizationHandler(
         if (request.Headers.Authorization is not {} auth) 
             return await base.SendAsync(request, cancellationToken);
 
-        if (await authenticationStorage.GetAuthorizationAsync(cancellationToken) is not {} accessToken)
+        if (await tokenService.GetFreshAccessToken(cancellationToken) is not {} accessToken)
         {
             await logoutService.Logout(cancellationToken);
             return CreateUnauthorizedMessage(request);
         }
 
-        request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, accessToken.AccessToken);
+        request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, accessToken);
         var response = await base.SendAsync(request, cancellationToken);
         if (response is not { StatusCode: HttpStatusCode.Unauthorized})
             return response;
 
         try
         {
-            var authorizationResponse = await authorizationApi.RefreshToken(accessToken.RefreshToken);
-            await authenticationStorage.SetAuthorizationAsync(authorizationResponse.ConvertToAuthentication(),
-                cancellationToken);
-
             request.Headers.Authorization =
-                new AuthenticationHeaderValue(auth.Scheme, authorizationResponse.AccessToken);
+                new AuthenticationHeaderValue(auth.Scheme, await tokenService.GetRefreshedToken(cancellationToken));
         }
         catch 
         {

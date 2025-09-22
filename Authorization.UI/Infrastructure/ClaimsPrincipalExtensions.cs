@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 
 public static class ClaimsPrincipalExtensions
 {

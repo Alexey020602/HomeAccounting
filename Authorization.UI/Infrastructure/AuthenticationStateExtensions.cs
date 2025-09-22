@@ -1,7 +1,7 @@
 using Authorization.UI.Dto;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 
 public static class AuthenticationStateExtensions
 {

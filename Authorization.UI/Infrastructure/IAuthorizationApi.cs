@@ -2,7 +2,7 @@ using Authorization.Contracts;
 using Refit;
 using Shared.Blazor.Attributes;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 
 [Api("authorization")]
 public interface IAuthorizationApi

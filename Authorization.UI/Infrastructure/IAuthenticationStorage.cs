@@ -1,6 +1,6 @@
 using Authorization.UI.Dto;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 
 public interface IAuthenticationStorage
 {

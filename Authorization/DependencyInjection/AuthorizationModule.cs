@@ -4,12 +4,10 @@ using Authorization.DataBase;
 using Authorization.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Shared.Infrastructure;
+using ITokenService = Authorization.Core.ITokenService;
 using User = Authorization.Core.User;
 
 namespace Authorization.DependencyInjection;
@@ -34,14 +32,7 @@ public static class AuthorizationModule
             })
             .AddEntityFrameworkStores<AuthorizationContext>();
         
-        builder.Services.AddAuthorization(options => options.AddPolicy(
-            Authorization.UI.AuthorizationModule.UserbyidPolicyName,
-            policy =>
-            {
-                policy.RequireAuthenticatedUser()
-                    .AddRequirements(new UserRequirement());
-            })
-        );
+        builder.Services.AddAuthorization();
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

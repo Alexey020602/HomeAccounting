@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Authorization.UI.Infrastructure;
 using Authorization.UI.Registration;
 using Authorization.UI.Registration.Validators;
 using FluentValidation;
@@ -29,6 +30,7 @@ public static class AuthorizationModule
                 ))
             .AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>()
             .AddCascadingAuthenticationState()
+            .AddScoped<ITokenService, TokenService>()
             .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
             .Decorate<IAuthenticationStorage, TelemetryAuthenticationStorage>()
             .AddScoped<IValidator<RegistrationModel>, RegistrationModelValidator>()
@@ -38,8 +40,4 @@ public static class AuthorizationModule
                 ILogoutAction,
                 StorageAuthenticationService
             >();
-}
-
-public sealed class UserRequirement : IAuthorizationRequirement
-{
 }

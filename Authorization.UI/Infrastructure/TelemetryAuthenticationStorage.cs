@@ -1,7 +1,7 @@
 using Authorization.UI.Dto;
 using Microsoft.Extensions.Logging;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 
 public sealed class TelemetryAuthenticationStorage(
     IAuthenticationStorage authenticationStorage,

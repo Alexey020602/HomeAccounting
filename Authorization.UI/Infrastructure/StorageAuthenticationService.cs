@@ -1,9 +1,8 @@
 using Authorization.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
-using Shared.Blazor;
 using Shared.Blazor.Logout;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 public sealed class StorageAuthenticationService(
     IAuthorizationApi authorizationApi,
     IAuthenticationStorage storage
@@ -27,7 +26,11 @@ public sealed class StorageAuthenticationService(
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        return (await storage.GetAuthorizationAsync())?.GetAuthenticationState() ??
-               AuthenticationStateExtensions.GetAnonymous();
+        if (await storage.GetAuthorizationAsync() is not { } authentication || authentication.Expired)
+        {
+            return AuthenticationStateExtensions.GetAnonymous();
+        }
+
+        return authentication.GetAuthenticationState();
     }
 }

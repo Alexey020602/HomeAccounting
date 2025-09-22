@@ -1,9 +1,9 @@
 using Authorization.UI.Dto;
 using Shared.Blazor;
 
-namespace Authorization.UI;
+namespace Authorization.UI.Infrastructure;
 
-public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthenticationStorage
+public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthenticationStorage, IDisposable
 {
     private const string AuthorizationKey = "Authorization";
     private readonly ILocalStorage localStorage = localStorage;
@@ -46,16 +46,7 @@ public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthent
 
         try
         {
-            var authentication = await localStorage.GetAsync<Authentication>(AuthorizationKey, cancellationToken);
-
-            if (authentication is null || !authentication.Expired)
-            {
-                return authentication;
-            }
-            
-            await RemoveAuthorizationAsync(cancellationToken);
-            return null;
-
+            return await localStorage.GetAsync<Authentication>(AuthorizationKey, cancellationToken);
         }
         finally
         {
@@ -67,4 +58,6 @@ public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthent
     {
         semaphore.Release();
     }
+
+    public void Dispose() => semaphore.Dispose();
 }

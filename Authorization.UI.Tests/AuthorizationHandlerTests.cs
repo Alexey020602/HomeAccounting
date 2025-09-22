@@ -1,66 +1,77 @@
-﻿using System.Net;
+﻿using System.Linq.Expressions;
+using System.Net;
 using System.Net.Http.Headers;
-using Authorization.Contracts;
-using Authorization.UI.Dto;
 using Authorization.UI.Infrastructure;
 using Moq;
+using Moq.Language.Flow;
+using Moq.Protected;
 using Shared.Blazor.Logout;
 
 namespace Authorization.UI.Tests;
+
+internal static class MockHttpMessageHandlerExtensions
+{
+    private static readonly object[] SendAsyncArguments =
+    [
+        ItExpr.IsAny<HttpRequestMessage>(),
+        ItExpr.IsAny<CancellationToken>(),
+    ];
+
+    public static ISetup<HttpMessageHandler, Task<HttpResponseMessage>> SetupSendAsync(
+        this Mock<HttpMessageHandler> mockHttpMessageHandler) =>
+        mockHttpMessageHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                SendAsyncArguments
+            );
+
+    public static void VerifySendAsync(this Mock<HttpMessageHandler> mockHttpMessageHandler, Times times)
+    {
+        mockHttpMessageHandler.Protected().Verify(
+            "SendAsync",
+            times,
+            SendAsyncArguments
+        );
+    }
+}
 
 public class AuthorizationHandlerTests
 {
     private const string TestUrl = "http://test.com";
     private const string TestAuthorizationScheme = "Bearer";
     private const string ValidToken = "access-token";
-    private const string ValidRefreshToken = "refresh-token";
     private const string InvalidToken = "invalid-token";
-    private const string InvalidRefreshToken = "invalid-refresh-token";
     private static readonly HttpMethod DefaultRequestMethod = HttpMethod.Get;
 
-    private static readonly HttpRequestMessage RequestWithoutAuthorizationHeader = new(
+    private static HttpRequestMessage RequestWithoutAuthorizationHeader => new(
         DefaultRequestMethod,
         TestUrl);
 
-    private static readonly HttpRequestMessage RequestWithEmptyAuthorizationHeader = new(
+    private static HttpRequestMessage RequestWithEmptyAuthorizationHeader => new(
         DefaultRequestMethod,
         TestUrl
     )
     {
-        Headers = { Authorization = new AuthenticationHeaderValue(TestAuthorizationScheme) }
+        Headers =
+        {
+            Authorization = new AuthenticationHeaderValue(TestAuthorizationScheme)
+        }
     };
 
-    private static readonly User DefaultUser = new User(Guid.CreateVersion7(), "username", "fullname");
-
-    private static readonly Authentication DefaultAuthentication = new Authentication(
-        ValidToken,
-        ValidRefreshToken,
-        DefaultUser,
-        DateTime.UtcNow.AddHours(1)
-    );
-
-    private static readonly Authentication InvalidAuthentication = new(
-        InvalidToken,
-        ValidRefreshToken,
-        DefaultUser,
-        DateTime.UtcNow.AddHours(1));
-
-    private readonly Mock<ITokenService> tokenServiceMock;
-    private readonly Mock<ILogoutService> logoutServiceMock;
+    private readonly Mock<ITokenService> tokenServiceMock = new();
+    private readonly Mock<ILogoutService> logoutServiceMock = new();
     private readonly AuthorizationHandler authorizationHandler;
-    private readonly HttpMessageHandler innerHandler;
+    private readonly Mock<HttpMessageHandler> httpMessageHandlerMock = new();
     private readonly HttpClient client;
 
     public AuthorizationHandlerTests()
     {
-        tokenServiceMock = new();
-        logoutServiceMock = new();
-        innerHandler = new OtherMockHttpMessageHandler();
         authorizationHandler = new(
             tokenServiceMock.Object,
             logoutServiceMock.Object)
         {
-            InnerHandler = innerHandler
+            InnerHandler = httpMessageHandlerMock.Object
         };
         client = new HttpClient(authorizationHandler)
         {
@@ -71,9 +82,12 @@ public class AuthorizationHandlerTests
     [Fact]
     public async Task SendAsync_NoAuthorizationHeader_SuccessRequest()
     {
+        httpMessageHandlerMock.SetupSendAsync()
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
         var response = await client.SendAsync(RequestWithoutAuthorizationHeader);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        httpMessageHandlerMock.VerifySendAsync(Times.Once());
         tokenServiceMock.Verify(storage => storage.GetFreshAccessToken(
                 It.IsAny<CancellationToken>()),
             Times.Never);
@@ -89,10 +103,14 @@ public class AuthorizationHandlerTests
         tokenServiceMock.Setup(storage => storage
                 .GetFreshAccessToken(It.IsAny<CancellationToken>()))
             .ReturnsAsync(ValidToken);
+        
+        httpMessageHandlerMock.SetupSendAsync()
+            .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)));
 
         var response = await client.SendAsync(RequestWithEmptyAuthorizationHeader);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        httpMessageHandlerMock.VerifySendAsync(Times.Once());
         tokenServiceMock.Verify(storage => storage.GetFreshAccessToken(It.IsAny<CancellationToken>()),
             Times.Once);
         tokenServiceMock.Verify(api => api.GetRefreshedToken(It.IsAny<CancellationToken>()), Times.Never);
@@ -107,10 +125,11 @@ public class AuthorizationHandlerTests
             )
             .ReturnsAsync(() => null);
         
+
         var response = await client.SendAsync(RequestWithEmptyAuthorizationHeader);
-        
+
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        
+        httpMessageHandlerMock.VerifySendAsync(Times.Never());
         tokenServiceMock.Verify(storage => storage.GetFreshAccessToken(It.IsAny<CancellationToken>()), Times.Once);
         tokenServiceMock.Verify(api => api.GetRefreshedToken(It.IsAny<CancellationToken>()), Times.Never);
         logoutServiceMock.Verify(service => service.Logout(It.IsAny<CancellationToken>()), Times.Once);
@@ -127,26 +146,52 @@ public class AuthorizationHandlerTests
                 .GetRefreshedToken(It.IsAny<CancellationToken>())
             )
             .ReturnsAsync(ValidToken);
+        var isSecondRequest = false;
+        httpMessageHandlerMock.SetupSendAsync()
+            .Returns((HttpRequestMessage requestMessage, CancellationToken _) =>
+            {
+                if (isSecondRequest)
+                {
+                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
+                }
+                else
+                {
+                    isSecondRequest = true;
+                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Unauthorized));
+                }
+            });
 
         var response = await client.SendAsync(RequestWithEmptyAuthorizationHeader);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
+        httpMessageHandlerMock.VerifySendAsync(Times.Exactly(2));
         tokenServiceMock.Verify(storage => storage.GetFreshAccessToken(It.IsAny<CancellationToken>()), Times.Once);
         tokenServiceMock.Verify(api => api.GetRefreshedToken(It.IsAny<CancellationToken>()), Times.Once);
         logoutServiceMock.Verify(service => service.Logout(It.IsAny<CancellationToken>()), Times.Never);
     }
+
     [Fact]
     public async Task SendAsync_WithInvalidAuthorizationHeader_ErrorOnRefresh()
     {
         tokenServiceMock
             .Setup(storage => storage.GetFreshAccessToken(It.IsAny<CancellationToken>()))
             .ReturnsAsync(InvalidToken);
-        
+        tokenServiceMock
+            .Setup(storage => storage.GetRefreshedToken(It.IsAny<CancellationToken>()))
+            .Throws<Exception>();
+        httpMessageHandlerMock.SetupSendAsync()
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Unauthorized));
+
         var response = await client.SendAsync(RequestWithEmptyAuthorizationHeader);
-        
+
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        httpMessageHandlerMock.VerifySendAsync(Times.Once());
+        tokenServiceMock.Verify(storage => storage.GetFreshAccessToken(It.IsAny<CancellationToken>()), Times.Once);
+        tokenServiceMock.Verify(api => api.GetRefreshedToken(It.IsAny<CancellationToken>()), Times.Once);
+        logoutServiceMock.Verify(service => service.Logout(It.IsAny<CancellationToken>()), Times.Once);
     }
+
+
     // [Fact]
     // public async Task SendAsync_UnauthorizedResponse_RefreshToken_RepeatRequest()
     // {
@@ -183,13 +228,18 @@ public class AuthorizationHandlerTests
 
     private sealed class OtherMockHttpMessageHandler() : HttpMessageHandler
     {
+        public int RequestsCount { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken) =>
-            Task.FromResult(
+            CancellationToken cancellationToken)
+        {
+            RequestsCount++;
+            return Task.FromResult(
                 IsRequestAuthorized(request.Headers
                     .Authorization) /*authorization || authorization is {Parameter: ValidToken}*/
                     ? new HttpResponseMessage(HttpStatusCode.OK)
                     : new HttpResponseMessage(HttpStatusCode.Unauthorized));
+        }
 
         private static bool IsRequestAuthorized(AuthenticationHeaderValue? authenticationHeaderValue) =>
             authenticationHeaderValue is null or { Parameter: ValidToken };

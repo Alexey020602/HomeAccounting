@@ -34,7 +34,8 @@ public class AuthorizationHandler(
         catch 
         {
             await logoutService.Logout(cancellationToken);
-            return CreateUnauthorizedMessage(request);
+            throw;
+            // return CreateUnauthorizedMessage(request);
         }
         finally
         {

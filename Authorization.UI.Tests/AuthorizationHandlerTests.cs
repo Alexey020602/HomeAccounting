@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using Authorization.UI.Infrastructure;
 using Moq;
+using Moq.Language;
 using Moq.Language.Flow;
 using Moq.Protected;
 using Shared.Blazor.Logout;
@@ -11,6 +12,8 @@ namespace Authorization.UI.Tests;
 
 internal static class MockHttpMessageHandlerExtensions
 {
+    private const string SendAsyncMethodName = "SendAsync";
+
     private static readonly object[] SendAsyncArguments =
     [
         ItExpr.IsAny<HttpRequestMessage>(),
@@ -22,14 +25,19 @@ internal static class MockHttpMessageHandlerExtensions
         mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
+                SendAsyncMethodName,
                 SendAsyncArguments
             );
 
+    public static ISetupSequentialResult<Task<HttpResponseMessage>> SetupSequenceSendAsync(this Mock<HttpMessageHandler> mockHttpMessageHandler) =>
+        mockHttpMessageHandler
+            .Protected()
+            .SetupSequence<Task<HttpResponseMessage>>(SendAsyncMethodName,
+                SendAsyncArguments);
     public static void VerifySendAsync(this Mock<HttpMessageHandler> mockHttpMessageHandler, Times times)
     {
         mockHttpMessageHandler.Protected().Verify(
-            "SendAsync",
+            SendAsyncMethodName,
             times,
             SendAsyncArguments
         );
@@ -146,20 +154,26 @@ public class AuthorizationHandlerTests
                 .GetRefreshedToken(It.IsAny<CancellationToken>())
             )
             .ReturnsAsync(ValidToken);
-        var isSecondRequest = false;
-        httpMessageHandlerMock.SetupSendAsync()
-            .Returns((HttpRequestMessage requestMessage, CancellationToken _) =>
-            {
-                if (isSecondRequest)
-                {
-                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
-                }
-                else
-                {
-                    isSecondRequest = true;
-                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Unauthorized));
-                }
-            });
+
+        httpMessageHandlerMock
+            .SetupSequenceSendAsync()
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Unauthorized))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+        
+        // var isSecondRequest = false;
+        // httpMessageHandlerMock.SetupSendAsync()
+        //     .Returns((HttpRequestMessage requestMessage, CancellationToken _) =>
+        //     {
+        //         if (isSecondRequest)
+        //         {
+        //             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
+        //         }
+        //         else
+        //         {
+        //             isSecondRequest = true;
+        //             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Unauthorized));
+        //         }
+        //     });
 
         var response = await client.SendAsync(RequestWithEmptyAuthorizationHeader);
 
@@ -182,66 +196,11 @@ public class AuthorizationHandlerTests
         httpMessageHandlerMock.SetupSendAsync()
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Unauthorized));
 
-        var response = await client.SendAsync(RequestWithEmptyAuthorizationHeader);
+        await Assert.ThrowsAsync<Exception>(() => client.SendAsync(RequestWithEmptyAuthorizationHeader));
 
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         httpMessageHandlerMock.VerifySendAsync(Times.Once());
         tokenServiceMock.Verify(storage => storage.GetFreshAccessToken(It.IsAny<CancellationToken>()), Times.Once);
         tokenServiceMock.Verify(api => api.GetRefreshedToken(It.IsAny<CancellationToken>()), Times.Once);
         logoutServiceMock.Verify(service => service.Logout(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-
-    // [Fact]
-    // public async Task SendAsync_UnauthorizedResponse_RefreshToken_RepeatRequest()
-    // {
-    //     var authenticationResponse = new AuthorizationResponse(
-    //         TestAuthorizationScheme, 
-    //         DefaultUser,
-    //         ValidToken,
-    //         ValidRefreshToken,
-    //         DateTime.UtcNow.AddHours(1)
-    //         );
-    // }
-
-    private sealed class MockHttpMessageHandler(Func<int, HttpResponseMessage>? responseFactory = null)
-        : HttpMessageHandler
-    {
-        private int requestsCount;
-
-        public Func<int, HttpResponseMessage> ResponseFactory { get; set; } =
-            responseFactory ?? ((_) => new HttpResponseMessage(HttpStatusCode.OK));
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                return Task.FromResult(ResponseFactory(requestsCount));
-            }
-            finally
-            {
-                requestsCount++;
-            }
-        }
-    }
-
-    private sealed class OtherMockHttpMessageHandler() : HttpMessageHandler
-    {
-        public int RequestsCount { get; private set; }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            RequestsCount++;
-            return Task.FromResult(
-                IsRequestAuthorized(request.Headers
-                    .Authorization) /*authorization || authorization is {Parameter: ValidToken}*/
-                    ? new HttpResponseMessage(HttpStatusCode.OK)
-                    : new HttpResponseMessage(HttpStatusCode.Unauthorized));
-        }
-
-        private static bool IsRequestAuthorized(AuthenticationHeaderValue? authenticationHeaderValue) =>
-            authenticationHeaderValue is null or { Parameter: ValidToken };
     }
 }

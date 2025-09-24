@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<AuthorizationHandler>()
             .AddBudgetsModule()
             .AddRefitClients(apiUri)
+            .AddReceipt()
             .AddAuthorizationModule();
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)

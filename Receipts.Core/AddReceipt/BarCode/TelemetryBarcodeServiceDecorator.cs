@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Shared.Utils.BarCode;
 
 namespace Receipts.Core.AddReceipt.BarCode;
 
@@ -9,7 +10,28 @@ public sealed class TelemetryBarcodeServiceDecorator(
     ActivitySource activitySource
 ) : IBarcodeService
 {
-    public async Task<string> ReadBarcodeAsync(byte[] imageBytes)
+    public async ValueTask<string> ReadBarcodeAsync(Stream stream)
+    {
+        using var activity = activitySource.StartActivity();
+        logger.LogInformation("Reading barcode {ActivityId}",  activity?.Id);
+        try
+        {
+            var result = await barcodeService.ReadBarcodeAsync(stream);
+            activity?.SetTag("barcode", result);
+            logger.LogInformation("Barcode read complete");
+            activity?.SetStatus(ActivityStatusCode.Ok);
+            return result;
+        }
+        catch (Exception e)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error, e.Message);
+            activity?.AddException(e);
+            logger.LogError(e, "Error while reading barcode");
+            throw;
+        }
+    }
+
+    public async ValueTask<string> ReadBarcodeAsync(byte[] imageBytes)
     {
         using var activity = activitySource.StartActivity();
         logger.LogInformation("Reading barcode {ActivityId}",  activity?.Id);

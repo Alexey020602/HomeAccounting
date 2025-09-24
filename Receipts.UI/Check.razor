@@ -23,14 +23,24 @@
         </MudCardHeader>
 
         <MudCardContent>
+
             <MudPaper Elevation="0" Class="pa-4">
-                @if (ManualInput)
+                
+                @if (IsPerformRequest)
                 {
-                    <CheckManualForm OnSubmit="SendManualRequest"/>
+                    <MudText>Выполняется запрос</MudText>
                 }
                 else
                 {
-                    <CheckFileForm OnSubmit="SendFileRequest"/>
+                    <MudText>Готово для ввода</MudText>
+                }
+                @if (ManualInput)
+                {
+                    <CheckManualForm Disabled="@IsPerformRequest" OnSubmit="@SendManualRequest"/>
+                }
+                else
+                {
+                    <CheckFileForm Disabled="@IsPerformRequest" OnSubmitWithRequest="@SendManualRequest"/>
                 }
             </MudPaper>
 
@@ -51,13 +61,26 @@
 
 @code {
     [Inject] private IChecksApi ChecksApi { get; set; } = null!;
+    private bool IsPerformRequest { get; set; } = false;
     private CheckDto? SavedCheck { get; set; }
     private bool ManualInput { get; set; }
     private string ToggleButtonText => ManualInput ? "Ввести чек файлом" : "Ввести чек вручную";
 
     private void ToggleInputMode() => ManualInput = !ManualInput;
 
-    private async Task SendFileRequest(Stream file) => SavedCheck = await ChecksApi.SaveReceipt(BudgetId,  file);
+    // private async Task SendFileRequest(Stream file) => SavedCheck = await ChecksApi.SaveReceipt(BudgetId, file);
 
-    private async Task SendManualRequest(CheckRequest request) => SavedCheck = await ChecksApi.SaveReceipt(BudgetId, request);
+    private async Task SendManualRequest(CheckRequest request)
+    {
+        try
+        {
+            IsPerformRequest = true;
+            SavedCheck = await ChecksApi.SaveReceipt(BudgetId, request);
+        }
+        finally
+        {
+            IsPerformRequest = false;
+        }
+    }
+
 }

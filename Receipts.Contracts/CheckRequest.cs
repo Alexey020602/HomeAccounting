@@ -4,29 +4,28 @@ using Shared.Utils.Model.Dates;
 namespace Receipts.Contracts;
 
 [method: JsonConstructor]
-public class CheckRequest(string Fn, string Fd, string Fp, string S, DateTime T/*, DateTime AddedDate*/)
+public sealed record CheckRequest(string Fn, string Fd, string Fp, string S, DateTime T, string TimeZoneInfoId/*, DateTime AddedDate*/)
 {
-    public CheckRequest(string rawCheckValue, DateTimeOffset addedDate, char splitter = '&'): this(CreateDictionaryFromRawString(rawCheckValue, splitter), addedDate)
+    public CheckRequest(
+        string rawCheckValue, 
+        string timeZoneInfo, 
+        char splitter = '&'
+        ): this(CreateDictionaryFromRawString(rawCheckValue, splitter), timeZoneInfo)
     {
         
     }
-    public CheckRequest(Dictionary<string, string> values, DateTimeOffset addedDate): 
+    public CheckRequest(Dictionary<string, string> values, string timeZoneInfoId): 
         this(
             values["fn"], 
             values["i"], 
             values["fp"],
             values["s"], 
-            new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds().ToUniversalTime() 
+            new DateTimeFnsParser().Parse(values["t"]).RemoveSeconds(),
+            timeZoneInfoId
             /*addedDate.DateTime*/)
     {
         
     }
-    public string Fn { get; init; } = Fn;
-    public string Fd { get; init; } = Fd;
-    public string Fp { get; init; } = Fp;
-    public string S { get; init; } = S;
-    public DateTime T { get; init; } = T;
-    // public DateTime AddedDate { get; set; } = AddedDate;
 
     private static Dictionary<string, string> CreateDictionaryFromRawString(string raw, char splitter = '&')
     {

@@ -1,4 +1,4 @@
-namespace Receipts.Core.AddReceipt.BarCode;
+namespace Shared.Utils.BarCode;
 
 public static class BarcodeServiceExtensions
 {

@@ -1,7 +1,12 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Linq.Expressions
+@using global::Receipts.Contracts
+@using SkiaSharp.Views.Blazor;
 @using Microsoft.AspNetCore.Components.Forms
 @using MudBlazor
+@using Shared.Utils.BarCode
+
+@inject IBarcodeService BarcodeService
 
 <MudCard Elevation="5">
     <MudCardContent>
@@ -15,6 +20,7 @@
                         T="IBrowserFile"
                         For="Model.FileValidation"
                         Accept="image/*"
+                        Disabled="@Disabled"
                         @bind-Files="Model.SelectedFile">
                         <ActivatorContent>
                             <MudChip T="string" Variant="Variant.Filled" Color="Color.Primary" Text="Нажмите для выбора"/>
@@ -35,6 +41,7 @@
                 <MudItem xs="12">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
                         <MudButton
+                            Disabled="@Disabled"
                             Variant="Variant.Filled"
                             Color="Color.Primary"
                             ButtonType="ButtonType.Submit">
@@ -43,7 +50,7 @@
                         <MudButton
                             Variant="Variant.Outlined"
                             Color="Color.Secondary"
-                            Disabled="@(Model.SelectedFile == null)"
+                            Disabled="@(Disabled || Model.SelectedFile == null)"
                             OnClick="Cancel">
                             Отмена
                         </MudButton>
@@ -55,23 +62,28 @@
 </MudCard>
 
 @code {
-    [Parameter] public EventCallback<Stream> OnSubmit { get; set; }
+    [Parameter] public EventCallback<Stream> OnSubmitWithStream { get; set; }
+    [Parameter] public EventCallback<CheckRequest> OnSubmitWithRequest { get; set; }
+    [Parameter] public bool Disabled { get; set; }
     private const int MaxFileSize = 10 * 1024 * 1024;
-    private sealed class FormModel
-    {
-        [Required(ErrorMessage = "Выберите файл с чеком")]
-        public IBrowserFile? SelectedFile { get; set; }
-
-        public Stream GetReadStream() => SelectedFile?.OpenReadStream(maxAllowedSize: MaxFileSize) ?? throw new Exception("Не выбран файл");
-
-        public Expression<Func<IBrowserFile?>> FileValidation => () => SelectedFile;
-    }
 
     private FormModel Model { get; set; } = new();
     private async Task SendFileRequest()
     {
         await using var stream = Model.GetReadStream();
-        await OnSubmit.InvokeAsync(stream);
+        if (OnSubmitWithRequest is { HasDelegate: true })
+        {
+            var barcode = await BarcodeService.ReadBarcodeAsync(stream);
+            var request = new CheckRequest(
+                barcode,
+                TimeZoneInfo.Local.Id
+            );
+            await OnSubmitWithRequest.InvokeAsync(request);
+        }
+        else
+        {
+            await OnSubmitWithStream.InvokeAsync(stream);
+        }
     }
 
     private Task OnChange(InputFileChangeEventArgs args)
@@ -91,4 +103,13 @@
         Model.SelectedFile = null;
     }
 
+    private sealed class FormModel
+    {
+        [Required(ErrorMessage = "Выберите файл с чеком")]
+        public IBrowserFile? SelectedFile { get; set; }
+
+        public Stream GetReadStream() => SelectedFile?.OpenReadStream(maxAllowedSize: MaxFileSize) ?? throw new Exception("Не выбран файл");
+
+        public Expression<Func<IBrowserFile?>> FileValidation => () => SelectedFile;
+    }
 }

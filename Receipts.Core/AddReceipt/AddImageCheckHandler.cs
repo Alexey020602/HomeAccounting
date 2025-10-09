@@ -2,7 +2,7 @@ using Fns.Contracts;
 using MaybeResults;
 using Mediator;
 using Receipts.Contracts;
-using Receipts.Core.AddReceipt.BarCode;
+using Shared.Utils.BarCode;
 using Shared.Utils.MediatorWithResults;
 
 namespace Receipts.Core.AddReceipt;

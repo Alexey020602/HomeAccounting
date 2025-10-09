@@ -9,26 +9,26 @@
             <DataAnnotationsValidator/>
             <MudGrid Spacing="3" Justify="Justify.FlexStart">
                 <MudItem xs="12" md="6">
-                    <MudTextField Label="ФН" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fn" Variant="Variant.Outlined" For="@(() => ManualModel.Fn)"/>
+                    <MudTextField Label="ФН" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fn" Disabled="@Disabled" Variant="Variant.Outlined" For="@(() => ManualModel.Fn)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField Label="ФД" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fd" Variant="Variant.Outlined" For="@(() => ManualModel.Fd)" />
+                    <MudTextField Label="ФД" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fd" Disabled="@Disabled" Variant="Variant.Outlined" For="@(() => ManualModel.Fd)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField Label="ФП" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fp" Variant="Variant.Outlined" For="@(() => ManualModel.Fp)"/>
+                    <MudTextField Label="ФП" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Fp" Disabled="@Disabled" Variant="Variant.Outlined" For="@(() => ManualModel.Fp)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField Label="Сумма" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Sum" Variant="Variant.Outlined" For="@(() => ManualModel.Sum)"/>
+                    <MudTextField Label="Сумма" OnlyValidateIfDirty="true" @bind-Value="ManualModel.Sum" Disabled="@Disabled" Variant="Variant.Outlined" For="@(() => ManualModel.Sum)"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudDatePicker Label="Дата покупки" @bind-Date="ManualModel.PurchaseDate" Variant="Variant.Outlined" For="@(() => ManualModel.PurchaseDate)"/>
+                    <MudDatePicker Label="Дата покупки" @bind-Date="ManualModel.PurchaseDate" Disabled="@Disabled" Variant="Variant.Outlined" For="@(() => ManualModel.PurchaseDate)"/>
                 </MudItem>
                 <MudItem xs="12">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="@Disabled">
                             Сохранить чек
                         </MudButton>
-                        <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Outlined" Color="Color.Error">
+                        <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Outlined" Color="Color.Error" Disabled="@Disabled">
                             Отмена
                         </MudButton>
                     </MudStack>
@@ -41,7 +41,7 @@
 
 @code {
     [Parameter] public EventCallback<CheckRequest> OnSubmit { get; set; }
-
+    [Parameter] public bool Disabled { get; set; }
     private sealed class ManualInputModel
     {
         [Required(ErrorMessage = "Необходимо ввести ФН чека")]
@@ -57,7 +57,7 @@
         public string Sum { get; set; } = "";
         [Required(ErrorMessage = "Необходимо ввести дату покупки")] public DateTime? PurchaseDate { get; set; }
 
-        public CheckRequest ToCheckRequest() => new CheckRequest(Fn, Fd, Fp, Sum, PurchaseDate ?? throw new Exception("Не выбрана дата"));
+        public CheckRequest ToCheckRequest() => new CheckRequest(Fn, Fd, Fp, Sum, PurchaseDate ?? throw new Exception("Не выбрана дата"), TimeZoneInfo.Local.Id);
     }
 
     private ManualInputModel ManualModel { get; set; } = new();

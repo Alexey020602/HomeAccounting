@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Receipts.Contracts;
 using Receipts.Core.AddReceipt;
-using Receipts.Core.AddReceipt.BarCode;
+using Shared.Utils.BarCode;
 using Shared.Utils.Model;
 using Shared.Utils.Model.Dates;
 using Shared.Web;

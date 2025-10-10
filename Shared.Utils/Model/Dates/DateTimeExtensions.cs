@@ -20,9 +20,9 @@ public static class DateTimeExtensions
     public static DateTime BeginOfBillingPerion(this DateTime date, int beginDay = 7) =>
         date.DayOfCurrentMonth(beginDay);
     
-    internal static DateTime DayOfMonth(int day, Months.Months month) => new DateTime(DateTime.UtcNow.Year, (int)month, day);
-    
-    internal static Months.Months GetMonth(this DateTime date) => (Months.Months) date.Month;
+    // internal static DateTime DayOfMonth(int day, Months.Months month) => new DateTime(DateTime.UtcNow.Year, (int)month, day);
+    //
+    // internal static Months.Months GetMonth(this DateTime date) => (Months.Months) date.Month;
     
     
     public static int GetCurrentYear() => DateTime.UtcNow.Year;

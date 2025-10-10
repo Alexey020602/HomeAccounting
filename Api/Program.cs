@@ -8,15 +8,10 @@ using Authorization.UI.Pages;
 using BlazorConsolidated;
 using Budgets.Core.GetBudgets;
 using Budgets.DataBase;
-using Budgets.UI.BudgetsList;
 using Checks.Api;
 using Fns;
 using Mediator;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using NSwag.AspNetCore;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
@@ -27,7 +22,6 @@ using Receipts.Core.ReceiptSaving;
 using Receipts.DataBase;
 using Reports.Api;
 using Reports.Core;
-using Reports.UI;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -151,91 +145,19 @@ apiGroup
 
 apiGroup.MapBudgetGroup().MapReceiptEndpoints();
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(
-        typeof(Login).Assembly,
-        typeof(Receipts.UI.Receipts).Assembly,
-        typeof(MonthReportComponent).Assembly,
-        typeof(BudgetsPage).Assembly,
-        typeof(Routes).Assembly
-    )
-    .AllowAnonymous();
+// app.MapRazorComponents<App>()
+//     .AddInteractiveWebAssemblyRenderMode()
+//     .AddAdditionalAssemblies(
+//         typeof(Login).Assembly,
+//         typeof(Receipts.UI.Receipts).Assembly,
+//         typeof(MonthReportComponent).Assembly,
+//         typeof(BudgetsPage).Assembly,
+//         typeof(Routes).Assembly
+//     )
+//     .AllowAnonymous();
 
 app.Run();
 
 namespace Api
 {
-    internal sealed class BearerAuthenticationSchemeTransformer(
-        IAuthenticationSchemeProvider authenticationSchemeProvider)
-        : IOpenApiDocumentTransformer
-    {
-        public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
-            CancellationToken cancellationToken)
-        {
-            var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
-
-            if (authenticationSchemes.All(scheme => scheme.Name != JwtBearerDefaults.AuthenticationScheme))
-                return;
-
-            var requirements = new Dictionary<string, OpenApiSecurityScheme>
-            {
-                {
-                    JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = JwtBearerDefaults.AuthenticationScheme,
-                        In = ParameterLocation.Header,
-                        BearerFormat = "JWT",
-                        Description = "Please insert JWT token",
-                        Name = "Authorization",
-                    }
-                },
-                // {
-                //     $"{JwtBearerDefaults.AuthenticationScheme} password", new OpenApiSecurityScheme
-                //     {
-                //         Type = SecuritySchemeType.Http,
-                //         Scheme = "password",
-                //         In = ParameterLocation.Header,
-                //         
-                //     }
-                // }
-            };
-
-            document.Components ??= new OpenApiComponents();
-            document.Components.SecuritySchemes = requirements;
-            document.SecurityRequirements.Add(new OpenApiSecurityRequirement()
-                {
-                    {
-                        new OpenApiSecurityScheme()
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        []
-                    }
-                }
-            );
-        }
-    }
-
-    internal static class SerilogApplicationBuilderExtensions
-    {
-        internal static LogEventLevel DefaultGetLevel(HttpContext httpContext, double elapsed, Exception? ex)
-        {
-            if (ex is not null || httpContext.Response.StatusCode >= 499) return LogEventLevel.Error;
-
-            return httpContext.IsApiEndpoint()
-                ? LogEventLevel.Information
-                : LogEventLevel.Debug;
-        }
-
-        private static bool IsApiEndpoint(this HttpContext httpContext)
-        {
-            return httpContext.Request.Path.StartsWithSegments("/api");
-        }
-    }
 }

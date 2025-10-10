@@ -1,0 +1,8 @@
+<MudAppBar Elevation="3" Color="Color.Primary">
+    @ChildContent
+    <MudText Typo="Typo.h6" Class="ml-3 white--text">Домашняя бухгалтерия</MudText>
+</MudAppBar>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

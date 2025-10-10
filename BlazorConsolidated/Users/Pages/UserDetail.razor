@@ -1,0 +1,37 @@
+@page "/User/{id:guid}"
+@using BlazorConsolidated.Common.Components
+@using ClientServerContracts.User.GetUser
+@using ClientServerShared.Results
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+@inject IUsersApi UsersApi
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MaybeComponent Result="UserMaybe" Context="user">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">@user.UserName</MudText>
+                <AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="@Id">
+                    <MudLink Href="@UserEditHref">Редактировать</MudLink>
+                </AuthorizeView>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText><strong>Имя пользователя:</strong> @user.FullName</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MaybeComponent>
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private IMaybe<User>? UserMaybe { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        UserMaybe = await UsersApi.GetUser(Id).TryAsync();
+    }
+
+    private string UserEditHref => $"/user/{Id}/edit";
+}

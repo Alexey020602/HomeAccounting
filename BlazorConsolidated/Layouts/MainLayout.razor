@@ -1,7 +1,8 @@
-﻿@using Shared.Blazor.Layouts
-@using Authorization.UI.Pages
-@using Budgets.UI
-@using Shared.Blazor
+﻿
+@using BlazorConsolidated.Common
+@using BlazorConsolidated.Common.Layouts
+@using BlazorConsolidated.Users.Pages
+@using BlazorConsolidated.Components
 @inherits LayoutComponentBase
 @layout BaseLayout
 
@@ -25,7 +26,7 @@
         }
         
         <UserComponent>
-            <SelectedBudgetInfo />
+            @* <SelectedBudgetInfo /> *@
         </UserComponent>
     </MudNavMenu>
 </MudDrawer>

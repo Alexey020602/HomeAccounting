@@ -16,21 +16,39 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.9" />
-        <PackageReference Include="Refit" Version="8.0.0"/>
+        <PackageReference Include="Blazored.FluentValidation" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
+        <PackageReference Include="MudBlazor" Version="8.13.0" />
+        <PackageReference Include="Refit" Version="8.0.0" />
+        <PackageReference Include="Scrutor" Version="6.1.0" />
         <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Authorization.UI\Authorization.UI.csproj" />
-      <ProjectReference Include="..\Budgets.UI\Budgets.UI.csproj" />
-      <ProjectReference Include="..\Receipts.UI\Receipts.UI.csproj" />
-      <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
-      <ProjectReference Include="..\Reports.UI\Reports.UI.csproj" />
-      <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
+        <PackageReference Include="WTorricos.Results" Version="2.0.4" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Common\Components\DateRangeComponent.razor" />
+      <AdditionalFiles Include="Common\Components\MaybeComponent.razor" />
+      <AdditionalFiles Include="Common\Components\RedirectComponent.razor" />
+      <AdditionalFiles Include="Common\Layouts\UnauthorizedLayout.razor" />
+      <AdditionalFiles Include="Users\Pages\EditUser.razor" />
+      <AdditionalFiles Include="Users\Pages\Login.razor" />
+      <AdditionalFiles Include="Users\Pages\UserComponent.razor" />
+      <AdditionalFiles Include="Users\Pages\UserDetail.razor" />
+      <AdditionalFiles Include="Users\Pages\UserEditForm.razor" />
+      <AdditionalFiles Include="Users\Registration\Register.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClientServerContracts\ClientServerContracts.csproj" />
+      <ProjectReference Include="..\ClientServerShared\ClientServerShared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Receipts\_Imports.razor" />
     </ItemGroup>
 
 </Project>

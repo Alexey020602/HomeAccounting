@@ -15,5 +15,4 @@ builder.Services.AddBlazorShared(apiUri);
 
 var app = builder.Build();
 app.Services.GetService<ILogger<Program>>()?.LogInformation("App starting...");
-Console.WriteLine("App starting...");
 await app.RunAsync();

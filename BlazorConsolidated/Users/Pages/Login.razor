@@ -1,0 +1,69 @@
+@page "/Login"
+@using BlazorConsolidated.Common.Components
+@using BlazorConsolidated.Users.Infrastructure
+@using Blazored.FluentValidation
+@using ClientServerContracts.User.GetUser
+@using ClientServerContracts.User.Login
+@using ClientServerShared.Users
+@inject IAuthorizationApi AuthorizationApi
+@inject ILoginService LoginStateProvider
+@inject NavigationManager NavigationManager
+
+<MudCard Style="max-width: 600px; padding: 20px">
+    <EditForm Model="loginRequest" OnValidSubmit="LoginAsync">
+        <FluentValidationValidator/>
+        <MudStack Justify="Justify.SpaceBetween">
+            <MudTextField
+                @bind-Text="loginRequest.Login"
+                Variant="Variant.Outlined"
+                Label="Логин"
+                For="@(() => loginRequest.Login)"/>
+            <MudPasswordField
+                Variant="Variant.Outlined"
+                InputType="InputType.Password"
+                @bind-Text="loginRequest.Password"
+                Label="Пароль"
+                For="@(() => loginRequest.Password)"
+                Adornment="Adornment.End"
+                AdornmentIcon="@Icons.Material.Filled.RemoveRedEye"
+                OnAdornmentClick="EventCallback.Empty"/>
+
+            <MudGrid Justify="Justify.SpaceBetween">
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Reset" Color="Color.Secondary"
+                               Style="width: 100%">
+                        Отмена
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" Href="register" Style="width: 100%">Регистрация</MudButton>
+                </MudItem>
+                <MudItem xs="12" md="3" Class="d-flex flex-column align-center">
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary"
+                               Style="width: 100%">
+                        Войти
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudStack>
+    </EditForm>
+</MudCard>
+
+@code {
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+    private readonly LoginRequest loginRequest = new();
+
+    private class LoginRequest
+    {
+        public string Login { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+
+        internal ClientServerContracts.User.Login.LoginRequest CreateLoginRequest() => new(Login, Password);
+    }
+    private async Task LoginAsync()
+    {
+        await LoginStateProvider.Login(loginRequest.CreateLoginRequest());
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+
+}

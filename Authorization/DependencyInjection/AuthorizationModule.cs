@@ -4,6 +4,7 @@ using Authorization.DataBase;
 using Authorization.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shared.Infrastructure;
@@ -31,7 +32,6 @@ public static class AuthorizationModule
                 
             })
             .AddEntityFrameworkStores<AuthorizationContext>();
-        
         builder.Services.AddAuthorization();
         builder.Services.AddAuthentication(options =>
         {

@@ -1,5 +1,5 @@
+using BlazorConsolidated.Common;
 using Microsoft.JSInterop;
-using Shared.Blazor;
 
 namespace BlazorConsolidated.Utils;
 

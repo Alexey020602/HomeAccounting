@@ -1,21 +1,15 @@
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
-using Authorization.UI;
-using Authorization.UI.Infrastructure;
+using BlazorConsolidated.Common;
+using BlazorConsolidated.Common.Attributes;
+using BlazorConsolidated.Common.Logout;
+using BlazorConsolidated.Users;
+using BlazorConsolidated.Users.Infrastructure;
 using BlazorConsolidated.Utils;
-using Budgets.UI;
-using Microsoft.AspNetCore.Components.Authorization;
+using ClientServerShared;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using Receipts.UI;
 using Refit;
-using Reports.UI;
-using Shared.Blazor;
-using Shared.Blazor.Attributes;
-using Shared.Blazor.Logout;
-using Shared.Utils;
 
 namespace BlazorConsolidated.DependencyInjection;
 
@@ -32,11 +26,9 @@ public static class ServiceCollectionExtensions
             })
             .AddDefaultLogoutService()
             .AddTransient<ILocalStorage, LocalStorage>()
-            .AddScoped<HttpLoggingHandler>()
+            .AddTransient<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
-            .AddBudgetsModule()
             .AddRefitClients(apiUri)
-            .AddReceipt()
             .AddAuthorizationModule();
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
@@ -45,9 +37,9 @@ public static class ServiceCollectionExtensions
         [
             Assembly.GetExecutingAssembly(),
             typeof(IAuthorizationApi).Assembly,
-            typeof(IChecksApi).Assembly,
-            typeof(IReportsApi).Assembly,
-            typeof(IBudgetsApi).Assembly
+            // typeof(IChecksApi).Assembly,
+            // typeof(IReportsApi).Assembly,
+            // typeof(IBudgetsApi).Assembly
         ];
         foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
         {
@@ -66,8 +58,6 @@ public static class ServiceCollectionExtensions
     {
         var jsonSerializerOptions = SystemTextJsonContentSerializer.GetDefaultJsonSerializerOptions();
         
-        jsonSerializerOptions.Converters.Add(new UnitJsonConverter());
-        
         var jsonContentSerializer = new SystemTextJsonContentSerializer(
             jsonSerializerOptions
         );
@@ -78,7 +68,9 @@ public static class ServiceCollectionExtensions
         var httpClientBuilder = serviceCollection.AddRefitClient(type)
             .ConfigureHttpClient(client =>
                 client.BaseAddress = apiUri//.AppendingPath("api", apiAttribute.BasePath)
-                    .AppendingPath($"api/{apiAttribute.BasePath}")
+                    .AppendingPath(Path.Join("api", apiAttribute.BasePath))
+                
+                
             )
             .AddHttpMessageHandler<HttpLoggingHandler >();
 

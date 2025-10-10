@@ -13,22 +13,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.4.2" />
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.1" />
         <PackageReference Include="Aspire.Hosting.Docker" Version="9.4.1-preview.1.25408.4" />
         <PackageReference Include="Aspire.Hosting.Kubernetes" Version="9.4.1-preview.1.25408.4" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.4.2" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.1" />
         <PackageReference Include="Aspire.Hosting.Yarp" Version="9.4.0-preview.1.25378.8" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Client\Client.csproj"/>
-        <ProjectReference Include="..\Gateway\Gateway.csproj" />
-        <ProjectReference Include="..\MigrationService\MigrationService.csproj"/>
         <ProjectReference Include="..\Api\Api.csproj"/>
-        <ProjectReference Include="..\WebClient\WebClient\WebClient.csproj" />
+        <ProjectReference Include="..\MyBudgets\MyBudgets.csproj" />
     </ItemGroup>
 
 </Project>

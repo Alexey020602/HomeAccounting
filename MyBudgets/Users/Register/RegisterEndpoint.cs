@@ -18,11 +18,12 @@ static class RegisterEndpoint
                         return Results.BadRequest($"User with username {request.UserName} already exists.");
                     }
 
+                    var user = new User(request.UserName, request.FullName);
                     var creationResult = await userManager.CreateAsync(
-                        new User(request.UserName, request.FullName),
+                        user,
                         request.Password
                     );
-
+                    
                     if (creationResult.Succeeded)
                     {
                         return Results.Created();

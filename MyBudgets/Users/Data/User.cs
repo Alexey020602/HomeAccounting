@@ -11,9 +11,8 @@ sealed class User: IdentityUser<UserId>
         FullName = string.Empty;
     }
 
-    public User(string userName, string fullName)
+    public User(string userName, string fullName): base(userName)
     {
-        UserName = userName;
         FullName = fullName;
     }
 
@@ -31,11 +30,8 @@ sealed class User: IdentityUser<UserId>
         return user;
     }
 
+    public void UpdateUserName(string userName) => UserName = userName;
+
+    public void UpdateFullName(string fullName) => FullName = fullName;
     internal void AddRefreshToken(RefreshToken refreshToken) => RefreshToken = refreshToken; 
 }
-
-// sealed class RefreshToken
-// {
-//     public UserId UserId { get; init; }
-//     public string Token { get; init; }
-// }

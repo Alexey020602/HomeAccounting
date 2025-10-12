@@ -26,23 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Common\Components\DateRangeComponent.razor" />
-      <AdditionalFiles Include="Common\Components\MaybeComponent.razor" />
-      <AdditionalFiles Include="Common\Components\RedirectComponent.razor" />
-      <AdditionalFiles Include="Common\Layouts\UnauthorizedLayout.razor" />
-      <AdditionalFiles Include="Users\Pages\EditUser.razor" />
-      <AdditionalFiles Include="Users\Pages\Login.razor" />
-      <AdditionalFiles Include="Users\Pages\UserComponent.razor" />
-      <AdditionalFiles Include="Users\Pages\UserDetail.razor" />
-      <AdditionalFiles Include="Users\Pages\UserEditForm.razor" />
-      <AdditionalFiles Include="Users\Registration\Register.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ClientServerContracts\ClientServerContracts.csproj" />
       <ProjectReference Include="..\ClientServerShared\ClientServerShared.csproj" />
     </ItemGroup>

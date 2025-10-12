@@ -5,6 +5,7 @@ using MyBudgets.Common.Http;
 using MyBudgets.Users;
 using MyBudgets.Users.CheckLogin;
 using MyBudgets.Users.Data.Database;
+using MyBudgets.Users.GetUser;
 using MyBudgets.Users.Login;
 using MyBudgets.Users.Register;
 using Scalar.AspNetCore;
@@ -76,9 +77,7 @@ app.UseHttpsRedirection();
 
 var apiGroup = app.MapGroup("api");
 
-apiGroup.MapLogin();
-apiGroup.MapRegister();
-apiGroup.MapCheckLogin();
+apiGroup.MapUsersEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

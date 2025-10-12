@@ -26,7 +26,7 @@ public class TokenProvider(IOptions<JwtTokenSettings> settings, ILogger<TokenPro
         }
         return principal;
     }
-    public RefreshToken CreateRefreshToken()
+    public Data.RefreshToken CreateRefreshToken()
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();

@@ -1,3 +1,5 @@
+using BlazorConsolidated.Users.Infrastructure.Api;
+
 namespace BlazorConsolidated.Users.Infrastructure;
 
 internal sealed class TokenService(IAuthenticationStorage authenticationStorage, IAuthorizationApi authorizationApi): ITokenService

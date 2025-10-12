@@ -4,6 +4,7 @@ using BlazorConsolidated.Common.Attributes;
 using BlazorConsolidated.Common.Logout;
 using BlazorConsolidated.Users;
 using BlazorConsolidated.Users.Infrastructure;
+using BlazorConsolidated.Users.Infrastructure.Api;
 using BlazorConsolidated.Utils;
 using ClientServerShared;
 using Microsoft.Extensions.DependencyInjection;

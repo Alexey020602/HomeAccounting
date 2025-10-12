@@ -18,12 +18,12 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
         Icons.Material.Filled.List
     );
 
-    public static readonly MenuItem Report = new(
-        "Отчет",
-        "Просмотр отчета о текущем бюджете",
-        RoutesConstants.Report,
-        Icons.Material.Filled.Report
-    );
+    // public static readonly MenuItem Report = new(
+    //     "Отчет",
+    //     "Просмотр отчета о текущем бюджете",
+    //     RoutesConstants.Report,
+    //     Icons.Material.Filled.Report
+    // );
 
     public static readonly MenuItem Budget = new(
         "Бюджеты",
@@ -36,6 +36,6 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
     [
         AddReceipt,
         ReceiptsList,
-        Report,
+        // Report,
     ];
 }

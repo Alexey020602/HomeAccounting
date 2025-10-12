@@ -1,14 +1,17 @@
 @page "/User/{id:guid}/edit"
 @using BlazorConsolidated.Common.Components
 @using BlazorConsolidated.Common.RefitWithResult
+@using BlazorConsolidated.Users.Pages
 @using ClientServerContracts.User.GetUser
 @using ClientServerContracts.User.UpdateUser
 @using FluentValidation
 @using MaybeResults
+@using Microsoft.AspNetCore.Authorization
 @using Severity = MudBlazor.Severity
 @inject ISnackbar Snackbar
 @inject IUsersApi UsersApi
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
 
 <AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="Id">
     <Authorized>

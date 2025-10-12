@@ -6,6 +6,6 @@ namespace MyBudgets.Users.Login;
 public interface ITokenProvider
 {
     ClaimsPrincipal GetPrincipal(string token);
-    RefreshToken CreateRefreshToken();
+    Data.RefreshToken CreateRefreshToken();
     string CreateToken(IReadOnlyList<Claim> claims);
 }

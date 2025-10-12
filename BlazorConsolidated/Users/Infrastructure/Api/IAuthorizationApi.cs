@@ -3,7 +3,7 @@ using ClientServerContracts.User.Login;
 using ClientServerContracts.User.Register;
 using Refit;
 
-namespace BlazorConsolidated.Users.Infrastructure;
+namespace BlazorConsolidated.Users.Infrastructure.Api;
 
 [Api]
 public interface IAuthorizationApi
@@ -18,5 +18,5 @@ public interface IAuthorizationApi
     Task Register(RegistrationRequest registrationRequest);
 
     [Post("/refresh")]
-    Task<AuthorizationResponse> RefreshToken(string refreshToken);
+    Task<AuthorizationResponse> RefreshToken([Body] string refreshToken);
 }

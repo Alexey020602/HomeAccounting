@@ -78,7 +78,7 @@ public class AuthorizationController(IMediator mediator) : ApiControllerBase
                     }
                 }
             ),
-            INone<AuthorizationResponse> error => BadRequest(error.Message),
+            INone<LoginResponse> error => BadRequest(error.Message),
             _ => throw new InvalidOperationException("Unknown operation result")
         };
     }

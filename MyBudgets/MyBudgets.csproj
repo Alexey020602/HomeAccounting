@@ -30,7 +30,6 @@
       <Folder Include="Budgets\Data\Database\Migrations\" />
       <Folder Include="Users\Data\Database\Migrations\" />
       <Folder Include="Users\Data\Login\" />
-      <Folder Include="Users\Register\" />
     </ItemGroup>
 
     <ItemGroup>

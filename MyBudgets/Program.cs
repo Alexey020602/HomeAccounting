@@ -3,8 +3,10 @@ using MudBlazor.Extensions;
 using MyBudgets;
 using MyBudgets.Common.Http;
 using MyBudgets.Users;
+using MyBudgets.Users.CheckLogin;
 using MyBudgets.Users.Data.Database;
 using MyBudgets.Users.Login;
+using MyBudgets.Users.Register;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -75,7 +77,8 @@ app.UseHttpsRedirection();
 var apiGroup = app.MapGroup("api");
 
 apiGroup.MapLogin();
-
+apiGroup.MapRegister();
+apiGroup.MapCheckLogin();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

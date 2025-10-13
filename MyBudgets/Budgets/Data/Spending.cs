@@ -8,6 +8,10 @@ abstract class Spending
     public abstract int Sum { get; }
     public abstract string Description { get; }
 
+    protected Spending()
+    {
+        
+    }
     public Spending(SpendingId id, DateTime purchaseDate, DateTime addedDate)
     {
         Id = id;

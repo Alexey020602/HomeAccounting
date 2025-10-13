@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using BlazorConsolidated.Common.Logout;
+using BlazorConsolidated.Users.Infrastructure.Abstractions;
 
 namespace BlazorConsolidated.Users.Infrastructure;
 

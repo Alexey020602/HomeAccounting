@@ -6,6 +6,11 @@ sealed class ManualSpending : Spending
     public override string Description => description;
     private int sum;
     public override int Sum => sum;
+
+    private ManualSpending()
+    {
+        description = string.Empty;
+    }
     public ManualSpending(
         SpendingId id,
         int sum, 

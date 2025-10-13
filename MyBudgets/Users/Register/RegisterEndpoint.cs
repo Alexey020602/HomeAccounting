@@ -35,6 +35,7 @@ static class RegisterEndpoint
                 }
             )
             .Produces((int)HttpStatusCode.Created)
-            .Produces((int)HttpStatusCode.BadRequest);
+            .Produces((int)HttpStatusCode.BadRequest)
+            .AllowAnonymous();
     }
 }

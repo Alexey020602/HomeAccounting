@@ -1,13 +1,14 @@
 @page "/"
 @* @using Budgets.UI *@
+@using BlazorConsolidated.Budgets
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
-@* <BudgetRequiredView Context="budgetState"> *@
+<BudgetRequiredView Context="budgetState">
     <MudCard>
         <MudCardHeader>
             <MudText Typo="Typo.h1">Добро пожаловать</MudText>
-            @* <MudText Typo="Typo.h5">Вы работаете с бюджетом @budgetState.Name</MudText> *@
+            <MudText Typo="Typo.h5">Вы работаете с бюджетом @budgetState.Name</MudText>
         </MudCardHeader>
         <MudCardContent>
             <MudList T="string">
@@ -23,4 +24,4 @@
             </MudList>
         </MudCardContent>
     </MudCard>
-@* </BudgetRequiredView> *@
+</BudgetRequiredView>

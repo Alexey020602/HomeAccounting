@@ -1,5 +1,6 @@
 using BlazorConsolidated.Common;
 using BlazorConsolidated.Users.Dto;
+using BlazorConsolidated.Users.Infrastructure.Abstractions;
 
 namespace BlazorConsolidated.Users.Infrastructure;
 

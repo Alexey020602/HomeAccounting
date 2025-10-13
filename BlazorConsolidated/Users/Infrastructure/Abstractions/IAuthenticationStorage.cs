@@ -1,6 +1,6 @@
 using BlazorConsolidated.Users.Dto;
 
-namespace BlazorConsolidated.Users.Infrastructure;
+namespace BlazorConsolidated.Users.Infrastructure.Abstractions;
 
 public interface IAuthenticationStorage
 {

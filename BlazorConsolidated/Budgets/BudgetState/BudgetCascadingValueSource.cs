@@ -1,0 +1,22 @@
+using Microsoft.AspNetCore.Components;
+
+namespace BlazorConsolidated.Budgets.BudgetState;
+
+public class BudgetCascadingValueSource : 
+    CascadingValueSource<Task<BudgetState>>, IDisposable
+{
+    private readonly BudgetsStateProvider budgetsStateProvider;
+    public BudgetCascadingValueSource(BudgetsStateProvider budgetsStateProvider) : base(budgetsStateProvider.GetBudgetStateAsync(), isFixed: false)
+    {
+        this.budgetsStateProvider = budgetsStateProvider;
+        budgetsStateProvider.BudgetStateChanged += HandleBudgetsStateChanged;
+    }
+
+    private Task HandleBudgetsStateChanged(Task<BudgetState> newBudgetsStateTask) =>
+        NotifyChangedAsync(newBudgetsStateTask);
+
+    void IDisposable.Dispose()
+    {
+        budgetsStateProvider.BudgetStateChanged -= HandleBudgetsStateChanged;
+    }
+}

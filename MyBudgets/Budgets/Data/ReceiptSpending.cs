@@ -14,6 +14,12 @@ sealed class ReceiptSpending : Spending
     public override int Sum => Products.Sum(p => p.Sum);
     public override string Description => PurchasePlace;
 
+    private ReceiptSpending()
+    {
+        FiscalData = new ReceiptFiscalData(string.Empty, string.Empty, string.Empty);
+        PurchasePlace = string.Empty;
+    }
+
     public ReceiptSpending(
         SpendingId id, 
         DateTime purchaseDate, 

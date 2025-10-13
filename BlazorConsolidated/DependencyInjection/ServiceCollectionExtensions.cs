@@ -1,4 +1,5 @@
 using System.Reflection;
+using BlazorConsolidated.Budgets;
 using BlazorConsolidated.Common;
 using BlazorConsolidated.Common.Attributes;
 using BlazorConsolidated.Common.Logout;
@@ -30,7 +31,8 @@ public static class ServiceCollectionExtensions
             .AddTransient<HttpLoggingHandler>()
             .AddTransient<AuthorizationHandler>()
             .AddRefitClients(apiUri)
-            .AddAuthorizationModule();
+            .AddAuthorizationModule()
+            .AddBudgetsModule();
 
     private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
     {

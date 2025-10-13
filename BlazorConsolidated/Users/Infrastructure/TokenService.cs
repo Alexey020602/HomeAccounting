@@ -1,3 +1,4 @@
+using BlazorConsolidated.Users.Infrastructure.Abstractions;
 using BlazorConsolidated.Users.Infrastructure.Api;
 
 namespace BlazorConsolidated.Users.Infrastructure;

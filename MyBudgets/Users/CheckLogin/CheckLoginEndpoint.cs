@@ -10,6 +10,7 @@ static class CheckLoginEndpoint
         endpoints.MapGet(
             "login/exist",
             async (string login, UserManager<User> userManager) => 
-                Results.Ok((await userManager.FindByNameAsync(login) != null)));
+                Results.Ok((await userManager.FindByNameAsync(login) != null)))
+            .AllowAnonymous();
     }
 }

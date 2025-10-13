@@ -40,6 +40,7 @@ static class LoginEndpoint
                         refreshToken.Expires
                     ));
             })
-            .Produces((int) HttpStatusCode.OK, typeof(AuthorizationResponse));
+            .Produces((int) HttpStatusCode.OK, typeof(AuthorizationResponse))
+            .AllowAnonymous();
     }
 }

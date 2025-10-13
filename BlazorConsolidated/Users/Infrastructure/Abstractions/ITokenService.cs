@@ -1,4 +1,4 @@
-namespace BlazorConsolidated.Users.Infrastructure;
+namespace BlazorConsolidated.Users.Infrastructure.Abstractions;
 
 public interface ITokenService
 {

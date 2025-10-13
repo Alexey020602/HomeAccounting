@@ -1,6 +1,8 @@
 using BlazorConsolidated;
 using MudBlazor.Extensions;
 using MyBudgets;
+using MyBudgets.Budgets;
+using MyBudgets.Budgets.Data.Database;
 using MyBudgets.Common.Http;
 using MyBudgets.Users;
 using MyBudgets.Users.CheckLogin;
@@ -42,12 +44,14 @@ builder.Services.AddProblemDetails();
 builder.Services.AddTransient<HttpLoggingHandler>();
 
 
-builder.AddUsers("HomeAccounting");
+var databaseServiceName = "HomeAccounting";
+builder.AddUsers(databaseServiceName);
+builder.AddBudgets(databaseServiceName);
 
 var app = builder.Build();
 
 await app.MigrateUsersAsync();
-
+await app.MigrateBudgetsAsync();
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyHeader()
     .AllowAnyMethod()
@@ -75,9 +79,10 @@ app.UseSerilogRequestLogging(options =>
 
 app.UseHttpsRedirection();
 
-var apiGroup = app.MapGroup("api");
+var apiGroup = app.MapGroup("api").RequireAuthorization();
 
 apiGroup.MapUsersEndpoints();
+apiGroup.MapBudgetsEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

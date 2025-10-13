@@ -16,7 +16,7 @@ static class UsersEndpoints
         endpoints.MapCheckLogin();
         endpoints.MapRefreshToken();
         
-        var usersGroup = endpoints.MapGroup("users").RequireAuthorization();
+        var usersGroup = endpoints.MapGroup("users");
         usersGroup.MapGetUser();
         usersGroup.MapUpdateUserEndpoint();
     }

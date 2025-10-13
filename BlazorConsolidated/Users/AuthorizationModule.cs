@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BlazorConsolidated.Common.Logout;
 using BlazorConsolidated.Users.Infrastructure;
+using BlazorConsolidated.Users.Infrastructure.Abstractions;
 using BlazorConsolidated.Users.Registration;
 using BlazorConsolidated.Users.Registration.Validators;
 using ClientServerShared;

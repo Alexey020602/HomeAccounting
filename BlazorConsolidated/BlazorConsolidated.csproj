@@ -34,4 +34,11 @@
       <UpToDateCheckInput Remove="Receipts\_Imports.razor" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Budgets\BudgetDetailPage\BudgetDetailPage.razor" />
+      <AdditionalFiles Include="Budgets\BudgetsList\BudgetsPage.razor" />
+      <AdditionalFiles Include="Budgets\BudgetsList\UserBudgetsComponent.razor" />
+      <AdditionalFiles Include="Budgets\CreateBudgetPage\CreateBudgetPage.razor" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 using BlazorConsolidated.Users.Dto;
+using BlazorConsolidated.Users.Infrastructure.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace BlazorConsolidated.Users.Infrastructure;

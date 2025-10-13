@@ -1,6 +1,6 @@
 using ClientServerContracts.User.Login;
 
-namespace BlazorConsolidated.Users.Infrastructure;
+namespace BlazorConsolidated.Users.Infrastructure.Abstractions;
 
 public interface ILoginService
 {

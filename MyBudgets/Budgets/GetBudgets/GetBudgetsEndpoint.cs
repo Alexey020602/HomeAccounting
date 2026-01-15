@@ -1,9 +1,12 @@
 using System.Net;
 using System.Security.Claims;
+using Budgets.Contracts.GetBudgetDetail;
 using ClientServerShared.Model;
 using Microsoft.EntityFrameworkCore;
+using MyBudgets.Budgets.Data;
 using MyBudgets.Budgets.Data.Database;
 using MyBudgets.Users.Data;
+using BudgetUser = MyBudgets.Budgets.Data.BudgetUser;
 
 namespace MyBudgets.Budgets.GetBudgets;
 using ContractBudget = ClientServerContracts.Budgets.GetBudgets.Budget;
@@ -28,5 +31,57 @@ static class GetBudgetsEndpoint
             ;
     }
 
-    private static ContractBudget DefaultBudget(Guid id) => new ContractBudget(id, "Ошибка получения бюджета");
+    // private static ContractBudget DefaultBudget(Guid id) => new ContractBudget(id, "Ошибка получения бюджета");
+}
+
+sealed record CreateBudgetRequest(string Name, int? Limit, int BeginOfPeriod);
+
+static class CreateBudgetEndpoint
+{
+    public static void MapCreateBudgets(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapPost(
+            "", async (ClaimsPrincipal user, CreateBudgetRequest request, BudgetsContext budgetsContext, CancellationToken cancellationToken) =>
+            {
+                var userId = new UserId(user.GetUserId());
+
+                if (await budgetsContext.BudgetRoles.SingleOrDefaultAsync(role => role.Name == BudgetRole.OwnerRoleName, cancellationToken: cancellationToken)
+                    is not { } ownerRole)
+                {
+                    return Results.InternalServerError("Not found owner role for budget");
+                }
+                
+                
+                var budget = new Budget(
+                    request.Name, 
+                    request.BeginOfPeriod,
+                    request.Limit,
+                    userId,
+                    DateTime.UtcNow, 
+                    [new BudgetUser(userId, default, ownerRole.Id)]);
+                
+                
+                budgetsContext.Budgets.Add(budget);
+
+                return Results.Created();
+            }
+        )
+            .Produces((int)HttpStatusCode.Created)
+            .ProducesProblem((int)HttpStatusCode.BadRequest)
+            .ProducesProblem((int)HttpStatusCode.InternalServerError);
+    }
+}
+
+static class GetBudgetDetailEndpoint
+{
+    public static void MapGetBudgetDetails(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapGet("{id:guid}",
+                (Guid id, ClaimsPrincipal user, BudgetsContext context, CancellationToken cancellationToken) =>
+                {
+                    
+                })
+            .Produces((int)HttpStatusCode.OK, typeof(BudgetDetail))
+            .ProducesProblem((int)HttpStatusCode.NotFound);
+    }
 }

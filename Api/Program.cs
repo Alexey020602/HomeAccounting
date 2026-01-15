@@ -72,8 +72,8 @@ builder.Services.AddMediator((MediatorOptions options) =>
         typeof(GetChecks).Assembly,
         typeof(GetChecksHandler).Assembly,
         typeof(GetReportHandler).Assembly,
+        // typeof(GetBudgetsHandler).Assembly,
         typeof(LoginHandler).Assembly,
-        typeof(GetBudgetsHandler).Assembly
     ];
     options.PipelineBehaviors = [typeof(TelemetryPipelineBehaviour<,>)];
     options.ServiceLifetime = ServiceLifetime.Scoped;

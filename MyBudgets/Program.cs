@@ -15,6 +15,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
 using ServiceDefaults;
+using HttpLoggingHandler = ServiceDefaults.HttpLoggingHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 

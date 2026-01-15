@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <ScopedCssEnabled>true</ScopedCssEnabled>
@@ -13,11 +12,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazored.FluentValidation" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
-        <PackageReference Include="MudBlazor" Version="8.13.0" />
-        <PackageReference Include="Refit" Version="8.0.0" />
-        <PackageReference Include="Scrutor" Version="6.1.0" />
+        <PackageReference Include="Blazored.FluentValidation"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+        <PackageReference Include="MudBlazor" />
+        <PackageReference Include="Refit" />
+        <PackageReference Include="Scrutor" />
     </ItemGroup>
 
     <ItemGroup>

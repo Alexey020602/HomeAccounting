@@ -9,7 +9,7 @@ using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Rebus.OpenTelemetry.Configuration;
-using Shared.Utils;
+// using Shared.Utils;
 
 namespace ServiceDefaults;
 

@@ -20,10 +20,16 @@ static class GetBudgetsEndpoint
              (ClaimsPrincipal user, BudgetsContext context) =>
             {
                 var userId = new UserId(user.GetUserId());
-                return context.BudgetUsers
-                    .Where(u => u.UserId == userId)
-                    .Select(u =>  new ContractBudget(u.Budget.Id.Value, u.Budget.Name))
-                    .ToListAsync();
+
+                var budgets = from budget in context.Budgets
+                    where budget.BudgetUsers.Any(x => x.UserId == userId)
+                    select new ContractBudget(budget.Id.Value, budget.Name);
+
+                return budgets.ToListAsync();
+                // return context.BudgetUsers
+                //     .Where(u => u.UserId == userId)
+                //     .Select(u =>  new ContractBudget(u.Budget.Id.Value, u.Budget.Name))
+                //     .ToListAsync();
             })
             .Produces((int) HttpStatusCode.OK, typeof(IReadOnlyCollection<ClientServerContracts.Budgets.GetBudgets.Budget>))
             .ProducesProblem((int)HttpStatusCode.BadRequest)

@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -11,12 +10,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="12.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
-      <PackageReference Include="SkiaSharp" Version="3.119.1" />
-      <PackageReference Include="WTorricos.Results" Version="2.0.4" />
-      <PackageReference Include="ZXing.Net" Version="0.16.10" />
-      <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.21" />
+      <PackageReference Include="FluentValidation" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="SkiaSharp" />
+      <PackageReference Include="WTorricos.Results" />
+      <PackageReference Include="ZXing.Net" />
+      <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" />
     </ItemGroup>
 
     <ItemGroup>

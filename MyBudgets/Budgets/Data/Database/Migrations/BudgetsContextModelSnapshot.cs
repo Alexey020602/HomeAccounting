@@ -18,12 +18,18 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("budgets")
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.HasSequence("BudgetRoleSequence", "budgets")
+                .IncrementsBy(10);
+
+            modelBuilder.HasSequence("CategoriesSequence")
+                .IncrementsBy(10);
+
+            modelBuilder.HasSequence("ProductsSequence")
                 .IncrementsBy(10);
 
             modelBuilder.Entity("MyBudgets.Budgets.Data.Budget", b =>
@@ -81,7 +87,8 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("BudgetId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(0);
 
                     b.Property<int>("BudgetRoleId")
                         .HasColumnType("integer");
@@ -95,30 +102,94 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                     b.ToTable("BudgetUsers", "budgets");
                 });
 
-            modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>
+            modelBuilder.Entity("MyBudgets.Budgets.Data.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "CategoriesSequence");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", "budgets");
+                });
+
+            modelBuilder.Entity("MyBudgets.Budgets.Data.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "ProductsSequence");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid?>("ReceiptSpendingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Sum")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiptSpendingId");
+
+                    b.ToTable("Product", "budgets");
+                });
+
+            modelBuilder.Entity("MyBudgets.Budgets.Data.Spending", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTime>("AddedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("BudgetId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("character varying(21)");
 
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("PurchasePlace")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReceiptSpending", "budgets");
+                    b.HasIndex("BudgetId");
+
+                    b.ToTable("Spendings", "budgets");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Spending");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("MyBudgets.Users.Data.User", b =>
@@ -182,56 +253,52 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                     b.ToTable("User", "budgets");
                 });
 
+            modelBuilder.Entity("MyBudgets.Budgets.Data.ManualSpending", b =>
+                {
+                    b.HasBaseType("MyBudgets.Budgets.Data.Spending");
+
+                    b.HasDiscriminator().HasValue("ManualSpending");
+                });
+
+            modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>
+                {
+                    b.HasBaseType("MyBudgets.Budgets.Data.Spending");
+
+                    b.Property<string>("PurchasePlace")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasDiscriminator().HasValue("ReceiptSpending");
+                });
+
             modelBuilder.Entity("MyBudgets.Budgets.Data.BudgetUser", b =>
                 {
-                    b.HasOne("MyBudgets.Budgets.Data.Budget", "Budget")
+                    b.HasOne("MyBudgets.Budgets.Data.Budget", null)
                         .WithMany("BudgetUsers")
                         .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyBudgets.Budgets.Data.BudgetRole", "BudgetRole")
+                    b.HasOne("MyBudgets.Budgets.Data.BudgetRole", null)
                         .WithMany("BudgetUsers")
                         .HasForeignKey("BudgetRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Budget");
-
-                    b.Navigation("BudgetRole");
                 });
 
-            modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>
+            modelBuilder.Entity("MyBudgets.Budgets.Data.Product", b =>
                 {
-                    b.OwnsOne("MyBudgets.Budgets.Data.ReceiptFiscalData", "FiscalData", b1 =>
-                        {
-                            b1.Property<Guid>("ReceiptSpendingId")
-                                .HasColumnType("uuid");
+                    b.HasOne("MyBudgets.Budgets.Data.ReceiptSpending", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ReceiptSpendingId");
+                });
 
-                            b1.Property<string>("Fd")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Fd");
-
-                            b1.Property<string>("Fn")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Fn");
-
-                            b1.Property<string>("Fp")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Fp");
-
-                            b1.HasKey("ReceiptSpendingId");
-
-                            b1.ToTable("ReceiptSpending", "budgets");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ReceiptSpendingId");
-                        });
-
-                    b.Navigation("FiscalData")
+            modelBuilder.Entity("MyBudgets.Budgets.Data.Spending", b =>
+                {
+                    b.HasOne("MyBudgets.Budgets.Data.Budget", null)
+                        .WithMany("Spendings")
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -260,14 +327,55 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                     b.Navigation("RefreshToken");
                 });
 
+            modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>
+                {
+                    b.OwnsOne("MyBudgets.Budgets.Data.ReceiptFiscalData", "FiscalData", b1 =>
+                        {
+                            b1.Property<Guid>("ReceiptSpendingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Fd")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Fd");
+
+                            b1.Property<string>("Fn")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Fn");
+
+                            b1.Property<string>("Fp")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Fp");
+
+                            b1.HasKey("ReceiptSpendingId");
+
+                            b1.ToTable("Spendings", "budgets");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReceiptSpendingId");
+                        });
+
+                    b.Navigation("FiscalData")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MyBudgets.Budgets.Data.Budget", b =>
                 {
                     b.Navigation("BudgetUsers");
+
+                    b.Navigation("Spendings");
                 });
 
             modelBuilder.Entity("MyBudgets.Budgets.Data.BudgetRole", b =>
                 {
                     b.Navigation("BudgetUsers");
+                });
+
+            modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

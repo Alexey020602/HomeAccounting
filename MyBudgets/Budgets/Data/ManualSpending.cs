@@ -1,3 +1,5 @@
+using MyBudgets.Users.Data;
+
 namespace MyBudgets.Budgets.Data;
 
 sealed class ManualSpending : Spending
@@ -12,11 +14,13 @@ sealed class ManualSpending : Spending
         description = string.Empty;
     }
     public ManualSpending(
-        SpendingId id,
         int sum, 
         DateTime purchaseDate, 
         DateTime addedDate, 
-        string description) : base(id, purchaseDate, addedDate)
+        string description,
+        UserId userId
+        // BudgetId budgetId
+        ) : base(purchaseDate, addedDate, userId/*, budgetId*/)
     {
         this.sum = sum;
         this.description = description;

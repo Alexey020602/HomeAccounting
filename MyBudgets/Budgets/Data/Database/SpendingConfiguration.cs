@@ -1,18 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data.Database;
 
-class SpendingConfiguration<TSpending>: IEntityTypeConfiguration<TSpending> where TSpending : Spending
+class SpendingConfiguration: IEntityTypeConfiguration<Spending>
 {
-    public virtual void Configure(EntityTypeBuilder<TSpending> builder)
+    public virtual void Configure(EntityTypeBuilder<Spending> builder)
     {
         builder.HasKey(spending => spending.Id);
 
-        builder.Ignore(spending => spending.Description);
-        builder.Ignore(spending => spending.Sum);
-
         builder.Property(spending => spending.Id)
-            .HasConversion(x => x.Value, x => new SpendingId(x));
+            .HasConversion(x => x.Value, x => new SpendingId(x))
+            .HasDefaultValueSql("gen_random_uuid()");
+
+        // builder.Ignore(spending => spending.Description);
+        // builder.Ignore(spending => spending.Sum);
+        
+        builder.Property(spending => spending.UserId)
+            .HasConversion(x => x.Value, x => new UserId(x));
+        
+        // builder.Property(spending => spending.BudgetId)
+        //     .HasConversion(x => x.Value, x => new BudgetId(x));
+
+        builder.Property<BudgetId>("BudgetId").HasColumnOrder(0).IsRequired();
     }
 }

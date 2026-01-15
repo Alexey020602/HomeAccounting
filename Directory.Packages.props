@@ -1,0 +1,134 @@
+<Project>
+  <PropertyGroup>
+    <!-- Enable central package management, https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Aspire packages -->
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.1.0-preview.1.25616.3" />
+    <PackageVersion Include="Aspire.Hosting.Kubernetes" Version="13.1.0-preview.1.25616.3" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.Yarp" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.0" />
+    
+    <!-- Blazor packages -->
+    <PackageVersion Include="Blazored.FluentValidation" Version="2.2.0" />
+    
+    <!-- Entity Framework packages -->
+    <PackageVersion Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="8.1.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="10.0.2" />
+    
+    <!-- FluentValidation -->
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    
+    <!-- Mediator packages -->
+    <PackageVersion Include="Mediator.Abstractions" Version="3.0.1" />
+    <PackageVersion Include="Mediator.SourceGenerator" Version="3.0.1" />
+    
+    <!-- Microsoft.AspNetCore packages -->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity" Version="2.3.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.3.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+    
+    <!-- Microsoft.Extensions packages -->
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.2.0" />
+    
+    <!-- Microsoft.IdentityModel packages -->
+    <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
+    
+    <!-- Microsoft.NET packages -->
+    <PackageVersion Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    
+    <!-- Microsoft.Data packages -->
+    <PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="10.0.2" />
+    
+    <!-- MudBlazor -->
+    <PackageVersion Include="MudBlazor" Version="8.15.0" />
+    
+    <!-- NSwag -->
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.6.3" />
+    
+    <!-- Npgsql packages -->
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.1" />
+    
+    <!-- OpenTelemetry packages -->
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
+    
+    <!-- Rebus packages -->
+    <PackageVersion Include="Rebus" Version="8.9.0" />
+    <PackageVersion Include="Rebus.Diagnostics" Version="1.3.0" />
+    <PackageVersion Include="Rebus.Microsoft.Extensions.Logging" Version="5.2.0" />
+    <PackageVersion Include="Rebus.OpenTelemetry" Version="1.3.0" />
+    <PackageVersion Include="Rebus.Serilog" Version="8.1.0" />
+    <PackageVersion Include="Rebus.ServiceProvider" Version="10.7.1" />
+    
+    <!-- Refit packages -->
+    <PackageVersion Include="Refit" Version="9.0.2" />
+    <PackageVersion Include="Refit.HttpClientFactory" Version="9.0.2" />
+    
+    <!-- Scalar -->
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.7" />
+    
+    <!-- Scrutor -->
+    <PackageVersion Include="Scrutor" Version="7.0.0" />
+    
+    <!-- Serilog packages -->
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+    
+    <!-- SkiaSharp packages -->
+    <PackageVersion Include="SkiaSharp" Version="3.119.1" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.1" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.119.1" />
+    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="3.119.1" />
+    
+    <!-- System.IdentityModel packages -->
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+    
+    <!-- Test packages -->
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    
+    <!-- WTorricos.Results -->
+    <PackageVersion Include="WTorricos.Results" Version="2.0.4" />
+    
+    <!-- ZXing packages -->
+    <PackageVersion Include="ZXing.Net" Version="0.16.11" />
+    <PackageVersion Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.22" />
+  </ItemGroup>
+</Project>

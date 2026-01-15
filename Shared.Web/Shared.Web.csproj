@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -11,9 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
-      <PackageReference Include="WTorricos.Results" Version="2.0.4" />
+      <PackageReference Include="WTorricos.Results" />
     </ItemGroup>
 
     <ItemGroup>

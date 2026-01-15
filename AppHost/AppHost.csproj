@@ -4,7 +4,6 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <WarningsAsErrors>Nullable</WarningsAsErrors>
@@ -13,14 +12,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.1" />
-        <PackageReference Include="Aspire.Hosting.Docker" Version="9.4.1-preview.1.25408.4" />
-        <PackageReference Include="Aspire.Hosting.Kubernetes" Version="9.4.1-preview.1.25408.4" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.1" />
-        <PackageReference Include="Aspire.Hosting.Yarp" Version="9.4.0-preview.1.25378.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
+        <PackageReference Include="Aspire.Hosting.AppHost" />
+        <PackageReference Include="Aspire.Hosting.Docker" />
+        <PackageReference Include="Aspire.Hosting.Kubernetes" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+        <PackageReference Include="Aspire.Hosting.Yarp" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
     </ItemGroup>
 
     <ItemGroup>

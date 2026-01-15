@@ -1,10 +1,14 @@
+using MyBudgets.Users.Data;
+
 namespace MyBudgets.Budgets.Data;
 
-abstract class Spending
+internal abstract class Spending
 {
     public SpendingId Id { get; private set; }
     public DateTime PurchaseDate { get; private set; }
     public DateTime AddedDate { get; private set; }
+    public UserId UserId { get; private set; }
+    // public BudgetId BudgetId { get; private set ; }
     public abstract int Sum { get; }
     public abstract string Description { get; }
 
@@ -12,10 +16,11 @@ abstract class Spending
     {
         
     }
-    public Spending(SpendingId id, DateTime purchaseDate, DateTime addedDate)
+    public Spending(/*SpendingId id, */DateTime purchaseDate, DateTime addedDate, UserId userId/*, BudgetId budgetId*/)
     {
-        Id = id;
         PurchaseDate = purchaseDate;
         AddedDate = addedDate;
+        UserId = userId;
+        // BudgetId = budgetId;
     }
 }

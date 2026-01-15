@@ -1,16 +1,19 @@
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
-sealed class Budget
+
+internal sealed class Budget
 {
+    private List<BudgetUser> budgetUsers = [];
+    private List<Spending> spendings = [];
     public BudgetId Id { get; set; }
     public string Name { get; set; }
     public int BeginOfPeriod { get; set; }
     public int? Limit { get; set; }
     public UserId CreatorId { get; set; }
     public DateTime CreationDate { get; set; }
-    public List<BudgetUser> BudgetUsers { get; set; } = [];
-
+    public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
+    public IReadOnlyList<Spending> Spendings => spendings;
     internal Budget()
     {
         Name = string.Empty;
@@ -26,7 +29,14 @@ sealed class Budget
 
         if (budgetUsers.Any())
         {
-            BudgetUsers.AddRange(budgetUsers);
+            this.budgetUsers.AddRange(budgetUsers);
         }
     }
+
+    public void AddManualSpending(int sum, string description, DateTime purchaseDate, DateTime addedDate, UserId userId)
+    {
+        spendings.Add(new ManualSpending(sum, purchaseDate, addedDate, description, userId));
+    }
+    
+    
 }

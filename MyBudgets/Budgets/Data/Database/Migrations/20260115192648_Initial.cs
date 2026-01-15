@@ -19,6 +19,16 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                 schema: "budgets",
                 incrementBy: 10);
 
+            migrationBuilder.CreateSequence(
+                name: "CategoriesSequence",
+                schema: "budgets",
+                incrementBy: 10);
+
+            migrationBuilder.CreateSequence(
+                name: "ProductsSequence",
+                schema: "budgets",
+                incrementBy: 10);
+
             migrationBuilder.CreateTable(
                 name: "BudgetRoles",
                 schema: "budgets",
@@ -51,23 +61,17 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReceiptSpending",
+                name: "Categories",
                 schema: "budgets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fn = table.Column<string>(type: "text", nullable: false),
-                    Fd = table.Column<string>(type: "text", nullable: false),
-                    Fp = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BudgetId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PurchasePlace = table.Column<string>(type: "text", nullable: false),
-                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AddedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReceiptSpending", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,8 +108,8 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                 schema: "budgets",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     BudgetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     BudgetRoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -127,6 +131,58 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Spendings",
+                schema: "budgets",
+                columns: table => new
+                {
+                    BudgetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AddedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
+                    Fn = table.Column<string>(type: "text", nullable: true),
+                    Fd = table.Column<string>(type: "text", nullable: true),
+                    Fp = table.Column<string>(type: "text", nullable: true),
+                    PurchasePlace = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Spendings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Spendings_Budgets_BudgetId",
+                        column: x => x.BudgetId,
+                        principalSchema: "budgets",
+                        principalTable: "Budgets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Product",
+                schema: "budgets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Quantity = table.Column<double>(type: "double precision", nullable: false),
+                    Price = table.Column<int>(type: "integer", nullable: false),
+                    Sum = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: true),
+                    ReceiptSpendingId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Product", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Product_Spendings_ReceiptSpendingId",
+                        column: x => x.ReceiptSpendingId,
+                        principalSchema: "budgets",
+                        principalTable: "Spendings",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_BudgetUsers_BudgetId",
                 schema: "budgets",
@@ -138,6 +194,18 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                 schema: "budgets",
                 table: "BudgetUsers",
                 column: "BudgetRoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_ReceiptSpendingId",
+                schema: "budgets",
+                table: "Product",
+                column: "ReceiptSpendingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Spendings_BudgetId",
+                schema: "budgets",
+                table: "Spendings",
+                column: "BudgetId");
         }
 
         /// <inheritdoc />
@@ -148,7 +216,11 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                 schema: "budgets");
 
             migrationBuilder.DropTable(
-                name: "ReceiptSpending",
+                name: "Categories",
+                schema: "budgets");
+
+            migrationBuilder.DropTable(
+                name: "Product",
                 schema: "budgets");
 
             migrationBuilder.DropTable(
@@ -160,11 +232,23 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                 schema: "budgets");
 
             migrationBuilder.DropTable(
+                name: "Spendings",
+                schema: "budgets");
+
+            migrationBuilder.DropTable(
                 name: "Budgets",
                 schema: "budgets");
 
             migrationBuilder.DropSequence(
                 name: "BudgetRoleSequence",
+                schema: "budgets");
+
+            migrationBuilder.DropSequence(
+                name: "CategoriesSequence",
+                schema: "budgets");
+
+            migrationBuilder.DropSequence(
+                name: "ProductsSequence",
                 schema: "budgets");
         }
     }

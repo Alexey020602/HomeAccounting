@@ -1,11 +1,22 @@
 namespace MyBudgets.Budgets.Data;
-
-sealed class Product
+internal record struct ProductId(int Value);
+internal sealed class Product
 {
     private const string DefaultName = "Unitialized";
-    public int Id { get; set; }
-    public string Name { get; set; } = DefaultName;
-    public double Quantity { get; set; }
-    public int Price { get; set; }
-    public int Sum { get; set; }
+    public ProductId Id { get; private set; }
+    public string Name { get; private set; } = DefaultName;
+    public double Quantity { get; private set; }
+    public int Price { get; private set; }
+    public int Sum { get; private set; }
+    public CategoryId? CategoryId { get; private set; }
+    private Product() { }
+
+    public Product(string name, double quantity, int price, int sum, CategoryId categoryId)
+    {
+        Name = name;
+        Quantity = quantity;
+        Price = price;
+        Sum = sum;
+        CategoryId = categoryId;
+    }
 }

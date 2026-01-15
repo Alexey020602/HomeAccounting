@@ -4,19 +4,10 @@ using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data.Database;
 
-sealed class ReceiptSpendingConfiguration: SpendingConfiguration<ReceiptSpending>
+sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpending>
 {
-    public override void Configure(EntityTypeBuilder<ReceiptSpending> builder)
+    public void Configure(EntityTypeBuilder<ReceiptSpending> builder)
     {
-        base.Configure(builder);
-
-        builder.Ignore(receiptSpending => receiptSpending.Products);
-        
-        builder.Property(receiptSpanding => receiptSpanding.UserId)
-            .HasConversion(x => x.Value, x => new UserId(x));
-        
-        builder.Property(receiptSpanding => receiptSpanding.BudgetId)
-            .HasConversion(x => x.Value, x => new BudgetId(x));
         
         builder.OwnsOne(
             receipt => receipt.FiscalData,

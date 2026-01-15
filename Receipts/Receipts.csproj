@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.9" />
-      <PackageReference Include="Scrutor" Version="7.0.0" />
-      <PackageReference Include="SkiaSharp" Version="3.119.1" />
-      <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc" />
+      <PackageReference Include="Scrutor" />
+      <PackageReference Include="SkiaSharp" />
+      <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -6,9 +6,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="12.1.1" />
-      <PackageReference Include="Mediator.Abstractions" Version="3.0.1" />
-      <PackageReference Include="WTorricos.Results" Version="2.0.4" />
+      <PackageReference Include="FluentValidation" />
+      <PackageReference Include="Mediator.Abstractions" />
+      <PackageReference Include="WTorricos.Results" />
     </ItemGroup>
 
     <ItemGroup>

@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="12.1.1" />
-      <PackageReference Include="Mediator.Abstractions" Version="3.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
-      <PackageReference Include="WTorricos.Results" Version="2.0.4" />
-        <PackageReference Include="ZXing.Net" Version="0.16.11" />
-        <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.22" />
+      <PackageReference Include="FluentValidation" />
+      <PackageReference Include="Mediator.Abstractions" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="WTorricos.Results" />
+        <PackageReference Include="ZXing.Net" />
+        <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" />
     </ItemGroup>
 
 </Project>

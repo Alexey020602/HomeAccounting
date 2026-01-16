@@ -64,10 +64,12 @@ static class CreateBudgetEndpoint
                     request.Limit,
                     userId,
                     DateTime.UtcNow, 
-                    [new BudgetUser(userId, default, ownerRole.Id)]);
+                    [new BudgetUser(userId, ownerRole.Id)]);
                 
                 
                 budgetsContext.Budgets.Add(budget);
+                
+                await budgetsContext.SaveChangesAsync(cancellationToken);
 
                 return Results.Created();
             }

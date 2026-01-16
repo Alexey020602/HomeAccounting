@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyBudgets.Users.Data;
 
-namespace MyBudgets.Budgets.Data.Database;
+namespace MyBudgets.Budgets.Data.Database.Configurations;
 
 class SpendingConfiguration: IEntityTypeConfiguration<Spending>
 {
@@ -14,8 +14,8 @@ class SpendingConfiguration: IEntityTypeConfiguration<Spending>
             .HasConversion(x => x.Value, x => new SpendingId(x))
             .HasDefaultValueSql("gen_random_uuid()");
 
-        // builder.Ignore(spending => spending.Description);
-        // builder.Ignore(spending => spending.Sum);
+        builder.Ignore(spending => spending.Description);
+        builder.Ignore(spending => spending.Sum);
         
         builder.Property(spending => spending.UserId)
             .HasConversion(x => x.Value, x => new UserId(x));

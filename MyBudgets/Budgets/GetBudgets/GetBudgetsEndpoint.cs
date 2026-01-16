@@ -21,23 +21,17 @@ static class GetBudgetsEndpoint
             {
                 var userId = new UserId(user.GetUserId());
 
-                var budgets = from budget in context.Budgets
+                var budgets = from budget in context.Budgets.AsNoTracking()
                     where budget.BudgetUsers.Any(x => x.UserId == userId)
                     select new ContractBudget(budget.Id.Value, budget.Name);
 
                 return budgets.ToListAsync();
-                // return context.BudgetUsers
-                //     .Where(u => u.UserId == userId)
-                //     .Select(u =>  new ContractBudget(u.Budget.Id.Value, u.Budget.Name))
-                //     .ToListAsync();
             })
             .Produces((int) HttpStatusCode.OK, typeof(IReadOnlyCollection<ClientServerContracts.Budgets.GetBudgets.Budget>))
             .ProducesProblem((int)HttpStatusCode.BadRequest)
             .ProducesProblem((int)HttpStatusCode.InternalServerError)
             ;
     }
-
-    // private static ContractBudget DefaultBudget(Guid id) => new ContractBudget(id, "Ошибка получения бюджета");
 }
 
 sealed record CreateBudgetRequest(string Name, int? Limit, int BeginOfPeriod);
@@ -51,7 +45,7 @@ static class CreateBudgetEndpoint
             {
                 var userId = new UserId(user.GetUserId());
 
-                if (await budgetsContext.BudgetRoles.SingleOrDefaultAsync(role => role.Name == BudgetRole.OwnerRoleName, cancellationToken: cancellationToken)
+                if (await budgetsContext.BudgetRoles.AsNoTracking().SingleOrDefaultAsync(role => role.Name == BudgetRole.OwnerRoleName, cancellationToken: cancellationToken)
                     is not { } ownerRole)
                 {
                     return Results.InternalServerError("Not found owner role for budget");
@@ -80,15 +74,27 @@ static class CreateBudgetEndpoint
     }
 }
 
+record  GetBudgetsDetailResponse(Guid Id,  string Name,  int BeginOfPeriod, int? Limit, SpendingDto[]  Spendings);
+record SpendingDto(Guid Id, string Description, int Sum);
 static class GetBudgetDetailEndpoint
 {
     public static void MapGetBudgetDetails(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("{id:guid}",
-                (Guid id, ClaimsPrincipal user, BudgetsContext context, CancellationToken cancellationToken) =>
-                {
-                    
-                })
+        endpoints.MapGet("{id:guid}", async (Guid id, ClaimsPrincipal user, BudgetsContext budgetsContext, CancellationToken cancellationToken) =>
+            {
+                var budgetId = new  BudgetId(id);
+                var budgetQuery = from budget in budgetsContext.Budgets.AsNoTracking()
+                    where budget.Id == budgetId
+                    select new GetBudgetsDetailResponse(
+                        budget.Id.Value, 
+                        budget.Name, 
+                        budget.BeginOfPeriod, 
+                        budget.Limit,
+                        budget.Spendings.Select(s=> new SpendingDto(s.Id.Value, s.Description, s.Sum)).ToArray());
+
+                var response = await budgetQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken); 
+                return response is null ? Results.NotFound() : Results.Ok(response);
+            })
             .Produces((int)HttpStatusCode.OK, typeof(BudgetDetail))
             .ProducesProblem((int)HttpStatusCode.NotFound);
     }

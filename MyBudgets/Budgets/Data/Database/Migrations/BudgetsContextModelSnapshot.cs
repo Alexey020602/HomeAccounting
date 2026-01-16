@@ -97,8 +97,6 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
 
                     b.HasIndex("BudgetId");
 
-                    b.HasIndex("BudgetRoleId");
-
                     b.ToTable("BudgetUsers", "budgets");
                 });
 
@@ -192,70 +190,17 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("MyBudgets.Users.Data.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User", "budgets");
-                });
-
             modelBuilder.Entity("MyBudgets.Budgets.Data.ManualSpending", b =>
                 {
                     b.HasBaseType("MyBudgets.Budgets.Data.Spending");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Sum")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue("ManualSpending");
                 });
@@ -268,6 +213,10 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Sum")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("integer");
+
                     b.HasDiscriminator().HasValue("ReceiptSpending");
                 });
 
@@ -276,12 +225,6 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                     b.HasOne("MyBudgets.Budgets.Data.Budget", null)
                         .WithMany("BudgetUsers")
                         .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyBudgets.Budgets.Data.BudgetRole", null)
-                        .WithMany("BudgetUsers")
-                        .HasForeignKey("BudgetRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -302,36 +245,12 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyBudgets.Users.Data.User", b =>
-                {
-                    b.OwnsOne("MyBudgets.Users.Data.RefreshToken", "RefreshToken", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<DateTime>("Expires")
-                                .HasColumnType("timestamp with time zone");
-
-                            b1.Property<string>("Token")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("User", "budgets");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("RefreshToken");
-                });
-
             modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>
                 {
                     b.OwnsOne("MyBudgets.Budgets.Data.ReceiptFiscalData", "FiscalData", b1 =>
                         {
                             b1.Property<Guid>("ReceiptSpendingId")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid");
 
                             b1.Property<string>("Fd")
@@ -366,11 +285,6 @@ namespace MyBudgets.Budgets.Data.Database.Migrations
                     b.Navigation("BudgetUsers");
 
                     b.Navigation("Spendings");
-                });
-
-            modelBuilder.Entity("MyBudgets.Budgets.Data.BudgetRole", b =>
-                {
-                    b.Navigation("BudgetUsers");
                 });
 
             modelBuilder.Entity("MyBudgets.Budgets.Data.ReceiptSpending", b =>

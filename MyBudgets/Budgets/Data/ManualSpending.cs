@@ -1,8 +1,9 @@
+using MyBudgets.Budgets.GetBudgets;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
 
-sealed class ManualSpending : Spending
+internal sealed partial class ManualSpending : Spending
 {
     private string description;
     public override string Description => description;
@@ -19,8 +20,7 @@ sealed class ManualSpending : Spending
         DateTime addedDate, 
         string description,
         UserId userId
-        // BudgetId budgetId
-        ) : base(purchaseDate, addedDate, userId/*, budgetId*/)
+        ) : base(purchaseDate, addedDate, userId)
     {
         this.sum = sum;
         this.description = description;

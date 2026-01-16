@@ -2,19 +2,19 @@ using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
 
-internal sealed class Budget
+internal sealed partial class Budget
 {
     private List<BudgetUser> budgetUsers = [];
     private List<Spending> spendings = [];
-    public BudgetId Id { get; set; }
-    public string Name { get; set; }
-    public int BeginOfPeriod { get; set; }
-    public int? Limit { get; set; }
-    public UserId CreatorId { get; set; }
-    public DateTime CreationDate { get; set; }
+    public BudgetId Id { get; private set; }
+    public string Name { get; private set; }
+    public int BeginOfPeriod { get; private set; }
+    public int? Limit { get; private set; }
+    public UserId CreatorId { get; private set; }
+    public DateTime CreationDate { get; private set; }
     public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
     public IReadOnlyList<Spending> Spendings => spendings;
-    internal Budget()
+    private Budget()
     {
         Name = string.Empty;
     }
@@ -37,6 +37,21 @@ internal sealed class Budget
     {
         spendings.Add(new ManualSpending(sum, purchaseDate, addedDate, description, userId));
     }
-    
-    
+
+    public void AddReceiptSpending(
+        DateTime purchaseDate,
+        DateTime addedDate,
+        ReceiptFiscalData fiscalData,
+        UserId userId,
+        string purchasePlace,
+        IEnumerable<ProductInput> productInputs)
+    {
+        spendings.Add(new ReceiptSpending(
+            purchaseDate,
+            addedDate,
+            fiscalData,
+            userId,
+            purchasePlace,
+            productInputs));
+    }
 }

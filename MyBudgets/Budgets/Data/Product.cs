@@ -1,5 +1,6 @@
 namespace MyBudgets.Budgets.Data;
 internal record struct ProductId(int Value);
+internal sealed record ProductInput(string Name, double Quantity, int Price, int Sum, CategoryId? CategoryId);
 internal sealed class Product
 {
     private const string DefaultName = "Unitialized";
@@ -11,7 +12,7 @@ internal sealed class Product
     public CategoryId? CategoryId { get; private set; }
     private Product() { }
 
-    public Product(string name, double quantity, int price, int sum, CategoryId categoryId)
+    public Product(string name, double quantity, int price, int sum, CategoryId? categoryId)
     {
         Name = name;
         Quantity = quantity;

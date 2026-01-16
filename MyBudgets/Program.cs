@@ -3,6 +3,7 @@ using MudBlazor.Extensions;
 using MyBudgets;
 using MyBudgets.Budgets;
 using MyBudgets.Budgets.Data.Database;
+using MyBudgets.Budgets.Data.Database.Seeding;
 using MyBudgets.Common.Http;
 using MyBudgets.Users;
 using MyBudgets.Users.CheckLogin;

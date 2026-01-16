@@ -9,5 +9,7 @@ static class BudgetsEndpoints
         var budgetsGroup = endpoints.MapGroup("budgets");
         
         budgetsGroup.MapGetBudgets();
+        budgetsGroup.MapCreateBudgets();
+        budgetsGroup.MapGetBudgetDetails();
     }
 }

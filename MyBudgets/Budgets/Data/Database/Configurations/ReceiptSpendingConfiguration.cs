@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MyBudgets.Users.Data;
 
-namespace MyBudgets.Budgets.Data.Database;
+namespace MyBudgets.Budgets.Data.Database.Configurations;
 
 sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpending>
 {
@@ -17,5 +16,12 @@ sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpend
                 fiscalData.Property(d => d.Fp).HasColumnName(nameof(ReceiptFiscalData.Fp)).IsRequired();
                 fiscalData.Property(d => d.Fn).HasColumnName(nameof(ReceiptFiscalData.Fn)).IsRequired();
             });
+        
+        // builder.Navigation(r=>r.Products)
+        //     .HasField("products")
+        //     .UsePropertyAccessMode(PropertyAccessMode.Field)
+        //     .AutoInclude();
+
+        builder.Property(s => s.Sum);
     }
 }

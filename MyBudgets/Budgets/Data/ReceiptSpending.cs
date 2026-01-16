@@ -2,16 +2,18 @@ using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
 
-sealed class ReceiptSpending : Spending
+sealed partial class ReceiptSpending : Spending
 {
     public ReceiptFiscalData FiscalData { get; private set; }
     private List<Product> products = [];
     public IReadOnlyList<Product> Products => products;
     public string PurchasePlace { get; private set; }
 
-    public override int Sum => Products.Sum(p => p.Sum);
+    private int sum;
+    public override int Sum => sum;
     public override string Description => PurchasePlace;
 
+    
     private ReceiptSpending()
     {
         FiscalData = new ReceiptFiscalData(string.Empty, string.Empty, string.Empty);
@@ -23,16 +25,21 @@ sealed class ReceiptSpending : Spending
         DateTime addedDate,
         ReceiptFiscalData fiscalData,
         UserId userId,
-        // BudgetId budgetId,
         string purchasePlace,
-        IEnumerable<Product> products
-    ) : base(purchaseDate, addedDate, userId/*, budgetId*/)
+        IEnumerable<ProductInput> productInputs
+    ) : base(purchaseDate, addedDate, userId)
     {
         PurchasePlace = purchasePlace;
         FiscalData = fiscalData;
-        if (products.Any())
+
+        var productsToAdd = productInputs
+            .Select(product => new Product(product.Name, product.Quantity, product.Price, product.Sum, product.CategoryId));
+
+        if (productsToAdd.Any())
         {
-            this.products.AddRange(products);
+            products.AddRange(productsToAdd);
         }
+        
+        sum = products.Sum(p => p.Sum);
     }
 }

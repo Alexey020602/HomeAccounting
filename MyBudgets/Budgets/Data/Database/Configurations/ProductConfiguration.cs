@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MyBudgets.Budgets.Data.Database;
+namespace MyBudgets.Budgets.Data.Database.Configurations;
 
 internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
 {

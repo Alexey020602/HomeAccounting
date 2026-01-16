@@ -21,6 +21,9 @@ var db = builder
     .WithLifetime(ContainerLifetime.Persistent)
     .WithDataVolume()
     .WithPgAdmin()
+    .WithLifetime(ContainerLifetime.Persistent)
+    // .WithPgWeb()
+    // .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("HomeAccounting");
 
 // var api = builder

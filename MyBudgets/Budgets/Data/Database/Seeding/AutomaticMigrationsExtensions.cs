@@ -1,6 +1,6 @@
 using MyBudgets.Common.Database;
 
-namespace MyBudgets.Budgets.Data.Database;
+namespace MyBudgets.Budgets.Data.Database.Seeding;
 
 static class AutomaticMigrationsExtensions
 {

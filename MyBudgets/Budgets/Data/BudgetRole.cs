@@ -2,26 +2,45 @@ namespace MyBudgets.Budgets.Data;
 
 class BudgetRole
 {
+    public static readonly BudgetRoleId OwnerBudgetRoleId = new BudgetRoleId(1);
+    public static readonly BudgetRoleId AdminBudgetRoleId = new BudgetRoleId(2);
+    public static readonly BudgetRoleId UserBudgetRoleId = new BudgetRoleId(3);
     public const string OwnerRoleName = "Владелец";
     public const string AdminRoleName = "Администратор";
     public const string UserRoleName = "Пользователь";
     public BudgetRoleId Id { get; private set; }
     public string Name { get; private set; }
     public BudgetPermissions Permissions { get; private set; }
-    public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
-    private List<BudgetUser> budgetUsers = [];
     internal BudgetRole()
     {
         Name = string.Empty;
     }
 
-    public BudgetRole(string name,  BudgetPermissions permissions, IEnumerable<BudgetUser> budgetUsers)
+    public BudgetRole(string name,  BudgetPermissions permissions)
     {
         Name = name;
         Permissions = permissions;
-        if (budgetUsers.Any())
-        {
-            this.budgetUsers.AddRange(budgetUsers);
-        }
     }
+
+    public static IEnumerable<BudgetRole> GetDefaultRoles() =>
+    [
+        new(
+            OwnerRoleName, 
+            BudgetPermissions.Read | BudgetPermissions.Edit | BudgetPermissions.Delete)
+        {
+            Id = OwnerBudgetRoleId,
+        },
+        new (
+            AdminRoleName,
+            BudgetPermissions.Read | BudgetPermissions.Edit)
+        {
+            Id = AdminBudgetRoleId,
+        },
+        new (
+            UserRoleName,
+            BudgetPermissions.Read)
+        {
+            Id =  UserBudgetRoleId,
+        },
+    ];
 }

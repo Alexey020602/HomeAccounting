@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MyBudgets.Budgets.Data.Database.Configurations;
 
 namespace MyBudgets.Budgets.Data.Database;
 
@@ -20,10 +21,15 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
 
         modelBuilder.HasDefaultSchema(ShemaName);
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BudgetsContext).Assembly);
+        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(BudgetsContext).Assembly);
 
-        // modelBuilder.ApplyConfiguration(new SpendingConfiguration<Spending>());
-        // modelBuilder.ApplyConfiguration(new SpendingConfiguration<ManualSpending>());
-        // modelBuilder.ApplyConfiguration(new ReceiptSpendingConfiguration());
+        modelBuilder.ApplyConfiguration(new SpendingConfiguration());
+        modelBuilder.ApplyConfiguration(new ReceiptSpendingConfiguration());
+        modelBuilder.ApplyConfiguration(new ManualSpendingConfiguration());
+        modelBuilder.ApplyConfiguration(new BudgetConfiguration());
+        modelBuilder.ApplyConfiguration(new BudgetRoleConfiguration());
+        modelBuilder.ApplyConfiguration(new BudgetUserConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
     }
 }

@@ -1,3 +1,5 @@
+using MyBudgets.Users.Data;
+
 namespace MyBudgets.Budgets.Data;
 
 class BudgetRole
@@ -21,6 +23,10 @@ class BudgetRole
         Name = name;
         Permissions = permissions;
     }
+
+    public bool CanUserEdit => Permissions.HasFlag(BudgetPermissions.Edit);
+    public bool CanUserDelete => Permissions.HasFlag(BudgetPermissions.Delete);
+    public bool CanUserRead => Permissions.HasFlag(BudgetPermissions.Read);
 
     public static IEnumerable<BudgetRole> GetDefaultRoles() =>
     [

@@ -2,7 +2,10 @@ using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets.GetBudgetDetail;
 using ClientServerContracts.Budgets.GetBudgetSpendings;
+using ClientServerShared.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using MyBudgets.Budgets;
 using MyBudgets.Budgets.Data;
 using MyBudgets.Budgets.Data.Database;
 
@@ -12,9 +15,15 @@ internal static class GetBudgetDetailEndpoint
 {
     public static void MapGetBudgetDetails(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("{id:guid}", async (Guid id, ClaimsPrincipal user, BudgetsContext budgetsContext, CancellationToken cancellationToken) =>
+        endpoints.MapGet("{id:guid}", async (Guid id, ClaimsPrincipal user, BudgetsContext budgetsContext, IAuthorizationService authorizationHandler, CancellationToken cancellationToken) =>
             {
-                var budgetId = new  BudgetId(id);
+                var budgetId = new BudgetId(id);
+                var result = await authorizationHandler.AuthorizeAsync(user, budgetId, new BudgetRequirements(BudgetPermissions.Read));
+                if (!result.Succeeded)
+                {
+                    return Results.Problem(statusCode: (int)HttpStatusCode.Forbidden, detail: "User does not have permission to read this budget");
+                }
+
                 var budgetQuery = from budget in budgetsContext.Budgets.AsNoTracking()
                     where budget.Id == budgetId
                     select new GetBudgetsDetailResponse(
@@ -27,6 +36,7 @@ internal static class GetBudgetDetailEndpoint
                 return response is null ? Results.NotFound() : Results.Ok(response);
             })
             .Produces((int)HttpStatusCode.OK, typeof(BudgetDetailDto))
-            .ProducesProblem((int)HttpStatusCode.NotFound);
+            .ProducesProblem((int)HttpStatusCode.NotFound)
+            .ProducesProblem((int)HttpStatusCode.Forbidden);
     }
 }

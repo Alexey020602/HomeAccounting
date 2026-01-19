@@ -13,6 +13,12 @@ internal sealed class CategoryConfiguration: IEntityTypeConfiguration<Category>
             .HasConversion(x => x.Value, x => new CategoryId(x))
             .UseHiLo("CategoriesSequence");
 
+        builder.HasIndex(c => c.Name).IsUnique();
+        
+        builder.Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
         builder.Property(c => c.ParentCategoryId)
             .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
     }

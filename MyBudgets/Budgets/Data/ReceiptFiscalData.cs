@@ -1,3 +1,3 @@
 namespace MyBudgets.Budgets.Data;
 
-sealed record ReceiptFiscalData(string Fn, string Fd, string Fp);
+internal sealed record ReceiptFiscalData(string Fn, string Fd, string Fp);

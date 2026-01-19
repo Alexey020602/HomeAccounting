@@ -15,6 +15,8 @@ sealed class BudgetConfiguration: IEntityTypeConfiguration<Budget>
 
         builder.Property(x => x.CreatorId)
             .HasConversion(x => x.Value, x => new(x));
+
+        builder.HasIndex(c => c.Name);
         
         builder.Property(x=>x.Name)
             .IsRequired()
@@ -35,9 +37,7 @@ sealed class BudgetConfiguration: IEntityTypeConfiguration<Budget>
             .WithOne()
             .HasForeignKey("BudgetId")
             .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade)
-            
-            ;
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(b=>b.BudgetUsers)
             .WithOne()

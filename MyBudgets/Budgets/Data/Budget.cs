@@ -54,4 +54,32 @@ internal sealed partial class Budget
             purchasePlace,
             productInputs));
     }
+
+    public void Update(string name, int beginOfPeriod, int? limit)
+    {
+        Name = name;
+        BeginOfPeriod = beginOfPeriod;
+        Limit = limit;
+    }
+
+    // public bool CanUserEdit(UserId userId, BudgetRole? userRole)
+    // {
+    //     if (userRole is null)
+    //         return false;
+    //     
+    //     return userRole.Permissions.Contains(BudgetPermissions.Edit);
+    // }
+    //
+    // public bool CanUserDelete(UserId userId, BudgetRole? userRole)
+    // {
+    //     if (userRole is null)
+    //         return false;
+    //     
+    //     return userRole.Permissions.Contains(BudgetPermissions.Delete);
+    // }
+
+    public BudgetRoleId? GetUserRole(UserId userId)
+    {
+        return budgetUsers.FirstOrDefault(bu => bu.UserId == userId)?.BudgetRoleId;
+    }
 }

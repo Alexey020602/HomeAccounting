@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <Folder Include="Budgets\Data\Database\Migrations\" />
+      <Folder Include="Budgets\GetBudgetSpendings\" />
       <Folder Include="Users\Data\Database\Migrations\" />
       <Folder Include="Users\Data\Login\" />
     </ItemGroup>

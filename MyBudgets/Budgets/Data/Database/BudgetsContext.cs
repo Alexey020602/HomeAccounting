@@ -7,13 +7,9 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
 {
     public const string ShemaName = "budgets";
 
-    public DbSet<Spending> Spendings { get; set; }
-    public DbSet<ReceiptSpending> ReceiptSpendings { get; set; }
-    public DbSet<ManualSpending> ManualSpendings { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetRole> BudgetRoles { get; set; }
-    public DbSet<BudgetUser> BudgetUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,6 +26,6 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new BudgetRoleConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetUserConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        // modelBuilder.ApplyConfiguration(new ProductConfiguration());
     }
 }

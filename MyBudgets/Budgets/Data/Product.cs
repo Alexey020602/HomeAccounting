@@ -1,5 +1,5 @@
 namespace MyBudgets.Budgets.Data;
-internal record struct ProductId(int Value);
+internal record struct ProductId(Guid Value);
 internal sealed record ProductInput(string Name, double Quantity, int Price, int Sum, CategoryId? CategoryId);
 internal sealed class Product
 {

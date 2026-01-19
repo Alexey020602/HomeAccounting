@@ -9,8 +9,8 @@ sealed partial class ReceiptSpending : Spending
     public IReadOnlyList<Product> Products => products;
     public string PurchasePlace { get; private set; }
 
-    private int sum;
-    public override int Sum => sum;
+    // private int sum;
+    public override int Sum => Products.Sum(p => p.Sum);
     public override string Description => PurchasePlace;
 
     
@@ -40,6 +40,6 @@ sealed partial class ReceiptSpending : Spending
             products.AddRange(productsToAdd);
         }
         
-        sum = products.Sum(p => p.Sum);
+        // sum = products.Sum(p => p.Sum);
     }
 }

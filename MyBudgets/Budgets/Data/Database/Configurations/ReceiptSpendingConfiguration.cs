@@ -16,12 +16,28 @@ sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpend
                 fiscalData.Property(d => d.Fp).HasColumnName(nameof(ReceiptFiscalData.Fp)).IsRequired();
                 fiscalData.Property(d => d.Fn).HasColumnName(nameof(ReceiptFiscalData.Fn)).IsRequired();
             });
+
+        builder.OwnsMany(r => r.Products, b =>
+        {
+            b.HasKey(product => product.Id);
+
+            b.Property(p => p.Id)
+                .HasConversion(x => x.Value, x => new ProductId(x))
+                .HasDefaultValueSql("gen_random_uuid()");
+        
+            b.Property(p => p.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            b.Property(p => p.CategoryId)
+                .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
+        });
         
         // builder.Navigation(r=>r.Products)
         //     .HasField("products")
         //     .UsePropertyAccessMode(PropertyAccessMode.Field)
         //     .AutoInclude();
 
-        builder.Property(s => s.Sum);
+        // builder.Property(s => s.Sum);
     }
 }

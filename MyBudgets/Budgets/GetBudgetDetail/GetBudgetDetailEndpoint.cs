@@ -21,8 +21,7 @@ internal static class GetBudgetDetailEndpoint
                         budget.Id.Value, 
                         budget.Name, 
                         budget.BeginOfPeriod, 
-                        budget.Limit,
-                        budget.Spendings.Select(s=> new SpendingDto(s.Id.Value, s.Description, s.Sum)).ToArray());
+                        budget.Limit);
 
                 var response = await budgetQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken); 
                 return response is null ? Results.NotFound() : Results.Ok(response);

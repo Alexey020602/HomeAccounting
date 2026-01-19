@@ -7,19 +7,19 @@
 @inject IBudgetsApi BudgetsApi
 @inject ISnackbar Snackbar
 
-<MudList T="Budget">
+<MudList T="BudgetDto">
     @foreach (var budget in budgets)
     {
         <MudListItem 
-            T="Budget" 
+            T="BudgetDto" 
             Text="@budget.Name"
             Icon="@(selectedBudget == budget ? @Icons.Material.Filled.Check : null)"/>
     }
 </MudList>
 
 @code {
-    private IReadOnlyCollection<Budget> budgets = [];
-    private Budget? selectedBudget;
+    private IReadOnlyCollection<BudgetDto> budgets = [];
+    private BudgetDto? selectedBudget;
     [CascadingParameter] private Task<BudgetState> BudgetState { get; set; } = null!;
     protected override async Task OnParametersSetAsync()
     {
@@ -27,7 +27,7 @@
         {
             throw new InvalidOperationException($"Cascading value of type Task<{nameof(BudgetState)}> required");
         }
-        (await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync())
+        (await BudgetsApi.GetBudgets(new GetBudgetsRequest()).TryAsync())
             .Match(
                 onSome: b => budgets = b,
                 onNone: error => Snackbar.ProcessError(error)

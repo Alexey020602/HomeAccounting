@@ -13,18 +13,18 @@
 @inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.Medium">
-    <MaybeComponent TResult="IReadOnlyCollection<Budget>" Result="BudgetsResult" Context="budgets">
+    <MaybeComponent TResult="IReadOnlyCollection<BudgetDto>" Result="BudgetsResult" Context="budgets">
         <MudCard>
             <MudCardHeader>
                 <MudText Typo="Typo.h5">Выберите бюджет, с которым вы хотите работать</MudText>
             </MudCardHeader>
             
             <MudCardContent>
-                <MudList T="Budget">
+                <MudList T="BudgetDto">
                     @foreach (var budget in budgets)
                     {
                         <MudListItem 
-                            T="Budget" 
+                            T="BudgetDto" 
                             Text="@budget.Name"
                             Icon="@(SelectedBudget == budget ? @Icons.Material.Filled.Check : null)" 
                             OnClick="@(async () => await SelectBudget(budget))"/>
@@ -43,8 +43,8 @@
 @code {
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
     [CascadingParameter] public Task<BudgetState>? BudgetState { get; set; }
-    private IMaybe<IReadOnlyCollection<Budget>>? BudgetsResult { get; set; }
-    private Budget? SelectedBudget { get; set; }
+    private IMaybe<IReadOnlyCollection<BudgetDto>>? BudgetsResult { get; set; }
+    private BudgetDto? SelectedBudget { get; set; }
     protected override async Task OnParametersSetAsync()
     {
         if (BudgetState is null)
@@ -54,14 +54,14 @@
         
         await base.OnParametersSetAsync();
         var selectedBudgetId = 
-        BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsHttpRequest()).TryAsync();
-        if (await BudgetState is SelectedBudgetState selectedBudgetState && BudgetsResult is Some<IReadOnlyCollection<Budget>> result)
+        BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsRequest()).TryAsync();
+        if (await BudgetState is SelectedBudgetState selectedBudgetState && BudgetsResult is Some<IReadOnlyCollection<BudgetDto>> result)
         {
             SelectedBudget = result.Value.FirstOrDefault(budget => budget.Id == selectedBudgetState.BudgetId);
         }
     }
 
-    private async ValueTask SelectBudget(Budget budget)
+    private async ValueTask SelectBudget(BudgetDto budget)
     {
         await BudgetsStateService.SelectBudget(budget);
         SelectedBudget = budget;

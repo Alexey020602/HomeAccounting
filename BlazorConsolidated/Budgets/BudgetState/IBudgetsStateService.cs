@@ -4,7 +4,7 @@ namespace BlazorConsolidated.Budgets.BudgetState;
 
 interface IBudgetsStateService
 {
-    ValueTask<bool> IsBudgetSelected(Budget budget, CancellationToken cancellationToken = default);
-    ValueTask SelectBudget(Budget budget, CancellationToken cancellationToken = default);
+    ValueTask<bool> IsBudgetSelected(BudgetDto budget, CancellationToken cancellationToken = default);
+    ValueTask SelectBudget(BudgetDto budget, CancellationToken cancellationToken = default);
     ValueTask UnselectBudget(CancellationToken cancellationToken = default);
 }

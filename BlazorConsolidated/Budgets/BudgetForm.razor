@@ -1,6 +1,6 @@
 @using BlazorConsolidated.Common.Validation
+@using ClientServerContracts.Budgets.GetBudgetDetail
 @using FluentValidation
-@using global::Budgets.Contracts.GetBudgetDetail
 <MudForm Model="Model" @ref="form" Validation="@createBudgetModelValidator.ValidateValueAsyncDelegate()">
     @* <FluentValidationValidator Validator="createBudgetModelValidator"/> *@
     <MudTextField 
@@ -41,12 +41,12 @@
 </MudForm>
 
 @code {
-    private static readonly BudgetDetail DefaultBudgetDetail = new(Guid.Empty, string.Empty, null, 1);
+    private static readonly BudgetDetailDto DefaultBudgetDetail = new(Guid.Empty, string.Empty, null, 1);
     private readonly CreateBudgetModelValidator createBudgetModelValidator = new();
     private FormBudgetModel Model { get; } = new();
     private MudForm form = new();
-    [Parameter] public BudgetDetail EditedBudget { get; set; } = DefaultBudgetDetail;
-    [Parameter] public EventCallback<BudgetDetail> OnSubmit { get; set; }
+    [Parameter] public BudgetDetailDto EditedBudget { get; set; } = DefaultBudgetDetail;
+    [Parameter] public EventCallback<BudgetDetailDto> OnSubmit { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -82,13 +82,13 @@
             BeginOfPeriod = 1;
         }
 
-        public void ResetWithBudget(BudgetDetail budgetFull)
+        public void ResetWithBudget(BudgetDetailDto budgetFull)
         {
             Name = budgetFull.Name;
             Limit = budgetFull.Limit;
             BeginOfPeriod = budgetFull.BeginOfPeriod;
         }
-        public BudgetDetail Result(BudgetDetail budgetFull) => new(budgetFull.Id, Name, Limit, BeginOfPeriod);
+        public BudgetDetailDto Result(BudgetDetailDto budgetFull) => new(budgetFull.Id, Name, Limit, BeginOfPeriod);
     }
 
     private sealed class CreateBudgetModelValidator : AbstractValidator<FormBudgetModel>

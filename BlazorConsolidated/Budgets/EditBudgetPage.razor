@@ -1,8 +1,7 @@
 @page "/budgets/{id:guid}/edit"
 @using BlazorConsolidated.Common.Components
 @using BlazorConsolidated.Common.RefitWithResult
-@using global::Budgets.Contracts
-@using global::Budgets.Contracts.GetBudgetDetail
+@using ClientServerContracts.Budgets.GetBudgetDetail
 @using MaybeResults
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
@@ -22,11 +21,11 @@
 
 @code {
     [Parameter] public Guid Id { get; set; }
-    private IMaybe<BudgetDetail>? budgetResult;
+    private IMaybe<BudgetDetailDto>? budgetResult;
     protected override async Task OnParametersSetAsync() => budgetResult = await BudgetsApi.GetBudgetDetail(Id).ToMaybe();
     private Snackbar? snackbar;
 
-    private async Task UpdateBudget(BudgetDetail budgetDetail)
+    private async Task UpdateBudget(BudgetDetailDto budgetDetail)
     {
         snackbar = await BudgetsApi.UpdateBudget(
                 Id,

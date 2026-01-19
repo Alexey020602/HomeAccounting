@@ -10,13 +10,13 @@ internal sealed class BudgetStateService(IBudgetStateStorage budgetStateStorage)
         return await budgetStateStorage.GetBudgetState() ?? new BudgetState();
     }
 
-    public async ValueTask<bool> IsBudgetSelected(Budget budget, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> IsBudgetSelected(BudgetDto budget, CancellationToken cancellationToken = default)
     {
         if (await budgetStateStorage.GetBudgetState(cancellationToken) is not { } selectedBudgetState) return false;
         return budget.Id == selectedBudgetState.BudgetId;
     }
 
-    public async ValueTask SelectBudget(Budget budget, CancellationToken cancellationToken = default)
+    public async ValueTask SelectBudget(BudgetDto budget, CancellationToken cancellationToken = default)
     {
         await budgetStateStorage.SaveBudgetState(new SelectedBudgetState(budget.Id, budget.Name), cancellationToken);
         await NotifyBudgetStateChanged(Task.FromResult<BudgetState>(new SelectedBudgetState(budget.Id, budget.Name)));

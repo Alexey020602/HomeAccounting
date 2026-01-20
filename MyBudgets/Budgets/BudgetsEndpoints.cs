@@ -1,3 +1,4 @@
+using MyBudgets.Budgets.AddUsersInBudget;
 using MyBudgets.Budgets.CreateBudget;
 using MyBudgets.Budgets.DeleteBudget;
 using MyBudgets.Budgets.GetBudgetDetail;
@@ -21,6 +22,7 @@ static class BudgetsEndpoints
         budgetsGroup.MapUpdateBudget();
         budgetsGroup.MapDeleteBudget();
         budgetsGroup.MapGetBudgetUsers();
+        budgetsGroup.MapAddUsersInBudget();
         budgetsGroup.MapGetUserPermissions();
         budgetsGroup.MapGetBudgetSpendings();
     }

@@ -82,4 +82,15 @@ internal sealed partial class Budget
     {
         return budgetUsers.FirstOrDefault(bu => bu.UserId == userId)?.BudgetRoleId;
     }
+
+    public void AddUser(UserId userId, BudgetRoleId roleId)
+    {
+        if (budgetUsers.Any(bu => bu.UserId == userId))
+        {
+            throw new InvalidOperationException("User is already added to this budget");
+        }
+
+        budgetUsers.Add(new BudgetUser(userId, roleId));
+    }
+
 }

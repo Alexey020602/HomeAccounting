@@ -18,4 +18,7 @@ sealed class BudgetUser
         // Budget = budget;
         BudgetRoleId = budgetRoleId;
     }
+
+    public bool IsOwner => BudgetRoleId == BudgetRole.OwnerBudgetRoleId;
+    public bool IsAdmin => BudgetRoleId == BudgetRole.AdminBudgetRoleId;
 }

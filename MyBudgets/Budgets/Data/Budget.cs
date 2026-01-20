@@ -93,4 +93,42 @@ internal sealed partial class Budget
         budgetUsers.Add(new BudgetUser(userId, roleId));
     }
 
+    /// <summary>
+    /// Удаление пользователя из бюджета
+    /// Нельзя удалить владельца
+    /// Нельзя удалить самого себя
+    /// Нельзя админу удалить другого админа
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="currentUserId"></param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void RemoveUser(UserId userId, UserId currentUserId)
+    {
+        if (userId == currentUserId)
+        {
+            throw new DomainException("Cannot remove yourself");
+        }
+
+        if (budgetUsers.FirstOrDefault(bu => bu.UserId == userId) is not { } user)
+        {
+            throw new DomainException("User is not in this budget");
+        }
+
+        if (user.IsOwner)
+        {
+            throw new DomainException("Cannot remove owner");
+        }
+
+        if (budgetUsers.FirstOrDefault(bu => bu.UserId == currentUserId) is not { } currentUser)
+        {
+            throw new DomainException("Current user is not in this budget");
+        }
+
+        if (currentUser.IsAdmin &&user.IsAdmin)
+        {
+            throw new DomainException("Admin cannot be deleted by admin");
+        }
+
+        budgetUsers.Remove(user);
+    }
 }

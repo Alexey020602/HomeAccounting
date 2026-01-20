@@ -1,4 +1,3 @@
-using MyBudgets.Budgets.GetBudgets;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;

@@ -7,7 +7,7 @@ using MyBudgets.Budgets.Data;
 using MyBudgets.Budgets.Data.Database;
 using MyBudgets.Users.Data;
 
-namespace MyBudgets.Budgets.GetBudgets;
+namespace MyBudgets.Budgets.CreateBudget;
 
 static class CreateBudgetEndpoint
 {

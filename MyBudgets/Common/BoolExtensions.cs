@@ -1,4 +1,4 @@
-namespace Shared.Utils;
+namespace MyBudgets.Common;
 
 public static class BoolExtensions
 {

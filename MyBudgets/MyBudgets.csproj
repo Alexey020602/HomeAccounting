@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Budgets\AddUsersInBudget\" />
       <Folder Include="Budgets\Data\Database\Migrations\" />
       <Folder Include="Budgets\GetBudgetSpendings\" />
       <Folder Include="Users\Data\Database\Migrations\" />

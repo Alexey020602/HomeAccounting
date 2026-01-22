@@ -9,8 +9,7 @@ public sealed class UserAuthorizationHandler : AuthorizationHandler<UserRequirem
     {
         if (
             !GetUserIdFormClaimsPrincipal(context.User, out var claimsUserId)
-            || !(userId == claimsUserId)
-        )
+            || (userId != claimsUserId))
         {
             return Task.CompletedTask;
         }
@@ -19,21 +18,6 @@ public sealed class UserAuthorizationHandler : AuthorizationHandler<UserRequirem
         return Task.CompletedTask;
     }
 
-    // private static bool GetUserIdFromContext(RouteData routeData, out Guid userId)
-    // {
-    //     if (
-    //         !routeData.RouteValues.TryGetValue("id", out var idValue)
-    //         || Convert.ToString(idValue) is not { } idString
-    //         || !Guid.TryParse(idString, out userId)
-    //         )
-    //     {
-    //         userId = default;
-    //         return false;
-    //     }
-    //
-    //     return true;
-    // }
-
     private static bool GetUserIdFormClaimsPrincipal(ClaimsPrincipal claimsPrincipal, out Guid userId)
     {
         if (
@@ -41,7 +25,7 @@ public sealed class UserAuthorizationHandler : AuthorizationHandler<UserRequirem
             || !Guid.TryParse(claimsStringId, out userId)
         )
         {
-            userId = default;
+            userId = Guid.Empty;
             return false;
         }
 

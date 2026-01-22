@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using MyBudgets.Common.Database;
 using MyBudgets.Users.Data;
 using MyBudgets.Users.Data.Database;
+using MyBudgets.Users.GetUsers;
 using MyBudgets.Users.Login;
 
 namespace MyBudgets.Users;
@@ -36,6 +37,8 @@ static class UsersModule
             });
         
         builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+        
+        builder.Services.AddScoped<IUsersService, UsersService>();
     }
     
 }

@@ -18,7 +18,7 @@ static class GetUserEndpoint
                     return Results.NotFound($"User with id {id} does not exist");
                 }
 
-                return TypedResults.Ok(user.ConvetToDtoUser());
+                return TypedResults.Ok(user.ConvertToDto());
             }
         );
         endpoints.MapGet(
@@ -30,13 +30,9 @@ static class GetUserEndpoint
                     return Results.NotFound($"User with username {username} does not exist");
                 }
                 
-                return TypedResults.Ok(user.ConvetToDtoUser());
+                return TypedResults.Ok(user.ConvertToDto());
             }
         );
     }
 
-    private static ClientServerContracts.User.GetUser.User ConvetToDtoUser(this User user)
-    {
-        return new(user.Id.Value, user.UserName ?? throw UserException.NoUserName, user.FullName);
-    }
 }

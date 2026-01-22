@@ -5,6 +5,7 @@ using MyBudgets.Budgets;
 using MyBudgets.Budgets.Data.Database;
 using MyBudgets.Budgets.Data.Database.Seeding;
 using MyBudgets.Common.Http;
+using MyBudgets.ReceiptProcessing;
 using MyBudgets.Users;
 using MyBudgets.Users.CheckLogin;
 using MyBudgets.Users.Data.Database;
@@ -49,6 +50,7 @@ builder.Services.AddTransient<HttpLoggingHandler>();
 var databaseServiceName = "HomeAccounting";
 builder.AddUsers(databaseServiceName);
 builder.AddBudgets(databaseServiceName);
+builder.Services.AddReceiptProcessingModule();
 
 var app = builder.Build();
 

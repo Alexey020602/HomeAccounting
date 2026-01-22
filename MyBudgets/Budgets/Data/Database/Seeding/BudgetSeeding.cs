@@ -1,3 +1,4 @@
+using MyBudgets.Common.Model;
 using MyBudgets.Users.Data;
 using MyBudgets.Users.Data.Database;
 

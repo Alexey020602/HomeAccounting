@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MyBudgets.Common.Database;
 using MyBudgets.Users.Data;
 using MyBudgets.Users.Data.Database;
 using MyBudgets.Users.GetUsers;

@@ -1,4 +1,4 @@
-namespace MyBudgets.Common.Database;
+namespace MyBudgets.Common.Infrastructure.Database;
 
 public static class DbConstants
 {

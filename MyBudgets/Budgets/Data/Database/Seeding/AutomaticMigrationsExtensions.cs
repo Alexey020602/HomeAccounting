@@ -1,4 +1,4 @@
-using MyBudgets.Common.Database;
+using MyBudgets.Common.Infrastructure.Database;
 
 namespace MyBudgets.Budgets.Data.Database.Seeding;
 

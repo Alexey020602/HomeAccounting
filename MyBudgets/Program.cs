@@ -5,6 +5,7 @@ using MyBudgets.Budgets;
 using MyBudgets.Budgets.Data.Database;
 using MyBudgets.Budgets.Data.Database.Seeding;
 using MyBudgets.Common.Http;
+using MyBudgets.Common.Infrastructure.Events.EventBus;
 using MyBudgets.ReceiptProcessing;
 using MyBudgets.Users;
 using MyBudgets.Users.CheckLogin;
@@ -36,7 +37,8 @@ builder.Services.AddSerilog((configuration) =>
         .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
         .MinimumLevel.Override("System", LogEventLevel.Warning)
         .WriteTo.Console()
-        .WriteTo.OpenTelemetry(includedData: IncludedData.MessageTemplateTextAttribute | IncludedData.SpanIdField |
+        .WriteTo.OpenTelemetry(includedData: IncludedData.MessageTemplateTextAttribute |
+                                             IncludedData.SpanIdField |
                                              IncludedData.TraceIdField)
         .Enrich.FromLogContext()
         .Enrich.WithProperty("ApplicationName", "HomeAccounting");
@@ -45,7 +47,7 @@ builder.Services.AddSerilog((configuration) =>
 builder.Services.AddProblemDetails();
 
 builder.Services.AddTransient<HttpLoggingHandler>();
-
+builder.Services.AddEventBus();
 
 var databaseServiceName = "HomeAccounting";
 builder.AddUsers(databaseServiceName);

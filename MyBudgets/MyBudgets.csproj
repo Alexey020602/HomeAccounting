@@ -9,6 +9,11 @@
         <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" />
         <PackageReference Include="FluentValidation" />
+        <PackageReference Include="Mediator.Abstractions" />
+        <PackageReference Include="Mediator.SourceGenerator">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
@@ -28,6 +33,7 @@
       <Folder Include="Budgets\AddUsersInBudget\" />
       <Folder Include="Budgets\Data\Database\Migrations\" />
       <Folder Include="Budgets\GetBudgetSpendings\" />
+      <Folder Include="Common\Database\" />
       <Folder Include="Users\Data\Database\Migrations\" />
       <Folder Include="Users\Data\Login\" />
     </ItemGroup>

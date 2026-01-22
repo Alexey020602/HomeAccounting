@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace MyBudgets.Common.Database;
+namespace MyBudgets.Common.Infrastructure.Database;
 
 static class AutomaticMigrationsExtension
 {

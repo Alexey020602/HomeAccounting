@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
-namespace MyBudgets.Common.Database;
+namespace MyBudgets.Common.Infrastructure.Database;
 
 public static class Extensions
 {

@@ -25,19 +25,20 @@ internal static class GetBudgetSpendingsEndpoint
                     return Results.Problem(statusCode: (int)HttpStatusCode.Forbidden, detail: "User does not have permission to read this budget");
                 }
 
-                var budget = await budgetsContext.Budgets
-                    .Include(b => b.Spendings)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(b => b.Id == budgetId, cancellationToken);
-
-                if (budget is null)
+                if (!await budgetsContext.Budgets.AnyAsync(budget => budget.Id == budgetId, cancellationToken: cancellationToken))
                 {
                     return Results.NotFound();
                 }
 
-                var spendings = budget.Spendings
-                    .Select(s => new SpendingDto(s.Id.Value, s.Description, s.Sum))
-                    .ToArray();
+                var spendingsQuery = from budget in budgetsContext.Budgets.AsNoTracking()
+                    where budget.Id == budgetId
+                    from spending in budget.Spendings
+                    
+                    select new SpendingDto(spending.Id.Value, spending.Description, spending.Sum);
+                    
+                
+                var spendings = await spendingsQuery
+                    .ToArrayAsync(cancellationToken);
 
                 var response = new GetBudgetSpendingsResponse(spendings);
                 return Results.Ok(response);

@@ -1,3 +1,5 @@
+using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using MyBudgets.Common.Model;
 using MyBudgets.Users.Data;
 
@@ -10,7 +12,7 @@ internal sealed partial class Budget
     public BudgetId Id { get; private set; }
     public string Name { get; private set; }
     public int BeginOfPeriod { get; private set; }
-    public int? Limit { get; private set; }
+    public Money? Limit { get; private set; }
     public UserId CreatorId { get; private set; }
     public DateTime CreationDate { get; private set; }
     public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
@@ -20,7 +22,7 @@ internal sealed partial class Budget
         Name = string.Empty;
     }
 
-    public Budget(string name, int beginOfPeriod, int? limit, UserId userId, DateTime creationDate, IEnumerable<BudgetUser> budgetUsers)
+    public Budget(string name, int beginOfPeriod, Money? limit, UserId userId, DateTime creationDate, IEnumerable<BudgetUser> budgetUsers)
     {
         Name = name;
         BeginOfPeriod = beginOfPeriod;
@@ -34,7 +36,7 @@ internal sealed partial class Budget
         }
     }
 
-    public void AddManualSpending(int sum, string description, DateTime purchaseDate, DateTime addedDate, UserId userId)
+    public void AddManualSpending(Money sum, string description, DateTime purchaseDate, DateTime addedDate, UserId userId)
     {
         spendings.Add(new ManualSpending(sum, purchaseDate, addedDate, description, userId));
     }
@@ -56,7 +58,7 @@ internal sealed partial class Budget
             productInputs));
     }
 
-    public void Update(string name, int beginOfPeriod, int? limit)
+    public void Update(string name, int beginOfPeriod, Money? limit)
     {
         Name = name;
         BeginOfPeriod = beginOfPeriod;

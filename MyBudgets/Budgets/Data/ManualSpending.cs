@@ -1,3 +1,5 @@
+using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
@@ -6,15 +8,15 @@ internal sealed partial class ManualSpending : Spending
 {
     private string description;
     public override string Description => description;
-    private int sum;
-    public override int Sum => sum;
+    private Money sum;
+    public override Money Sum => sum;
 
     private ManualSpending()
     {
         description = string.Empty;
     }
     public ManualSpending(
-        int sum, 
+        Money sum, 
         DateTime purchaseDate, 
         DateTime addedDate, 
         string description,

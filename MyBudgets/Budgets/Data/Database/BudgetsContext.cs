@@ -1,3 +1,4 @@
+using ClientServerShared.Model.Money;
 using Microsoft.EntityFrameworkCore;
 using MyBudgets.Budgets.Data.Database.Configurations;
 
@@ -27,5 +28,14 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new BudgetUserConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         // modelBuilder.ApplyConfiguration(new ProductConfiguration());
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder
+            .Properties<Money>()
+            .HaveConversion<MoneyConverter>();
     }
 }

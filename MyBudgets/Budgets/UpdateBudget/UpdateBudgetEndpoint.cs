@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets;
 using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using MyBudgets.Budgets;
@@ -34,7 +35,7 @@ static class UpdateBudgetEndpoint
                     return Results.NotFound();
                 }
 
-                budget.Update(request.Name, request.BeginOfPeriod, request.Limit);
+                budget.Update(request.Name, request.BeginOfPeriod, request.Limit.HasValue ? Money.FromKopecks(request.Limit.Value) : null);
 
                 await budgetsContext.SaveChangesAsync(cancellationToken);
 

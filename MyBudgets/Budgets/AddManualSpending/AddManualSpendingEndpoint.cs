@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets.AddManualSpending;
 using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using MyBudgets.Budgets;
@@ -37,7 +38,7 @@ static class AddManualSpendingEndpoint
                 var userId = new UserId(user.GetUserId());
                 var addedDate = DateTime.UtcNow;
 
-                budget.AddManualSpending(request.Sum, request.Description, request.PurchaseDate, addedDate, userId);
+                budget.AddManualSpending(Money.FromKopecks(request.Sum), request.Description, request.PurchaseDate, addedDate, userId);
                 
                 await budgetsContext.SaveChangesAsync(cancellationToken);
 
@@ -50,5 +51,7 @@ static class AddManualSpendingEndpoint
             .ProducesProblem((int)HttpStatusCode.InternalServerError);
     }
 }
+
+
 
 

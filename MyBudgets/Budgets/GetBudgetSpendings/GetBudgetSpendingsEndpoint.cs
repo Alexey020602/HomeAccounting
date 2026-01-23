@@ -34,7 +34,7 @@ internal static class GetBudgetSpendingsEndpoint
                     where budget.Id == budgetId
                     from spending in budget.Spendings
                     
-                    select new SpendingDto(spending.Id.Value, spending.Description, spending.Sum);
+                    select new SpendingDto(spending.Id.Value, spending.Description, spending.Sum.Kopecks);
                     
                 
                 var spendings = await spendingsQuery

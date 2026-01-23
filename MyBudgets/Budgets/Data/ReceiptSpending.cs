@@ -1,3 +1,5 @@
+using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using MyBudgets.Common.Model;
 using MyBudgets.Users.Data;
 
@@ -10,14 +12,13 @@ sealed partial class ReceiptSpending : Spending
     public IReadOnlyList<Product> Products => products;
     public string PurchasePlace { get; private set; }
 
-    // private int sum;
-    public override int Sum => Products.Sum(p => p.Sum);
+    public override Money Sum => Products.Sum(p => p.Sum);
     public override string Description => PurchasePlace;
 
     
     private ReceiptSpending()
     {
-        FiscalData = new ReceiptFiscalData(string.Empty, string.Empty, string.Empty);
+        FiscalData = ReceiptFiscalData.Empty();
         PurchasePlace = string.Empty;
     }
 

@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets.CreateBudget;
 using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using Microsoft.EntityFrameworkCore;
 using MyBudgets.Budgets.Data;
 using MyBudgets.Budgets.Data.Database;
@@ -28,7 +29,7 @@ static class CreateBudgetEndpoint
                     var budget = new Budget(
                         request.Name, 
                         request.BeginOfPeriod,
-                        request.Limit,
+                        request.Limit.HasValue ? Money.FromKopecks(request.Limit.Value) : null,
                         userId,
                         DateTime.UtcNow, 
                         [new BudgetUser(userId, ownerRole.Id)]);

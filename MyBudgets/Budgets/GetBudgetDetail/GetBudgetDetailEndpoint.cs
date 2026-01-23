@@ -29,8 +29,8 @@ internal static class GetBudgetDetailEndpoint
                     select new GetBudgetsDetailResponse(
                         budget.Id.Value, 
                         budget.Name, 
-                        budget.BeginOfPeriod, 
-                        budget.Limit);
+                        budget.BeginOfPeriod,
+                        budget.Limit.HasValue ? budget.Limit.Value.Kopecks : null);
 
                 var response = await budgetQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken); 
                 return response is null ? Results.NotFound() : Results.Ok(response);

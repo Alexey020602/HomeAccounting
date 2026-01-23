@@ -1,3 +1,5 @@
+using ClientServerShared.Model;
+using ClientServerShared.Model.Money;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
@@ -8,7 +10,7 @@ internal abstract class Spending
     public DateTime PurchaseDate { get; private set; }
     public DateTime AddedDate { get; private set; }
     public UserId UserId { get; private set; }
-    public abstract int Sum { get; }
+    public abstract Money Sum { get; }
     public abstract string Description { get; }
     protected Spending()
     {

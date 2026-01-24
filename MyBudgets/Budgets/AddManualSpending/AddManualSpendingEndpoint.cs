@@ -59,3 +59,4 @@ static class AddManualSpendingEndpoint
             .ProducesProblem((int)HttpStatusCode.InternalServerError);
     }
 }
+

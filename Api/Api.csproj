@@ -35,6 +35,7 @@
         <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
         <PackageReference Include="SkiaSharp" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+        <PackageReference Include="xunit" />
     </ItemGroup>
 
     <ItemGroup>

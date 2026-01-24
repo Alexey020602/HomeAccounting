@@ -106,6 +106,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServerContracts", "Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServerShared", "ClientServerShared\ClientServerShared.csproj", "{1955ECAD-D8B6-443B-AA5C-BE5CC0C70550}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAccounting.UnitTests", "HomeAccounting.UnitTests\HomeAccounting.UnitTests.csproj", "{0B13DFE9-54F0-464B-81BD-7FAC77D3BC90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -248,6 +250,10 @@ Global
 		{1955ECAD-D8B6-443B-AA5C-BE5CC0C70550}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1955ECAD-D8B6-443B-AA5C-BE5CC0C70550}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1955ECAD-D8B6-443B-AA5C-BE5CC0C70550}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B13DFE9-54F0-464B-81BD-7FAC77D3BC90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B13DFE9-54F0-464B-81BD-7FAC77D3BC90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B13DFE9-54F0-464B-81BD-7FAC77D3BC90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B13DFE9-54F0-464B-81BD-7FAC77D3BC90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B} = {0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}

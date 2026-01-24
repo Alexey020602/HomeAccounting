@@ -44,4 +44,8 @@
       <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="HomeAccounting.UnitTests" />
+    </ItemGroup>
+
 </Project>

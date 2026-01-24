@@ -44,4 +44,18 @@ sealed partial class ReceiptSpending : Spending
         
         // sum = products.Sum(p => p.Sum);
     }
+
+    public void ChangeCategoryForProduct(ProductId productId, CategoryId categoryId)
+    {
+        var product = GetProduct(productId);
+        
+        product.ChangeCategory(categoryId);
+    }
+
+    public void DeleteCategoryForProduct(ProductId productId)
+    {
+        var product = GetProduct(productId);
+        product.DeleteCategory();
+    }
+    private Product GetProduct(ProductId productId) => products.FirstOrDefault(p => p.Id == productId) ?? throw new Common.DomainException("Product not found");
 }

@@ -10,6 +10,7 @@ internal sealed partial class ManualSpending : Spending
     public override string Description => description;
     private Money sum;
     public override Money Sum => sum;
+    public CategoryId? CategoryId  { get; private set; }
 
     private ManualSpending()
     {
@@ -18,6 +19,7 @@ internal sealed partial class ManualSpending : Spending
     public ManualSpending(
         Money sum, 
         DateTime purchaseDate, 
+        CategoryId? categoryId,
         DateTime addedDate, 
         string description,
         UserId userId
@@ -25,5 +27,6 @@ internal sealed partial class ManualSpending : Spending
     {
         this.sum = sum;
         this.description = description;
+        this.CategoryId = categoryId;
     }
 }

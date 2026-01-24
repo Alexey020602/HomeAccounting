@@ -57,6 +57,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(3500.00m),
             new DateTime(2024, 10, 5, 14, 30, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 10, 5, 15, 0, 0, DateTimeKind.Utc),
             "Оплата интернета",
             new UserId(UserConstants.DefaultUserId)
@@ -64,6 +65,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(2800.00m),
             new DateTime(2024, 10, 12, 10, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 10, 12, 10, 15, 0, DateTimeKind.Utc),
             "Оплата мобильной связи",
             new UserId(UserConstants.SecondUserId)
@@ -71,6 +73,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(12000.00m),
             new DateTime(2024, 10, 20, 18, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 10, 20, 18, 30, 0, DateTimeKind.Utc),
             "Поход в кино",
             new UserId(UserConstants.DefaultUserId)
@@ -78,6 +81,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(4500.00m),
             new DateTime(2024, 11, 3, 12, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 11, 3, 12, 20, 0, DateTimeKind.Utc),
             "Обед в ресторане",
             new UserId(UserConstants.SecondUserId)
@@ -85,6 +89,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(8500.00m),
             new DateTime(2024, 11, 15, 16, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 11, 15, 16, 45, 0, DateTimeKind.Utc),
             "Подарок на день рождения",
             new UserId(UserConstants.DefaultUserId)
@@ -92,6 +97,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(2200.00m),
             new DateTime(2024, 11, 25, 9, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 11, 25, 9, 10, 0, DateTimeKind.Utc),
             "Такси",
             new UserId(UserConstants.SecondUserId)
@@ -99,6 +105,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(15000.00m),
             new DateTime(2024, 12, 10, 19, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 12, 10, 19, 30, 0, DateTimeKind.Utc),
             "Новогодние подарки",
             new UserId(UserConstants.DefaultUserId)
@@ -106,6 +113,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(3200.00m),
             new DateTime(2024, 12, 20, 11, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 12, 20, 11, 15, 0, DateTimeKind.Utc),
             "Оплата подписки на стриминг",
             new UserId(UserConstants.SecondUserId)
@@ -113,6 +121,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(6800.00m),
             new DateTime(2025, 1, 5, 13, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2025, 1, 5, 13, 20, 0, DateTimeKind.Utc),
             "Обед в кафе",
             new UserId(UserConstants.DefaultUserId)
@@ -124,6 +133,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(2500.00m),
             new DateTime(2024, 10, 8, 8, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 10, 8, 8, 10, 0, DateTimeKind.Utc),
             "Оплата проездного",
             new UserId(UserConstants.DefaultUserId)
@@ -131,6 +141,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(1800.00m),
             new DateTime(2024, 10, 15, 20, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 10, 15, 20, 15, 0, DateTimeKind.Utc),
             "Кофе и завтрак",
             new UserId(UserConstants.DefaultUserId)
@@ -138,6 +149,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(4200.00m),
             new DateTime(2024, 11, 1, 17, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 11, 1, 17, 30, 0, DateTimeKind.Utc),
             "Книги",
             new UserId(UserConstants.DefaultUserId)
@@ -145,6 +157,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(9500.00m),
             new DateTime(2024, 11, 10, 15, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 11, 10, 15, 45, 0, DateTimeKind.Utc),
             "Одежда",
             new UserId(UserConstants.DefaultUserId)
@@ -152,6 +165,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(1200.00m),
             new DateTime(2024, 11, 22, 12, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 11, 22, 12, 10, 0, DateTimeKind.Utc),
             "Обед",
             new UserId(UserConstants.DefaultUserId)
@@ -159,6 +173,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(3500.00m),
             new DateTime(2024, 12, 5, 10, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 12, 5, 10, 20, 0, DateTimeKind.Utc),
             "Фитнес-абонемент",
             new UserId(UserConstants.DefaultUserId)
@@ -166,6 +181,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(2800.00m),
             new DateTime(2024, 12, 18, 14, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2024, 12, 18, 14, 15, 0, DateTimeKind.Utc),
             "Косметика",
             new UserId(UserConstants.DefaultUserId)
@@ -173,6 +189,7 @@ partial class ManualSpending
         new ManualSpending(
             Money.FromRubles(1500.00m),
             new DateTime(2025, 1, 3, 9, 0, 0, DateTimeKind.Utc),
+            null,
             new DateTime(2025, 1, 3, 9, 10, 0, DateTimeKind.Utc),
             "Завтрак",
             new UserId(UserConstants.DefaultUserId)

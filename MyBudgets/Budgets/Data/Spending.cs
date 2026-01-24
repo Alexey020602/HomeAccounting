@@ -1,12 +1,12 @@
 using ClientServerShared.Model;
 using ClientServerShared.Model.Money;
+using MyBudgets.Common.Model;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
 
-internal abstract class Spending
+internal abstract class Spending: Entity<SpendingId>
 {
-    public SpendingId Id { get; private set; }
     public DateTime PurchaseDate { get; private set; }
     public DateTime AddedDate { get; private set; }
     public UserId UserId { get; private set; }

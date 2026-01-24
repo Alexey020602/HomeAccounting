@@ -17,33 +17,41 @@ static class AddManualSpendingEndpoint
     public static void MapAddManualSpending(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
-            "{id:guid}/spendings/manual",
-            async (Guid id, ClaimsPrincipal user, AddManualSpendingRequest request, BudgetsContext budgetsContext, IAuthorizationService authorizationHandler, CancellationToken cancellationToken) =>
-            {
-                var budgetId = new BudgetId(id);
-                var result = await authorizationHandler.AuthorizeAsync(user, budgetId, new BudgetRequirements(BudgetPermissions.Edit));
-                if (!result.Succeeded)
+                "{id:guid}/spendings/manual",
+                async (Guid id, ClaimsPrincipal user, AddManualSpendingRequest request, BudgetsContext budgetsContext,
+                    IAuthorizationService authorizationHandler, CancellationToken cancellationToken) =>
                 {
-                    return Results.Problem(statusCode: (int)HttpStatusCode.Forbidden, detail: "User does not have permission to edit this budget");
-                }
+                    var budgetId = new BudgetId(id);
+                    var result = await authorizationHandler.AuthorizeAsync(user, budgetId,
+                        new BudgetRequirements(BudgetPermissions.Edit));
+                    if (!result.Succeeded)
+                    {
+                        return Results.Problem(statusCode: (int)HttpStatusCode.Forbidden,
+                            detail: "User does not have permission to edit this budget");
+                    }
 
-                var budget = await budgetsContext.Budgets
-                    .FirstOrDefaultAsync(b => b.Id == budgetId, cancellationToken);
+                    var budget = await budgetsContext.Budgets
+                        .FirstOrDefaultAsync(b => b.Id == budgetId, cancellationToken);
 
-                if (budget is null)
-                {
-                    return Results.NotFound();
-                }
+                    if (budget is null)
+                    {
+                        return Results.NotFound();
+                    }
 
-                var userId = new UserId(user.GetUserId());
-                var addedDate = DateTime.UtcNow;
+                    var userId = new UserId(user.GetUserId());
+                    var addedDate = DateTime.UtcNow;
 
-                budget.AddManualSpending(Money.FromKopecks(request.Sum), request.Description, request.PurchaseDate, addedDate, userId);
-                
-                await budgetsContext.SaveChangesAsync(cancellationToken);
+                    budget.AddManualSpending(
+                        Money.FromKopecks(request.Sum), 
+                        request.Description, 
+                        request.CategoryId.HasValue ? new CategoryId(request.CategoryId.Value) : null,
+                        request.PurchaseDate, addedDate,
+                        userId);
 
-                return Results.Created();
-            })
+                    await budgetsContext.SaveChangesAsync(cancellationToken);
+
+                    return Results.Created();
+                })
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)
@@ -51,7 +59,3 @@ static class AddManualSpendingEndpoint
             .ProducesProblem((int)HttpStatusCode.InternalServerError);
     }
 }
-
-
-
-

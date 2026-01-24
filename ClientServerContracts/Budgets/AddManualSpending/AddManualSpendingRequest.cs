@@ -1,6 +1,6 @@
 namespace ClientServerContracts.Budgets.AddManualSpending;
 
-public record AddManualSpendingRequest(int Sum, string Description, DateTime PurchaseDate);
+public record AddManualSpendingRequest(int Sum, string Description, DateTime PurchaseDate, int? CategoryId);
 
 
 

@@ -1,8 +1,9 @@
+using MyBudgets.Common.Model;
+
 namespace MyBudgets.Budgets.Data;
 internal record struct CategoryId(int Value);
-internal sealed class Category
+internal sealed partial class Category: Entity<CategoryId>
 {
-    public CategoryId Id { get; private set; }
     public string Name { get; private set; }
     public CategoryId? ParentCategoryId { get; private set; }
 

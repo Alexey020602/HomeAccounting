@@ -5,11 +5,10 @@ using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;
 
-internal sealed partial class Budget
+internal sealed partial class Budget: Entity<BudgetId>
 {
     private List<BudgetUser> budgetUsers = [];
     private List<Spending> spendings = [];
-    public BudgetId Id { get; private set; }
     public string Name { get; private set; }
     public int BeginOfPeriod { get; private set; }
     public Money? Limit { get; private set; }
@@ -36,9 +35,9 @@ internal sealed partial class Budget
         }
     }
 
-    public void AddManualSpending(Money sum, string description, DateTime purchaseDate, DateTime addedDate, UserId userId)
+    public void AddManualSpending(Money sum, string description, CategoryId? categoryId, DateTime purchaseDate, DateTime addedDate, UserId userId)
     {
-        spendings.Add(new ManualSpending(sum, purchaseDate, addedDate, description, userId));
+        spendings.Add(new ManualSpending(sum,  purchaseDate, categoryId, addedDate, description, userId));
     }
 
     public void AddReceiptSpending(
@@ -58,12 +57,27 @@ internal sealed partial class Budget
             productInputs));
     }
 
+    public void ChangeCategoryForProduct(SpendingId spendingId, ProductId productId, CategoryId categoryId)
+    {
+        var spending = GetReceiptSpending(spendingId);
+        
+        spending.ChangeCategoryForProduct(productId, categoryId);
+    }
+
+    public void DeleteCategoryForProduct(SpendingId spendingId, ProductId productId)
+    {
+        var spending = GetReceiptSpending(spendingId);
+        spending.DeleteCategoryForProduct(productId);
+    }
+
     public void Update(string name, int beginOfPeriod, Money? limit)
     {
         Name = name;
         BeginOfPeriod = beginOfPeriod;
         Limit = limit;
     }
+    
+    
 
     // public bool CanUserEdit(UserId userId, BudgetRole? userRole)
     // {
@@ -133,5 +147,27 @@ internal sealed partial class Budget
         }
 
         budgetUsers.Remove(user);
+    }
+    
+    private Spending GetSpending(SpendingId spendingId) => spendings.FirstOrDefault(sp => sp.Id == spendingId) ?? throw new DomainException("Spending not found");
+
+    private ManualSpending GetManualSpending(SpendingId spendingId)
+    {
+        if (GetSpending(spendingId) is not ManualSpending manualSpending)
+        {
+            throw new DomainException("This spending is not manual");
+        }
+        
+        return manualSpending;
+    }
+
+    private ReceiptSpending GetReceiptSpending(SpendingId spendingId)
+    {
+        if (GetSpending(spendingId) is not ReceiptSpending receiptSpending)
+        {
+            throw new DomainException("This spending is not receipt");
+        }
+
+        return receiptSpending;
     }
 }

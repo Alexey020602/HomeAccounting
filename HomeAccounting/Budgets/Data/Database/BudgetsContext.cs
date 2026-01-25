@@ -26,7 +26,6 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new BudgetConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetRoleConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetUserConfiguration());
-        // modelBuilder.ApplyConfiguration(new ProductConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

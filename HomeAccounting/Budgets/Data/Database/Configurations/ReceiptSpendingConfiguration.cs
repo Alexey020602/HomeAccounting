@@ -34,12 +34,5 @@ sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpend
             b.Property(p => p.CategoryId)
                 .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
         });
-        
-        // builder.Navigation(r=>r.Products)
-        //     .HasField("products")
-        //     .UsePropertyAccessMode(PropertyAccessMode.Field)
-        //     .AutoInclude();
-
-        // builder.Property(s => s.Sum);
     }
 }

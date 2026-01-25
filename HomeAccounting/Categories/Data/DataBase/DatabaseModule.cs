@@ -1,3 +1,4 @@
+using HomeAccounting.Categories.Data.DataBase.Seeding;
 using HomeAccounting.Common.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,12 @@ internal static class DatabaseModule
                 {
                     if (builder.Environment.IsDevelopment())
                     {
-                        options.EnableSensitiveDataLogging();
+                        options.EnableSensitiveDataLogging()
+                            .AddCategoriesSeeding();
                     }
                     else
                     {
-                        
+                        options.AddCategoriesSeeding();
                     }
                 },
                 npgsqlOptionsAction: options =>

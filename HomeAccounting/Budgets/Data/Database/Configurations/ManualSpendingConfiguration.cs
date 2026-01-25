@@ -1,3 +1,4 @@
+using HomeAccounting.Categories.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,5 +11,8 @@ internal sealed class ManualSpendingConfiguration: IEntityTypeConfiguration<Manu
         builder.Property(s => s.Description);
 
         builder.Property(s => s.Sum);
+
+        builder.Property(s => s.CategoryId)
+            .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
     }
 }

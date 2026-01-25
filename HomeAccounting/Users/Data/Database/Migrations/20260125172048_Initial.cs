@@ -20,8 +20,10 @@ namespace HomeAccounting.Users.Data.Database.Migrations
                 schema: "Identity",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     FullName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    RefreshToken_Token = table.Column<string>(type: "text", nullable: true),
+                    RefreshToken_Expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

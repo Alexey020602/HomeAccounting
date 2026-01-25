@@ -19,11 +19,6 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 schema: "budgets",
                 incrementBy: 10);
 
-            migrationBuilder.CreateSequence(
-                name: "CategoriesSequence",
-                schema: "budgets",
-                incrementBy: 10);
-
             migrationBuilder.CreateTable(
                 name: "BudgetRoles",
                 schema: "budgets",
@@ -46,27 +41,13 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     BeginOfPeriod = table.Column<int>(type: "integer", nullable: false),
-                    Limit = table.Column<int>(type: "integer", nullable: true),
+                    Limit = table.Column<long>(type: "bigint", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Budgets", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                schema: "budgets",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,7 +82,8 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     AddedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
-                    Sum = table.Column<int>(type: "integer", nullable: true),
+                    CategoryId = table.Column<int>(type: "integer", nullable: true),
+                    Sum = table.Column<long>(type: "bigint", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Fn = table.Column<string>(type: "text", nullable: true),
                     Fd = table.Column<string>(type: "text", nullable: true),
@@ -128,8 +110,8 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Quantity = table.Column<double>(type: "double precision", nullable: false),
-                    Price = table.Column<int>(type: "integer", nullable: false),
-                    Sum = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<long>(type: "bigint", nullable: false),
+                    Sum = table.Column<long>(type: "bigint", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: true),
                     ReceiptSpendingId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -158,13 +140,6 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 column: "BudgetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_Name",
-                schema: "budgets",
-                table: "Categories",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Product_ReceiptSpendingId",
                 schema: "budgets",
                 table: "Product",
@@ -189,10 +164,6 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 schema: "budgets");
 
             migrationBuilder.DropTable(
-                name: "Categories",
-                schema: "budgets");
-
-            migrationBuilder.DropTable(
                 name: "Product",
                 schema: "budgets");
 
@@ -206,10 +177,6 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
 
             migrationBuilder.DropSequence(
                 name: "BudgetRoleSequence",
-                schema: "budgets");
-
-            migrationBuilder.DropSequence(
-                name: "CategoriesSequence",
                 schema: "budgets");
         }
     }

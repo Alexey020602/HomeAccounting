@@ -21,9 +21,6 @@ sealed class BudgetConfiguration: IEntityTypeConfiguration<Budget>
         builder.Property(x=>x.Name)
             .IsRequired()
             .HasMaxLength(100);
-        
-        // builder.Ignore(x => x.Spendings);
-        // builder.Ignore(x => x.BudgetUsers);
 
         builder.Navigation(b => b.Spendings)
             .HasField("spendings")

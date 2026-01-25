@@ -1,4 +1,4 @@
-namespace MyBudgets.Budgets.Data;
+namespace MyBudgets.Categories.Data;
 
 partial class Category
 {

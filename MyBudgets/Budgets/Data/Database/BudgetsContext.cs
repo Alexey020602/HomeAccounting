@@ -1,6 +1,7 @@
 using ClientServerShared.Model.Money;
 using Microsoft.EntityFrameworkCore;
 using MyBudgets.Budgets.Data.Database.Configurations;
+using MyBudgets.Categories.Data.DataBase.Configurations;
 
 namespace MyBudgets.Budgets.Data.Database;
 
@@ -8,7 +9,6 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
 {
     public const string ShemaName = "budgets";
 
-    public DbSet<Category> Categories { get; set; }
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetRole> BudgetRoles { get; set; }
 
@@ -26,7 +26,6 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new BudgetConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetRoleConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetUserConfiguration());
-        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         // modelBuilder.ApplyConfiguration(new ProductConfiguration());
     }
 

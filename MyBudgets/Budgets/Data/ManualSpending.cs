@@ -1,5 +1,6 @@
 using ClientServerShared.Model;
 using ClientServerShared.Model.Money;
+using MyBudgets.Categories.Data;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.Data;

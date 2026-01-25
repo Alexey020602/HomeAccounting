@@ -1,24 +1,18 @@
 using BlazorConsolidated;
-using MudBlazor.Extensions;
 using MyBudgets;
 using MyBudgets.Budgets;
-using MyBudgets.Budgets.Data.Database;
 using MyBudgets.Budgets.Data.Database.Seeding;
-using MyBudgets.Common.Http;
+using MyBudgets.Categories;
+using MyBudgets.Categories.Data.DataBase.Seeding;
 using MyBudgets.Common.Infrastructure.Events.EventBus;
 using MyBudgets.ReceiptProcessing;
 using MyBudgets.Users;
-using MyBudgets.Users.CheckLogin;
 using MyBudgets.Users.Data.Database;
-using MyBudgets.Users.GetUser;
-using MyBudgets.Users.Login;
-using MyBudgets.Users.Register;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
 using ServiceDefaults;
-using HttpLoggingHandler = ServiceDefaults.HttpLoggingHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,12 +46,15 @@ builder.Services.AddEventBus();
 var databaseServiceName = "HomeAccounting";
 builder.AddUsers(databaseServiceName);
 builder.AddBudgets(databaseServiceName);
+builder.AddCategories(databaseServiceName);
 builder.Services.AddReceiptProcessingModule();
 
 var app = builder.Build();
 
 await app.MigrateUsersAsync();
 await app.MigrateBudgetsAsync();
+await app.MigrateCategoriesAsync();
+
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyHeader()
     .AllowAnyMethod()
@@ -89,6 +86,7 @@ var apiGroup = app.MapGroup("api").RequireAuthorization();
 
 apiGroup.MapUsersEndpoints();
 apiGroup.MapBudgetsEndpoints();
+apiGroup.MapCategoriesEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

@@ -1,6 +1,6 @@
 using MyBudgets.Common.Model;
 
-namespace MyBudgets.Budgets.Data;
+namespace MyBudgets.Categories.Data;
 internal record struct CategoryId(int Value);
 internal sealed partial class Category: Entity<CategoryId>
 {

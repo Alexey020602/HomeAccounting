@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using MyBudgets.Categories.Data;
 using MyBudgets.Common.Model;
 
 namespace MyBudgets.Budgets.Data.Database.Configurations;

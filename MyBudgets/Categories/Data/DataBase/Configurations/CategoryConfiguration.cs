@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MyBudgets.Budgets.Data.Database.Configurations;
+namespace MyBudgets.Categories.Data.DataBase.Configurations;
 
 internal sealed class CategoryConfiguration: IEntityTypeConfiguration<Category>
 {

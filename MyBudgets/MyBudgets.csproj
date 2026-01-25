@@ -33,6 +33,7 @@
       <Folder Include="Budgets\AddUsersInBudget\" />
       <Folder Include="Budgets\Data\Database\Migrations\" />
       <Folder Include="Budgets\GetBudgetSpendings\" />
+      <Folder Include="Categories\Data\DataBase\Migrations\" />
       <Folder Include="Common\Database\" />
       <Folder Include="Users\Data\Database\Migrations\" />
       <Folder Include="Users\Data\Login\" />

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBudgets.Budgets;
 using MyBudgets.Budgets.Data;
 using MyBudgets.Budgets.Data.Database;
+using MyBudgets.Categories.Data;
 using MyBudgets.Users.Data;
 
 namespace MyBudgets.Budgets.AddManualSpending;

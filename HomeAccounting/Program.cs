@@ -11,7 +11,10 @@ using HomeAccounting.Users.Data.Database;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Serilog.Formatting.Display;
 using Serilog.Sinks.OpenTelemetry;
+using Serilog.Sinks.SystemConsole.Themes;
 using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,10 +33,18 @@ builder.Services.AddSerilog((configuration) =>
         .MinimumLevel.Information()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
         .MinimumLevel.Override("System", LogEventLevel.Warning)
-        .WriteTo.Console()
-        .WriteTo.OpenTelemetry(includedData: IncludedData.MessageTemplateTextAttribute |
-                                             IncludedData.SpanIdField |
-                                             IncludedData.TraceIdField)
+
+        .WriteTo.Console(
+            theme: ConsoleTheme.None,
+            applyThemeToRedirectedOutput: false,
+            outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+        )
+
+        .WriteTo.OpenTelemetry(includedData:
+            IncludedData.MessageTemplateTextAttribute |
+            IncludedData.SpanIdField |
+            IncludedData.TraceIdField)
+
         .Enrich.FromLogContext()
         .Enrich.WithProperty("ApplicationName", "HomeAccounting");
 });

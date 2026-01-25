@@ -7,3 +7,4 @@ public record AddManualSpendingRequest(int Sum, string Description, DateTime Pur
 
 
 
+

@@ -1,12 +1,15 @@
+using HomeAccounting.Categories.GetCategories;
+using HomeAccounting.Categories.GetCategoriesTree;
+
 namespace HomeAccounting.Categories;
 
 internal static class CategoriesEndpoints
 {
-    extension(IEndpointRouteBuilder endpoints)
+    public static void MapCategoriesEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        public void MapCategoriesEndpoints()
-        {
-            
-        }
+        var categoriesGroup = endpoints.MapGroup("categories");
+        
+        categoriesGroup.MapGetCategories();
+        categoriesGroup.MapGetCategoriesTree();
     }
 }

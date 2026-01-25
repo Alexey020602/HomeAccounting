@@ -32,7 +32,7 @@ var db = builder
 //     .WithReference(db)
 //     .WithHttpHealthCheck("/health");
 
-var myBudgets = builder.AddProject<MyBudgets>("mybudgets")
+var myBudgets = builder.AddProject<HomeAccounting>("mybudgets")
         .WithReference(db)
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")

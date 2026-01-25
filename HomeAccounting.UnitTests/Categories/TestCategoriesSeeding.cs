@@ -1,4 +1,4 @@
-﻿using MyBudgets.Categories.Data;
+﻿using HomeAccounting.Categories.Data;
 
 namespace HomeAccounting.UnitTests.Categories;
 

@@ -100,7 +100,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{27FD2E33
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.UI.Tests", "Authorization.UI.Tests\Authorization.UI.Tests.csproj", "{6F153A74-2A6B-4F67-A18E-90B10C6B7918}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBudgets", "MyBudgets\MyBudgets.csproj", "{0C3A307D-D1F0-4845-8A40-155BC33885CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAccounting", "HomeAccounting\HomeAccounting.csproj", "{0C3A307D-D1F0-4845-8A40-155BC33885CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServerContracts", "ClientServerContracts\ClientServerContracts.csproj", "{F46C8062-4AD4-45C6-AD1F-F09180C3EC2A}"
 EndProject

@@ -1,3 +1,3 @@
 namespace HomeAccounting.ReceiptProcessing.Contracts;
 
-internal sealed record GetReceiptDataResponse(IReadOnlyCollection<ReceiptProduct> Products);
+internal sealed record GetReceiptDataResponse(string PurchasePlase, IReadOnlyCollection<ReceiptProduct> Products);

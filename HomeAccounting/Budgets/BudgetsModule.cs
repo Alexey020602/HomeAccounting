@@ -1,4 +1,8 @@
+using HomeAccounting.Budgets.Configuration;
+using HomeAccounting.Budgets.Services;
+using HomeAccounting.Budgets.Workers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using HomeAccounting.Budgets.Data.Database;
 
 namespace HomeAccounting.Budgets;
@@ -10,6 +14,16 @@ internal static class BudgetsModule
         builder.AddDatabase(databaseServiceName);
 
         builder.Services.AddScoped<IAuthorizationHandler, BudgetRequirementsAuthorizationHandler>();
+
+        builder.Services
+            .AddOptions<ReceiptProcessingOptions>()
+            .BindConfiguration(ReceiptProcessingOptions.SectionName)
+            .ValidateOnStart();
+
+        builder.Services.AddSingleton<IValidateOptions<ReceiptProcessingOptions>, ReceiptProcessingOptionsValidator>();
+
+        builder.Services.AddScoped<IReceiptProcessingOrchestrator, ReceiptProcessingOrchestrator>();
+        builder.Services.AddHostedService<ReceiptRetryWorker>();
     }
     
 }

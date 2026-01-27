@@ -111,20 +111,19 @@ sealed partial class ReceiptSpending : Spending
     public void MarkProcessingRetryableError(
         DateTime attemptedAt,
         DateTime nextRetryAt,
-        string errorMessage,
-        int errorCode)
+        string errorMessage)
     {
         Status = ReceiptProcessingStatus.Processing;
         NextRetryAt = nextRetryAt;
-        RegisterFailedAttempt(attemptedAt, errorMessage, errorCode);
+        RegisterFailedAttempt(attemptedAt, errorMessage);
     }
 
-    public void MarkProcessingFailed(DateTime completedAt, string errorMessage, int errorCode)
+    public void MarkProcessingFailed(DateTime completedAt, string errorMessage)
     {
         Status = ReceiptProcessingStatus.Failed;
         CompletedAt = completedAt;
         NextRetryAt = null;
-        RegisterFailedAttempt(completedAt, errorMessage, errorCode);
+        RegisterFailedAttempt(completedAt, errorMessage);
     }
 
     public bool CanRetry(DateTime now, int maxRetries)
@@ -157,10 +156,10 @@ sealed partial class ReceiptSpending : Spending
     }
     private Product GetProduct(ProductId productId) => products.FirstOrDefault(p => p.Id == productId) ?? throw new DomainException("Product not found");
 
-    private void RegisterFailedAttempt(DateTime attemptedAt, string errorMessage, int errorCode)
+    private void RegisterFailedAttempt(DateTime attemptedAt, string errorMessage)
     {
         LastAttemptAt = attemptedAt;
         LastErrorMessage = errorMessage;
-        attempts.Add(ReceiptProcessingAttempt.Failure(attemptedAt, errorMessage, errorCode));
+        attempts.Add(ReceiptProcessingAttempt.Failure(attemptedAt, errorMessage));
     }
 }

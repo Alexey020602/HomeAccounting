@@ -14,24 +14,29 @@ internal sealed class ReceiptProcessService(ICheckService checkService) : IRecei
         switch (response)
         {
             case SuccessfulReceiptResponseResponse succesfulResponse:
-                return new GetReceiptDataResponse(succesfulResponse.Data.Json.Items
-                    .Select(item => new ReceiptProduct(item.Name, item.Quantity, item.Price, item.Sum))
-                    .ToList());
-            case IncorrectReceiptResponseError incorrectReceiptResponseError:
-                throw new ReceiptProcessException(incorrectReceiptResponseError.Data);
-            case ReceiptResponseDataErrorDataNotReceivedYetError dataErrorDataNotReceivedYetError:
-                throw new ReceiptProcessException(dataErrorDataNotReceivedYetError.Data);
-            case NumberOfRequestsExceededError numberOfRequestsExceededError: 
-                throw new ReceiptProcessException(numberOfRequestsExceededError.Data);
-            case WaitingBeforeRepeatRequestError beforeRepeatRequestError:
-                throw new ReceiptProcessException(beforeRepeatRequestError.Data);
-            case OtherReceiptResponseError otherReceiptResponseError:
-                throw new ReceiptProcessException(otherReceiptResponseError.Data);
-            default: 
-                throw new ReceiptProcessException("Unknown response");
+                return new GetReceiptDataResponse(
+                    succesfulResponse.Data.Json.User,
+                    succesfulResponse.Data.Json.Items
+                        .Select(item => new ReceiptProduct(item.Name, item.Quantity, item.Price, item.Sum))
+                        .ToList());
+
+            case IncorrectReceiptResponseError incorrect:
+                throw new IncorrectReceiptProcessException(incorrect.Data);
+
+            case ReceiptResponseDataErrorDataNotReceivedYetError notReceived:
+                throw new DataNotReceivedYetProcessException(notReceived.Data);
+
+            case NumberOfRequestsExceededError exceeded:
+                throw new NumberOfRequestsExceededProcessException(exceeded.Data);
+
+            case WaitingBeforeRepeatRequestError waiting:
+                throw new WaitingBeforeRepeatRequestProcessException(waiting.Data);
+
+            case OtherReceiptResponseError other:
+                throw new OtherReceiptProcessException(other.Data);
+
+            default:
+                throw new UnknownReceiptProcessException("Unknown response");
         }
     }
 }
-
-public sealed class ReceiptProcessException(string? message = null, Exception? innerException = null)
-    : Exception(message, innerException);

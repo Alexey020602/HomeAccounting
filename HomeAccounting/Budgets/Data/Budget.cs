@@ -41,7 +41,7 @@ internal sealed partial class Budget: Entity<BudgetId>
         spendings.Add(new ManualSpending(sum,  purchaseDate, categoryId, addedDate, description, userId));
     }
 
-    public void AddReceiptSpending(
+    public ReceiptSpending AddReceiptSpending(
         DateTime purchaseDate,
         DateTime addedDate,
         ReceiptFiscalData fiscalData,
@@ -49,28 +49,34 @@ internal sealed partial class Budget: Entity<BudgetId>
         string purchasePlace,
         IEnumerable<ProductInput> productInputs)
     {
-        spendings.Add(new ReceiptSpending(
+        var receiptSpending = new ReceiptSpending(
             purchaseDate,
             addedDate,
             fiscalData,
             userId,
             purchasePlace,
-            productInputs));
+            productInputs);
+        
+        spendings.Add(receiptSpending);
+        return receiptSpending;
     }
 
-    public void AddReceiptSpending(
+    public ReceiptSpending AddReceiptSpending(
         DateTime purchaseDate,
         DateTime addedDate,
         ReceiptFiscalData fiscalData,
         UserId userId,
         Money declaredSum)
     {
-        spendings.Add(new ReceiptSpending(
+        var receiptSpending = new ReceiptSpending(
             purchaseDate,
             addedDate,
             fiscalData,
             userId,
-            declaredSum));
+            declaredSum);
+        
+        spendings.Add(receiptSpending);
+        return receiptSpending;
     }
 
     public void ChangeCategoryForProduct(SpendingId spendingId, ProductId productId, CategoryId categoryId)

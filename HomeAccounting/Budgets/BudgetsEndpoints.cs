@@ -1,4 +1,5 @@
 using HomeAccounting.Budgets.AddManualSpending;
+using HomeAccounting.Budgets.AddReceiptSpending;
 using HomeAccounting.Budgets.AddUsersInBudget;
 using HomeAccounting.Budgets.CreateBudget;
 using HomeAccounting.Budgets.DeleteBudget;
@@ -29,5 +30,6 @@ static class BudgetsEndpoints
         budgetsGroup.MapGetUserPermissions();
         budgetsGroup.MapGetBudgetSpendings();
         budgetsGroup.MapAddManualSpending();
+        budgetsGroup.MapAddReceiptSpending();
     }
 }

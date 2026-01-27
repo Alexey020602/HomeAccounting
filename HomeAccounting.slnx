@@ -1,0 +1,85 @@
+<Solution>
+  <Folder Name="/Aspire/">
+    <File Path="Directory.Build.props" />
+    <Project Path="AppHost/AppHost.csproj" />
+    <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Authorization/">
+    <Project Path="Authorization.Contracts/Authorization.Contracts.csproj">
+      <BuildType Solution="Release|*" Project="?" />
+      <Platform Solution="Release|*" Project="?" />
+      <Build Solution="Release|*" Project="false" />
+    </Project>
+    <Project Path="Authorization.Core/Authorization.Core.csproj" />
+    <Project Path="Authorization.DataBase/Authorization.DataBase.csproj" />
+    <Project Path="Authorization.UI/Authorization.UI.csproj" />
+    <Project Path="Authorization/Authorization.csproj" />
+  </Folder>
+  <Folder Name="/Authorization/Tests/">
+    <Project Path="Authorization.UI.Tests/Authorization.UI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Budgets/">
+    <Project Path="Budgets.Api/Budgets.Api.csproj" />
+    <Project Path="Budgets.Contracts/Budgets.Contracts.csproj" />
+    <Project Path="Budgets.Core/Budgets.Core.csproj" />
+    <Project Path="Budgets.DataBase/Budgets.DataBase.csproj" />
+    <Project Path="Budgets.UI/Budgets.UI.csproj" />
+  </Folder>
+  <Folder Name="/Fns/">
+    <Project Path="Fns.Contracts/Fns.Contracts.csproj" />
+    <Project Path="Fns/Fns.csproj" />
+  </Folder>
+  <Folder Name="/Receipts/">
+    <Project Path="Receipts.Contracts/Receipts.Contracts.csproj" />
+    <Project Path="Receipts.Core/Receipts.Core.csproj" />
+    <Project Path="Receipts.DataBase/Receipts.DataBase.csproj" />
+    <Project Path="Receipts.Tests/Receipts.Tests.csproj" />
+    <Project Path="Receipts.UI/Receipts.UI.csproj" />
+    <Project Path="Receipts/Receipts.csproj" />
+  </Folder>
+  <Folder Name="/Reports/">
+    <Project Path="Reports.Api/Reports.Api.csproj">
+      <BuildType Solution="Release|*" Project="?" />
+      <Platform Solution="Release|*" Project="?" />
+      <Build Solution="Release|*" Project="false" />
+    </Project>
+    <Project Path="Reports.Contracts/Reports.Contracts.csproj">
+      <BuildType Solution="Release|*" Project="?" />
+      <Platform Solution="Release|*" Project="?" />
+      <Build Solution="Release|*" Project="false" />
+    </Project>
+    <Project Path="Reports.Core/Reports.Core.csproj">
+      <BuildType Solution="Release|*" Project="?" />
+      <Platform Solution="Release|*" Project="?" />
+      <Build Solution="Release|*" Project="false" />
+    </Project>
+    <Project Path="Reports.UI/Reports.UI.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared.Blazor/Shared.Blazor.csproj" />
+    <Project Path="Shared.Infrastructure/Shared.Infrastructure.csproj" />
+    <Project Path="Shared.Tests/Shared.Tests.csproj" />
+    <Project Path="Shared.Utils/Shared.Utils.csproj" />
+    <Project Path="Shared.Web/Shared.Web.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path=".gitignore" />
+    <File Path="Agents.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.yaml" />
+    <File Path="nginx.conf" />
+    <File Path="proxy.conf" />
+    <File Path="Readme.md" />
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="BlazorConsolidated/BlazorConsolidated.csproj" />
+    <Project Path="Client/Client.csproj" />
+  </Folder>
+  <Project Path="Api/Api.csproj" />
+  <Project Path="ClientServerContracts/ClientServerContracts.csproj" />
+  <Project Path="ClientServerShared/ClientServerShared.csproj" />
+  <Project Path="HomeAccounting.UnitTests/HomeAccounting.UnitTests.csproj" />
+  <Project Path="HomeAccounting/HomeAccounting.csproj" />
+</Solution>

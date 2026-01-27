@@ -17,7 +17,10 @@ sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpend
                 fiscalData.Property(d => d.Fd).HasColumnName(nameof(ReceiptFiscalData.Fd)).IsRequired();
                 fiscalData.Property(d => d.Fp).HasColumnName(nameof(ReceiptFiscalData.Fp)).IsRequired();
                 fiscalData.Property(d => d.Fn).HasColumnName(nameof(ReceiptFiscalData.Fn)).IsRequired();
+
+                fiscalData.HasIndex(d => new { d.Fd, d.Fn, d.Fp }).IsUnique();
             });
+        
 
         builder.OwnsMany(r => r.Products, b =>
         {
@@ -33,6 +36,20 @@ sealed class ReceiptSpendingConfiguration: IEntityTypeConfiguration<ReceiptSpend
 
             b.Property(p => p.CategoryId)
                 .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
+            
+            b.HasIndex(p => p.CategoryId);
+        });
+
+        builder.Property(r => r.LastErrorMessage).HasMaxLength(500);
+
+        builder.OwnsMany(r => r.Attempts, b =>
+        {
+            b.HasKey(attempt => attempt.Id);
+
+            b.Property(attempt => attempt.Id)
+                .HasDefaultValueSql("gen_random_uuid()");
+
+            b.Property(attempt => attempt.ErrorMessage).HasMaxLength(500);
         });
     }
 }

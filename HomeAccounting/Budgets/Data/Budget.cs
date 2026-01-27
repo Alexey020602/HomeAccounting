@@ -58,6 +58,21 @@ internal sealed partial class Budget: Entity<BudgetId>
             productInputs));
     }
 
+    public void AddReceiptSpending(
+        DateTime purchaseDate,
+        DateTime addedDate,
+        ReceiptFiscalData fiscalData,
+        UserId userId,
+        Money declaredSum)
+    {
+        spendings.Add(new ReceiptSpending(
+            purchaseDate,
+            addedDate,
+            fiscalData,
+            userId,
+            declaredSum));
+    }
+
     public void ChangeCategoryForProduct(SpendingId spendingId, ProductId productId, CategoryId categoryId)
     {
         var spending = GetReceiptSpending(spendingId);
@@ -77,24 +92,6 @@ internal sealed partial class Budget: Entity<BudgetId>
         BeginOfPeriod = beginOfPeriod;
         Limit = limit;
     }
-    
-    
-
-    // public bool CanUserEdit(UserId userId, BudgetRole? userRole)
-    // {
-    //     if (userRole is null)
-    //         return false;
-    //     
-    //     return userRole.Permissions.Contains(BudgetPermissions.Edit);
-    // }
-    //
-    // public bool CanUserDelete(UserId userId, BudgetRole? userRole)
-    // {
-    //     if (userRole is null)
-    //         return false;
-    //     
-    //     return userRole.Permissions.Contains(BudgetPermissions.Delete);
-    // }
 
     public BudgetRoleId? GetUserRole(UserId userId)
     {

@@ -14,8 +14,14 @@ using HomeAccounting.Users.Data.Database;
 
 namespace HomeAccounting.Budgets.GetBudgetUsers;
 
+/// <summary>
+/// Endpoint for retrieving users of a budget.
+/// </summary>
 static class GetBudgetUsersEndpoint
 {
+    /// <summary>
+    /// Maps GET /budgets/{id}/users. Returns list of users in the budget; requires read permission.
+    /// </summary>
     public static void MapGetBudgetUsers(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet(
@@ -55,6 +61,10 @@ static class GetBudgetUsersEndpoint
                 
                 return Results.Ok(budgetUsers.ToList());
             })
+            .WithName("GetBudgetUsers")
+            .WithTags("Budgets")
+            .WithSummary("Get budget users")
+            .WithDescription("Returns list of users in the budget with their roles. Requires read permission.")
             .Produces((int)HttpStatusCode.OK, typeof(IReadOnlyCollection<BudgetUserDto>))
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

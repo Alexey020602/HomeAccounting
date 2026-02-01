@@ -11,8 +11,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.UpdateBudget;
 
+/// <summary>
+/// Endpoint for updating an existing budget.
+/// </summary>
 static class UpdateBudgetEndpoint
 {
+    /// <summary>
+    /// Maps PUT /budgets/{id}. Updates budget; requires edit permission.
+    /// </summary>
     public static void MapUpdateBudget(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPut(
@@ -41,6 +47,10 @@ static class UpdateBudgetEndpoint
 
                 return Results.NoContent();
             })
+            .WithName("UpdateBudget")
+            .WithTags("Budgets")
+            .WithSummary("Update budget")
+            .WithDescription("Updates budget by id. Requires edit permission on the budget.")
             .Produces((int)HttpStatusCode.NoContent)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

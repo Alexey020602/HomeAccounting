@@ -10,8 +10,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.GetBudgetSpendings;
 
-internal static class GetBudgetSpendingsEndpoint
+/// <summary>
+/// Endpoint for retrieving spendings of a budget.
+/// </summary>
+static class GetBudgetSpendingsEndpoint
 {
+    /// <summary>
+    /// Maps GET /budgets/{id}/spendings. Returns list of spendings; requires read permission.
+    /// </summary>
     public static void MapGetBudgetSpendings(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet(
@@ -43,6 +49,10 @@ internal static class GetBudgetSpendingsEndpoint
                 var response = new GetBudgetSpendingsResponse(spendings);
                 return Results.Ok(response);
             })
+            .WithName("GetBudgetSpendings")
+            .WithTags("Budgets")
+            .WithSummary("Get budget spendings")
+            .WithDescription("Returns list of spendings in the budget. Requires read permission.")
             .Produces((int)HttpStatusCode.OK, typeof(GetBudgetSpendingsResponse))
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden);

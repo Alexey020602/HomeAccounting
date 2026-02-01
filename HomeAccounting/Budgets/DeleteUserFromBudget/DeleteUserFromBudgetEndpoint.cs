@@ -10,8 +10,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.DeleteUserFromBudget;
 
+/// <summary>
+/// Endpoint for removing a user from a budget.
+/// </summary>
 static class DeleteUserFromBudgetEndpoint
 {
+    /// <summary>
+    /// Maps DELETE /budgets/{id}/users/{userId}. Removes user from budget; requires edit permission.
+    /// </summary>
     public static void MapDeleteUserFromBudget(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapDelete(
@@ -49,6 +55,10 @@ static class DeleteUserFromBudgetEndpoint
 
                 return Results.NoContent();
             })
+            .WithName("DeleteUserFromBudget")
+            .WithTags("Budgets")
+            .WithSummary("Remove user from budget")
+            .WithDescription("Removes a user from the budget. Requires edit permission.")
             .Produces((int)HttpStatusCode.NoContent)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

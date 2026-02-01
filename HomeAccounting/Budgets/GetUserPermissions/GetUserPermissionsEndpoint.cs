@@ -11,8 +11,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.GetUserPermissions;
 
+/// <summary>
+/// Endpoint for retrieving current user's permissions in a budget.
+/// </summary>
 static class GetUserPermissionsEndpoint
 {
+    /// <summary>
+    /// Maps GET /budgets/{id}/permissions. Returns current user's permissions; requires read permission.
+    /// </summary>
     public static void MapGetUserPermissions(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet(
@@ -57,6 +63,10 @@ static class GetUserPermissionsEndpoint
 
                 return Results.Ok(response);
             })
+            .WithName("GetUserPermissions")
+            .WithTags("Budgets")
+            .WithSummary("Get user permissions in budget")
+            .WithDescription("Returns the current user's permissions (edit, delete) for the budget. Requires read permission.")
             .Produces((int)HttpStatusCode.OK, typeof(UserInBudgetPermissionsDto))
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

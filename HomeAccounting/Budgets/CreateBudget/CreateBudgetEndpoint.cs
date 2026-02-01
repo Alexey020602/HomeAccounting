@@ -10,8 +10,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeAccounting.Budgets.CreateBudget;
 
+/// <summary>
+/// Endpoint for creating a new budget.
+/// </summary>
 static class CreateBudgetEndpoint
 {
+    /// <summary>
+    /// Maps POST /budgets. Creates a new budget; the current user becomes the owner.
+    /// </summary>
     public static void MapCreateBudgets(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
@@ -42,6 +48,10 @@ static class CreateBudgetEndpoint
                     return Results.Created();
                 }
             )
+            .WithName("CreateBudget")
+            .WithTags("Budgets")
+            .WithSummary("Create budget")
+            .WithDescription("Creates a new budget. The authenticated user becomes the owner.")
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.BadRequest)
             .ProducesProblem((int)HttpStatusCode.InternalServerError);

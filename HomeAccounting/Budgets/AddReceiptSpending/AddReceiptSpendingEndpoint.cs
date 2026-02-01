@@ -15,8 +15,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.AddReceiptSpending;
 
+/// <summary>
+/// Endpoint for adding receipt-based spending to a budget.
+/// </summary>
 static class AddReceiptSpendingEndpoint
 {
+    /// <summary>
+    /// Maps POST /budgets/{id}/spendings/receipt. Adds spending from receipt; requires edit permission.
+    /// </summary>
     public static void MapAddReceiptSpending(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
@@ -77,6 +83,10 @@ static class AddReceiptSpendingEndpoint
 
                     return Results.Created();
                 })
+            .WithName("AddReceiptSpending")
+            .WithTags("Budgets")
+            .WithSummary("Add receipt spending")
+            .WithDescription("Adds spending from a receipt by fiscal data. Receipt is processed asynchronously. Requires edit permission.")
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

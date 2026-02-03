@@ -39,12 +39,17 @@ static class GetBudgetSpendingsEndpoint
                 var spendingsQuery = from budget in budgetsContext.Budgets.AsNoTracking()
                     where budget.Id == budgetId
                     from spending in budget.Spendings
-                    
-                    select new SpendingDto(spending.Id.Value, spending.Description, spending.Sum.Kopecks);
-                    
-                
-                var spendings = await spendingsQuery
-                    .ToArrayAsync(cancellationToken);
+                    select spending;
+
+                var loadedSpendings = await spendingsQuery.ToArrayAsync(cancellationToken);
+
+                var spendings = loadedSpendings
+                    .Select(spending => new SpendingDto(
+                        spending.Id.Value,
+                        spending.Description,
+                        spending.Sum.Kopecks,
+                        MapToContractStatus(spending)))
+                    .ToArray();
 
                 var response = new GetBudgetSpendingsResponse(spendings);
                 return Results.Ok(response);
@@ -56,5 +61,18 @@ static class GetBudgetSpendingsEndpoint
             .Produces((int)HttpStatusCode.OK, typeof(GetBudgetSpendingsResponse))
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden);
+    }
+
+    private static Status MapToContractStatus(Spending spending)
+    {
+        if (spending is ReceiptSpending receipt)
+            return receipt.Status switch
+            {
+                ReceiptProcessingStatus.Processing => Status.InProcess,
+                ReceiptProcessingStatus.Succeeded => Status.Added,
+                ReceiptProcessingStatus.Failed => Status.Error,
+                _ => Status.Added
+            };
+        return Status.Added;
     }
 }

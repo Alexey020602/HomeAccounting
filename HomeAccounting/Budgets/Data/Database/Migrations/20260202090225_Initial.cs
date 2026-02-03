@@ -88,7 +88,13 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     Fn = table.Column<string>(type: "text", nullable: true),
                     Fd = table.Column<string>(type: "text", nullable: true),
                     Fp = table.Column<string>(type: "text", nullable: true),
-                    PurchasePlace = table.Column<string>(type: "text", nullable: true)
+                    PurchasePlace = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: true),
+                    DeclaredSum = table.Column<long>(type: "bigint", nullable: true),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    NextRetryAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastAttemptAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastErrorMessage = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -127,6 +133,29 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ReceiptProcessingAttempt",
+                schema: "budgets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    AttemptedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    ReceiptSpendingId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReceiptProcessingAttempt", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReceiptProcessingAttempt_Spending_ReceiptSpendingId",
+                        column: x => x.ReceiptSpendingId,
+                        principalSchema: "budgets",
+                        principalTable: "Spending",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Budgets_Name",
                 schema: "budgets",
@@ -140,9 +169,21 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 column: "BudgetId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Product_CategoryId",
+                schema: "budgets",
+                table: "Product",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Product_ReceiptSpendingId",
                 schema: "budgets",
                 table: "Product",
+                column: "ReceiptSpendingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReceiptProcessingAttempt_ReceiptSpendingId",
+                schema: "budgets",
+                table: "ReceiptProcessingAttempt",
                 column: "ReceiptSpendingId");
 
             migrationBuilder.CreateIndex(
@@ -150,6 +191,13 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 schema: "budgets",
                 table: "Spending",
                 column: "BudgetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Spending_Fd_Fn_Fp",
+                schema: "budgets",
+                table: "Spending",
+                columns: new[] { "Fd", "Fn", "Fp" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -165,6 +213,10 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "Product",
+                schema: "budgets");
+
+            migrationBuilder.DropTable(
+                name: "ReceiptProcessingAttempt",
                 schema: "budgets");
 
             migrationBuilder.DropTable(

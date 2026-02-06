@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using ClientServerContracts.User.GetUser;
+using ClientServerContracts.Users.GetUser;
 
 namespace ClientServerShared.Users;
 

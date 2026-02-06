@@ -1,5 +1,5 @@
 using BlazorConsolidated.Users.Dto;
-using ClientServerContracts.User.Login;
+using ClientServerContracts.Users.Login;
 
 namespace BlazorConsolidated.Users.Infrastructure;
 

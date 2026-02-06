@@ -1,5 +1,5 @@
 using System.Net;
-using ClientServerContracts.User.Register;
+using ClientServerContracts.Users.Register;
 using HomeAccounting.Users.Data;
 using Microsoft.AspNetCore.Identity;
 

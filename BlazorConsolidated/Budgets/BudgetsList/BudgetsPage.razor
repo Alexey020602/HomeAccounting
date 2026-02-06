@@ -2,6 +2,7 @@
 @using BlazorConsolidated.Budgets.BudgetState
 @using BlazorConsolidated.Common.Components
 @using BlazorConsolidated.Common.Layouts
+@using ClientServerContracts.Api.Budgets
 @using ClientServerContracts.Budgets.GetBudgets
 @using ClientServerShared.Results
 @using MaybeResults
@@ -54,7 +55,7 @@
         
         await base.OnParametersSetAsync();
         var selectedBudgetId = 
-        BudgetsResult = await BudgetsApi.GetBudgets(new GetBudgetsRequest()).TryAsync();
+        BudgetsResult = await BudgetsApi.GetBudgets(new ()).TryAsync();
         if (await BudgetState is SelectedBudgetState selectedBudgetState && BudgetsResult is Some<IReadOnlyCollection<BudgetDto>> result)
         {
             SelectedBudget = result.Value.FirstOrDefault(budget => budget.Id == selectedBudgetState.BudgetId);

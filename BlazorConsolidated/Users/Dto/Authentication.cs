@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using ClientServerContracts.User.GetUser;
+using ClientServerContracts.Users.GetUser;
 using ClientServerShared.Users;
 
 namespace BlazorConsolidated.Users.Dto;

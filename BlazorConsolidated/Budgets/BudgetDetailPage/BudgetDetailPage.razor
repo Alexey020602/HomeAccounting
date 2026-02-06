@@ -1,6 +1,7 @@
 @page "/budgets/{id:guid}"
 @using BlazorConsolidated.Common.Components
 @using BlazorConsolidated.Common.RefitWithResult
+@using ClientServerContracts.Api.Budgets
 @using ClientServerContracts.Budgets.GetBudgetDetail
 @using ClientServerContracts.Budgets.UserInBudgetPermissions
 @using MaybeResults
@@ -73,7 +74,7 @@
     {
         var budgetTask = BudgetsApi.GetBudgetDetail(Id);
         var permissionsTask = BudgetsApi.GetUserPermissions(Id);
-        var budgetUsersTask = BudgetsApi.GetBudgetUsers(Id);
+        var budgetUsersTask = BudgetsApi.GetBudgetUsers(Id, new());
         budgetResult = await budgetTask.ToMaybe();
         permissions = await permissionsTask.ToMaybe() is Some<UserInBudgetPermissionsDto> some
             ? some.Value

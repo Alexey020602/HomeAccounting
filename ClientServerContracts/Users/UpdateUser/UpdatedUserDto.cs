@@ -1,3 +1,3 @@
-namespace ClientServerContracts.User.UpdateUser;
+namespace ClientServerContracts.Users.UpdateUser;
 
 public record UpdatedUserDto(string UserName, string FullName);

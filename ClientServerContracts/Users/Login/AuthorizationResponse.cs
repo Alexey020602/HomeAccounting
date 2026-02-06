@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace ClientServerContracts.User.Login;
+namespace ClientServerContracts.Users.Login;
 
 public sealed record AuthorizationResponse(
     string Scheme,

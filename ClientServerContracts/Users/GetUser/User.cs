@@ -1,4 +1,4 @@
-namespace ClientServerContracts.User.GetUser;
+namespace ClientServerContracts.Users.GetUser;
 
 public record User(Guid Id, string UserName, string FullName);
 // {

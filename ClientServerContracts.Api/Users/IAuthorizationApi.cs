@@ -1,9 +1,20 @@
-using BlazorConsolidated.Common.Attributes;
+using ClientServerContracts.Api.Attributes;
 using ClientServerContracts.Users.Login;
 using ClientServerContracts.Users.Register;
 using Refit;
 
-namespace BlazorConsolidated.Users.Infrastructure.Api;
+namespace ClientServerContracts.Api.Users;
+
+/// <summary>
+/// Query parameters for CheckLoginExist endpoint.
+/// </summary>
+public sealed class CheckLoginExistQueryParameters
+{
+    /// <summary>
+    /// Login (username) to check.
+    /// </summary>
+    public string Login { get; set; } = string.Empty;
+}
 
 /// <summary>
 /// Refit client for Authorization API endpoints.
@@ -14,7 +25,7 @@ public interface IAuthorizationApi
     /// <summary>
     /// Returns true if the login (username) is already taken. Used for registration validation.
     /// </summary>
-    /// <param name="login">Login (username) to check.</param>
+    /// <param name="query">Query parameters.</param>
     /// <returns>True if login exists, false otherwise.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -24,7 +35,7 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Get("/login/exist")]
-    Task<bool> CheckLoginExist([Query] string login);
+    Task<bool> CheckLoginExist([Query] CheckLoginExistQueryParameters query);
 
     /// <summary>
     /// Authenticates user by login and password. Returns JWT and refresh token.

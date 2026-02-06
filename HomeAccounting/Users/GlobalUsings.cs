@@ -1,1 +1,1 @@
-global using UserDto = ClientServerContracts.User.GetUser.User;
+global using UserDto = ClientServerContracts.Users.GetUser.User;

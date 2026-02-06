@@ -1,4 +1,4 @@
-using ClientServerContracts.User.Register;
+using ClientServerContracts.Users.Register;
 
 namespace BlazorConsolidated.Users.Registration;
 

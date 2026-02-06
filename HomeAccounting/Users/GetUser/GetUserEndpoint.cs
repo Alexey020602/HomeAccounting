@@ -31,7 +31,7 @@ static class GetUserEndpoint
             .WithTags("Users")
             .WithSummary("Get user by id")
             .WithDescription("Returns user by guid.")
-            .Produces((int)HttpStatusCode.OK, typeof(UserDto))
+            .Produces((int)HttpStatusCode.OK, typeof(ClientServerContracts.Users.GetUser.User))
             .ProducesProblem((int)HttpStatusCode.NotFound);
 
         endpoints.MapGet(
@@ -49,7 +49,7 @@ static class GetUserEndpoint
             .WithTags("Users")
             .WithSummary("Get user by username")
             .WithDescription("Returns user by username.")
-            .Produces((int)HttpStatusCode.OK, typeof(UserDto))
+            .Produces((int)HttpStatusCode.OK, typeof(ClientServerContracts.Users.GetUser.User))
             .ProducesProblem((int)HttpStatusCode.NotFound);
     }
 }

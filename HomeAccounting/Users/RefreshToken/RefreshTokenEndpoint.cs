@@ -1,5 +1,5 @@
 using System.Net;
-using ClientServerContracts.User.Login;
+using ClientServerContracts.Users.Login;
 using ClientServerShared.Users;
 using HomeAccounting.Users.Data;
 using HomeAccounting.Users.Login;

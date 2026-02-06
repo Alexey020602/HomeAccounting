@@ -1,5 +1,5 @@
 using System.Net;
-using ClientServerContracts.User.UpdateUser;
+using ClientServerContracts.Users.UpdateUser;
 using HomeAccounting.Users.Data;
 using Microsoft.AspNetCore.Identity;
 

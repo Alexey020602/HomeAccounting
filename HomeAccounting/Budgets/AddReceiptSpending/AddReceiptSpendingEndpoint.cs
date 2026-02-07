@@ -3,6 +3,7 @@ using System.Security.Claims;
 using ClientServerContracts.Budgets.AddReceiptSpending;
 using ClientServerShared.Model;
 using ClientServerShared.Model.Money;
+// using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Data.Database;
 using HomeAccounting.Budgets.Events;
@@ -48,8 +49,13 @@ static class AddReceiptSpendingEndpoint
                         return Results.NotFound();
                     }
 
+                    if (request.Sum < 0)
+                    {
+                        return Results.BadRequest("Sum cannot be negative");
+                    }
+
                     // Проверяем, что чека с такими фискальными данными еще нет
-                    var fiscalData = ReceiptFiscalData.Create(request.Fn, request.Fd, request.Fp);
+                    var fiscalData = ReceiptFiscalData.Create(request.Fn, request.Fd, request.Fp, Money.FromKopecks(request.Sum), request.PurchaseDate);
                     var existingReceipt = budget.Spendings
                         .OfType<ReceiptSpending>()
                         .FirstOrDefault(rs => rs.FiscalData.Fn == fiscalData.Fn &&
@@ -64,15 +70,9 @@ static class AddReceiptSpendingEndpoint
                     }
 
                     var userId = new UserId(user.GetUserId());
-                    var addedDate = DateTime.UtcNow;
-                    var declaredSum = Money.FromKopecks(request.S);
+                    var addedDate = DateTimeOffset.UtcNow;
 
-                    var receiptSpending = budget.AddReceiptSpending(
-                        request.T,
-                        addedDate,
-                        fiscalData,
-                        userId,
-                        declaredSum);
+                    var receiptSpending = budget.AddReceiptSpending(addedDate, fiscalData, userId);
 
                     await budgetsContext.SaveChangesAsync(cancellationToken);
 

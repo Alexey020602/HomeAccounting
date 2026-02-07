@@ -9,7 +9,7 @@ internal sealed class ReceiptProcessService(ICheckService checkService) : IRecei
         CancellationToken cancellationToken)
     {
         var response =
-            await checkService.GetAsyncByRaw(new CheckRawRequest(request.ReceiptFiscalData.Raw), cancellationToken);
+            await checkService.GetAsyncByRaw(new CheckRawRequest(request.ReceiptFiscalData.Raw()), cancellationToken);
 
         switch (response)
         {

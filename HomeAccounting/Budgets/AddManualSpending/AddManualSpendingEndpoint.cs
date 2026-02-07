@@ -46,7 +46,7 @@ static class AddManualSpendingEndpoint
                     }
 
                     var userId = new UserId(user.GetUserId());
-                    var addedDate = DateTime.UtcNow;
+                    var addedDate = DateTimeOffset.UtcNow;
 
                     budget.AddManualSpending(
                         Money.FromKopecks(request.Sum), 

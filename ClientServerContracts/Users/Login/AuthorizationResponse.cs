@@ -5,7 +5,7 @@ public sealed record AuthorizationResponse(
     GetUser.User User,
     string AccessToken,
     string RefreshToken,
-    DateTime ExpiresAt)
+    DateTimeOffset ExpiresAt)
 {
     public override string ToString() => $"Scheme: {Scheme}\nId: {User}\n AccessToken: {AccessToken}\n RefreshToken: {RefreshToken}";
 }

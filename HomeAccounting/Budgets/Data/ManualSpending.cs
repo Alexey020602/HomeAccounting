@@ -19,9 +19,9 @@ internal sealed partial class ManualSpending : Spending
     }
     public ManualSpending(
         Money sum, 
-        DateTime purchaseDate, 
+        DateTimeOffset purchaseDate, 
         CategoryId? categoryId,
-        DateTime addedDate, 
+        DateTimeOffset addedDate, 
         string description,
         UserId userId
         ) : base(purchaseDate, addedDate, userId)

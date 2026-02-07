@@ -31,7 +31,7 @@ static class RefreshTokenEndpoint
                         return Results.NotFound("User not found");
                     }
 
-                    if (user.RefreshToken == null || user.RefreshToken.Expires < DateTime.UtcNow)
+                    if (user.RefreshToken == null || user.RefreshToken.Expires < DateTimeOffset.UtcNow)
                     {
                         return Results.Unauthorized();
                     }

@@ -37,7 +37,7 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
     {
         using var activity = activitySource.StartActivity();
         
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
 
         logger.LogInformation("Starting processing of receipts ready for retry");
 
@@ -122,8 +122,8 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
         activity?.SetTag("receipt.fiscal_data.fd", spending.FiscalData.Fd);
         activity?.SetTag("receipt.fiscal_data.fp", spending.FiscalData.Fp);
         
-        var attemptedAt = DateTime.UtcNow;
-        var startTime = DateTime.UtcNow;
+        var attemptedAt = DateTimeOffset.UtcNow;
+        var startTime = DateTimeOffset.UtcNow;
         var retryCount = spending.Attempts.Count(a => !a.IsSuccess);
         
         activity?.SetTag("retry.count", retryCount);
@@ -135,7 +135,7 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
 
         var result = await ProcessReceiptAsync(spending, cancellationToken);
         
-        var duration = DateTime.UtcNow - startTime;
+        var duration = DateTimeOffset.UtcNow - startTime;
         activity?.SetTag("duration_ms", duration.TotalMilliseconds);
 
         if (result.IsSuccess)
@@ -263,10 +263,10 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
             or WaitingBeforeRepeatRequestProcessException;
     }
 
-    private DateTime CalculateNextRetryAt(int retryCount)
+    private DateTimeOffset CalculateNextRetryAt(int retryCount)
     {
         var delay = CalculateDelay(retryCount);
-        return DateTime.UtcNow.Add(delay);
+        return DateTimeOffset.UtcNow.Add(delay);
     }
 
     private TimeSpan CalculateDelay(int retryCount)
@@ -277,7 +277,7 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
         return delay > options.MaxDelay ? options.MaxDelay : delay;
     }
 
-    private static Expression<Func<ReceiptSpending, bool>> CanRetryFilter(int maxRetries, DateTime now) => receipt => 
+    private static Expression<Func<ReceiptSpending, bool>> CanRetryFilter(int maxRetries, DateTimeOffset now) => receipt => 
         (receipt.Status == ReceiptProcessingStatus.Processing) && 
         (receipt.Attempts.Count(a=>!a.IsSuccess) < maxRetries) &&
         (receipt.NextRetryAt == null || receipt.NextRetryAt < now);
@@ -288,7 +288,7 @@ internal sealed record ProcessingResult
     public bool IsSuccess { get; init; }
     public bool IsRetryable { get; init; }
     public string? ErrorMessage { get; init; }
-    public DateTime? NextRetryAt { get; init; }
+    public DateTimeOffset? NextRetryAt { get; init; }
     public string? PurchasePlace { get; init; }
     public IEnumerable<ProductInput>? Products { get; init; }
 
@@ -300,7 +300,7 @@ internal sealed record ProcessingResult
             Products = products
         };
 
-    public static ProcessingResult RetryableError(string errorMessage, DateTime nextRetryAt) =>
+    public static ProcessingResult RetryableError(string errorMessage, DateTimeOffset nextRetryAt) =>
         new()
         {
             IsRetryable = true,

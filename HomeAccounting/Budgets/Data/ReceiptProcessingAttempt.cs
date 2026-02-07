@@ -6,7 +6,7 @@ internal sealed class ReceiptProcessingAttempt
     {
     }
 
-    private ReceiptProcessingAttempt(DateTime attemptedAt, bool isSuccess, string? errorMessage)
+    private ReceiptProcessingAttempt(DateTimeOffset attemptedAt, bool isSuccess, string? errorMessage)
     {
         AttemptedAt = attemptedAt;
         IsSuccess = isSuccess;
@@ -14,11 +14,11 @@ internal sealed class ReceiptProcessingAttempt
     }
 
     public Guid Id { get; private set; }
-    public DateTime AttemptedAt { get; private set; }
+    public DateTimeOffset AttemptedAt { get; private set; }
     public bool IsSuccess { get; private set; }
     public string? ErrorMessage { get; private set; }
 
-    public static ReceiptProcessingAttempt Success(DateTime attemptedAt) => new(attemptedAt, true, null);
-    public static ReceiptProcessingAttempt Failure(DateTime attemptedAt, string errorMessage) =>
+    public static ReceiptProcessingAttempt Success(DateTimeOffset attemptedAt) => new(attemptedAt, true, null);
+    public static ReceiptProcessingAttempt Failure(DateTimeOffset attemptedAt, string errorMessage) =>
         new(attemptedAt, false, errorMessage);
 }

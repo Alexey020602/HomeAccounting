@@ -14,7 +14,7 @@ internal sealed partial class Budget: Entity<BudgetId>
     public int BeginOfPeriod { get; private set; }
     public Money? Limit { get; private set; }
     public UserId CreatorId { get; private set; }
-    public DateTime CreationDate { get; private set; }
+    public DateTimeOffset CreationDate { get; private set; }
     public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
     public IReadOnlyList<Spending> Spendings => spendings;
     private Budget()
@@ -22,7 +22,7 @@ internal sealed partial class Budget: Entity<BudgetId>
         Name = string.Empty;
     }
 
-    public Budget(string name, int beginOfPeriod, Money? limit, UserId userId, DateTime creationDate, IEnumerable<BudgetUser> budgetUsers)
+    public Budget(string name, int beginOfPeriod, Money? limit, UserId userId, DateTimeOffset creationDate, IEnumerable<BudgetUser> budgetUsers)
     {
         Name = name;
         BeginOfPeriod = beginOfPeriod;
@@ -36,21 +36,19 @@ internal sealed partial class Budget: Entity<BudgetId>
         }
     }
 
-    public void AddManualSpending(Money sum, string description, CategoryId? categoryId, DateTime purchaseDate, DateTime addedDate, UserId userId)
+    public void AddManualSpending(Money sum, string description, CategoryId? categoryId, DateTimeOffset purchaseDate, DateTimeOffset addedDate, UserId userId)
     {
         spendings.Add(new ManualSpending(sum,  purchaseDate, categoryId, addedDate, description, userId));
     }
 
     public ReceiptSpending AddReceiptSpending(
-        DateTime purchaseDate,
-        DateTime addedDate,
+        DateTimeOffset addedDate,
         ReceiptFiscalData fiscalData,
         UserId userId,
         string purchasePlace,
         IEnumerable<ProductInput> productInputs)
     {
         var receiptSpending = new ReceiptSpending(
-            purchaseDate,
             addedDate,
             fiscalData,
             userId,
@@ -62,18 +60,14 @@ internal sealed partial class Budget: Entity<BudgetId>
     }
 
     public ReceiptSpending AddReceiptSpending(
-        DateTime purchaseDate,
-        DateTime addedDate,
+        DateTimeOffset addedDate,
         ReceiptFiscalData fiscalData,
-        UserId userId,
-        Money declaredSum)
+        UserId userId)
     {
         var receiptSpending = new ReceiptSpending(
-            purchaseDate,
             addedDate,
             fiscalData,
-            userId,
-            declaredSum);
+            userId);
         
         spendings.Add(receiptSpending);
         return receiptSpending;

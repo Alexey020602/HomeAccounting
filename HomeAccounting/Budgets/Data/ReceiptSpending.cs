@@ -1,4 +1,3 @@
-using ClientServerShared.Model;
 using ClientServerShared.Model.Money;
 using HomeAccounting.Categories.Data;
 using HomeAccounting.Common.Model;
@@ -13,15 +12,14 @@ sealed partial class ReceiptSpending : Spending
     public IReadOnlyList<Product> Products => products;
     public string PurchasePlace { get; private set; }
     public ReceiptProcessingStatus Status { get; private set; }
-    public Money DeclaredSum { get; private set; }
     private List<ReceiptProcessingAttempt> attempts = [];
     public IReadOnlyList<ReceiptProcessingAttempt> Attempts => attempts;
-    public DateTime? CompletedAt { get; private set; }
-    public DateTime? NextRetryAt { get; private set; }
-    public DateTime? LastAttemptAt { get; private set; }
+    public DateTimeOffset? CompletedAt { get; private set; }
+    public DateTimeOffset? NextRetryAt { get; private set; }
+    public DateTimeOffset? LastAttemptAt { get; private set; }
     public string? LastErrorMessage { get; private set; }
 
-    public override Money Sum => Products.Count > 0 ? Products.Sum(p => p.Sum) : DeclaredSum;
+    public override Money Sum => Products.Count > 0 ? Products.Sum(p => p.Sum) : FiscalData.Sum;
     public override string Description => Status switch
     {
         ReceiptProcessingStatus.Processing => "Чек обрабатывается",
@@ -35,18 +33,16 @@ sealed partial class ReceiptSpending : Spending
     {
         FiscalData = ReceiptFiscalData.Empty();
         PurchasePlace = string.Empty;
-        DeclaredSum = Money.Zero;
         Status = ReceiptProcessingStatus.Processing;
     }
 
     public ReceiptSpending(
-        DateTime purchaseDate, 
-        DateTime addedDate,
+        DateTimeOffset addedDate,
         ReceiptFiscalData fiscalData,
         UserId userId,
         string purchasePlace,
         IEnumerable<ProductInput> productInputs
-    ) : base(purchaseDate, addedDate, userId)
+    ) : base(fiscalData.PurchaseDate, addedDate, userId)
     {
         PurchasePlace = purchasePlace;
         FiscalData = fiscalData;
@@ -60,20 +56,16 @@ sealed partial class ReceiptSpending : Spending
             products.AddRange(productsToAdd);
         }
 
-        DeclaredSum = Products.Sum(p => p.Sum);
         CompletedAt = addedDate;
     }
 
     public ReceiptSpending(
-        DateTime purchaseDate,
-        DateTime addedDate,
+        DateTimeOffset addedDate,
         ReceiptFiscalData fiscalData,
-        UserId userId,
-        Money declaredSum
-    ) : base(purchaseDate, addedDate, userId)
+        UserId userId
+    ) : base(fiscalData.PurchaseDate, addedDate, userId)
     {
         FiscalData = fiscalData;
-        DeclaredSum = declaredSum;
         Status = ReceiptProcessingStatus.Processing;
         PurchasePlace = string.Empty;
     }
@@ -92,7 +84,7 @@ sealed partial class ReceiptSpending : Spending
     }
 
     public void MarkProcessingSucceeded(
-        DateTime completedAt,
+        DateTimeOffset completedAt,
         string purchasePlace,
         IEnumerable<ProductInput> productInputs
     )
@@ -104,13 +96,12 @@ sealed partial class ReceiptSpending : Spending
         LastErrorMessage = null;
         PurchasePlace = purchasePlace;
         ReplaceProducts(productInputs);
-        DeclaredSum = Products.Sum(p => p.Sum);
         attempts.Add(ReceiptProcessingAttempt.Success(completedAt));
     }
 
     public void MarkProcessingRetryableError(
-        DateTime attemptedAt,
-        DateTime nextRetryAt,
+        DateTimeOffset attemptedAt,
+        DateTimeOffset nextRetryAt,
         string errorMessage)
     {
         Status = ReceiptProcessingStatus.Processing;
@@ -118,7 +109,7 @@ sealed partial class ReceiptSpending : Spending
         RegisterFailedAttempt(attemptedAt, errorMessage);
     }
 
-    public void MarkProcessingFailed(DateTime completedAt, string errorMessage)
+    public void MarkProcessingFailed(DateTimeOffset completedAt, string errorMessage)
     {
         Status = ReceiptProcessingStatus.Failed;
         CompletedAt = completedAt;
@@ -126,7 +117,7 @@ sealed partial class ReceiptSpending : Spending
         RegisterFailedAttempt(completedAt, errorMessage);
     }
 
-    public bool CanRetry(DateTime now, int maxRetries)
+    public bool CanRetry(DateTimeOffset now, int maxRetries)
     {
         if (Status != ReceiptProcessingStatus.Processing)
         {
@@ -156,7 +147,7 @@ sealed partial class ReceiptSpending : Spending
     }
     private Product GetProduct(ProductId productId) => products.FirstOrDefault(p => p.Id == productId) ?? throw new DomainException("Product not found");
 
-    private void RegisterFailedAttempt(DateTime attemptedAt, string errorMessage)
+    private void RegisterFailedAttempt(DateTimeOffset attemptedAt, string errorMessage)
     {
         LastAttemptAt = attemptedAt;
         LastErrorMessage = errorMessage;

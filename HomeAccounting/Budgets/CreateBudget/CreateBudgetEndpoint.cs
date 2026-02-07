@@ -37,7 +37,7 @@ static class CreateBudgetEndpoint
                         request.BeginOfPeriod,
                         request.Limit.HasValue ? Money.FromKopecks(request.Limit.Value) : null,
                         userId,
-                        DateTime.UtcNow, 
+                        DateTimeOffset.UtcNow, 
                         [new BudgetUser(userId, ownerRole.Id)]);
                 
                 

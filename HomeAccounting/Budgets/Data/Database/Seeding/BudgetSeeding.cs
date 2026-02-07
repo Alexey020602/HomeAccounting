@@ -19,7 +19,7 @@ partial class Budget
             1, 
             null, 
             new UserId(UserConstants.DefaultUserId), 
-            DateTime.UtcNow, 
+            DateTimeOffset.UtcNow, 
             [
                 new BudgetUser(new UserId(UserConstants.DefaultUserId), BudgetRole.OwnerBudgetRoleId),
                 new BudgetUser(new UserId(UserConstants.SecondUserId), BudgetRole.AdminBudgetRoleId)
@@ -36,7 +36,7 @@ partial class Budget
             7,
             Money.FromRubles(15000.00m),
             new UserId(UserConstants.DefaultUserId),
-            DateTime.UtcNow,
+            DateTimeOffset.UtcNow,
             [
                 new BudgetUser(new UserId(UserConstants.DefaultUserId), BudgetRole.OwnerBudgetRoleId),
             ])
@@ -56,73 +56,73 @@ partial class ManualSpending
     [
         new ManualSpending(
             Money.FromRubles(3500.00m),
-            new DateTime(2024, 10, 5, 14, 30, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 5, 14, 30, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 10, 5, 15, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 5, 15, 0, 0, TimeSpan.Zero),
             "Оплата интернета",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(2800.00m),
-            new DateTime(2024, 10, 12, 10, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 12, 10, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 10, 12, 10, 15, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 12, 10, 15, 0, TimeSpan.Zero),
             "Оплата мобильной связи",
             new UserId(UserConstants.SecondUserId)
         ),
         new ManualSpending(
             Money.FromRubles(12000.00m),
-            new DateTime(2024, 10, 20, 18, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 20, 18, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 10, 20, 18, 30, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 20, 18, 30, 0, TimeSpan.Zero),
             "Поход в кино",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(4500.00m),
-            new DateTime(2024, 11, 3, 12, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 3, 12, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 11, 3, 12, 20, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 3, 12, 20, 0, TimeSpan.Zero),
             "Обед в ресторане",
             new UserId(UserConstants.SecondUserId)
         ),
         new ManualSpending(
             Money.FromRubles(8500.00m),
-            new DateTime(2024, 11, 15, 16, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 15, 16, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 11, 15, 16, 45, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 15, 16, 45, 0, TimeSpan.Zero),
             "Подарок на день рождения",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(2200.00m),
-            new DateTime(2024, 11, 25, 9, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 25, 9, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 11, 25, 9, 10, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 25, 9, 10, 0, TimeSpan.Zero),
             "Такси",
             new UserId(UserConstants.SecondUserId)
         ),
         new ManualSpending(
             Money.FromRubles(15000.00m),
-            new DateTime(2024, 12, 10, 19, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 10, 19, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 12, 10, 19, 30, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 10, 19, 30, 0, TimeSpan.Zero),
             "Новогодние подарки",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(3200.00m),
-            new DateTime(2024, 12, 20, 11, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 20, 11, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 12, 20, 11, 15, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 20, 11, 15, 0, TimeSpan.Zero),
             "Оплата подписки на стриминг",
             new UserId(UserConstants.SecondUserId)
         ),
         new ManualSpending(
             Money.FromRubles(6800.00m),
-            new DateTime(2025, 1, 5, 13, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2025, 1, 5, 13, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2025, 1, 5, 13, 20, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2025, 1, 5, 13, 20, 0, TimeSpan.Zero),
             "Обед в кафе",
             new UserId(UserConstants.DefaultUserId)
         ),
@@ -132,65 +132,65 @@ partial class ManualSpending
     [
         new ManualSpending(
             Money.FromRubles(2500.00m),
-            new DateTime(2024, 10, 8, 8, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 8, 8, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 10, 8, 8, 10, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 8, 8, 10, 0, TimeSpan.Zero),
             "Оплата проездного",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(1800.00m),
-            new DateTime(2024, 10, 15, 20, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 15, 20, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 10, 15, 20, 15, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 10, 15, 20, 15, 0, TimeSpan.Zero),
             "Кофе и завтрак",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(4200.00m),
-            new DateTime(2024, 11, 1, 17, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 1, 17, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 11, 1, 17, 30, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 1, 17, 30, 0, TimeSpan.Zero),
             "Книги",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(9500.00m),
-            new DateTime(2024, 11, 10, 15, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 10, 15, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 11, 10, 15, 45, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 10, 15, 45, 0, TimeSpan.Zero),
             "Одежда",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(1200.00m),
-            new DateTime(2024, 11, 22, 12, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 22, 12, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 11, 22, 12, 10, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 11, 22, 12, 10, 0, TimeSpan.Zero),
             "Обед",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(3500.00m),
-            new DateTime(2024, 12, 5, 10, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 5, 10, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 12, 5, 10, 20, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 5, 10, 20, 0, TimeSpan.Zero),
             "Фитнес-абонемент",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(2800.00m),
-            new DateTime(2024, 12, 18, 14, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 18, 14, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2024, 12, 18, 14, 15, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2024, 12, 18, 14, 15, 0, TimeSpan.Zero),
             "Косметика",
             new UserId(UserConstants.DefaultUserId)
         ),
         new ManualSpending(
             Money.FromRubles(1500.00m),
-            new DateTime(2025, 1, 3, 9, 0, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2025, 1, 3, 9, 0, 0, TimeSpan.Zero),
             null,
-            new DateTime(2025, 1, 3, 9, 10, 0, DateTimeKind.Utc),
+            new DateTimeOffset(2025, 1, 3, 9, 10, 0, TimeSpan.Zero),
             "Завтрак",
             new UserId(UserConstants.DefaultUserId)
         ),
@@ -202,9 +202,8 @@ partial class ReceiptSpending
     public static IEnumerable<ReceiptSpending> GetDefaultReceiptSpendingsForFirstBudget() =>
     [
         new ReceiptSpending(
-            new DateTime(2024, 10, 7, 18, 30, 0, DateTimeKind.Utc),
-            new DateTime(2024, 10, 7, 19, 0, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256789", "12345", "6789012345"),
+            new DateTimeOffset(2024, 10, 7, 19, 0, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256789", "12345", "6789012345", Money.FromRubles(648.00m), new DateTimeOffset(2024, 10, 7, 18, 30, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Пятерочка",
             [
@@ -216,9 +215,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 10, 14, 19, 15, 0, DateTimeKind.Utc),
-            new DateTime(2024, 10, 14, 19, 45, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256790", "12346", "6789012346"),
+            new DateTimeOffset(2024, 10, 14, 19, 45, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256790", "12346", "6789012346", Money.FromRubles(758.00m), new DateTimeOffset(2024, 10, 14, 19, 15, 0, TimeSpan.Zero)),
             new UserId(UserConstants.SecondUserId),
             "Магнит",
             [
@@ -230,9 +228,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 10, 21, 17, 45, 0, DateTimeKind.Utc),
-            new DateTime(2024, 10, 21, 18, 15, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256791", "12347", "6789012347"),
+            new DateTimeOffset(2024, 10, 21, 18, 15, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256791", "12347", "6789012347", Money.FromRubles(1007.00m), new DateTimeOffset(2024, 10, 21, 17, 45, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Перекресток",
             [
@@ -244,9 +241,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 11, 5, 16, 20, 0, DateTimeKind.Utc),
-            new DateTime(2024, 11, 5, 16, 50, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256792", "12348", "6789012348"),
+            new DateTimeOffset(2024, 11, 5, 16, 50, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256792", "12348", "6789012348", Money.FromRubles(1370.00m), new DateTimeOffset(2024, 11, 5, 16, 20, 0, TimeSpan.Zero)),
             new UserId(UserConstants.SecondUserId),
             "Лента",
             [
@@ -258,9 +254,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 11, 18, 20, 0, 0, DateTimeKind.Utc),
-            new DateTime(2024, 11, 18, 20, 30, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256793", "12349", "6789012349"),
+            new DateTimeOffset(2024, 11, 18, 20, 30, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256793", "12349", "6789012349", Money.FromRubles(800.00m), new DateTimeOffset(2024, 11, 18, 20, 0, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Пятерочка",
             [
@@ -272,9 +267,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 12, 8, 15, 30, 0, DateTimeKind.Utc),
-            new DateTime(2024, 12, 8, 16, 0, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256794", "12350", "6789012350"),
+            new DateTimeOffset(2024, 12, 8, 16, 0, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256794", "12350", "6789012350", Money.FromRubles(1780.00m), new DateTimeOffset(2024, 12, 8, 15, 30, 0, TimeSpan.Zero)),
             new UserId(UserConstants.SecondUserId),
             "Семишагов",
             [
@@ -286,9 +280,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 12, 22, 18, 0, 0, DateTimeKind.Utc),
-            new DateTime(2024, 12, 22, 18, 30, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256795", "12351", "6789012351"),
+            new DateTimeOffset(2024, 12, 22, 18, 30, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256795", "12351", "6789012351", Money.FromRubles(1195.00m), new DateTimeOffset(2024, 12, 22, 18, 0, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Ашан",
             [
@@ -300,9 +293,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2025, 1, 8, 17, 15, 0, DateTimeKind.Utc),
-            new DateTime(2025, 1, 8, 17, 45, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256796", "12352", "6789012352"),
+            new DateTimeOffset(2025, 1, 8, 17, 45, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256796", "12352", "6789012352", Money.FromRubles(755.00m), new DateTimeOffset(2025, 1, 8, 17, 15, 0, TimeSpan.Zero)),
             new UserId(UserConstants.SecondUserId),
             "Пятерочка",
             [
@@ -318,9 +310,8 @@ partial class ReceiptSpending
     public static IEnumerable<ReceiptSpending> GetDefaultReceiptSpendingsForSecondBudget() =>
     [
         new ReceiptSpending(
-            new DateTime(2024, 10, 10, 19, 0, 0, DateTimeKind.Utc),
-            new DateTime(2024, 10, 10, 19, 30, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256800", "12400", "6789012400"),
+            new DateTimeOffset(2024, 10, 10, 19, 30, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256800", "12400", "6789012400", Money.FromRubles(418.00m), new DateTimeOffset(2024, 10, 10, 19, 0, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Пятерочка",
             [
@@ -331,9 +322,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 10, 18, 18, 30, 0, DateTimeKind.Utc),
-            new DateTime(2024, 10, 18, 19, 0, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256801", "12401", "6789012401"),
+            new DateTimeOffset(2024, 10, 18, 19, 0, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256801", "12401", "6789012401", Money.FromRubles(431.00m), new DateTimeOffset(2024, 10, 18, 18, 30, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Магнит",
             [
@@ -344,9 +334,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 11, 5, 17, 45, 0, DateTimeKind.Utc),
-            new DateTime(2024, 11, 5, 18, 15, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256802", "12402", "6789012402"),
+            new DateTimeOffset(2024, 11, 5, 18, 15, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256802", "12402", "6789012402", Money.FromRubles(1340.00m), new DateTimeOffset(2024, 11, 5, 17, 45, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Перекресток",
             [
@@ -357,9 +346,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 11, 15, 16, 0, 0, DateTimeKind.Utc),
-            new DateTime(2024, 11, 15, 16, 30, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256803", "12403", "6789012403"),
+            new DateTimeOffset(2024, 11, 15, 16, 30, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256803", "12403", "6789012403", Money.FromRubles(710.00m), new DateTimeOffset(2024, 11, 15, 16, 0, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Пятерочка",
             [
@@ -370,9 +358,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 12, 3, 19, 30, 0, DateTimeKind.Utc),
-            new DateTime(2024, 12, 3, 20, 0, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256804", "12404", "6789012404"),
+            new DateTimeOffset(2024, 12, 3, 20, 0, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256804", "12404", "6789012404", Money.FromRubles(721.00m), new DateTimeOffset(2024, 12, 3, 19, 30, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Лента",
             [
@@ -383,9 +370,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2024, 12, 20, 18, 0, 0, DateTimeKind.Utc),
-            new DateTime(2024, 12, 20, 18, 30, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256805", "12405", "6789012405"),
+            new DateTimeOffset(2024, 12, 20, 18, 30, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256805", "12405", "6789012405", Money.FromRubles(1170.00m), new DateTimeOffset(2024, 12, 20, 18, 0, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Семишагов",
             [
@@ -396,9 +382,8 @@ partial class ReceiptSpending
             ]
         ),
         new ReceiptSpending(
-            new DateTime(2025, 1, 5, 17, 0, 0, DateTimeKind.Utc),
-            new DateTime(2025, 1, 5, 17, 30, 0, DateTimeKind.Utc),
-            ReceiptFiscalData.Create("9288000100256806", "12406", "6789012406"),
+            new DateTimeOffset(2025, 1, 5, 17, 30, 0, TimeSpan.Zero),
+            ReceiptFiscalData.Create("9288000100256806", "12406", "6789012406", Money.FromRubles(465.00m), new DateTimeOffset(2025, 1, 5, 17, 0, 0, TimeSpan.Zero)),
             new UserId(UserConstants.DefaultUserId),
             "Пятерочка",
             [

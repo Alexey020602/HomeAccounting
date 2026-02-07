@@ -26,36 +26,35 @@ internal sealed class ReceiptProcessingHandler : INotificationHandler<ReceiptCre
     {
         using var activity = activitySource.StartActivity("HandleReceiptCreated");
         activity?.SetTag("event.type", "ReceiptCreated");
-        activity?.SetTag("receipt.id", notification.ReceiptSpendingId.Value.ToString());
+        activity?.SetTag("receipt.id", notification.ReceiptId.Value.ToString());
         activity?.SetTag("event.id", notification.Id.ToString());
         activity?.SetTag("event.occurred_at", notification.OccurredDateTime.ToString("O"));
-        
-        
+
         logger.LogInformation(
             "Processing receipt creation event {EventId} for receipt {ReceiptId}",
             notification.Id,
-            notification.ReceiptSpendingId);
+            notification.ReceiptId);
 
         try
         {
-            await orchestrator.ProcessSpendingsByIds([notification.ReceiptSpendingId], cancellationToken);
-            
+            await orchestrator.ProcessReceiptsByIds([notification.ReceiptId], cancellationToken);
+
             activity?.SetStatus(ActivityStatusCode.Ok);
             logger.LogInformation(
                 "Successfully processed receipt creation event {EventId} for receipt {ReceiptId}",
                 notification.Id,
-                notification.ReceiptSpendingId);
+                notification.ReceiptId);
         }
         catch (Exception ex)
         {
             activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
             activity?.AddException(ex);
-            
+
             logger.LogError(
                 ex,
                 "Error processing receipt creation event {EventId} for receipt {ReceiptId}: {ExceptionType} - {ErrorMessage}",
                 notification.Id,
-                notification.ReceiptSpendingId,
+                notification.ReceiptId,
                 ex.GetType().Name,
                 ex.Message);
         }

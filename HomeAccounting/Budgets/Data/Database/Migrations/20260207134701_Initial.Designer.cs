@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeAccounting.Budgets.Data.Database.Migrations
 {
     [DbContext(typeof(BudgetsContext))]
-    [Migration("20260202090225_Initial")]
+    [Migration("20260207134701_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     b.Property<int>("BeginOfPeriod")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreationDate")
+                    b.Property<DateTimeOffset>("CreationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatorId")
@@ -99,45 +99,19 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     b.ToTable("BudgetUser", "budgets");
                 });
 
-            modelBuilder.Entity("HomeAccounting.Budgets.Data.Spending", b =>
+            modelBuilder.Entity("HomeAccounting.Budgets.Data.Operation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<DateTime>("AddedDate")
+                    b.Property<DateTimeOffset>("AddedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("BudgetId")
                         .HasColumnType("uuid")
                         .HasColumnOrder(0);
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
-
-                    b.Property<DateTime>("PurchaseDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BudgetId");
-
-                    b.ToTable("Spending", "budgets");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Spending");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("HomeAccounting.Budgets.Data.ManualSpending", b =>
-                {
-                    b.HasBaseType("HomeAccounting.Budgets.Data.Spending");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("integer");
@@ -146,31 +120,41 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset>("PurchaseDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<long>("Sum")
                         .HasColumnType("bigint");
 
-                    b.HasDiscriminator().HasValue("ManualSpending");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BudgetId");
+
+                    b.ToTable("Operation", "budgets");
                 });
 
-            modelBuilder.Entity("HomeAccounting.Budgets.Data.ReceiptSpending", b =>
+            modelBuilder.Entity("HomeAccounting.Budgets.Data.Receipt", b =>
                 {
-                    b.HasBaseType("HomeAccounting.Budgets.Data.Spending");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<DateTime?>("CompletedAt")
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("DeclaredSum")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LastAttemptAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastErrorMessage")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
-
-                    b.Property<DateTime?>("NextRetryAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PurchasePlace")
                         .IsRequired()
@@ -179,7 +163,45 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.HasDiscriminator().HasValue("ReceiptSpending");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Receipts", "budgets");
+                });
+
+            modelBuilder.Entity("HomeAccounting.Budgets.Data.ReceiptProcessingOutboxEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastErrorMessage")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset?>("NextRetryAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiptId")
+                        .IsUnique();
+
+                    b.HasIndex("Status", "NextRetryAt");
+
+                    b.ToTable("ReceiptProcessingOutboxEntry", "budgets");
                 });
 
             modelBuilder.Entity("HomeAccounting.Budgets.Data.BudgetUser", b =>
@@ -191,16 +213,16 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HomeAccounting.Budgets.Data.Spending", b =>
+            modelBuilder.Entity("HomeAccounting.Budgets.Data.Operation", b =>
                 {
                     b.HasOne("HomeAccounting.Budgets.Data.Budget", null)
-                        .WithMany("Spendings")
+                        .WithMany("Operations")
                         .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HomeAccounting.Budgets.Data.ReceiptSpending", b =>
+            modelBuilder.Entity("HomeAccounting.Budgets.Data.Receipt", b =>
                 {
                     b.OwnsMany("HomeAccounting.Budgets.Data.Product", "Products", b1 =>
                         {
@@ -223,7 +245,7 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                             b1.Property<double>("Quantity")
                                 .HasColumnType("double precision");
 
-                            b1.Property<Guid>("ReceiptSpendingId")
+                            b1.Property<Guid>("ReceiptId")
                                 .HasColumnType("uuid");
 
                             b1.Property<long>("Sum")
@@ -233,47 +255,17 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
 
                             b1.HasIndex("CategoryId");
 
-                            b1.HasIndex("ReceiptSpendingId");
+                            b1.HasIndex("ReceiptId");
 
                             b1.ToTable("Product", "budgets");
 
                             b1.WithOwner()
-                                .HasForeignKey("ReceiptSpendingId");
-                        });
-
-                    b.OwnsMany("HomeAccounting.Budgets.Data.ReceiptProcessingAttempt", "Attempts", b1 =>
-                        {
-                            b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid")
-                                .HasDefaultValueSql("gen_random_uuid()");
-
-                            b1.Property<DateTime>("AttemptedAt")
-                                .HasColumnType("timestamp with time zone");
-
-                            b1.Property<string>("ErrorMessage")
-                                .HasMaxLength(500)
-                                .HasColumnType("character varying(500)");
-
-                            b1.Property<bool>("IsSuccess")
-                                .HasColumnType("boolean");
-
-                            b1.Property<Guid>("ReceiptSpendingId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("ReceiptSpendingId");
-
-                            b1.ToTable("ReceiptProcessingAttempt", "budgets");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ReceiptSpendingId");
+                                .HasForeignKey("ReceiptId");
                         });
 
                     b.OwnsOne("HomeAccounting.Common.Model.ReceiptFiscalData", "FiscalData", b1 =>
                         {
-                            b1.Property<Guid>("ReceiptSpendingId")
+                            b1.Property<Guid>("ReceiptId")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid");
 
@@ -292,18 +284,15 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                                 .HasColumnType("text")
                                 .HasColumnName("Fp");
 
-                            b1.HasKey("ReceiptSpendingId");
+                            b1.HasKey("ReceiptId");
 
-                            b1.HasIndex("Fd", "Fn", "Fp")
-                                .IsUnique();
+                            b1.HasIndex("Fd", "Fn", "Fp");
 
-                            b1.ToTable("Spending", "budgets");
+                            b1.ToTable("Receipts", "budgets");
 
                             b1.WithOwner()
-                                .HasForeignKey("ReceiptSpendingId");
+                                .HasForeignKey("ReceiptId");
                         });
-
-                    b.Navigation("Attempts");
 
                     b.Navigation("FiscalData")
                         .IsRequired();
@@ -315,7 +304,7 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 {
                     b.Navigation("BudgetUsers");
 
-                    b.Navigation("Spendings");
+                    b.Navigation("Operations");
                 });
 #pragma warning restore 612, 618
         }

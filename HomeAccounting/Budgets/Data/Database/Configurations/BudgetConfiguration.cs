@@ -22,15 +22,15 @@ sealed class BudgetConfiguration: IEntityTypeConfiguration<Budget>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Navigation(b => b.Spendings)
-            .HasField("spendings")
+        builder.Navigation(b => b.Operations)
+            .HasField("operations")
             ;
-            
-        builder.Navigation(b=>b.BudgetUsers)
+
+        builder.Navigation(b => b.BudgetUsers)
             .HasField("budgetUsers")
             ;
-        
-        builder.HasMany(b=>b.Spendings)
+
+        builder.HasMany(b => b.Operations)
             .WithOne()
             .HasForeignKey("BudgetId")
             .IsRequired()

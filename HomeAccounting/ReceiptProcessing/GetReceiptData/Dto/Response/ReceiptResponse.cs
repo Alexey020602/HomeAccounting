@@ -9,4 +9,4 @@ namespace HomeAccounting.ReceiptProcessing.GetReceiptData.Dto.Response;
 [JsonDerivedType(typeof(NumberOfRequestsExceededError), 3)]
 [JsonDerivedType(typeof(WaitingBeforeRepeatRequestError), 4)]
 [JsonDerivedType(typeof(OtherReceiptResponseError), 5)]
-public abstract record ReceiptResponse(int Code);
+public abstract record ReceiptResponse();

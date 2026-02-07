@@ -1,7 +1,9 @@
 using HomeAccounting.Budgets.AddManualSpending;
 using HomeAccounting.Budgets.AddReceiptSpending;
 using HomeAccounting.Budgets.AddUsersInBudget;
+using HomeAccounting.Budgets.ChangeReceiptProductCategory;
 using HomeAccounting.Budgets.CreateBudget;
+using HomeAccounting.Budgets.DeleteReceiptProductCategory;
 using HomeAccounting.Budgets.DeleteBudget;
 using HomeAccounting.Budgets.DeleteUserFromBudget;
 using HomeAccounting.Budgets.GetBudgetDetail;
@@ -31,5 +33,7 @@ static class BudgetsEndpoints
         budgetsGroup.MapGetBudgetSpendings();
         budgetsGroup.MapAddManualSpending();
         budgetsGroup.MapAddReceiptSpending();
+        budgetsGroup.MapChangeReceiptProductCategory();
+        budgetsGroup.MapDeleteReceiptProductCategory();
     }
 }

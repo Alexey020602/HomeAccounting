@@ -3,7 +3,6 @@ using System.Security.Claims;
 using ClientServerContracts.Budgets.AddReceiptSpending;
 using ClientServerShared.Model;
 using ClientServerShared.Model.Money;
-// using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Data.Database;
 using HomeAccounting.Budgets.Events;
@@ -17,17 +16,17 @@ using HomeAccounting.Budgets;
 namespace HomeAccounting.Budgets.AddReceiptSpending;
 
 /// <summary>
-/// Endpoint for adding receipt-based spending to a budget.
+/// Endpoint for adding receipt to a budget.
 /// </summary>
 static class AddReceiptSpendingEndpoint
 {
     /// <summary>
-    /// Maps POST /budgets/{id}/spendings/receipt. Adds spending from receipt; requires edit permission.
+    /// Maps POST /budgets/{id}/receipts. Adds receipt; requires edit permission.
     /// </summary>
     public static void MapAddReceiptSpending(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
-                "{id:guid}/spendings/receipt",
+                "{id:guid}/receipts",
                 async (Guid id, ClaimsPrincipal user, AddReceiptSpendingRequest request, BudgetsContext budgetsContext,
                     IAuthorizationService authorizationHandler, IEventBus eventBus, CancellationToken cancellationToken) =>
                 {
@@ -40,11 +39,7 @@ static class AddReceiptSpendingEndpoint
                             detail: "User does not have permission to edit this budget");
                     }
 
-                    var budget = await budgetsContext.Budgets
-                        .Include(b => b.Spendings)
-                        .FirstOrDefaultAsync(b => b.Id == budgetId, cancellationToken);
-
-                    if (budget is null)
+                    if (!await budgetsContext.Budgets.AnyAsync(b => b.Id == budgetId, cancellationToken))
                     {
                         return Results.NotFound();
                     }
@@ -54,15 +49,15 @@ static class AddReceiptSpendingEndpoint
                         return Results.BadRequest("Sum cannot be negative");
                     }
 
-                    // Проверяем, что чека с такими фискальными данными еще нет
                     var fiscalData = ReceiptFiscalData.Create(request.Fn, request.Fd, request.Fp, Money.FromKopecks(request.Sum), request.PurchaseDate);
-                    var existingReceipt = budget.Spendings
-                        .OfType<ReceiptSpending>()
-                        .FirstOrDefault(rs => rs.FiscalData.Fn == fiscalData.Fn &&
-                                               rs.FiscalData.Fd == fiscalData.Fd &&
-                                               rs.FiscalData.Fp == fiscalData.Fp);
+                    var existingReceipt = await budgetsContext.Receipts
+                        .AnyAsync(r => r.BudgetId == budgetId &&
+                                       r.FiscalData.Fn == fiscalData.Fn &&
+                                       r.FiscalData.Fd == fiscalData.Fd &&
+                                       r.FiscalData.Fp == fiscalData.Fp,
+                            cancellationToken);
 
-                    if (existingReceipt is not null)
+                    if (existingReceipt)
                     {
                         return Results.Problem(
                             statusCode: (int)HttpStatusCode.Conflict,
@@ -71,22 +66,26 @@ static class AddReceiptSpendingEndpoint
 
                     var userId = new UserId(user.GetUserId());
                     var addedDate = DateTimeOffset.UtcNow;
+                    var receiptId = new ReceiptId(Guid.NewGuid());
 
-                    var receiptSpending = budget.AddReceiptSpending(addedDate, fiscalData, userId);
+                    var receipt = new Receipt(receiptId, budgetId, addedDate, fiscalData, userId);
+                    budgetsContext.Receipts.Add(receipt);
+
+                    var outboxEntry = ReceiptProcessingOutboxEntry.Create(receipt.Id);
+                    budgetsContext.ReceiptProcessingOutbox.Add(outboxEntry);
 
                     await budgetsContext.SaveChangesAsync(cancellationToken);
 
-                    // Публикуем событие для асинхронной обработки в фоне
                     await eventBus.PublishAsync(
-                        new ReceiptCreated(receiptSpending.Id),
+                        new ReceiptCreated(receipt.Id),
                         cancellationToken);
 
                     return Results.Created();
                 })
             .WithName("AddReceiptSpending")
             .WithTags("Budgets")
-            .WithSummary("Add receipt spending")
-            .WithDescription("Adds spending from a receipt by fiscal data. Receipt is processed asynchronously. Requires edit permission.")
+            .WithSummary("Add receipt")
+            .WithDescription("Adds a receipt by fiscal data. Receipt is processed asynchronously. Requires edit permission.")
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

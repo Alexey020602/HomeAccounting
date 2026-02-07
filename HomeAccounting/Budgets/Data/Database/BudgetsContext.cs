@@ -11,6 +11,8 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
 
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetRole> BudgetRoles { get; set; }
+    public DbSet<Receipt> Receipts { get; set; }
+    public DbSet<ReceiptProcessingOutboxEntry> ReceiptProcessingOutbox { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,11 +20,9 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
 
         modelBuilder.HasDefaultSchema(ShemaName);
 
-        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(BudgetsContext).Assembly);
-
-        modelBuilder.ApplyConfiguration(new SpendingConfiguration());
-        modelBuilder.ApplyConfiguration(new ReceiptSpendingConfiguration());
-        modelBuilder.ApplyConfiguration(new ManualSpendingConfiguration());
+        modelBuilder.ApplyConfiguration(new OperationConfiguration());
+        modelBuilder.ApplyConfiguration(new ReceiptConfiguration());
+        modelBuilder.ApplyConfiguration(new ReceiptProcessingOutboxEntryConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetRoleConfiguration());
         modelBuilder.ApplyConfiguration(new BudgetUserConfiguration());

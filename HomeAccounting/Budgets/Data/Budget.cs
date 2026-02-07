@@ -6,17 +6,18 @@ using HomeAccounting.Users.Data;
 
 namespace HomeAccounting.Budgets.Data;
 
-internal sealed partial class Budget: Entity<BudgetId>
+internal sealed partial class Budget : Entity<BudgetId>
 {
     private List<BudgetUser> budgetUsers = [];
-    private List<Spending> spendings = [];
+    private List<Operation> operations = [];
     public string Name { get; private set; }
     public int BeginOfPeriod { get; private set; }
     public Money? Limit { get; private set; }
     public UserId CreatorId { get; private set; }
     public DateTimeOffset CreationDate { get; private set; }
     public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
-    public IReadOnlyList<Spending> Spendings => spendings;
+    public IReadOnlyList<Operation> Operations => operations;
+
     private Budget()
     {
         Name = string.Empty;
@@ -36,54 +37,9 @@ internal sealed partial class Budget: Entity<BudgetId>
         }
     }
 
-    public void AddManualSpending(Money sum, string description, CategoryId? categoryId, DateTimeOffset purchaseDate, DateTimeOffset addedDate, UserId userId)
+    public void AddOperation(Money sum, string description, CategoryId? categoryId, DateTimeOffset purchaseDate, DateTimeOffset addedDate, UserId userId)
     {
-        spendings.Add(new ManualSpending(sum,  purchaseDate, categoryId, addedDate, description, userId));
-    }
-
-    public ReceiptSpending AddReceiptSpending(
-        DateTimeOffset addedDate,
-        ReceiptFiscalData fiscalData,
-        UserId userId,
-        string purchasePlace,
-        IEnumerable<ProductInput> productInputs)
-    {
-        var receiptSpending = new ReceiptSpending(
-            addedDate,
-            fiscalData,
-            userId,
-            purchasePlace,
-            productInputs);
-        
-        spendings.Add(receiptSpending);
-        return receiptSpending;
-    }
-
-    public ReceiptSpending AddReceiptSpending(
-        DateTimeOffset addedDate,
-        ReceiptFiscalData fiscalData,
-        UserId userId)
-    {
-        var receiptSpending = new ReceiptSpending(
-            addedDate,
-            fiscalData,
-            userId);
-        
-        spendings.Add(receiptSpending);
-        return receiptSpending;
-    }
-
-    public void ChangeCategoryForProduct(SpendingId spendingId, ProductId productId, CategoryId categoryId)
-    {
-        var spending = GetReceiptSpending(spendingId);
-        
-        spending.ChangeCategoryForProduct(productId, categoryId);
-    }
-
-    public void DeleteCategoryForProduct(SpendingId spendingId, ProductId productId)
-    {
-        var spending = GetReceiptSpending(spendingId);
-        spending.DeleteCategoryForProduct(productId);
+        operations.Add(new Operation(sum, purchaseDate, categoryId, addedDate, description, userId));
     }
 
     public void Update(string name, int beginOfPeriod, Money? limit)
@@ -114,9 +70,6 @@ internal sealed partial class Budget: Entity<BudgetId>
     /// Нельзя удалить самого себя
     /// Нельзя админу удалить другого админа
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="currentUserId"></param>
-    /// <exception cref="InvalidOperationException"></exception>
     public void RemoveUser(UserId userId, UserId currentUserId)
     {
         if (userId == currentUserId)
@@ -139,33 +92,11 @@ internal sealed partial class Budget: Entity<BudgetId>
             throw new DomainException("Current user is not in this budget");
         }
 
-        if (currentUser.IsAdmin &&user.IsAdmin)
+        if (currentUser.IsAdmin && user.IsAdmin)
         {
             throw new DomainException("Admin cannot be deleted by admin");
         }
 
         budgetUsers.Remove(user);
-    }
-    
-    private Spending GetSpending(SpendingId spendingId) => spendings.FirstOrDefault(sp => sp.Id == spendingId) ?? throw new DomainException("Spending not found");
-
-    private ManualSpending GetManualSpending(SpendingId spendingId)
-    {
-        if (GetSpending(spendingId) is not ManualSpending manualSpending)
-        {
-            throw new DomainException("This spending is not manual");
-        }
-        
-        return manualSpending;
-    }
-
-    private ReceiptSpending GetReceiptSpending(SpendingId spendingId)
-    {
-        if (GetSpending(spendingId) is not ReceiptSpending receiptSpending)
-        {
-            throw new DomainException("This spending is not receipt");
-        }
-
-        return receiptSpending;
     }
 }

@@ -16,6 +16,18 @@ internal sealed record ReceiptFiscalData
         PurchaseDate = purchaseDate;
     }
 
+    /// <summary>
+    /// Parameterless constructor for EF Core owned type materialization.
+    /// </summary>
+    private ReceiptFiscalData()
+    {
+        Fn = "0000000000000000";
+        Fd = "000";
+        Fp = "00000000";
+        Sum = default;
+        PurchaseDate = default;
+    }
+
     public static ReceiptFiscalData Create(string fn, string fd, string fp, Money sum, DateTimeOffset purchaseDate)
     {
         if (fn.Length != 16)

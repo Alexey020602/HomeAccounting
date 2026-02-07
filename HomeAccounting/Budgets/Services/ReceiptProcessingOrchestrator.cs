@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Linq.Expressions;
 using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Configuration;
@@ -36,162 +35,114 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
     public async Task ProcessEnableToRetries(CancellationToken cancellationToken)
     {
         using var activity = activitySource.StartActivity();
-        
-        var now = DateTimeOffset.UtcNow;
 
+        var now = DateTimeOffset.UtcNow;
         logger.LogInformation("Starting processing of receipts ready for retry");
 
-        var receiptsToRetry = await budgetsContext.Budgets
-            .SelectMany(b => b.Spendings)
-            .OfType<ReceiptSpending>()
-            .Where(CanRetryFilter(options.MaxRetries, now))
+        var outboxEntries = await budgetsContext.ReceiptProcessingOutbox
+            .Where(e => e.Status == ReceiptProcessingOutboxStatus.Pending)
+            .Where(e => e.AttemptCount < options.MaxRetries)
+            .Where(e => e.NextRetryAt == null || e.NextRetryAt <= now)
             .ToListAsync(cancellationToken);
-        
-        await ProcessSpendings(receiptsToRetry, cancellationToken);
-        
-        await budgetsContext.SaveChangesAsync(cancellationToken);
 
-        
-        logger.LogInformation(
-            "Completed processing {Count} receipts",
-            receiptsToRetry.Count);
+        if (outboxEntries.Count == 0)
+        {
+            logger.LogDebug("No receipts ready for retry");
+            return;
+        }
+
+        var receiptIds = outboxEntries.Select(e => e.ReceiptId).Distinct().ToArray();
+        var receipts = await budgetsContext.Receipts
+            .Where(r => receiptIds.Contains(r.Id))
+            .ToDictionaryAsync(r => r.Id, cancellationToken);
+
+        foreach (var outboxEntry in outboxEntries)
+        {
+            if (!receipts.TryGetValue(outboxEntry.ReceiptId, out var receipt))
+            {
+                logger.LogWarning("Receipt {ReceiptId} not found for outbox entry", outboxEntry.ReceiptId);
+                continue;
+            }
+            await ProcessReceipt(receipt, outboxEntry, cancellationToken);
+        }
+
+        await budgetsContext.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("Completed processing {Count} receipts for retry", outboxEntries.Count);
     }
-    public async Task ProcessSpendingsByIds(SpendingId[] ids, CancellationToken cancellationToken)
+
+    public async Task ProcessReceiptsByIds(ReceiptId[] ids, CancellationToken cancellationToken)
     {
         using var activity = activitySource.StartActivity();
-        
         logger.LogInformation("Starting processing of receipts by IDs");
 
-        var spendings = await budgetsContext.Budgets
-            .SelectMany(b => b.Spendings)
-            .Where(s => ids.Contains(s.Id))
-            .OfType<ReceiptSpending>()
+        var receipts = await budgetsContext.Receipts
+            .Where(r => ids.Contains(r.Id))
             .ToListAsync(cancellationToken);
 
-        var foundCount = spendings.Count;
+        var outboxEntries = await budgetsContext.ReceiptProcessingOutbox
+            .Where(e => ids.Contains(e.ReceiptId))
+            .ToDictionaryAsync(e => e.ReceiptId, cancellationToken);
 
-        if (foundCount != ids.Length)
+        foreach (var receipt in receipts)
         {
-            logger.LogWarning(
-                "Expected {ExpectedCount} receipts, but found {FoundCount}",
-                ids.Length,
-                foundCount);
+            if (!outboxEntries.TryGetValue(receipt.Id, out var outboxEntry))
+            {
+                outboxEntry = ReceiptProcessingOutboxEntry.Create(receipt.Id);
+                budgetsContext.ReceiptProcessingOutbox.Add(outboxEntry);
+            }
+            await ProcessReceipt(receipt, outboxEntry, cancellationToken);
         }
-        
-        await ProcessSpendings(spendings, cancellationToken);
 
         await budgetsContext.SaveChangesAsync(cancellationToken);
-
-        logger.LogInformation(
-            "Completed processing {Count} receipts by IDs",
-            foundCount);
+        logger.LogInformation("Completed processing {Count} receipts by IDs", receipts.Count);
     }
 
-    private async Task ProcessSpendings(List<ReceiptSpending> spendings, CancellationToken cancellationToken)
+    private async Task ProcessReceipt(Receipt receipt, ReceiptProcessingOutboxEntry outboxEntry, CancellationToken cancellationToken)
     {
         using var activity = activitySource.StartActivity();
+        activity?.SetTag("receipt.id", receipt.Id.Value.ToString());
 
-        var spendingsCount = spendings.Count;
-        logger.LogDebug("Processing {Count} receipts in parallel", spendingsCount);
-
-        var tasks = spendings.Select(spending => ProcessReceiptSpending(spending, cancellationToken));
-
-        await Task.WhenAll(tasks);
-        
-        var successCount = spendings.Count(s => s.Status == ReceiptProcessingStatus.Succeeded);
-        var failedCount = spendings.Count(s => s.Status == ReceiptProcessingStatus.Failed);
-        var processingCount = spendings.Count(s => s.Status == ReceiptProcessingStatus.Processing);
-        
-        activity?.SetTag("receipts.success", successCount);
-        activity?.SetTag("receipts.failed", failedCount);
-        activity?.SetTag("receipts.processing", processingCount);
-        
-        logger.LogInformation(
-            "Processed {TotalCount} receipts: {SuccessCount} succeeded, {FailedCount} failed, {ProcessingCount} still processing",
-            spendings.Count,
-            successCount,
-            failedCount,
-            processingCount);
-    }
-
-    private async Task ProcessReceiptSpending(ReceiptSpending spending, CancellationToken cancellationToken)
-    {
-        using var activity = activitySource.StartActivity();
-        activity?.SetTag("receipt.id", spending.Id.Value.ToString());
-        activity?.SetTag("receipt.fiscal_data.fn", spending.FiscalData.Fn);
-        activity?.SetTag("receipt.fiscal_data.fd", spending.FiscalData.Fd);
-        activity?.SetTag("receipt.fiscal_data.fp", spending.FiscalData.Fp);
-        
         var attemptedAt = DateTimeOffset.UtcNow;
-        var startTime = DateTimeOffset.UtcNow;
-        var retryCount = spending.Attempts.Count(a => !a.IsSuccess);
-        
-        activity?.SetTag("retry.count", retryCount);
-        
-        logger.LogDebug(
-            "Processing receipt {ReceiptId} (attempt {RetryCount})",
-            spending.Id,
-            retryCount + 1);
+        var retryCount = outboxEntry.AttemptCount;
 
-        var result = await ProcessReceiptAsync(spending, cancellationToken);
-        
-        var duration = DateTimeOffset.UtcNow - startTime;
-        activity?.SetTag("duration_ms", duration.TotalMilliseconds);
+        logger.LogDebug("Processing receipt {ReceiptId} (attempt {RetryCount})", receipt.Id, retryCount + 1);
+
+        var result = await ProcessReceiptAsync(receipt, outboxEntry, cancellationToken);
 
         if (result.IsSuccess)
         {
             var purchasePlace = result.PurchasePlace ?? throw new InvalidOperationException("Purchase place not found");
             var products = result.Products ?? throw new InvalidOperationException("Product not found");
-            var productsCount = products.Count();
-            
-            spending.MarkProcessingSucceeded(attemptedAt, purchasePlace, products);
-            
-            logger.LogInformation(
-                "Successfully processed receipt {ReceiptId} with {ProductsCount} products in {DurationMs}ms",
-                spending.Id,
-                productsCount,
-                duration.TotalMilliseconds);
-            
+            receipt.MarkProcessingSucceeded(attemptedAt, purchasePlace, products);
+            outboxEntry.MarkCompleted();
+            logger.LogInformation("Successfully processed receipt {ReceiptId} with {ProductsCount} products", receipt.Id, products.Count());
             return;
         }
 
         var errorMessage = result.ErrorMessage ?? throw new InvalidOperationException("Error message not found");
-        
+
         if (result.IsRetryable)
         {
             var nextRetryAt = result.NextRetryAt ?? throw new InvalidOperationException("Next retry at not found");
-            
-            spending.MarkProcessingRetryableError(attemptedAt, nextRetryAt, errorMessage);
-            
-            logger.LogWarning(
-                "Retryable error processing receipt {ReceiptId} (attempt {RetryCount}): {ErrorMessage}. Next retry at {NextRetryAt}",
-                spending.Id,
-                retryCount + 1,
-                errorMessage,
-                nextRetryAt);
-            
+            outboxEntry.ScheduleRetry(nextRetryAt, errorMessage);
+            logger.LogWarning("Retryable error processing receipt {ReceiptId} (attempt {RetryCount}): {ErrorMessage}. Next retry at {NextRetryAt}",
+                receipt.Id, retryCount + 1, errorMessage, nextRetryAt);
             return;
         }
-        
-        activity?.SetTag("result", "terminal_error");
-        spending.MarkProcessingFailed(attemptedAt, errorMessage);
-        
-        logger.LogError(
-            "Terminal error processing receipt {ReceiptId} (attempt {RetryCount}): {ErrorMessage}",
-            spending.Id,
-            retryCount + 1,
-            errorMessage);
+
+        receipt.MarkProcessingFailed(attemptedAt, errorMessage);
+        outboxEntry.MarkFailed();
+        logger.LogError("Terminal error processing receipt {ReceiptId} (attempt {RetryCount}): {ErrorMessage}", receipt.Id, retryCount + 1, errorMessage);
     }
-    private async Task<ProcessingResult> ProcessReceiptAsync(
-        ReceiptSpending receiptSpending,
-        CancellationToken cancellationToken)
+
+    private async Task<ProcessingResult> ProcessReceiptAsync(Receipt receipt, ReceiptProcessingOutboxEntry outboxEntry, CancellationToken cancellationToken)
     {
         using var activity = activitySource.StartActivity("ProcessReceipt");
-        activity?.SetTag("receipt.id", receiptSpending.Id.Value.ToString());
-        
+        activity?.SetTag("receipt.id", receipt.Id.Value.ToString());
+
         try
         {
-            var request = new GetReceiptDataRequest(receiptSpending.FiscalData);
+            var request = new GetReceiptDataRequest(receipt.FiscalData);
             var response = await receiptProcessService.GetReceiptData(request, cancellationToken);
 
             var products = response.Products
@@ -202,56 +153,30 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
                     Money.FromKopecks(p.Sum),
                     null))
                 .ToList();
-            
-            logger.LogDebug(
-                "Successfully received receipt data for {ReceiptId}: {ProductsCount} products, place: {PurchasePlace}",
-                receiptSpending.Id,
-                products.Count,
-                response.PurchasePlase);
+
+            logger.LogDebug("Successfully received receipt data for {ReceiptId}: {ProductsCount} products, place: {PurchasePlace}",
+                receipt.Id, products.Count, response.PurchasePlase);
 
             return ProcessingResult.Success(response.PurchasePlase, products);
         }
         catch (ReceiptProcessException ex)
         {
-            
             if (!IsRetryable(ex))
             {
                 activity?.AddException(ex);
-                
-                logger.LogWarning(
-                    ex,
-                    "Terminal error processing receipt {ReceiptId}: {ErrorMessage}",
-                    receiptSpending.Id,
-                    ex.Message);
-
+                logger.LogWarning(ex, "Terminal error processing receipt {ReceiptId}: {ErrorMessage}", receipt.Id, ex.Message);
                 return ProcessingResult.TerminalError(ex.Message);
             }
-            
-            var retryCount = receiptSpending.Attempts.Count(a => !a.IsSuccess);
-            var nextRetryAt = CalculateNextRetryAt(retryCount);
 
-            activity?.SetStatus(ActivityStatusCode.Ok);
-                
-            logger.LogWarning(
-                "Retryable error processing receipt {ReceiptId}: {ErrorMessage}. Retry {RetryCount}, next retry at {NextRetryAt}",
-                receiptSpending.Id,
-                ex.Message,
-                retryCount + 1,
-                nextRetryAt);
-
+            var nextRetryAt = CalculateNextRetryAt(outboxEntry.AttemptCount);
+            logger.LogWarning("Retryable error processing receipt {ReceiptId}: {ErrorMessage}. Next retry at {NextRetryAt}", receipt.Id, ex.Message, nextRetryAt);
             return ProcessingResult.RetryableError(ex.Message, nextRetryAt);
         }
         catch (Exception ex)
         {
             activity?.SetStatus(ActivityStatusCode.Error);
             activity?.AddException(ex);
-
-            logger.LogError(
-                ex,
-                "Unexpected error processing receipt {ReceiptId}: {ErrorMessage}",
-                receiptSpending.Id,
-                ex.Message);
-            
+            logger.LogError(ex, "Unexpected error processing receipt {ReceiptId}: {ErrorMessage}", receipt.Id, ex.Message);
             return ProcessingResult.TerminalError($"Unexpected error: {ex.Message}");
         }
     }
@@ -273,14 +198,8 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
     {
         var delay = TimeSpan.FromMilliseconds(
             options.InitialDelay.TotalMilliseconds * Math.Pow(options.BackoffMultiplier, retryCount));
-
         return delay > options.MaxDelay ? options.MaxDelay : delay;
     }
-
-    private static Expression<Func<ReceiptSpending, bool>> CanRetryFilter(int maxRetries, DateTimeOffset now) => receipt => 
-        (receipt.Status == ReceiptProcessingStatus.Processing) && 
-        (receipt.Attempts.Count(a=>!a.IsSuccess) < maxRetries) &&
-        (receipt.NextRetryAt == null || receipt.NextRetryAt < now);
 }
 
 internal sealed record ProcessingResult
@@ -293,24 +212,11 @@ internal sealed record ProcessingResult
     public IEnumerable<ProductInput>? Products { get; init; }
 
     public static ProcessingResult Success(string purchasePlace, IEnumerable<ProductInput> products) =>
-        new()
-        {
-            IsSuccess = true,
-            PurchasePlace = purchasePlace,
-            Products = products
-        };
+        new() { IsSuccess = true, PurchasePlace = purchasePlace, Products = products };
 
     public static ProcessingResult RetryableError(string errorMessage, DateTimeOffset nextRetryAt) =>
-        new()
-        {
-            IsRetryable = true,
-            ErrorMessage = errorMessage,
-            NextRetryAt = nextRetryAt
-        };
+        new() { IsRetryable = true, ErrorMessage = errorMessage, NextRetryAt = nextRetryAt };
 
     public static ProcessingResult TerminalError(string errorMessage) =>
-        new()
-        {
-            ErrorMessage = errorMessage,
-        };
+        new() { ErrorMessage = errorMessage };
 }

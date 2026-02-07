@@ -1,7 +1,6 @@
 using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets.GetBudgetSpendings;
-using ClientServerShared.Model;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Data.Database;
 using Microsoft.AspNetCore.Authorization;
@@ -31,48 +30,46 @@ static class GetBudgetSpendingsEndpoint
                     return Results.Problem(statusCode: (int)HttpStatusCode.Forbidden, detail: "User does not have permission to read this budget");
                 }
 
-                if (!await budgetsContext.Budgets.AnyAsync(budget => budget.Id == budgetId, cancellationToken: cancellationToken))
+                if (!await budgetsContext.Budgets.AnyAsync(b => b.Id == budgetId, cancellationToken))
                 {
                     return Results.NotFound();
                 }
 
-                var spendingsQuery = from budget in budgetsContext.Budgets.AsNoTracking()
-                    where budget.Id == budgetId
-                    from spending in budget.Spendings
-                    select spending;
+                var operations = await budgetsContext.Budgets
+                    .AsNoTracking()
+                    .Where(b => b.Id == budgetId)
+                    .SelectMany(b => b.Operations)
+                    .ToArrayAsync(cancellationToken);
 
-                var loadedSpendings = await spendingsQuery.ToArrayAsync(cancellationToken);
+                var receipts = await budgetsContext.Receipts
+                    .AsNoTracking()
+                    .Where(r => r.BudgetId == budgetId)
+                    .ToArrayAsync(cancellationToken);
 
-                var spendings = loadedSpendings
-                    .Select(spending => new SpendingDto(
-                        spending.Id.Value,
-                        spending.Description,
-                        spending.Sum.Kopecks,
-                        MapToContractStatus(spending)))
-                    .ToArray();
+                var operationDtos = operations
+                    .Select(op => new SpendingDto(op.Id.Value, op.Description, op.Sum.Kopecks, Status.Added));
 
+                var receiptDtos = receipts
+                    .Select(r => new SpendingDto(r.Id.Value, r.Description, r.Sum.Kopecks, MapReceiptStatus(r.Status)));
+
+                var spendings = operationDtos.Concat(receiptDtos).ToArray();
                 var response = new GetBudgetSpendingsResponse(spendings);
                 return Results.Ok(response);
             })
             .WithName("GetBudgetSpendings")
             .WithTags("Budgets")
             .WithSummary("Get budget spendings")
-            .WithDescription("Returns list of spendings in the budget. Requires read permission.")
+            .WithDescription("Returns list of spendings in the budget (operations and receipts). Requires read permission.")
             .Produces((int)HttpStatusCode.OK, typeof(GetBudgetSpendingsResponse))
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden);
     }
 
-    private static Status MapToContractStatus(Spending spending)
+    private static Status MapReceiptStatus(ReceiptProcessingStatus status) => status switch
     {
-        if (spending is ReceiptSpending receipt)
-            return receipt.Status switch
-            {
-                ReceiptProcessingStatus.Processing => Status.InProcess,
-                ReceiptProcessingStatus.Succeeded => Status.Added,
-                ReceiptProcessingStatus.Failed => Status.Error,
-                _ => Status.Added
-            };
-        return Status.Added;
-    }
+        ReceiptProcessingStatus.Processing => Status.InProcess,
+        ReceiptProcessingStatus.Succeeded => Status.Added,
+        ReceiptProcessingStatus.Failed => Status.Error,
+        _ => Status.Added
+    };
 }

@@ -51,6 +51,26 @@ internal static class BudgetsContextSeedingExtensions
                 budgetsContext.Budgets.Add(budget);
             }
         }
+
+        public void AddReceipts()
+        {
+            foreach (var receipt in Receipt.GetDefaultReceiptsForFirstBudget().Concat(Receipt.GetDefaultReceiptsForSecondBudget()))
+            {
+                if (budgetsContext.Receipts.SingleOrDefault(r => r.Id == receipt.Id) is not null)
+                    continue;
+                budgetsContext.Receipts.Add(receipt);
+            }
+        }
+
+        public async Task AddReceiptsAsync(CancellationToken cancellationToken)
+        {
+            foreach (var receipt in Receipt.GetDefaultReceiptsForFirstBudget().Concat(Receipt.GetDefaultReceiptsForSecondBudget()))
+            {
+                if (await budgetsContext.Receipts.SingleOrDefaultAsync(r => r.Id == receipt.Id, cancellationToken) is not null)
+                    continue;
+                budgetsContext.Receipts.Add(receipt);
+            }
+        }
     }
 }
 

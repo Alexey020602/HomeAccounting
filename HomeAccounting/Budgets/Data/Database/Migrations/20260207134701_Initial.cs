@@ -43,11 +43,50 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     BeginOfPeriod = table.Column<int>(type: "integer", nullable: false),
                     Limit = table.Column<long>(type: "bigint", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreationDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Budgets", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReceiptProcessingOutboxEntry",
+                schema: "budgets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    ReceiptId = table.Column<Guid>(type: "uuid", nullable: false),
+                    NextRetryAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    AttemptCount = table.Column<int>(type: "integer", nullable: false),
+                    LastErrorMessage = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReceiptProcessingOutboxEntry", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Receipts",
+                schema: "budgets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    BudgetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Fn = table.Column<string>(type: "text", nullable: false),
+                    Fd = table.Column<string>(type: "text", nullable: false),
+                    Fp = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    PurchasePlace = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CompletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LastErrorMessage = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Receipts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,35 +111,24 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Spending",
+                name: "Operation",
                 schema: "budgets",
                 columns: table => new
                 {
                     BudgetId = table.Column<Guid>(type: "uuid", nullable: false),
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AddedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PurchaseDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    AddedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
-                    CategoryId = table.Column<int>(type: "integer", nullable: true),
-                    Sum = table.Column<long>(type: "bigint", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Fn = table.Column<string>(type: "text", nullable: true),
-                    Fd = table.Column<string>(type: "text", nullable: true),
-                    Fp = table.Column<string>(type: "text", nullable: true),
-                    PurchasePlace = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: true),
-                    DeclaredSum = table.Column<long>(type: "bigint", nullable: true),
-                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    NextRetryAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastAttemptAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastErrorMessage = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
+                    Sum = table.Column<long>(type: "bigint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Spending", x => x.Id);
+                    table.PrimaryKey("PK_Operation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Spending_Budgets_BudgetId",
+                        name: "FK_Operation_Budgets_BudgetId",
                         column: x => x.BudgetId,
                         principalSchema: "budgets",
                         principalTable: "Budgets",
@@ -119,39 +147,16 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     Sum = table.Column<long>(type: "bigint", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: true),
-                    ReceiptSpendingId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ReceiptId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_Spending_ReceiptSpendingId",
-                        column: x => x.ReceiptSpendingId,
+                        name: "FK_Product_Receipts_ReceiptId",
+                        column: x => x.ReceiptId,
                         principalSchema: "budgets",
-                        principalTable: "Spending",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReceiptProcessingAttempt",
-                schema: "budgets",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    AttemptedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
-                    ErrorMessage = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    ReceiptSpendingId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReceiptProcessingAttempt", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReceiptProcessingAttempt_Spending_ReceiptSpendingId",
-                        column: x => x.ReceiptSpendingId,
-                        principalSchema: "budgets",
-                        principalTable: "Spending",
+                        principalTable: "Receipts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -169,35 +174,41 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 column: "BudgetId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Operation_BudgetId",
+                schema: "budgets",
+                table: "Operation",
+                column: "BudgetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Product_CategoryId",
                 schema: "budgets",
                 table: "Product",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_ReceiptSpendingId",
+                name: "IX_Product_ReceiptId",
                 schema: "budgets",
                 table: "Product",
-                column: "ReceiptSpendingId");
+                column: "ReceiptId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceiptProcessingAttempt_ReceiptSpendingId",
+                name: "IX_ReceiptProcessingOutboxEntry_ReceiptId",
                 schema: "budgets",
-                table: "ReceiptProcessingAttempt",
-                column: "ReceiptSpendingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Spending_BudgetId",
-                schema: "budgets",
-                table: "Spending",
-                column: "BudgetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Spending_Fd_Fn_Fp",
-                schema: "budgets",
-                table: "Spending",
-                columns: new[] { "Fd", "Fn", "Fp" },
+                table: "ReceiptProcessingOutboxEntry",
+                column: "ReceiptId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReceiptProcessingOutboxEntry_Status_NextRetryAt",
+                schema: "budgets",
+                table: "ReceiptProcessingOutboxEntry",
+                columns: new[] { "Status", "NextRetryAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipts_Fd_Fn_Fp",
+                schema: "budgets",
+                table: "Receipts",
+                columns: new[] { "Fd", "Fn", "Fp" });
         }
 
         /// <inheritdoc />
@@ -212,19 +223,23 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                 schema: "budgets");
 
             migrationBuilder.DropTable(
+                name: "Operation",
+                schema: "budgets");
+
+            migrationBuilder.DropTable(
                 name: "Product",
                 schema: "budgets");
 
             migrationBuilder.DropTable(
-                name: "ReceiptProcessingAttempt",
-                schema: "budgets");
-
-            migrationBuilder.DropTable(
-                name: "Spending",
+                name: "ReceiptProcessingOutboxEntry",
                 schema: "budgets");
 
             migrationBuilder.DropTable(
                 name: "Budgets",
+                schema: "budgets");
+
+            migrationBuilder.DropTable(
+                name: "Receipts",
                 schema: "budgets");
 
             migrationBuilder.DropSequence(

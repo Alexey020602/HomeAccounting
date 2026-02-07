@@ -40,6 +40,7 @@ public static class DbContextOptionsExtensions
 
         budgetsContext.AddBudgetRoles();
         budgetsContext.AddBudgets();
+        budgetsContext.AddReceipts();
 
         budgetsContext.SaveChanges();
     }
@@ -52,7 +53,8 @@ public static class DbContextOptionsExtensions
         await budgetsContext.AddBudgetRolesAsync(cancellationToken);
 
         await budgetsContext.AddBudgetsAsync(cancellationToken);
-        
+        await budgetsContext.AddReceiptsAsync(cancellationToken);
+
         await budgetsContext.SaveChangesAsync(cancellationToken);
     }
 }

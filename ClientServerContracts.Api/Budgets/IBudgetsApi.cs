@@ -2,6 +2,7 @@ using ClientServerContracts.Api.Attributes;
 using ClientServerContracts.Budgets;
 using ClientServerContracts.Budgets.AddManualSpending;
 using ClientServerContracts.Budgets.AddReceiptSpending;
+using ClientServerContracts.Budgets.ChangeReceiptProductCategory;
 using ClientServerContracts.Budgets.AddUsersInBudget;
 using ClientServerContracts.Budgets.CreateBudget;
 using ClientServerContracts.Budgets.GetBudgetDetail;
@@ -243,7 +244,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Post("/{id}/spendings/receipt")]
+    [Post("/{id}/receipts")]
     public Task AddReceiptSpending(Guid id, AddReceiptSpendingRequest request);
 
     /// <summary>
@@ -265,4 +266,45 @@ public interface IBudgetsApi
     /// </remarks>
     [Post("/{id}/spendings/manual")]
     public Task AddManualSpending(Guid id, AddManualSpendingRequest request);
+
+    /// <summary>
+    /// Sets category for a product in a receipt. Requires edit permission.
+    /// </summary>
+    /// <param name="budgetId">Budget identifier.</param>
+    /// <param name="receiptId">Receipt identifier.</param>
+    /// <param name="productId">Product identifier.</param>
+    /// <param name="request">Request with category id.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>204</term><description>No Content - Category set.</description></item>
+    /// <item><term>404</term><description>Not Found - Budget or receipt not found.</description></item>
+    /// <item><term>403</term><description>Forbidden - User does not have permission to edit this budget.</description></item>
+    /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
+    /// </list>
+    /// </remarks>
+    [Put("/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
+    public Task ChangeReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId, ChangeReceiptProductCategoryRequest request);
+
+    /// <summary>
+    /// Removes category from a product in a receipt. Requires edit permission.
+    /// </summary>
+    /// <param name="budgetId">Budget identifier.</param>
+    /// <param name="receiptId">Receipt identifier.</param>
+    /// <param name="productId">Product identifier.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>204</term><description>No Content - Category removed.</description></item>
+    /// <item><term>404</term><description>Not Found - Budget or receipt not found.</description></item>
+    /// <item><term>403</term><description>Forbidden - User does not have permission to edit this budget.</description></item>
+    /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
+    /// </list>
+    /// </remarks>
+    [Delete("/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
+    public Task DeleteReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId);
 }

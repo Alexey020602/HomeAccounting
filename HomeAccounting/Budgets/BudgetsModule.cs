@@ -1,3 +1,4 @@
+using ClientServerShared.BarCode;
 using HomeAccounting.Budgets.Configuration;
 using HomeAccounting.Budgets.Services;
 using HomeAccounting.Budgets.Workers;
@@ -24,6 +25,8 @@ internal static class BudgetsModule
 
         builder.Services.AddScoped<IReceiptProcessingOrchestrator, ReceiptProcessingOrchestrator>();
         builder.Services.AddHostedService<ReceiptRetryWorker>();
+        
+        builder.Services.AddBarcode();
     }
     
 }

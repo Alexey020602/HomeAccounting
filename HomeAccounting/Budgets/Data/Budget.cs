@@ -6,7 +6,7 @@ using HomeAccounting.Users.Data;
 
 namespace HomeAccounting.Budgets.Data;
 
-internal sealed partial class Budget : Entity<BudgetId>
+internal sealed partial class Budget: Entity<BudgetId>
 {
     private List<BudgetUser> budgetUsers = [];
     private List<Operation> operations = [];
@@ -58,7 +58,7 @@ internal sealed partial class Budget : Entity<BudgetId>
     {
         if (budgetUsers.Any(bu => bu.UserId == userId))
         {
-            throw new InvalidOperationException("User is already added to this budget");
+            throw new DomainException("User is already added to this budget");
         }
 
         budgetUsers.Add(new BudgetUser(userId, roleId));
@@ -70,6 +70,9 @@ internal sealed partial class Budget : Entity<BudgetId>
     /// Нельзя удалить самого себя
     /// Нельзя админу удалить другого админа
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="currentUserId"></param>
+    /// <exception cref="DomainException"></exception>
     public void RemoveUser(UserId userId, UserId currentUserId)
     {
         if (userId == currentUserId)

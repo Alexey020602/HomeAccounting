@@ -11,6 +11,7 @@ using HomeAccounting.Budgets.GetBudgetDetail;
 using HomeAccounting.Budgets.GetBudgetSpendings;
 using HomeAccounting.Budgets.GetBudgetUsers;
 using HomeAccounting.Budgets.GetOperations;
+using HomeAccounting.Budgets.GetReceipts;
 using HomeAccounting.Budgets.GetUserPermissions;
 using HomeAccounting.Budgets.GetBudgets;
 using HomeAccounting.Budgets.UpdateBudget;
@@ -34,6 +35,7 @@ static class BudgetsEndpoints
         budgetsGroup.MapGetUserPermissions();
         budgetsGroup.MapGetBudgetSpendings();
         budgetsGroup.MapGetOperations();
+        budgetsGroup.MapGetReceipts();
         budgetsGroup.MapAddManualSpending();
         budgetsGroup.MapAddReceiptSpending();
         budgetsGroup.MapAddReceiptFromFile();

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeAccounting.Budgets.Data.Database.Migrations
 {
     [DbContext(typeof(BudgetsContext))]
-    [Migration("20260207134701_Initial")]
+    [Migration("20260209133705_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -283,6 +283,14 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                                 .IsRequired()
                                 .HasColumnType("text")
                                 .HasColumnName("Fp");
+
+                            b1.Property<DateTimeOffset>("PurchaseDate")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("PurchaseDate");
+
+                            b1.Property<long>("Sum")
+                                .HasColumnType("bigint")
+                                .HasColumnName("Sum");
 
                             b1.HasKey("ReceiptId");
 

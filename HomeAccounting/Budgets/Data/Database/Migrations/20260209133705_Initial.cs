@@ -78,6 +78,8 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     Fn = table.Column<string>(type: "text", nullable: false),
                     Fd = table.Column<string>(type: "text", nullable: false),
                     Fp = table.Column<string>(type: "text", nullable: false),
+                    Sum = table.Column<long>(type: "bigint", nullable: false),
+                    PurchaseDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     PurchasePlace = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),

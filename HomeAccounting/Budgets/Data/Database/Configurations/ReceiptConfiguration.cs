@@ -31,6 +31,8 @@ sealed class ReceiptConfiguration : IEntityTypeConfiguration<Receipt>
                 fiscalData.Property(d => d.Fd).HasColumnName(nameof(ReceiptFiscalData.Fd)).IsRequired();
                 fiscalData.Property(d => d.Fp).HasColumnName(nameof(ReceiptFiscalData.Fp)).IsRequired();
                 fiscalData.Property(d => d.Fn).HasColumnName(nameof(ReceiptFiscalData.Fn)).IsRequired();
+                fiscalData.Property(d=>d.PurchaseDate).HasColumnName(nameof(ReceiptFiscalData.PurchaseDate)).IsRequired();
+                fiscalData.Property(d=>d.Sum).HasColumnName(nameof(ReceiptFiscalData.Sum)).IsRequired();
                 fiscalData.HasIndex(d => new { d.Fd, d.Fn, d.Fp });
             });
 

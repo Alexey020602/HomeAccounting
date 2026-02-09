@@ -10,6 +10,7 @@ using HomeAccounting.Budgets.DeleteUserFromBudget;
 using HomeAccounting.Budgets.GetBudgetDetail;
 using HomeAccounting.Budgets.GetBudgetSpendings;
 using HomeAccounting.Budgets.GetBudgetUsers;
+using HomeAccounting.Budgets.GetOperations;
 using HomeAccounting.Budgets.GetUserPermissions;
 using HomeAccounting.Budgets.GetBudgets;
 using HomeAccounting.Budgets.UpdateBudget;
@@ -32,6 +33,7 @@ static class BudgetsEndpoints
         budgetsGroup.MapDeleteUserFromBudget();
         budgetsGroup.MapGetUserPermissions();
         budgetsGroup.MapGetBudgetSpendings();
+        budgetsGroup.MapGetOperations();
         budgetsGroup.MapAddManualSpending();
         budgetsGroup.MapAddReceiptSpending();
         budgetsGroup.MapAddReceiptFromFile();

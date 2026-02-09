@@ -23,7 +23,7 @@ public interface IUsersApi
     /// <item><term>404</term><description>Not Found - User not found.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/{id}")]
+    [Get("/users/{id}")]
     public Task<User> GetUser(Guid id);
 
     /// <summary>

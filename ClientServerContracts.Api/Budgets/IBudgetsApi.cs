@@ -7,6 +7,8 @@ using ClientServerContracts.Budgets.CreateBudget;
 using ClientServerContracts.Budgets.GetBudgetDetail;
 using ClientServerContracts.Budgets.GetBudgetSpendings;
 using ClientServerContracts.Budgets.GetBudgets;
+using ClientServerContracts.Budgets.GetOperations;
+using ClientServerContracts.Budgets.GetReceipts;
 using ClientServerContracts.Budgets.UserInBudgetPermissions;
 using Refit;
 
@@ -31,6 +33,114 @@ public sealed class GetBudgetUsersQueryParameters
 /// </summary>
 public sealed class GetBudgetSpendingsQueryParameters
 {
+}
+
+/// <summary>
+/// Query parameters for GetReceipts endpoint.
+/// </summary>
+public sealed class GetReceiptsQueryParameters
+{
+    /// <summary>
+    /// Start date for filtering receipts by purchase date.
+    /// </summary>
+    [AliasAs("startDate")]
+    public DateTimeOffset? StartDate { get; set; }
+
+    /// <summary>
+    /// End date for filtering receipts by purchase date.
+    /// </summary>
+    [AliasAs("endDate")]
+    public DateTimeOffset? EndDate { get; set; }
+
+    /// <summary>
+    /// User identifier for filtering receipts by user.
+    /// </summary>
+    [AliasAs("userId")]
+    public Guid? UserId { get; set; }
+
+    /// <summary>
+    /// Receipt status for filtering receipts by processing status.
+    /// </summary>
+    [AliasAs("status")]
+    public ReceiptStatus? Status { get; set; }
+
+    /// <summary>
+    /// Field name to sort by. Possible values: "Sum", "PurchaseDate", "CreatedAt", "CompletedAt", "PurchasePlace".
+    /// </summary>
+    [AliasAs("sortBy")]
+    public string? SortBy { get; set; }
+
+    /// <summary>
+    /// Sort direction. True for descending, false for ascending.
+    /// </summary>
+    [AliasAs("sortDescending")]
+    public bool? SortDescending { get; set; }
+
+    /// <summary>
+    /// Number of receipts to take (pagination).
+    /// </summary>
+    [AliasAs("take")]
+    public int? Take { get; set; }
+
+    /// <summary>
+    /// Number of receipts to skip (pagination).
+    /// </summary>
+    [AliasAs("skip")]
+    public int? Skip { get; set; }
+}
+
+/// <summary>
+/// Query parameters for GetOperations endpoint.
+/// </summary>
+public sealed class GetOperationsQueryParameters
+{
+    /// <summary>
+    /// Start date for filtering operations by purchase date.
+    /// </summary>
+    [AliasAs("startDate")]
+    public DateTimeOffset? StartDate { get; set; }
+
+    /// <summary>
+    /// End date for filtering operations by purchase date.
+    /// </summary>
+    [AliasAs("endDate")]
+    public DateTimeOffset? EndDate { get; set; }
+
+    /// <summary>
+    /// Category identifier for filtering operations by category.
+    /// </summary>
+    [AliasAs("categoryId")]
+    public int? CategoryId { get; set; }
+
+    /// <summary>
+    /// User identifier for filtering operations by user.
+    /// </summary>
+    [AliasAs("userId")]
+    public Guid? UserId { get; set; }
+
+    /// <summary>
+    /// Field name to sort by. Possible values: "PurchaseDate", "AddedDate", "Sum", "Description".
+    /// </summary>
+    [AliasAs("sortBy")]
+    public string? SortBy { get; set; }
+
+    /// <summary>
+    /// Sort direction. True for descending, false for ascending.
+    /// </summary>
+    [AliasAs("sortDescending")]
+    public bool? SortDescending { get; set; }
+
+    /// <summary>
+    /// Number of operations to take (pagination).
+    /// </summary>
+    [AliasAs("take")]
+    public int? Take { get; set; }
+
+    /// <summary>
+    /// Number of operations to skip (pagination).
+    /// </summary>
+    [AliasAs("skip")]
+    public int? Skip { get; set; }
 }
 
 /// <summary>
@@ -223,6 +333,44 @@ public interface IBudgetsApi
     /// </remarks>
     [Get("/budgets/{id}/spendings")]
     public Task<GetBudgetSpendingsResponse> GetBudgetSpendings(Guid id, [Query] GetBudgetSpendingsQueryParameters query);
+
+    /// <summary>
+    /// Returns list of receipts in the budget with optional filtering by date range, user, and status. Supports sorting and pagination. Requires read permission.
+    /// </summary>
+    /// <param name="id">Budget identifier.</param>
+    /// <param name="query">Query parameters for filtering, sorting and pagination.</param>
+    /// <returns>Receipts response with list of receipts and total count.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>200</term><description>OK - Successfully retrieved receipts.</description></item>
+    /// <item><term>404</term><description>Not Found - Budget not found.</description></item>
+    /// <item><term>403</term><description>Forbidden - User does not have permission to read this budget.</description></item>
+    /// <item><term>400</term><description>Bad Request - Invalid request parameters.</description></item>
+    /// </list>
+    /// </remarks>
+    [Get("/budgets/{id}/receipts")]
+    public Task<GetReceiptsResponse> GetReceipts(Guid id, [Query] GetReceiptsQueryParameters query);
+
+    /// <summary>
+    /// Returns list of operations (manual spendings) in the budget with optional filtering by date range, category, and user. Supports sorting and pagination. Requires read permission.
+    /// </summary>
+    /// <param name="id">Budget identifier.</param>
+    /// <param name="query">Query parameters for filtering, sorting and pagination.</param>
+    /// <returns>Operations response with list of operations and total count.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>200</term><description>OK - Successfully retrieved operations.</description></item>
+    /// <item><term>404</term><description>Not Found - Budget not found.</description></item>
+    /// <item><term>403</term><description>Forbidden - User does not have permission to read this budget.</description></item>
+    /// <item><term>400</term><description>Bad Request - Invalid request parameters.</description></item>
+    /// </list>
+    /// </remarks>
+    [Get("/budgets/{id}/operations")]
+    public Task<GetOperationsResponse> GetOperations(Guid id, [Query] GetOperationsQueryParameters query);
 
     /// <summary>
     /// Adds spending from a receipt by fiscal data. Receipt is processed asynchronously. Requires edit permission.

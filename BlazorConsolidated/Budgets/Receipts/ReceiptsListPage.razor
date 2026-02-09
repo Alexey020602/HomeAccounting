@@ -1,0 +1,63 @@
+@page "/receipts"
+@using BlazorConsolidated.Budgets.BudgetState
+@using BlazorConsolidated.Common.Components
+@using ClientServerContracts.Api.Budgets
+@using ClientServerContracts.Budgets.GetReceipts
+@using ClientServerShared.Results
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inherits BudgetPage
+@inject IBudgetsApi BudgetsApi
+
+<PageTitle>Список чеков</PageTitle>
+
+<MudDataGrid >
+    
+</MudDataGrid>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MaybeComponent TResult="GetReceiptsResponse" Result="ReceiptsResult" Context="response">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные чеки</MudText>
+            </MudCardHeader>
+            
+            <MudCardContent>
+                @if (response.Receipts.Length == 0)
+                {
+                    <MudText Typo="Typo.body1" Align="Align.Center" Class="pa-4">
+                        Чеки не найдены
+                    </MudText>
+                }
+                else
+                {
+                    <MudList T="ReceiptDto" ReadOnly="true">
+                        @foreach (var receipt in response.Receipts)
+                        {
+                            <MudListItem Value="receipt">
+                                <ReceiptComponent Receipt="receipt"/>
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+            </MudCardContent>
+        </MudCard>
+    </MaybeComponent>
+</MudContainer>
+
+@code {
+    private IMaybe<GetReceiptsResponse>? ReceiptsResult { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        if (BudgetId == Guid.Empty)
+        {
+            return;
+        }
+        
+        ReceiptsResult = await BudgetsApi.GetReceipts(BudgetId, new GetReceiptsQueryParameters()).TryAsync();
+    }
+}

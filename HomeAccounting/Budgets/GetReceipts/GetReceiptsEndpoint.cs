@@ -119,7 +119,7 @@ static class GetReceiptsEndpoint
                 var receipts = await receiptsQuery.ToArrayAsync(cancellationToken);
                 var receiptDtos = receipts.Select(r => new ReceiptDto(
                     r.Id.Value,
-                    r.Sum.Kopecks,
+                    r.Sum.ToString(),
                     r.FiscalData.PurchaseDate,
                     r.CreatedAt,
                     r.CompletedAt,

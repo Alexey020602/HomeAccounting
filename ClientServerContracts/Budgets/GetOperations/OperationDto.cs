@@ -6,7 +6,7 @@ namespace ClientServerContracts.Budgets.GetOperations;
 public sealed record OperationDto(
     Guid Id,
     string Description,
-    long Sum,
+    string Sum,
     DateTimeOffset PurchaseDate,
     DateTimeOffset AddedDate,
     Guid UserId,

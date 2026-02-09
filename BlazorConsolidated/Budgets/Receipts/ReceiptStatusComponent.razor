@@ -1,0 +1,26 @@
+<MudChip 
+    T="string" 
+    Text="@GetStatusText()" 
+    Color="@GetStatusColor()" 
+    Variant="Variant.Filled"
+    Size="Size.Small"/>
+
+@code {
+    [Parameter] public ReceiptStatus Status { get; set; }
+
+    private string GetStatusText() => Status switch
+    {
+        ReceiptStatus.Processing => "Обрабатывается",
+        ReceiptStatus.Succeeded => "Успешно",
+        ReceiptStatus.Failed => "Ошибка",
+        _ => Status.ToString()
+    };
+
+    private Color GetStatusColor() => Status switch
+    {
+        ReceiptStatus.Processing => Color.Warning,
+        ReceiptStatus.Succeeded => Color.Success,
+        ReceiptStatus.Failed => Color.Error,
+        _ => Color.Default
+    };
+}

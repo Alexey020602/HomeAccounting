@@ -114,7 +114,7 @@ static class GetOperationsEndpoint
                 var operationDtos = operations.Select(op => new OperationDto(
                     op.Id.Value,
                     op.Description,
-                    op.Sum.Kopecks,
+                    op.Sum.ToString(),
                     op.PurchaseDate,
                     op.AddedDate,
                     op.UserId.Value,

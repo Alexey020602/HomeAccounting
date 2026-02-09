@@ -1,4 +1,3 @@
-using ClientServerContracts.Api.Attributes;
 using ClientServerContracts.Users.Login;
 using ClientServerContracts.Users.Register;
 using Refit;
@@ -19,7 +18,6 @@ public sealed class CheckLoginExistQueryParameters
 /// <summary>
 /// Refit client for Authorization API endpoints.
 /// </summary>
-[Api]
 public interface IAuthorizationApi
 {
     /// <summary>

@@ -1,4 +1,3 @@
-using ClientServerContracts.Api.Attributes;
 using ClientServerContracts.Budgets;
 using ClientServerContracts.Budgets.AddManualSpending;
 using ClientServerContracts.Budgets.AddReceiptSpending;
@@ -37,7 +36,6 @@ public sealed class GetBudgetSpendingsQueryParameters
 /// <summary>
 /// Refit client for Budgets API endpoints.
 /// </summary>
-[ApiAuthorizable("budgets")]
 [Headers("Authorization: Bearer")]
 public interface IBudgetsApi
 {
@@ -55,7 +53,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/")]
+    [Get("/budgets")]
     public Task<IReadOnlyCollection<BudgetDto>> GetBudgets([Query] GetBudgetsQueryParameters query);
 
     /// <summary>
@@ -72,7 +70,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Post("/")] 
+    [Post("/budgets")] 
     public Task CreateBudget(CreateBudgetRequest request);
 
     /// <summary>
@@ -90,7 +88,7 @@ public interface IBudgetsApi
     /// <item><term>403</term><description>Forbidden - User does not have permission to read this budget.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/{id}")]
+    [Get("/budgets/{id}")]
     public Task<BudgetDetailDto> GetBudgetDetail(Guid id);
 
     /// <summary>
@@ -109,7 +107,7 @@ public interface IBudgetsApi
     /// <item><term>400</term><description>Bad Request - Invalid request data.</description></item>
     /// </list>
     /// </remarks>
-    [Put("/{id}")]
+    [Put("/budgets/{id}")]
     public Task UpdateBudget(Guid id, BudgetData budgetData);
 
     /// <summary>
@@ -127,7 +125,7 @@ public interface IBudgetsApi
     /// <item><term>400</term><description>Bad Request - Invalid request.</description></item>
     /// </list>
     /// </remarks>
-    [Delete("/{id}")]
+    [Delete("/budgets/{id}")]
     public Task DeleteBudget(Guid id);
 
     /// <summary>
@@ -146,7 +144,7 @@ public interface IBudgetsApi
     /// <item><term>400</term><description>Bad Request - Invalid request.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/{id}/users")]
+    [Get("/budgets/{id}/users")]
     public Task<IReadOnlyCollection<BudgetUserDto>> GetBudgetUsers(Guid id, [Query] GetBudgetUsersQueryParameters query);
 
     /// <summary>
@@ -166,7 +164,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Post("/{id}/users")]
+    [Post("/budgets/{id}/users")]
     public Task AddUsersInBudget(Guid id, AddUsersInBudgetRequest request);
 
     /// <summary>
@@ -186,7 +184,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Delete("/{id}/users/{userId}")]
+    [Delete("/budgets/{id}/users/{userId}")]
     public Task DeleteUserFromBudget(Guid id, Guid userId);
 
     /// <summary>
@@ -205,7 +203,7 @@ public interface IBudgetsApi
     /// <item><term>400</term><description>Bad Request - Invalid request.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/{id}/permissions")]
+    [Get("/budgets/{id}/permissions")]
     public Task<UserInBudgetPermissionsDto> GetUserPermissions(Guid id);
 
     /// <summary>
@@ -223,7 +221,7 @@ public interface IBudgetsApi
     /// <item><term>403</term><description>Forbidden - User does not have permission to read this budget.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/{id}/spendings")]
+    [Get("/budgets/{id}/spendings")]
     public Task<GetBudgetSpendingsResponse> GetBudgetSpendings(Guid id, [Query] GetBudgetSpendingsQueryParameters query);
 
     /// <summary>
@@ -244,7 +242,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Post("/{id}/receipts")]
+    [Post("/budgets/{id}/receipts")]
     public Task AddReceiptSpending(Guid id, AddReceiptSpendingRequest request);
 
     /// <summary>
@@ -264,7 +262,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Post("/{id}/spendings/manual")]
+    [Post("/budgets/{id}/spendings/manual")]
     public Task AddManualSpending(Guid id, AddManualSpendingRequest request);
 
     /// <summary>
@@ -285,7 +283,7 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Put("/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
+    [Put("/budgets/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
     public Task ChangeReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId, ChangeReceiptProductCategoryRequest request);
 
     /// <summary>
@@ -305,6 +303,6 @@ public interface IBudgetsApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Delete("/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
+    [Delete("/budgets/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
     public Task DeleteReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId);
 }

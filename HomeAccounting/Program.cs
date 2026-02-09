@@ -54,7 +54,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddTransient<HttpLoggingHandler>();
 builder.Services.AddEventBus();
 
-var databaseServiceName = "HomeAccounting";
+var databaseServiceName = "homeaccounting-db";
 builder.AddUsers(databaseServiceName);
 builder.AddBudgets(databaseServiceName);
 builder.AddCategories(databaseServiceName);

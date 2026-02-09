@@ -30,4 +30,8 @@
       <None Remove="MediatorWithResults\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Refit\" />
+    </ItemGroup>
+
 </Project>

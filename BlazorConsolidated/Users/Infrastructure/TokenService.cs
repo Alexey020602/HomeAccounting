@@ -1,5 +1,5 @@
 using BlazorConsolidated.Users.Infrastructure.Abstractions;
-using BlazorConsolidated.Users.Infrastructure.Api;
+using ClientServerContracts.Api.Users;
 
 namespace BlazorConsolidated.Users.Infrastructure;
 

@@ -1,6 +1,6 @@
 using BlazorConsolidated.Common.Logout;
 using BlazorConsolidated.Users.Infrastructure.Abstractions;
-using BlazorConsolidated.Users.Infrastructure.Api;
+using ClientServerContracts.Api.Users;
 using ClientServerContracts.Users.Login;
 using Microsoft.AspNetCore.Components.Authorization;
 

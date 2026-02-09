@@ -1,4 +1,3 @@
-using ClientServerContracts.Api.Attributes;
 using ClientServerContracts.Users.GetUser;
 using ClientServerContracts.Users.UpdateUser;
 using Refit;
@@ -8,7 +7,6 @@ namespace ClientServerContracts.Api.Users;
 /// <summary>
 /// Refit client for Users API endpoints.
 /// </summary>
-[ApiAuthorizable("users")]
 [Headers("Authorization: Bearer")]
 public interface IUsersApi
 {
@@ -41,7 +39,7 @@ public interface IUsersApi
     /// <item><term>404</term><description>Not Found - User not found.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/{username}")]
+    [Get("/users/{username}")]
     public Task<User> GetUserByUsername(string username);
 
     /// <summary>
@@ -59,6 +57,6 @@ public interface IUsersApi
     /// <item><term>400</term><description>Bad Request - Validation errors.</description></item>
     /// </list>
     /// </remarks>
-    [Put("/{id}")]
+    [Put("/users/{id}")]
     public Task UpdateUser(Guid id, UpdatedUserDto user);
 }

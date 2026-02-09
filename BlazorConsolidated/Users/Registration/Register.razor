@@ -2,8 +2,7 @@
 @using BlazorConsolidated.Common.Components
 @using BlazorConsolidated.Common.RefitWithResult
 @using BlazorConsolidated.Common.Validation
-@using BlazorConsolidated.Users.Infrastructure
-@using BlazorConsolidated.Users.Infrastructure.Api
+@using ClientServerContracts.Api.Users
 @using ClientServerShared
 @using FluentValidation
 @using MaybeResults
@@ -102,7 +101,7 @@
             return;
         }
 
-        if (await AuthorizationApi.CheckLoginExist(registrationModel.Login))
+        if (await AuthorizationApi.CheckLoginExist(new CheckLoginExistQueryParameters { Login = registrationModel.Login} ))
         {
             var errorText = $"Логин {registrationModel.Login} уже существует";
             loginTextField.ValidationErrors.Add(errorText);

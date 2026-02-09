@@ -15,7 +15,7 @@ var username = builder.AddParameter("Username", secret: true, value: "myuser");
 var password = builder.AddParameter("Password", secret: true, value: "sdadfgsqafasdfas");
 
 var db = builder
-    .AddPostgres("db", username, password)
+    .AddPostgres("postgres", username, password)
     .WithUserName(username)
     .WithPassword(password)
     .WithLifetime(ContainerLifetime.Persistent)
@@ -24,7 +24,7 @@ var db = builder
     .WithLifetime(ContainerLifetime.Persistent)
     // .WithPgWeb()
     // .WithLifetime(ContainerLifetime.Persistent)
-    .AddDatabase("HomeAccounting");
+    .AddDatabase("homeaccounting-db");
 
 // var api = builder
 //     .AddProject<Api>("api")
@@ -32,7 +32,7 @@ var db = builder
 //     .WithReference(db)
 //     .WithHttpHealthCheck("/health");
 
-var myBudgets = builder.AddProject<HomeAccounting>("mybudgets")
+var myBudgets = builder.AddProject<HomeAccounting>("homeaccounting")
         .WithReference(db)
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")

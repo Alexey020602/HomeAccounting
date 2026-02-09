@@ -1,4 +1,3 @@
-using ClientServerContracts.Api.Attributes;
 using ClientServerContracts.Categories.GetCategories;
 using Refit;
 
@@ -18,7 +17,6 @@ public sealed class GetCategoriesQueryParameters
 /// <summary>
 /// Refit client for Categories API endpoints.
 /// </summary>
-[ApiAuthorizable("categories")]
 [Headers("Authorization: Bearer")]
 public interface ICategoriesApi
 {
@@ -36,7 +34,7 @@ public interface ICategoriesApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/")]
+    [Get("/categories")]
     Task<IReadOnlyCollection<CategoryDto>> GetCategories([Query] GetCategoriesQueryParameters query);
 
     /// <summary>
@@ -52,6 +50,6 @@ public interface ICategoriesApi
     /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
     /// </list>
     /// </remarks>
-    [Get("/tree")]
+    [Get("/categories/tree")]
     Task<IReadOnlyCollection<CategoryTreeDto>> GetCategoriesTree();
 }

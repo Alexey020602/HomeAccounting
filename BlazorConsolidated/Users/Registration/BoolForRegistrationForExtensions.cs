@@ -2,12 +2,16 @@ using MudBlazor;
 
 namespace BlazorConsolidated.Users.Registration;
 
-static class BoolForRegistrationForExtensions
+internal static class BoolForRegistrationForExtensions
 {
-    public static InputType PasswordFieldType(this bool isShow) => isShow 
-        ? InputType.Text 
-        : InputType.Password;
-    public static string PasswordFieldIcon(this bool isShow) => isShow 
-        ? Icons.Material.Filled.VisibilityOff 
-        :  Icons.Material.Filled.Visibility;
+    extension(bool isShow)
+    {
+        public InputType PasswordFieldType() => isShow 
+            ? InputType.Text 
+            : InputType.Password;
+
+        public string PasswordFieldIcon() => isShow 
+            ? Icons.Material.Filled.VisibilityOff 
+            :  Icons.Material.Filled.Visibility;
+    }
 }

@@ -35,6 +35,7 @@
 
     <ItemGroup>
       <Folder Include="Categories\" />
+      <Folder Include="Users\Infrastructure\Api\" />
     </ItemGroup>
 
 </Project>

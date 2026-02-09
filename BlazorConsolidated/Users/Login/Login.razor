@@ -4,8 +4,6 @@
 @using BlazorConsolidated.Users.Infrastructure.Abstractions
 @using BlazorConsolidated.Users.Infrastructure.Api
 @using Blazored.FluentValidation
-@using ClientServerContracts.User.GetUser
-@using ClientServerContracts.User.Login
 @using ClientServerShared.Users
 @inject IAuthorizationApi AuthorizationApi
 @inject ILoginService LoginStateProvider
@@ -60,7 +58,7 @@
         public string Login { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
 
-        internal ClientServerContracts.User.Login.LoginRequest CreateLoginRequest() => new(Login, Password);
+        internal ClientServerContracts.Users.Login.LoginRequest CreateLoginRequest() => new(Login, Password);
     }
     private async Task LoginAsync()
     {

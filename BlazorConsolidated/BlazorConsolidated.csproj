@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ClientServerContracts\ClientServerContracts.csproj" />
+        <ProjectReference Include="..\ClientServerContracts.Api\ClientServerContracts.Api.csproj" />
       <ProjectReference Include="..\ClientServerShared\ClientServerShared.csproj" />
     </ItemGroup>
 
@@ -33,10 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Budgets\BudgetDetailPage\BudgetDetailPage.razor" />
-      <AdditionalFiles Include="Budgets\BudgetsList\BudgetsPage.razor" />
-      <AdditionalFiles Include="Budgets\BudgetsList\UserBudgetsComponent.razor" />
-      <AdditionalFiles Include="Budgets\CreateBudgetPage\CreateBudgetPage.razor" />
+      <Folder Include="Categories\" />
     </ItemGroup>
 
 </Project>

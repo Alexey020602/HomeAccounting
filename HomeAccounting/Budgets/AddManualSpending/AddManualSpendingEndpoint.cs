@@ -13,8 +13,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.AddManualSpending;
 
+/// <summary>
+/// Endpoint for adding manual spending to a budget.
+/// </summary>
 static class AddManualSpendingEndpoint
 {
+    /// <summary>
+    /// Maps POST /budgets/{id}/spendings/manual. Adds manual spending; requires edit permission.
+    /// </summary>
     public static void MapAddManualSpending(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
@@ -40,11 +46,11 @@ static class AddManualSpendingEndpoint
                     }
 
                     var userId = new UserId(user.GetUserId());
-                    var addedDate = DateTime.UtcNow;
+                    var addedDate = DateTimeOffset.UtcNow;
 
-                    budget.AddManualSpending(
-                        Money.FromKopecks(request.Sum), 
-                        request.Description, 
+                    budget.AddOperation(
+                        Money.FromKopecks(request.Sum),
+                        request.Description,
                         request.CategoryId.HasValue ? new CategoryId(request.CategoryId.Value) : null,
                         request.PurchaseDate, addedDate,
                         userId);
@@ -53,6 +59,10 @@ static class AddManualSpendingEndpoint
 
                     return Results.Created();
                 })
+            .WithName("AddManualSpending")
+            .WithTags("Budgets")
+            .WithSummary("Add manual spending")
+            .WithDescription("Adds a manual spending entry to the budget. Requires edit permission.")
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

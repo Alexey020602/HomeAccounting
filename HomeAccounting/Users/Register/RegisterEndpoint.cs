@@ -1,12 +1,18 @@
 using System.Net;
-using ClientServerContracts.User.Register;
+using ClientServerContracts.Users.Register;
 using HomeAccounting.Users.Data;
 using Microsoft.AspNetCore.Identity;
 
 namespace HomeAccounting.Users.Register;
 
+/// <summary>
+/// Endpoint for user registration.
+/// </summary>
 static class RegisterEndpoint
 {
+    /// <summary>
+    /// Maps POST /register. Creates a new user account.
+    /// </summary>
     public static void MapRegister(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
@@ -34,6 +40,10 @@ static class RegisterEndpoint
                     );
                 }
             )
+            .WithName("Register")
+            .WithTags("Users")
+            .WithSummary("Register")
+            .WithDescription("Creates a new user account with the provided credentials.")
             .Produces((int)HttpStatusCode.Created)
             .Produces((int)HttpStatusCode.BadRequest)
             .AllowAnonymous();

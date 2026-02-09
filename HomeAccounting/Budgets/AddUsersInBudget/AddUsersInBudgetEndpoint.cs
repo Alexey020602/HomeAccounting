@@ -12,8 +12,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.AddUsersInBudget;
 
+/// <summary>
+/// Endpoint for adding a user to a budget.
+/// </summary>
 static class AddUsersInBudgetEndpoint
 {
+    /// <summary>
+    /// Maps POST /budgets/{id}/users. Adds a user to the budget; requires edit permission.
+    /// </summary>
     public static void MapAddUsersInBudget(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
@@ -75,6 +81,10 @@ static class AddUsersInBudgetEndpoint
 
                 return Results.Created();
             })
+            .WithName("AddUsersInBudget")
+            .WithTags("Budgets")
+            .WithSummary("Add user to budget")
+            .WithDescription("Adds a user to the budget with the specified role. Requires edit permission.")
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

@@ -12,6 +12,7 @@ internal static class ReceiptProcessingModule
         {
             services.AddReceiptData();
             services.AddTransient<IReceiptProcessService, ReceiptProcessService>();
+            
             return services;
         }
 

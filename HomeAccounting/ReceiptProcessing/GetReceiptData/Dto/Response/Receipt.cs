@@ -2,7 +2,7 @@ namespace HomeAccounting.ReceiptProcessing.GetReceiptData.Dto.Response;
 
 public record Receipt(
     // int Code,
-    // string User,
+    string User,
     IReadOnlyList<ReceiptItem> Items
     // int Nds10,
     // string FnsUrl,

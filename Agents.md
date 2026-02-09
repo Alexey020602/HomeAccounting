@@ -35,7 +35,7 @@ You are a senior .NET developer experienced in C# 14, ASP.NET Core, Blazor, .NET
 
 ## Syntax and Formatting
 - Follow the C# Coding Conventions (https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions).
-- Use C#'s expressive syntax (e.g., null-conditional operators, string interpolation).
+- Use C#'s expressive syntax (e.g., null-conditional operators, string interpolation and etc.).
 - Use 'var' for implicit typing when the type is obvious.
 
 ## Error Handling and Validation
@@ -52,6 +52,10 @@ You are a senior .NET developer experienced in C# 14, ASP.NET Core, Blazor, .NET
 - Implement versioning for your API.
 - Use action filters for cross-cutting concerns.
 - Use HttpClient for API communication in Blazor.
+- Use Refit for creating REST API clients.
+- **Minimal API Endpoints:** When creating Minimal API endpoints, represent query parameters as a `record` (by default also `sealed`) with the `[AsParameters]` attribute. Add metadata to each endpoint (e.g. `WithName`, `WithTags`, `WithDescription`, `WithSummary`).
+- **Refit clients:** When creating Refit clients for these endpoints, represent query parameters as a `class` or `record` (by default `sealed`) depending on usage context (mutability vs. immutability of fields and similar). Use the required Refit attributes, such as `Query` and `AliasAs`. Name query parameter types `{MethodName}QueryParameters` and place them in the same file (or same namespace) as the Refit interface. When the Refit client is based on Minimal API endpoints, use the endpoint's `WithName` value as the Refit method name.
+- **Refit method documentation:** Document each Refit interface method with XML doc comments. Use `<summary>` for a short description (when based on Minimal API, take from the endpoint's `WithSummary`). Use `<remarks>` for a longer description (from the endpoint's `WithDescription` when available). Add `<param>` for every parameter except `CancellationToken`. Use `<returns>`: for `Task` without result describe that the task completes when the request is finished; for `Task<T>` briefly describe the response. Always add `<exception cref="ApiException">` stating that it is thrown on non-success status codes, followed by a `<list type="table">` of possible HTTP status codes and their descriptions (e.g. 400 Bad Request, 404 Not Found, 500 Internal Server Error). Keep doc comments in sync with endpoint contract changes.
 
 ## Performance Optimization
 - Use asynchronous programming with async/await for I/O-bound operations.
@@ -86,7 +90,7 @@ You are a senior .NET developer experienced in C# 14, ASP.NET Core, Blazor, .NET
 
 ## API Documentation
 - Use Scalar for API documentation instead of Swagger.
-- Provide XML comments for controllers and models to enhance documentation.
+- Add XML doc comments to all generated or modified classes, methods, and public members; keep these comments up to date when the code changes.
 
 ## Response Language
 - Always respond in the language the question was asked in.

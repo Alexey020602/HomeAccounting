@@ -11,8 +11,14 @@ using HomeAccounting.Budgets;
 
 namespace HomeAccounting.Budgets.GetBudgetDetail;
 
-internal static class GetBudgetDetailEndpoint
+/// <summary>
+/// Endpoint for retrieving a single budget by id.
+/// </summary>
+static class GetBudgetDetailEndpoint
 {
+    /// <summary>
+    /// Maps GET /budgets/{id}. Returns budget details if the user has read permission.
+    /// </summary>
     public static void MapGetBudgetDetails(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("{id:guid}", async (Guid id, ClaimsPrincipal user, BudgetsContext budgetsContext, IAuthorizationService authorizationHandler, CancellationToken cancellationToken) =>
@@ -35,6 +41,10 @@ internal static class GetBudgetDetailEndpoint
                 var response = await budgetQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken); 
                 return response is null ? Results.NotFound() : Results.Ok(response);
             })
+            .WithName("GetBudgetDetail")
+            .WithTags("Budgets")
+            .WithSummary("Get budget detail")
+            .WithDescription("Returns budget details by id. Requires read permission on the budget.")
             .Produces((int)HttpStatusCode.OK, typeof(BudgetDetailDto))
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden);

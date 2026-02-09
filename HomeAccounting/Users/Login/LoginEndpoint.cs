@@ -1,5 +1,5 @@
 using System.Net;
-using ClientServerContracts.User.Login;
+using ClientServerContracts.Users.Login;
 using ClientServerShared.Users;
 using HomeAccounting.Users.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,8 +7,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HomeAccounting.Users.Login;
 
+/// <summary>
+/// Endpoint for user authentication (login).
+/// </summary>
 static class LoginEndpoint
 {
+    /// <summary>
+    /// Maps POST /login. Authenticates user and returns JWT and refresh token.
+    /// </summary>
     public static void MapLogin(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/login",
@@ -40,7 +46,11 @@ static class LoginEndpoint
                         refreshToken.Expires
                     ));
             })
-            .Produces((int) HttpStatusCode.OK, typeof(AuthorizationResponse))
+            .WithName("Login")
+            .WithTags("Users")
+            .WithSummary("Login")
+            .WithDescription("Authenticates user by login and password. Returns JWT and refresh token.")
+            .Produces((int)HttpStatusCode.OK, typeof(AuthorizationResponse))
             .AllowAnonymous();
     }
 }

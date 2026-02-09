@@ -1,14 +1,14 @@
 namespace HomeAccounting.ReceiptProcessing.GetReceiptData.Dto.Response;
 
-public abstract record ReceiptResponseDataError(int Code, string Data) : ReceiptResponse(Code);
+public abstract record ReceiptResponseDataError(string Data) : ReceiptResponse();
 
-public record IncorrectReceiptResponseError(int Code, string Data) : ReceiptResponseDataError(Code, Data);
+public record IncorrectReceiptResponseError(string Data) : ReceiptResponseDataError(Data);
 
-public record ReceiptResponseDataErrorDataNotReceivedYetError(int Code, string Data)
-    : ReceiptResponseDataError(Code, Data);
+public record ReceiptResponseDataErrorDataNotReceivedYetError(string Data)
+    : ReceiptResponseDataError(Data);
 
-public record NumberOfRequestsExceededError(int Code, string Data) : ReceiptResponseDataError(Code, Data);
+public record NumberOfRequestsExceededError(string Data) : ReceiptResponseDataError(Data);
 
-public record WaitingBeforeRepeatRequestError(int Code, string Data) : ReceiptResponseDataError(Code, Data);
+public record WaitingBeforeRepeatRequestError(string Data) : ReceiptResponseDataError(Data);
 
-public record OtherReceiptResponseError(int Code, string Data) : ReceiptResponseDataError(Code, Data);
+public record OtherReceiptResponseError(string Data) : ReceiptResponseDataError(Data);

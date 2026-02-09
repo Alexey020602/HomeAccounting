@@ -49,7 +49,7 @@ public class TokenProvider(IOptions<JwtTokenSettings> settings, ILogger<TokenPro
             Settings.Issuer,
             Settings.Audience,
             claims,
-            expires: Settings.AccessTokenExpirationDate,
+            expires: Settings.AccessTokenExpirationDate.UtcDateTime,
             signingCredentials: CreateSigningCredentials());
     private SigningCredentials CreateSigningCredentials()
     {

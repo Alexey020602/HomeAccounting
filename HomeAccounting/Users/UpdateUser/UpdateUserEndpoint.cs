@@ -1,12 +1,18 @@
 using System.Net;
-using ClientServerContracts.User.UpdateUser;
+using ClientServerContracts.Users.UpdateUser;
 using HomeAccounting.Users.Data;
 using Microsoft.AspNetCore.Identity;
 
 namespace HomeAccounting.Users.UpdateUser;
 
+/// <summary>
+/// Endpoint for updating user profile.
+/// </summary>
 static class UpdateUserEndpoint
 {
+    /// <summary>
+    /// Maps PUT /users/{id}. Updates user full name and username.
+    /// </summary>
     public static void MapUpdateUserEndpoint(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPut(
@@ -31,9 +37,12 @@ static class UpdateUserEndpoint
                     result.Errors.Select(e => new KeyValuePair<string, string[]>(e.Code, [e.Description]))
                 );
             })
+            .WithName("UpdateUser")
+            .WithTags("Users")
+            .WithSummary("Update user")
+            .WithDescription("Updates user full name and username by id.")
             .Produces((int)HttpStatusCode.NoContent)
             .ProducesValidationProblem()
-            .ProducesProblem((int)HttpStatusCode.NotFound)
-            ;
+            .ProducesProblem((int)HttpStatusCode.NotFound);
     }
 }

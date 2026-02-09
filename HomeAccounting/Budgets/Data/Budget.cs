@@ -9,20 +9,21 @@ namespace HomeAccounting.Budgets.Data;
 internal sealed partial class Budget: Entity<BudgetId>
 {
     private List<BudgetUser> budgetUsers = [];
-    private List<Spending> spendings = [];
+    private List<Operation> operations = [];
     public string Name { get; private set; }
     public int BeginOfPeriod { get; private set; }
     public Money? Limit { get; private set; }
     public UserId CreatorId { get; private set; }
-    public DateTime CreationDate { get; private set; }
+    public DateTimeOffset CreationDate { get; private set; }
     public IReadOnlyList<BudgetUser> BudgetUsers => budgetUsers;
-    public IReadOnlyList<Spending> Spendings => spendings;
+    public IReadOnlyList<Operation> Operations => operations;
+
     private Budget()
     {
         Name = string.Empty;
     }
 
-    public Budget(string name, int beginOfPeriod, Money? limit, UserId userId, DateTime creationDate, IEnumerable<BudgetUser> budgetUsers)
+    public Budget(string name, int beginOfPeriod, Money? limit, UserId userId, DateTimeOffset creationDate, IEnumerable<BudgetUser> budgetUsers)
     {
         Name = name;
         BeginOfPeriod = beginOfPeriod;
@@ -36,39 +37,9 @@ internal sealed partial class Budget: Entity<BudgetId>
         }
     }
 
-    public void AddManualSpending(Money sum, string description, CategoryId? categoryId, DateTime purchaseDate, DateTime addedDate, UserId userId)
+    public void AddOperation(Money sum, string description, CategoryId? categoryId, DateTimeOffset purchaseDate, DateTimeOffset addedDate, UserId userId)
     {
-        spendings.Add(new ManualSpending(sum,  purchaseDate, categoryId, addedDate, description, userId));
-    }
-
-    public void AddReceiptSpending(
-        DateTime purchaseDate,
-        DateTime addedDate,
-        ReceiptFiscalData fiscalData,
-        UserId userId,
-        string purchasePlace,
-        IEnumerable<ProductInput> productInputs)
-    {
-        spendings.Add(new ReceiptSpending(
-            purchaseDate,
-            addedDate,
-            fiscalData,
-            userId,
-            purchasePlace,
-            productInputs));
-    }
-
-    public void ChangeCategoryForProduct(SpendingId spendingId, ProductId productId, CategoryId categoryId)
-    {
-        var spending = GetReceiptSpending(spendingId);
-        
-        spending.ChangeCategoryForProduct(productId, categoryId);
-    }
-
-    public void DeleteCategoryForProduct(SpendingId spendingId, ProductId productId)
-    {
-        var spending = GetReceiptSpending(spendingId);
-        spending.DeleteCategoryForProduct(productId);
+        operations.Add(new Operation(sum, purchaseDate, categoryId, addedDate, description, userId));
     }
 
     public void Update(string name, int beginOfPeriod, Money? limit)
@@ -77,24 +48,6 @@ internal sealed partial class Budget: Entity<BudgetId>
         BeginOfPeriod = beginOfPeriod;
         Limit = limit;
     }
-    
-    
-
-    // public bool CanUserEdit(UserId userId, BudgetRole? userRole)
-    // {
-    //     if (userRole is null)
-    //         return false;
-    //     
-    //     return userRole.Permissions.Contains(BudgetPermissions.Edit);
-    // }
-    //
-    // public bool CanUserDelete(UserId userId, BudgetRole? userRole)
-    // {
-    //     if (userRole is null)
-    //         return false;
-    //     
-    //     return userRole.Permissions.Contains(BudgetPermissions.Delete);
-    // }
 
     public BudgetRoleId? GetUserRole(UserId userId)
     {
@@ -105,7 +58,7 @@ internal sealed partial class Budget: Entity<BudgetId>
     {
         if (budgetUsers.Any(bu => bu.UserId == userId))
         {
-            throw new InvalidOperationException("User is already added to this budget");
+            throw new DomainException("User is already added to this budget");
         }
 
         budgetUsers.Add(new BudgetUser(userId, roleId));
@@ -119,7 +72,7 @@ internal sealed partial class Budget: Entity<BudgetId>
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="currentUserId"></param>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="DomainException"></exception>
     public void RemoveUser(UserId userId, UserId currentUserId)
     {
         if (userId == currentUserId)
@@ -142,33 +95,11 @@ internal sealed partial class Budget: Entity<BudgetId>
             throw new DomainException("Current user is not in this budget");
         }
 
-        if (currentUser.IsAdmin &&user.IsAdmin)
+        if (currentUser.IsAdmin && user.IsAdmin)
         {
             throw new DomainException("Admin cannot be deleted by admin");
         }
 
         budgetUsers.Remove(user);
-    }
-    
-    private Spending GetSpending(SpendingId spendingId) => spendings.FirstOrDefault(sp => sp.Id == spendingId) ?? throw new DomainException("Spending not found");
-
-    private ManualSpending GetManualSpending(SpendingId spendingId)
-    {
-        if (GetSpending(spendingId) is not ManualSpending manualSpending)
-        {
-            throw new DomainException("This spending is not manual");
-        }
-        
-        return manualSpending;
-    }
-
-    private ReceiptSpending GetReceiptSpending(SpendingId spendingId)
-    {
-        if (GetSpending(spendingId) is not ReceiptSpending receiptSpending)
-        {
-            throw new DomainException("This spending is not receipt");
-        }
-
-        return receiptSpending;
     }
 }

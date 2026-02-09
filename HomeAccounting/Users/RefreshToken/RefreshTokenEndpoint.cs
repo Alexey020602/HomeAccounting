@@ -1,4 +1,5 @@
-using ClientServerContracts.User.Login;
+using System.Net;
+using ClientServerContracts.Users.Login;
 using ClientServerShared.Users;
 using HomeAccounting.Users.Data;
 using HomeAccounting.Users.Login;
@@ -8,8 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeAccounting.Users.RefreshToken;
 
+/// <summary>
+/// Endpoint for refreshing JWT using a valid refresh token.
+/// </summary>
 static class RefreshTokenEndpoint
 {
+    /// <summary>
+    /// Maps POST refresh. Exchanges valid refresh token for new JWT and refresh token.
+    /// </summary>
     public static void MapRefreshToken(this IEndpointRouteBuilder endpoints)
     {
         endpoints
@@ -24,7 +31,7 @@ static class RefreshTokenEndpoint
                         return Results.NotFound("User not found");
                     }
 
-                    if (user.RefreshToken == null || user.RefreshToken.Expires < DateTime.UtcNow)
+                    if (user.RefreshToken == null || user.RefreshToken.Expires < DateTimeOffset.UtcNow)
                     {
                         return Results.Unauthorized();
                     }
@@ -46,6 +53,13 @@ static class RefreshTokenEndpoint
                             newRefreshToken.Token,
                             newRefreshToken.Expires
                         ));
-                });
+                })
+            .WithName("RefreshToken")
+            .WithTags("Users")
+            .WithSummary("Refresh token")
+            .WithDescription("Exchanges a valid refresh token for new JWT and refresh token.")
+            .Produces((int)HttpStatusCode.OK, typeof(AuthorizationResponse))
+            .ProducesProblem((int)HttpStatusCode.NotFound)
+            .ProducesProblem((int)HttpStatusCode.Unauthorized);
     }
 }

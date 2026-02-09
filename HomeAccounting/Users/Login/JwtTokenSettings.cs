@@ -10,8 +10,8 @@ public class JwtTokenSettings
     public required string Key { get; init; }
     public required int AccessTokenExpireMinutes { get; init; }
     public required int RefreshTokenExpireDays { get; init; }
-    public DateTime AccessTokenExpirationDate => DateTime.UtcNow.AddMinutes(AccessTokenExpireMinutes);
-    public DateTime RefreshTokenExpirationDate => DateTime.UtcNow.AddDays(RefreshTokenExpireDays);
+    public DateTimeOffset AccessTokenExpirationDate => DateTimeOffset.UtcNow.AddMinutes(AccessTokenExpireMinutes);
+    public DateTimeOffset RefreshTokenExpirationDate => DateTimeOffset.UtcNow.AddDays(RefreshTokenExpireDays);
     public SecurityKey SecurityKey  => new SymmetricSecurityKey(
         Encoding.UTF8.GetBytes(Key)
     );

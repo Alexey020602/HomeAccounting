@@ -1,5 +1,6 @@
 @using BlazorConsolidated.Budgets.BudgetState
 @using BlazorConsolidated.Common.Components
+@using ClientServerContracts.Api.Budgets
 @using ClientServerContracts.Budgets.GetBudgets
 @using ClientServerShared.Results
 
@@ -27,7 +28,7 @@
         {
             throw new InvalidOperationException($"Cascading value of type Task<{nameof(BudgetState)}> required");
         }
-        (await BudgetsApi.GetBudgets(new GetBudgetsRequest()).TryAsync())
+        (await BudgetsApi.GetBudgets(new ()).TryAsync())
             .Match(
                 onSome: b => budgets = b,
                 onNone: error => Snackbar.ProcessError(error)

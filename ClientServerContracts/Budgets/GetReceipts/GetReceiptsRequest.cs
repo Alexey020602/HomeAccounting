@@ -12,3 +12,6 @@ public sealed record GetReceiptsRequest(
     bool? SortDescending = null,
     int? Take = null,
     int? Skip = null);
+
+
+public record PagingRequest(string? Filter = null, string? Sort = null, int? Skip = null,  int? Take = null);

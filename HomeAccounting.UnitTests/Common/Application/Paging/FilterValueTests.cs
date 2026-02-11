@@ -16,7 +16,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Name, result.Field);
-        Assert.Equal(FilterOperator.Equal, result.Operator);
+        Assert.Equal(FilterOperator.Eq, result.Operator);
         Assert.Equal("John", result.Value);
     }
 
@@ -32,7 +32,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Name, result.Field);
-        Assert.Equal(FilterOperator.Equal, result.Operator);
+        Assert.Equal(FilterOperator.Eq, result.Operator);
         Assert.Equal("John", result.Value);
     }
 
@@ -48,7 +48,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Status, result.Field);
-        Assert.Equal(FilterOperator.NotEqual, result.Operator);
+        Assert.Equal(FilterOperator.Ne, result.Operator);
         Assert.Equal("Active", result.Value);
     }
 
@@ -64,7 +64,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Age, result.Field);
-        Assert.Equal(FilterOperator.GreaterThan, result.Operator);
+        Assert.Equal(FilterOperator.Gt, result.Operator);
         Assert.Equal("18", result.Value);
     }
 
@@ -80,7 +80,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Age, result.Field);
-        Assert.Equal(FilterOperator.GreaterThanOrEqual, result.Operator);
+        Assert.Equal(FilterOperator.Gte, result.Operator);
         Assert.Equal("18", result.Value);
     }
 
@@ -96,7 +96,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Age, result.Field);
-        Assert.Equal(FilterOperator.LessThan, result.Operator);
+        Assert.Equal(FilterOperator.Lt, result.Operator);
         Assert.Equal("65", result.Value);
     }
 
@@ -112,7 +112,7 @@ public class FilterValueTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(TestField.Age, result.Field);
-        Assert.Equal(FilterOperator.LessThanOrEqual, result.Operator);
+        Assert.Equal(FilterOperator.Lte, result.Operator);
         Assert.Equal("65", result.Value);
     }
 
@@ -141,7 +141,7 @@ public class FilterValueTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(FilterOperator.Equal, result.Operator);
+        Assert.Equal(FilterOperator.Eq, result.Operator);
     }
 
     [Fact]

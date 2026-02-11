@@ -18,7 +18,7 @@ public class FilterTests
         var filters = result.ToArray();
         Assert.Single(filters);
         Assert.Equal(TestField.Name, filters[0].Field);
-        Assert.Equal(FilterOperator.Equal, filters[0].Operator);
+        Assert.Equal(FilterOperator.Eq, filters[0].Operator);
         Assert.Equal("John", filters[0].Value);
     }
 
@@ -37,15 +37,15 @@ public class FilterTests
         Assert.Equal(3, filters.Length);
         
         Assert.Equal(TestField.Name, filters[0].Field);
-        Assert.Equal(FilterOperator.Equal, filters[0].Operator);
+        Assert.Equal(FilterOperator.Eq, filters[0].Operator);
         Assert.Equal("John", filters[0].Value);
         
         Assert.Equal(TestField.Age, filters[1].Field);
-        Assert.Equal(FilterOperator.GreaterThan, filters[1].Operator);
+        Assert.Equal(FilterOperator.Gt, filters[1].Operator);
         Assert.Equal("18", filters[1].Value);
         
         Assert.Equal(TestField.Status, filters[2].Field);
-        Assert.Equal(FilterOperator.NotEqual, filters[2].Operator);
+        Assert.Equal(FilterOperator.Ne, filters[2].Operator);
         Assert.Equal("Inactive", filters[2].Value);
     }
 
@@ -137,8 +137,8 @@ public class FilterTests
         Assert.NotNull(result);
         var filters = result.ToArray();
         Assert.Equal(2, filters.Length);
-        Assert.Equal(FilterOperator.Equal, filters[0].Operator);
-        Assert.Equal(FilterOperator.Equal, filters[1].Operator);
+        Assert.Equal(FilterOperator.Eq, filters[0].Operator);
+        Assert.Equal(FilterOperator.Eq, filters[1].Operator);
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using ClientServerShared.Model.Money;
 using HomeAccounting.Categories.Data;
 using HomeAccounting.Common.Model;
@@ -9,7 +10,18 @@ internal sealed partial class Receipt : Entity<ReceiptId>
 {
     public BudgetId BudgetId { get; private set; }
     public UserId UserId { get; private set; }
-    public ReceiptFiscalData FiscalData { get; private set; }
+    
+    // Фискальные данные (Value Objects)
+    public FiscalNumber Fn { get; private set; }
+    public FiscalDocument Fd { get; private set; }
+    public FiscalSign Fp { get; private set; }
+    
+    // Фискальная сумма из чека
+    public Money Sum { get; private set; }
+    
+    // Дата покупки
+    public DateTimeOffset PurchaseDate { get; private set; }
+    
     public DateTimeOffset CreatedAt { get; private set; }
     public string PurchasePlace { get; private set; } = string.Empty;
     public ReceiptProcessingStatus Status { get; private set; }
@@ -18,7 +30,10 @@ internal sealed partial class Receipt : Entity<ReceiptId>
     public DateTimeOffset? CompletedAt { get; private set; }
     public string? LastErrorMessage { get; private set; }
 
-    public Money Sum => Products.Count > 0 ? Products.Sum(p => p.Sum) : FiscalData.Sum;
+    /// <summary>
+    /// Вычисляемая сумма из продуктов (если есть).
+    /// </summary>
+    public Money? CalculatedSum => Products.Count > 0 ? Products.Sum(p => p.Sum) : null;
 
     public string Description => Status switch
     {
@@ -30,20 +45,38 @@ internal sealed partial class Receipt : Entity<ReceiptId>
 
     private Receipt()
     {
-        FiscalData = ReceiptFiscalData.Empty();
+        // EF Core parameterless constructor
+        Fn = FiscalNumber.Create("0000000000000000");
+        Fd = FiscalDocument.Create("000");
+        Fp = FiscalSign.Create("00000000");
+        Sum = default;
+        PurchaseDate = default;
     }
 
     public Receipt(
         ReceiptId id,
         BudgetId budgetId,
         DateTimeOffset createdAt,
-        ReceiptFiscalData fiscalData,
+        FiscalNumber fn,
+        FiscalDocument fd,
+        FiscalSign fp,
+        Money sum,
+        DateTimeOffset purchaseDate,
         UserId userId)
         : base(id)
     {
+        if (purchaseDate > DateTimeOffset.UtcNow)
+        {
+            throw new ArgumentException("You cannot add receipt from future", nameof(purchaseDate));
+        }
+        
         BudgetId = budgetId;
         UserId = userId;
-        FiscalData = fiscalData;
+        Fn = fn;
+        Fd = fd;
+        Fp = fp;
+        Sum = sum;
+        PurchaseDate = purchaseDate;
         CreatedAt = createdAt;
         PurchasePlace = string.Empty;
         Status = ReceiptProcessingStatus.Processing;
@@ -52,14 +85,27 @@ internal sealed partial class Receipt : Entity<ReceiptId>
     public Receipt(
         BudgetId budgetId,
         DateTimeOffset createdAt,
-        ReceiptFiscalData fiscalData,
+        FiscalNumber fn,
+        FiscalDocument fd,
+        FiscalSign fp,
+        Money sum,
+        DateTimeOffset purchaseDate,
         UserId userId,
         string purchasePlace,
         IEnumerable<ProductInput> productInputs)
     {
+        if (purchaseDate > DateTimeOffset.UtcNow)
+        {
+            throw new ArgumentException("You cannot add receipt from future", nameof(purchaseDate));
+        }
+        
         BudgetId = budgetId;
         PurchasePlace = purchasePlace;
-        FiscalData = fiscalData;
+        Fn = fn;
+        Fd = fd;
+        Fp = fp;
+        Sum = sum;
+        PurchaseDate = purchaseDate;
         Status = ReceiptProcessingStatus.Succeeded;
         UserId = userId;
         CreatedAt = createdAt;
@@ -80,15 +126,28 @@ internal sealed partial class Receipt : Entity<ReceiptId>
         ReceiptId id,
         BudgetId budgetId,
         DateTimeOffset createdAt,
-        ReceiptFiscalData fiscalData,
+        FiscalNumber fn,
+        FiscalDocument fd,
+        FiscalSign fp,
+        Money sum,
+        DateTimeOffset purchaseDate,
         UserId userId,
         string purchasePlace,
         IEnumerable<ProductInput> productInputs)
         : base(id)
     {
+        if (purchaseDate > DateTimeOffset.UtcNow)
+        {
+            throw new ArgumentException("You cannot add receipt from future", nameof(purchaseDate));
+        }
+        
         BudgetId = budgetId;
         PurchasePlace = purchasePlace;
-        FiscalData = fiscalData;
+        Fn = fn;
+        Fd = fd;
+        Fp = fp;
+        Sum = sum;
+        PurchaseDate = purchaseDate;
         Status = ReceiptProcessingStatus.Succeeded;
         UserId = userId;
         CreatedAt = createdAt;
@@ -146,4 +205,20 @@ internal sealed partial class Receipt : Entity<ReceiptId>
 
     private Product GetProduct(ProductId productId) =>
         products.FirstOrDefault(p => p.Id == productId) ?? throw new DomainException("Product not found");
+
+    /// <summary>
+    /// Создает ReceiptFiscalData из полей Receipt для межмодульного взаимодействия.
+    /// </summary>
+    public ReceiptFiscalData ToReceiptFiscalData()
+    {
+        return ReceiptFiscalData.Create(Fn, Fd, Fp, Sum, PurchaseDate);
+    }
+
+    /// <summary>
+    /// Формирует строку фискальных данных для внешних API в формате: fn={Fn}&i={Fd}&fp={Fp}&t={PurchaseDate}&s={FiscalSum}&n=1
+    /// </summary>
+    public string GetRawFiscalDataString([StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string format = "yyyyMMddTHHmm")
+    {
+        return $"fn={Fn}&i={Fd}&fp={Fp}&t={PurchaseDate.ToString(format)}&s={Sum}&n=1";
+    }
 }

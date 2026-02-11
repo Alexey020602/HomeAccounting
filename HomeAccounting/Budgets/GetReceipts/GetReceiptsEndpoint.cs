@@ -57,12 +57,12 @@ static class GetReceiptsEndpoint
                 // Apply filters
                 if (request.StartDate.HasValue)
                 {
-                    receiptsQuery = receiptsQuery.Where(r => r.FiscalData.PurchaseDate >= request.StartDate.Value);
+                    receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate >= request.StartDate.Value);
                 }
 
                 if (request.EndDate.HasValue)
                 {
-                    receiptsQuery = receiptsQuery.Where(r => r.FiscalData.PurchaseDate <= request.EndDate.Value);
+                    receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate <= request.EndDate.Value);
                 }
 
                 if (request.UserId.HasValue)
@@ -90,8 +90,8 @@ static class GetReceiptsEndpoint
                     ? receiptsQuery.OrderByDescending(r => r.Sum)
                         : receiptsQuery.OrderBy(r => r.Sum),
                     "PurchaseDate" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.FiscalData.PurchaseDate)
-                        : receiptsQuery.OrderBy(r => r.FiscalData.PurchaseDate),
+                        ? receiptsQuery.OrderByDescending(r => r.PurchaseDate)
+                        : receiptsQuery.OrderBy(r => r.PurchaseDate),
                     "CreatedAt" => sortDescending
                         ? receiptsQuery.OrderByDescending(r => r.CreatedAt)
                         : receiptsQuery.OrderBy(r => r.CreatedAt),
@@ -101,7 +101,7 @@ static class GetReceiptsEndpoint
                     "PurchasePlace" => sortDescending
                         ? receiptsQuery.OrderByDescending(r => r.PurchasePlace)
                         : receiptsQuery.OrderBy(r => r.PurchasePlace),
-                    _ => receiptsQuery.OrderByDescending(r => r.FiscalData.PurchaseDate)
+                    _ => receiptsQuery.OrderByDescending(r => r.PurchaseDate)
                 };
 
                 // Apply pagination
@@ -120,16 +120,16 @@ static class GetReceiptsEndpoint
                 var receiptDtos = receipts.Select(r => new ReceiptDto(
                     r.Id.Value,
                     r.Sum.ToString(),
-                    r.FiscalData.PurchaseDate,
+                    r.PurchaseDate,
                     r.CreatedAt,
                     r.CompletedAt,
                     r.UserId.Value,
                     r.PurchasePlace,
                     MapReceiptStatus(r.Status),
                     r.LastErrorMessage,
-                    r.FiscalData.Fn,
-                    r.FiscalData.Fd,
-                    r.FiscalData.Fp
+                    r.Fn.Value,
+                    r.Fd.Value,
+                    r.Fp.Value
                 )).ToArray();
 
                 var response = new GetReceiptsResponse(receiptDtos, totalCount);

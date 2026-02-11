@@ -79,12 +79,17 @@ static class AddReceiptFromFileEndpoint
                             detail: "Failed to parse receipt fiscal data");
                     }
 
+                    // Create Value Objects from parsed data
+                    var fn = FiscalNumber.Create(fiscalData.Fn);
+                    var fd = FiscalDocument.Create(fiscalData.Fd);
+                    var fp = FiscalSign.Create(fiscalData.Fp);
+
                     // Check for duplicate receipt
                     var existingReceipt = await budgetsContext.Receipts
                         .AnyAsync(r => r.BudgetId == budgetId &&
-                                       r.FiscalData.Fn == fiscalData.Fn &&
-                                       r.FiscalData.Fd == fiscalData.Fd &&
-                                       r.FiscalData.Fp == fiscalData.Fp,
+                                       r.Fn == fn &&
+                                       r.Fd == fd &&
+                                       r.Fp == fp,
                             cancellationToken);
 
                     if (existingReceipt)
@@ -98,7 +103,7 @@ static class AddReceiptFromFileEndpoint
                     var addedDate = DateTimeOffset.UtcNow;
                     var receiptId = new ReceiptId(Guid.NewGuid());
 
-                    var receipt = new Receipt(receiptId, budgetId, addedDate, fiscalData, userId);
+                    var receipt = new Receipt(receiptId, budgetId, addedDate, fn, fd, fp, fiscalData.Sum, fiscalData.PurchaseDate, userId);
                     budgetsContext.Receipts.Add(receipt);
 
                     var outboxEntry = ReceiptProcessingOutboxEntry.Create(receipt.Id);

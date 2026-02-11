@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeAccounting.Budgets.Data.Database.Migrations
 {
     [DbContext(typeof(BudgetsContext))]
-    [Migration("20260209133705_Initial")]
+    [Migration("20260211115213_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -152,9 +152,30 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Fd")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)")
+                        .HasColumnName("Fd");
+
+                    b.Property<string>("Fn")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("Fn");
+
+                    b.Property<string>("Fp")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("Fp");
+
                     b.Property<string>("LastErrorMessage")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset>("PurchaseDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PurchasePlace")
                         .IsRequired()
@@ -163,10 +184,15 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<long>("Sum")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Fd", "Fn", "Fp");
 
                     b.ToTable("Receipts", "budgets");
                 });
@@ -262,48 +288,6 @@ namespace HomeAccounting.Budgets.Data.Database.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ReceiptId");
                         });
-
-                    b.OwnsOne("HomeAccounting.Common.Model.ReceiptFiscalData", "FiscalData", b1 =>
-                        {
-                            b1.Property<Guid>("ReceiptId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Fd")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Fd");
-
-                            b1.Property<string>("Fn")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Fn");
-
-                            b1.Property<string>("Fp")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Fp");
-
-                            b1.Property<DateTimeOffset>("PurchaseDate")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("PurchaseDate");
-
-                            b1.Property<long>("Sum")
-                                .HasColumnType("bigint")
-                                .HasColumnName("Sum");
-
-                            b1.HasKey("ReceiptId");
-
-                            b1.HasIndex("Fd", "Fn", "Fp");
-
-                            b1.ToTable("Receipts", "budgets");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ReceiptId");
-                        });
-
-                    b.Navigation("FiscalData")
-                        .IsRequired();
 
                     b.Navigation("Products");
                 });

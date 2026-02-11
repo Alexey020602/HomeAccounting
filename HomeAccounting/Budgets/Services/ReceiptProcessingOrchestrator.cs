@@ -142,7 +142,7 @@ internal sealed class ReceiptProcessingOrchestrator : IReceiptProcessingOrchestr
 
         try
         {
-            var request = new GetReceiptDataRequest(receipt.FiscalData);
+            var request = new GetReceiptDataRequest(receipt.ToReceiptFiscalData());
             var response = await receiptProcessService.GetReceiptData(request, cancellationToken);
 
             var products = response.Products

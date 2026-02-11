@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HomeAccounting.Budgets;
+using HomeAccounting.Common.Application.Paging;
 
 namespace HomeAccounting.Budgets.GetReceipts;
 
@@ -77,32 +78,42 @@ static class GetReceiptsEndpoint
                     receiptsQuery = receiptsQuery.Where(r => r.Status == status);
                 }
 
+                if (request.Filter is not null && request.Filter.ParseFilter<ReceiptField>() is var filters)
+                {
+                    receiptsQuery = receiptsQuery.ApplyFilters(filters);
+                }
+
+                if (request.Sorting.ParseSorting<ReceiptSortField>() is var sortings)
+                {
+                    receiptsQuery = receiptsQuery.ApplySortings(sortings);
+                }
+                
                 // Count total before pagination
                 var totalCount = await receiptsQuery.CountAsync(cancellationToken);
 
                 // Apply sorting
-                var sortDescending = request.SortDescending ?? true;
+                // var sortDescending = request.SortDescending ?? true;
 
                 // For other sort fields, use database sorting
-                receiptsQuery = sortBy switch
-                {
-                    "Sum" => sortDescending 
-                    ? receiptsQuery.OrderByDescending(r => r.Sum)
-                        : receiptsQuery.OrderBy(r => r.Sum),
-                    "PurchaseDate" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.PurchaseDate)
-                        : receiptsQuery.OrderBy(r => r.PurchaseDate),
-                    "CreatedAt" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.CreatedAt)
-                        : receiptsQuery.OrderBy(r => r.CreatedAt),
-                    "CompletedAt" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.CompletedAt ?? DateTimeOffset.MaxValue)
-                        : receiptsQuery.OrderBy(r => r.CompletedAt ?? DateTimeOffset.MinValue),
-                    "PurchasePlace" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.PurchasePlace)
-                        : receiptsQuery.OrderBy(r => r.PurchasePlace),
-                    _ => receiptsQuery.OrderByDescending(r => r.PurchaseDate)
-                };
+                // receiptsQuery = sortBy switch
+                // {
+                //     "Sum" => sortDescending 
+                //     ? receiptsQuery.OrderByDescending(r => r.Sum)
+                //         : receiptsQuery.OrderBy(r => r.Sum),
+                //     "PurchaseDate" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.PurchaseDate)
+                //         : receiptsQuery.OrderBy(r => r.PurchaseDate),
+                //     "CreatedAt" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.CreatedAt)
+                //         : receiptsQuery.OrderBy(r => r.CreatedAt),
+                //     "CompletedAt" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.CompletedAt ?? DateTimeOffset.MaxValue)
+                //         : receiptsQuery.OrderBy(r => r.CompletedAt ?? DateTimeOffset.MinValue),
+                //     "PurchasePlace" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.PurchasePlace)
+                //         : receiptsQuery.OrderBy(r => r.PurchasePlace),
+                //     _ => receiptsQuery.OrderByDescending(r => r.PurchaseDate)
+                // };
 
                 // Apply pagination
                 if (request.Skip.HasValue)

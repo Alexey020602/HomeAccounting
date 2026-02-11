@@ -10,6 +10,8 @@ public sealed record GetReceiptsRequest(
     ReceiptStatus? Status = null,
     string? SortBy = null,
     bool? SortDescending = null,
+    string? Filter = null,
+    string? Sorting = null,
     int? Take = null,
     int? Skip = null);
 

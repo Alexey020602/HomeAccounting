@@ -25,16 +25,55 @@ public readonly record struct Money : IComparable<Money>
 
     public Money Abs() => new(Math.Abs(Kopecks));
 
-    public static Money operator +(Money a, Money b) => new(a.Kopecks + b.Kopecks);
-    public static Money operator -(Money a, Money b) => new(a.Kopecks - b.Kopecks);
-    public static Money operator -(Money a) => new(-a.Kopecks);
+    public static Money operator +(Money a, Money b)
+    {
+        try
+        {
+            return new Money(checked(a.Kopecks + b.Kopecks));
+        }
+        catch (OverflowException)
+        {
+            throw new OverflowException($"Money addition overflow: {a.Kopecks} + {b.Kopecks}");
+        }
+    }
+
+    public static Money operator -(Money a, Money b)
+    {
+        try
+        {
+            return new Money(checked(a.Kopecks - b.Kopecks));
+        }
+        catch (OverflowException)
+        {
+            throw new OverflowException($"Money subtraction overflow: {a.Kopecks} - {b.Kopecks}");
+        }
+    }
+
+    public static Money operator -(Money a)
+    {
+        if (a.Kopecks == long.MinValue)
+            throw new OverflowException("Cannot negate Money.MinValue");
+        return new Money(-a.Kopecks);
+    }
+    
+    public static bool operator >(Money a, Money b) => a.Kopecks > b.Kopecks;
+    public static bool operator <(Money a, Money b) => a.Kopecks < b.Kopecks;
+    public static bool operator >=(Money a, Money b) => a.Kopecks >= b.Kopecks;
+    public static bool operator <=(Money a, Money b) => a.Kopecks <= b.Kopecks;
 
     public static Money operator *(Money a, decimal factor)
     {
         // важно: округляем до копейки
         var k = decimal.Round(a.Kopecks * factor, 0, MidpointRounding.AwayFromZero);
+        
+        // защита от переполнения long
+        if (k < long.MinValue || k > long.MaxValue)
+            throw new OverflowException($"Money multiplication overflow: {a.Kopecks} * {factor}");
+        
         return new Money((long)k);
     }
+
+    public static Money operator *(decimal factor, Money a) => a * factor;
 
     public static Money operator /(Money a, decimal divisor)
     {

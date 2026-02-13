@@ -15,9 +15,10 @@ public static class SortingExtensions
         {
             if (string.IsNullOrWhiteSpace(s)) return null;
 
+            var processedString = Uri.UnescapeDataString(s);
             return
             [
-                .. s.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .. processedString.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                     .Select(x => x.ParseSortingValue<TField>())
                     .Where(f => f is not null)
                     .Cast<Sorting<TField>>()

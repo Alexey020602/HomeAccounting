@@ -240,7 +240,7 @@ public class FilterValueTests
     }
 
     [Fact]
-    public void ParseFilterValue_WithEmptyValue_ReturnsNull()
+    public void ParseFilterValue_WithEmptyValue_ReturnsFilterWithEmptyValue()
     {
         // Arrange
         const string input = "Name[eq]=";
@@ -249,11 +249,14 @@ public class FilterValueTests
         var result = input.ParseFilterValue<TestField>();
 
         // Assert
-        Assert.Null(result);
+        Assert.NotNull(result);
+        Assert.Equal(TestField.Name, result.Field);
+        Assert.Equal(FilterOperator.Eq, result.Operator);
+        Assert.Equal("", result.Value);
     }
 
     [Fact]
-    public void ParseFilterValue_WithWhitespaceOnlyValue_ReturnsNull()
+    public void ParseFilterValue_WithWhitespaceOnlyValue_ReturnsFilterWithEmptyValue()
     {
         // Arrange
         const string input = "Name[eq]=   ";
@@ -262,7 +265,26 @@ public class FilterValueTests
         var result = input.ParseFilterValue<TestField>();
 
         // Assert
-        Assert.Null(result);
+        Assert.NotNull(result);
+        Assert.Equal(TestField.Name, result.Field);
+        Assert.Equal(FilterOperator.Eq, result.Operator);
+        Assert.Equal("", result.Value); // Trimmed to empty string
+    }
+
+    [Fact]
+    public void ParseFilterValue_WithEmptyValueAndNeOperator_ReturnsFilterWithEmptyValue()
+    {
+        // Arrange
+        const string input = "Status[ne]=";
+
+        // Act
+        var result = input.ParseFilterValue<TestField>();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(TestField.Status, result.Field);
+        Assert.Equal(FilterOperator.Ne, result.Operator);
+        Assert.Equal("", result.Value);
     }
 
     [Fact]

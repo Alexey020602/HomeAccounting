@@ -158,4 +158,42 @@ public class FilterTests
         Assert.Equal("100.50", filters[1].Value);
     }
 
+    [Fact]
+    public void ParseFilter_WithEmptyValue_ReturnsFilterWithEmptyValue()
+    {
+        // Arrange
+        const string input = "Name[eq]=";
+
+        // Act
+        var result = input.ParseFilter<TestField>();
+
+        // Assert
+        Assert.NotNull(result);
+        var filters = result.ToArray();
+        Assert.Single(filters);
+        Assert.Equal(TestField.Name, filters[0].Field);
+        Assert.Equal(FilterOperator.Eq, filters[0].Operator);
+        Assert.Equal("", filters[0].Value);
+    }
+
+    [Fact]
+    public void ParseFilter_WithMultipleFiltersIncludingEmptyValue_ParsesAllFilters()
+    {
+        // Arrange
+        const string input = "Name[eq]=John,Status[ne]=";
+
+        // Act
+        var result = input.ParseFilter<TestField>();
+
+        // Assert
+        Assert.NotNull(result);
+        var filters = result.ToArray();
+        Assert.Equal(2, filters.Length);
+        Assert.Equal(TestField.Name, filters[0].Field);
+        Assert.Equal("John", filters[0].Value);
+        Assert.Equal(TestField.Status, filters[1].Field);
+        Assert.Equal(FilterOperator.Ne, filters[1].Operator);
+        Assert.Equal("", filters[1].Value);
+    }
+
 }

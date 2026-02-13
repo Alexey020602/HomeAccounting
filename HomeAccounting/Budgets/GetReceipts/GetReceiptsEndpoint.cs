@@ -46,8 +46,8 @@ static class GetReceiptsEndpoint
 
                 // Load receipts from budget
                 // Include Products for Sum calculation (Sum is computed property that depends on Products)
-                var sortBy = request.SortBy ?? "PurchaseDate";
-                var needsProductsForSorting = sortBy == "Sum";
+                // var sortBy = request.SortBy ?? "PurchaseDate";
+                // var needsProductsForSorting = sortBy == "Sum";
                 
                 var receiptsQuery = budgetsContext.Receipts
                     .AsNoTracking()
@@ -55,34 +55,34 @@ static class GetReceiptsEndpoint
                     .Include(r => r.Products)
                     .AsQueryable();
 
-                // Apply filters
-                if (request.StartDate.HasValue)
-                {
-                    receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate >= request.StartDate.Value);
-                }
-
-                if (request.EndDate.HasValue)
-                {
-                    receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate <= request.EndDate.Value);
-                }
-
-                if (request.UserId.HasValue)
-                {
-                    var userId = new UserId(request.UserId.Value);
-                    receiptsQuery = receiptsQuery.Where(r => r.UserId == userId);
-                }
-
-                if (request.Status.HasValue)
-                {
-                    var status = (ReceiptProcessingStatus)request.Status.Value;
-                    receiptsQuery = receiptsQuery.Where(r => r.Status == status);
-                }
-
+                // // Apply filters
+                // if (request.StartDate.HasValue)
+                // {
+                //     receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate >= request.StartDate.Value);
+                // }
+                //
+                // if (request.EndDate.HasValue)
+                // {
+                //     receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate <= request.EndDate.Value);
+                // }
+                //
+                // if (request.UserId.HasValue)
+                // {
+                //     var userId = new UserId(request.UserId.Value);
+                //     receiptsQuery = receiptsQuery.Where(r => r.UserId == userId);
+                // }
+                //
+                // if (request.Status.HasValue)
+                // {
+                //     var status = (ReceiptProcessingStatus)request.Status.Value;
+                //     receiptsQuery = receiptsQuery.Where(r => r.Status == status);
+                // }
+                //
                 if (request.Filter is not null && request.Filter.ParseFilter<ReceiptField>() is var filters)
                 {
                     receiptsQuery = receiptsQuery.ApplyFilters(filters);
                 }
-
+                
                 if (request.Sorting.ParseSorting<ReceiptSortField>() is var sortings)
                 {
                     receiptsQuery = receiptsQuery.ApplySortings(sortings);
@@ -130,7 +130,7 @@ static class GetReceiptsEndpoint
                 var receipts = await receiptsQuery.ToArrayAsync(cancellationToken);
                 var receiptDtos = receipts.Select(r => new ReceiptDto(
                     r.Id.Value,
-                    r.Sum.ToString(),
+                    r.Sum.Kopecks,
                     r.PurchaseDate,
                     r.CreatedAt,
                     r.CompletedAt,

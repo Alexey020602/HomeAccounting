@@ -34,4 +34,20 @@ public enum FilterOperator
     /// Больше или равно.
     /// </summary>
     Gte,
+    /// <summary>
+    /// Содежит (Contains)
+    /// </summary>
+    Cn,
+    /// <summary>
+    /// Не содежит 
+    /// </summary>
+    Nc,
+    /// <summary>
+    /// Начинается с
+    /// </summary>
+    Sw,
+    /// <summary>
+    /// Заканчивается на
+    /// </summary>
+    Ew
 }

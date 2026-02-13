@@ -7,7 +7,7 @@ public static class StringExtensions
         public (TField, TOperator)? ParseFieldNameWithOperator<TField, TOperator>(TOperator defaultValue = default)
             where TField : struct, Enum where TOperator : struct, Enum
         {
-            var parts = s.Split('[');
+            var parts = s.Split("[");
             if (parts is { Length: <= 0 or > 2 })
                 return null;
             var fieldName = parts[0].Trim();
@@ -19,10 +19,10 @@ public static class StringExtensions
                 return (field, defaultValue);
             var operatorString = parts[1];
 
-            if (!operatorString.EndsWith(']'))
+            if (!operatorString.EndsWith("]"))
                 return null;
 
-            var operatorName = operatorString.TrimEnd(']').Trim();
+            var operatorName = operatorString.TrimEnd("]").Trim();
             
             if (!Enum.TryParse<TOperator>(operatorName, true, out var operatorValue))
                 return null;

@@ -5,7 +5,7 @@ namespace ClientServerContracts.Budgets.GetReceipts;
 /// </summary>
 public sealed record ReceiptDto(
     Guid Id,
-    string Sum,
+    long Sum,
     DateTimeOffset PurchaseDate,
     DateTimeOffset CreatedAt,
     DateTimeOffset? CompletedAt,

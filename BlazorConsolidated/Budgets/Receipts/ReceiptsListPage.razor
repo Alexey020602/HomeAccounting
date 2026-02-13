@@ -1,5 +1,7 @@
 @page "/receipts"
+@using System.Globalization
 @using BlazorConsolidated.Budgets.BudgetState
+@using BlazorConsolidated.Common
 @using ClientServerContracts.Api.Budgets
 @using ClientServerContracts.Budgets.GetReceipts
 @using ClientServerShared.Results
@@ -19,17 +21,21 @@
             <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные чеки</MudText>
         </MudCardHeader>
         <MudCardContent>
-            <MudDataGrid T="ReceiptDto"
+            <MudDataGrid T="Receipt"
                          ServerData="LoadReceiptsGrid"
                          pageSize="10"
+                         Filterable="true"
                          Hover="true"
                          Striped="true"
                          Dense="true">
                 <Columns>
-                    <PropertyColumn Property="x => x.PurchaseDate" Title="Дата покупки" SortBy="x => x.PurchaseDate" Format="dd.MM.yyyy HH:mm"/>
-                    <PropertyColumn Property="x => x.CreatedAt" Title="Добавлен" SortBy="x => x.CreatedAt" Format="dd.MM.yyyy HH:mm"/>
+                    <PropertyColumn Property="x => x.PurchaseDate" Title="Дата покупки" SortBy="x => x.PurchaseDate"
+                                    Format="dd.MM.yyyy HH:mm"/>
+                    <PropertyColumn Property="x => x.CreatedAt" Title="Добавлен" SortBy="x => x.CreatedAt"
+                                    Format="dd.MM.yyyy HH:mm"/>
                     <PropertyColumn Property="x => x.PurchasePlace" Title="Место покупки" SortBy="x=>x.PurchasePlace"/>
-                    <PropertyColumn Property="x => x.Sum" Title="Сумма" SortBy="x=>x.Sum"/>
+                    <PropertyColumn Property="x => x.Sum" Title="Сумма" SortBy="x=>x.Sum" Format="F2"
+                                    Culture="CultureInfo.InstalledUICulture"/>
                     <TemplateColumn Title="Статус">
                         <CellTemplate>
                             <ReceiptStatusComponent Status="context.Item.Status"/>
@@ -52,11 +58,11 @@
         await base.OnParametersSetAsync();
     }
 
-    private async Task<GridData<ReceiptDto>> LoadReceiptsGrid(GridState<ReceiptDto> state)
+    private async Task<GridData<Receipt>> LoadReceiptsGrid(GridState<Receipt> state)
     {
         if (BudgetId == Guid.Empty)
         {
-            return new GridData<ReceiptDto> { Items = [], TotalItems = 0 };
+            return new GridData<Receipt> { Items = [], TotalItems = 0 };
         }
 
         var query = new GetReceiptsQueryParameters
@@ -65,29 +71,30 @@
             Take = state.PageSize
         };
 
-        if (state.SortDefinitions.FirstOrDefault() is var (sortBy, descending, _, _, _))
-        {
-            // var first = state.SortDefinitions[0];
-            if (!string.IsNullOrEmpty(sortBy) && AllowedSortBy.Contains(sortBy))
-            {
-                query.SortBy = sortBy;
-                query.SortDescending = descending;
-            }
-        }
+        query.Filter = state.FilterQuery;
+        query.Sorting = state.SortingQuery;
 
         var result = await BudgetsApi.GetReceipts(BudgetId, query).TryAsync();
 
         if (result is Some<GetReceiptsResponse> some)
         {
             var response = some.Value;
-            return new GridData<ReceiptDto>
+            return new GridData<Receipt>
             {
-                Items = response.Receipts,
+                Items = response.Receipts.Select(r => new Receipt(r)),
                 TotalItems = response.TotalCount
             };
         }
 
         Snackbar.Add("Не удалось загрузить список чеков", Severity.Error);
-        return new GridData<ReceiptDto> { Items = [], TotalItems = 0 };
+        return new GridData<Receipt> { Items = [], TotalItems = 0 };
     }
+
+    private sealed record Receipt(Guid Id, decimal Sum, DateTime PurchaseDate, DateTime CreatedAt, string PurchasePlace, ReceiptStatus Status)
+    {
+        public Receipt(ReceiptDto dto) : this(dto.Id, dto.Sum / 100.0m, dto.PurchaseDate.DateTime, dto.CreatedAt.DateTime, dto.PurchasePlace, dto.Status)
+        {
+        }
+    }
+
 }

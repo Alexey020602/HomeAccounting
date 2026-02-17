@@ -13,9 +13,11 @@
       <PackageReference Include="FluentValidation" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
       <PackageReference Include="SkiaSharp" />
+      <PackageReference Include="SixLabors.ImageSharp" />
       <PackageReference Include="WTorricos.Results" />
       <PackageReference Include="ZXing.Net" />
       <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" />
+      <PackageReference Include="ZXing.Net.Bindings.ImageSharp.V2" />
     </ItemGroup>
 
     <ItemGroup>

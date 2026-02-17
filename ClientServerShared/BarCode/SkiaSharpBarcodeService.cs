@@ -3,15 +3,21 @@ using ZXing;
 
 namespace ClientServerShared.BarCode;
 
-public class BarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
+public class SkiaSharpBarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
 {
     public async ValueTask<string> ReadBarcodeAsync(Stream stream)
     {
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream);
         memoryStream.Position = 0;
-        return ReadBarcodeFromData(SKData.Create(memoryStream)??
-                                    throw new BarcodeException("Cannot create image from request"));
+        
+        var barcodeData = SKData.Create(memoryStream)??
+                          throw new BarcodeException("Cannot create image from request");
+
+        var skBitmap = SKBitmap.Decode(barcodeData) ?? throw new BarcodeException("Cannot create Bitmap from data");
+        var result = reader.Decode(skBitmap) ?? throw new BarcodeException("Cannot decode image"); 
+        var resultText = result.Text ?? throw new BarcodeException("Result not contains text", result.ResultMetadata);
+        return resultText;
     }
     public ValueTask<string> ReadBarcodeAsync(byte[] imageBytes)
     {
@@ -27,9 +33,6 @@ public class BarcodeService(IBarcodeReader<SKBitmap> reader) : IBarcodeService
         var resultText = ReadFromBitmap(bitmap);
         return resultText;
     }
-    
-    private string ReadBarcodeFromData(SKData barcodeData) => 
-        ReadFromBitmap(SKBitmap.Decode(barcodeData) ?? throw new BarcodeException("Cannot create Bitmap from data"));
 
     private string ReadFromBitmap(SKBitmap bitmap)
     {

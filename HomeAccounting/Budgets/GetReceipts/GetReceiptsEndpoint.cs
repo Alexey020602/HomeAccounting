@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HomeAccounting.Budgets;
+using HomeAccounting.Common.Application.Paging;
 
 namespace HomeAccounting.Budgets.GetReceipts;
 
@@ -45,8 +46,8 @@ static class GetReceiptsEndpoint
 
                 // Load receipts from budget
                 // Include Products for Sum calculation (Sum is computed property that depends on Products)
-                var sortBy = request.SortBy ?? "PurchaseDate";
-                var needsProductsForSorting = sortBy == "Sum";
+                // var sortBy = request.SortBy ?? "PurchaseDate";
+                // var needsProductsForSorting = sortBy == "Sum";
                 
                 var receiptsQuery = budgetsContext.Receipts
                     .AsNoTracking()
@@ -54,55 +55,65 @@ static class GetReceiptsEndpoint
                     .Include(r => r.Products)
                     .AsQueryable();
 
-                // Apply filters
-                if (request.StartDate.HasValue)
+                // // Apply filters
+                // if (request.StartDate.HasValue)
+                // {
+                //     receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate >= request.StartDate.Value);
+                // }
+                //
+                // if (request.EndDate.HasValue)
+                // {
+                //     receiptsQuery = receiptsQuery.Where(r => r.PurchaseDate <= request.EndDate.Value);
+                // }
+                //
+                // if (request.UserId.HasValue)
+                // {
+                //     var userId = new UserId(request.UserId.Value);
+                //     receiptsQuery = receiptsQuery.Where(r => r.UserId == userId);
+                // }
+                //
+                // if (request.Status.HasValue)
+                // {
+                //     var status = (ReceiptProcessingStatus)request.Status.Value;
+                //     receiptsQuery = receiptsQuery.Where(r => r.Status == status);
+                // }
+                //
+                if (request.Filter is not null && request.Filter.ParseFilter<ReceiptField>() is var filters)
                 {
-                    receiptsQuery = receiptsQuery.Where(r => r.FiscalData.PurchaseDate >= request.StartDate.Value);
+                    receiptsQuery = receiptsQuery.ApplyFilters(filters);
                 }
-
-                if (request.EndDate.HasValue)
+                
+                if (request.Sorting.ParseSorting<ReceiptSortField>() is var sortings)
                 {
-                    receiptsQuery = receiptsQuery.Where(r => r.FiscalData.PurchaseDate <= request.EndDate.Value);
+                    receiptsQuery = receiptsQuery.ApplySortings(sortings);
                 }
-
-                if (request.UserId.HasValue)
-                {
-                    var userId = new UserId(request.UserId.Value);
-                    receiptsQuery = receiptsQuery.Where(r => r.UserId == userId);
-                }
-
-                if (request.Status.HasValue)
-                {
-                    var status = (ReceiptProcessingStatus)request.Status.Value;
-                    receiptsQuery = receiptsQuery.Where(r => r.Status == status);
-                }
-
+                
                 // Count total before pagination
                 var totalCount = await receiptsQuery.CountAsync(cancellationToken);
 
                 // Apply sorting
-                var sortDescending = request.SortDescending ?? true;
+                // var sortDescending = request.SortDescending ?? true;
 
                 // For other sort fields, use database sorting
-                receiptsQuery = sortBy switch
-                {
-                    "Sum" => sortDescending 
-                    ? receiptsQuery.OrderByDescending(r => r.Sum)
-                        : receiptsQuery.OrderBy(r => r.Sum),
-                    "PurchaseDate" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.FiscalData.PurchaseDate)
-                        : receiptsQuery.OrderBy(r => r.FiscalData.PurchaseDate),
-                    "CreatedAt" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.CreatedAt)
-                        : receiptsQuery.OrderBy(r => r.CreatedAt),
-                    "CompletedAt" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.CompletedAt ?? DateTimeOffset.MaxValue)
-                        : receiptsQuery.OrderBy(r => r.CompletedAt ?? DateTimeOffset.MinValue),
-                    "PurchasePlace" => sortDescending
-                        ? receiptsQuery.OrderByDescending(r => r.PurchasePlace)
-                        : receiptsQuery.OrderBy(r => r.PurchasePlace),
-                    _ => receiptsQuery.OrderByDescending(r => r.FiscalData.PurchaseDate)
-                };
+                // receiptsQuery = sortBy switch
+                // {
+                //     "Sum" => sortDescending 
+                //     ? receiptsQuery.OrderByDescending(r => r.Sum)
+                //         : receiptsQuery.OrderBy(r => r.Sum),
+                //     "PurchaseDate" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.PurchaseDate)
+                //         : receiptsQuery.OrderBy(r => r.PurchaseDate),
+                //     "CreatedAt" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.CreatedAt)
+                //         : receiptsQuery.OrderBy(r => r.CreatedAt),
+                //     "CompletedAt" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.CompletedAt ?? DateTimeOffset.MaxValue)
+                //         : receiptsQuery.OrderBy(r => r.CompletedAt ?? DateTimeOffset.MinValue),
+                //     "PurchasePlace" => sortDescending
+                //         ? receiptsQuery.OrderByDescending(r => r.PurchasePlace)
+                //         : receiptsQuery.OrderBy(r => r.PurchasePlace),
+                //     _ => receiptsQuery.OrderByDescending(r => r.PurchaseDate)
+                // };
 
                 // Apply pagination
                 if (request.Skip.HasValue)
@@ -119,17 +130,17 @@ static class GetReceiptsEndpoint
                 var receipts = await receiptsQuery.ToArrayAsync(cancellationToken);
                 var receiptDtos = receipts.Select(r => new ReceiptDto(
                     r.Id.Value,
-                    r.Sum.ToString(),
-                    r.FiscalData.PurchaseDate,
+                    r.Sum.Kopecks,
+                    r.PurchaseDate,
                     r.CreatedAt,
                     r.CompletedAt,
                     r.UserId.Value,
                     r.PurchasePlace,
                     MapReceiptStatus(r.Status),
                     r.LastErrorMessage,
-                    r.FiscalData.Fn,
-                    r.FiscalData.Fd,
-                    r.FiscalData.Fp
+                    r.Fn.Value,
+                    r.Fd.Value,
+                    r.Fp.Value
                 )).ToArray();
 
                 var response = new GetReceiptsResponse(receiptDtos, totalCount);

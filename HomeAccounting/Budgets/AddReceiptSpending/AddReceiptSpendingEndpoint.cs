@@ -49,12 +49,16 @@ static class AddReceiptSpendingEndpoint
                         return Results.BadRequest("Sum cannot be negative");
                     }
 
-                    var fiscalData = ReceiptFiscalData.Create(request.Fn, request.Fd, request.Fp, Money.FromKopecks(request.Sum), request.PurchaseDate);
+                    var fn = FiscalNumber.Create(request.Fn);
+                    var fd = FiscalDocument.Create(request.Fd);
+                    var fp = FiscalSign.Create(request.Fp);
+                    var fiscalSum = Money.FromKopecks(request.Sum);
+                    
                     var existingReceipt = await budgetsContext.Receipts
                         .AnyAsync(r => r.BudgetId == budgetId &&
-                                       r.FiscalData.Fn == fiscalData.Fn &&
-                                       r.FiscalData.Fd == fiscalData.Fd &&
-                                       r.FiscalData.Fp == fiscalData.Fp,
+                                       r.Fn == fn &&
+                                       r.Fd == fd &&
+                                       r.Fp == fp,
                             cancellationToken);
 
                     if (existingReceipt)
@@ -68,7 +72,7 @@ static class AddReceiptSpendingEndpoint
                     var addedDate = DateTimeOffset.UtcNow;
                     var receiptId = new ReceiptId(Guid.NewGuid());
 
-                    var receipt = new Receipt(receiptId, budgetId, addedDate, fiscalData, userId);
+                    var receipt = new Receipt(receiptId, budgetId, addedDate, fn, fd, fp, fiscalSum, request.PurchaseDate, userId);
                     budgetsContext.Receipts.Add(receipt);
 
                     var outboxEntry = ReceiptProcessingOutboxEntry.Create(receipt.Id);

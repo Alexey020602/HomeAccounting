@@ -3,9 +3,13 @@ using System.Linq;
 using ClientServerShared.Model;
 using ClientServerShared.Model.Dates;
 using ClientServerShared.Model.Money;
+using HomeAccounting.Budgets.Data;
 
 namespace HomeAccounting.Common.Model;
 
+/// <summary>
+/// DTO для межмодульного взаимодействия с фискальными данными чека.
+/// </summary>
 internal sealed record ReceiptFiscalData
 {
     private ReceiptFiscalData(string fn, string fd, string fp, Money sum, DateTimeOffset purchaseDate)
@@ -18,56 +22,28 @@ internal sealed record ReceiptFiscalData
     }
 
     /// <summary>
-    /// Parameterless constructor for EF Core owned type materialization.
+    /// Creates ReceiptFiscalData from Value Objects (preferred method).
     /// </summary>
-    private ReceiptFiscalData()
+    public static ReceiptFiscalData Create(FiscalNumber fn, FiscalDocument fd, FiscalSign fp, Money sum, DateTimeOffset purchaseDate)
     {
-        Fn = "0000000000000000";
-        Fd = "000";
-        Fp = "00000000";
-        Sum = default;
-        PurchaseDate = default;
-    }
-
-    public static ReceiptFiscalData Create(string fn, string fd, string fp, Money sum, DateTimeOffset purchaseDate)
-    {
-        if (fn.Length != 16)
-        {
-            throw new ArgumentException("fn length must be 16");
-        }
-
-        if (fd.Length is > 5 or < 3)
-        {
-            throw new ArgumentException("fd must be between 3 and 5");
-        }
-
-        if (fp.Length is > 10 or < 8)
-        {
-            throw new ArgumentException("fp must be between 10 and 8");
-        } 
-        
-        
-        if (!fn.All(char.IsDigit))
-        {
-            throw new ArgumentException("fn must be digit");
-        }
-
-        if (!fd.All(char.IsDigit))
-        {
-            throw new ArgumentException("fd must be digit");
-        }
-
-        if (!fp.All(char.IsDigit))
-        {
-            throw new ArgumentException("fp must be digit");
-        }
-        
         if (purchaseDate > DateTimeOffset.UtcNow)
         {
-            throw new ArgumentException("You cannot add receipt from future");
+            throw new ArgumentException("You cannot add receipt from future", nameof(purchaseDate));
         }
         
-        return new ReceiptFiscalData(fn, fd, fp, sum, purchaseDate);
+        return new ReceiptFiscalData(fn.Value, fd.Value, fp.Value, sum, purchaseDate);
+    }
+
+    /// <summary>
+    /// Creates ReceiptFiscalData from strings with validation (legacy method, creates Value Objects internally).
+    /// </summary>
+    public static ReceiptFiscalData Create(string fn, string fd, string fp, Money sum, DateTimeOffset purchaseDate)
+    {
+        var fiscalNumber = FiscalNumber.Create(fn);
+        var fiscalDocument = FiscalDocument.Create(fd);
+        var fiscalSign = FiscalSign.Create(fp);
+        
+        return Create(fiscalNumber, fiscalDocument, fiscalSign, sum, purchaseDate);
     }
 
     public static ReceiptFiscalData Empty()
@@ -133,8 +109,13 @@ internal sealed record ReceiptFiscalData
 
             var sum = Money.FromKopecks(sumKopecks);
 
-            // Create ReceiptFiscalData with validation
-            result = Create(fn, fd, fp, sum, purchaseDate);
+            // Create Value Objects with validation
+            var fiscalNumber = FiscalNumber.Create(fn);
+            var fiscalDocument = FiscalDocument.Create(fd);
+            var fiscalSign = FiscalSign.Create(fp);
+            
+            // Create ReceiptFiscalData from Value Objects
+            result = Create(fiscalNumber, fiscalDocument, fiscalSign, sum, purchaseDate);
             return true;
         }
         catch
@@ -169,32 +150,3 @@ internal sealed record ReceiptFiscalData
         purchaseDate = PurchaseDate;
     }
 };
-
-internal sealed record FullReceiptFiscalData
-{
-    public static FullReceiptFiscalData Create(Money sum, DateTimeOffset purchaseDate, ReceiptFiscalData fiscalData)
-    {
-        if (purchaseDate > DateTimeOffset.UtcNow)
-        {
-            throw new ArgumentException("You cannot add receipt from future");
-        }
-        
-        return new FullReceiptFiscalData(sum, purchaseDate, fiscalData);
-    }
-    private FullReceiptFiscalData(Money Sum, DateTimeOffset PurchaseDate, ReceiptFiscalData FiscalData)
-    {
-        this.Sum = Sum;
-        this.PurchaseDate = PurchaseDate;
-        this.FiscalData = FiscalData;
-    }
-    public Money Sum { get; init; }
-    public DateTimeOffset PurchaseDate { get; init; }
-    public ReceiptFiscalData FiscalData { get; init; }
-    public string GetRawString(string format = "yyyyMMddTHHmm") => $"{FiscalData.Raw(format)}&t={PurchaseDate.ToString(format)}&s={Sum}";
-    public void Deconstruct(out Money sum, out DateTimeOffset purchaseDate, out ReceiptFiscalData fiscalData)
-    {
-        sum = Sum;
-        purchaseDate = PurchaseDate;
-        fiscalData = FiscalData;
-    }
-}

@@ -24,17 +24,29 @@ sealed class ReceiptConfiguration : IEntityTypeConfiguration<Receipt>
 
         builder.Property(r => r.LastErrorMessage).HasMaxLength(500);
 
-        builder.OwnsOne(
-            r => r.FiscalData,
-            fiscalData =>
-            {
-                fiscalData.Property(d => d.Fd).HasColumnName(nameof(ReceiptFiscalData.Fd)).IsRequired();
-                fiscalData.Property(d => d.Fp).HasColumnName(nameof(ReceiptFiscalData.Fp)).IsRequired();
-                fiscalData.Property(d => d.Fn).HasColumnName(nameof(ReceiptFiscalData.Fn)).IsRequired();
-                fiscalData.Property(d=>d.PurchaseDate).HasColumnName(nameof(ReceiptFiscalData.PurchaseDate)).IsRequired();
-                fiscalData.Property(d=>d.Sum).HasColumnName(nameof(ReceiptFiscalData.Sum)).IsRequired();
-                fiscalData.HasIndex(d => new { d.Fd, d.Fn, d.Fp });
-            });
+        // Фискальные данные (Value Objects)
+        builder.Property(r => r.Fn)
+            .HasConversion(x => x.Value, x => FiscalNumber.Create(x))
+            .HasColumnName("Fn")
+            .IsRequired()
+            .HasMaxLength(16);
+
+        builder.Property(r => r.Fd)
+            .HasConversion(x => x.Value, x => FiscalDocument.Create(x))
+            .HasColumnName("Fd")
+            .IsRequired()
+            .HasMaxLength(5);
+
+        builder.Property(r => r.Fp)
+            .HasConversion(x => x.Value, x => FiscalSign.Create(x))
+            .HasColumnName("Fp")
+            .IsRequired()
+            .HasMaxLength(10);
+
+        builder.Ignore(r => r.CalculatedSum);
+
+        // Индекс для проверки дубликатов
+        builder.HasIndex(r => new { r.Fd, r.Fn, r.Fp });
 
         builder.OwnsMany(r => r.Products, b =>
         {

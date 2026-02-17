@@ -41,40 +41,77 @@ public sealed class GetBudgetSpendingsQueryParameters
 public sealed class GetReceiptsQueryParameters
 {
     /// <summary>
-    /// Start date for filtering receipts by purchase date.
+    /// Filter string for filtering receipts. Format: FieldName[Operator]=Value or FieldName=Value (default operator is Eq).
+    /// Multiple filters are separated by commas.
+    /// <para>
+    /// Available operators:
+    /// <list type="bullet">
+    /// <item><term>eq</term><description>Equality</description></item>
+    /// <item><term>ne</term><description>Inequality</description></item>
+    /// <item><term>gt</term><description>Greater than</description></item>
+    /// <item><term>gte</term><description>Greater than or equal</description></item>
+    /// <item><term>lt</term><description>Less than</description></item>
+    /// <item><term>lte</term><description>Less than or equal</description></item>
+    /// <item><term>cn</term><description>Contains (string fields only)</description></item>
+    /// <item><term>nc</term><description>Does not contain (string fields only)</description></item>
+    /// <item><term>sw</term><description>Starts with (string fields only)</description></item>
+    /// <item><term>ew</term><description>Ends with (string fields only)</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Available fields (ReceiptField):
+    /// <list type="bullet">
+    /// <item><term>PurchaseDate</term><description>Purchase date</description></item>
+    /// <item><term>PurchasePlace</term><description>Purchase place</description></item>
+    /// <item><term>UserId</term><description>User identifier</description></item>
+    /// <item><term>BudgetId</term><description>Budget identifier</description></item>
+    /// <item><term>Sum</term><description>Receipt sum</description></item>
+    /// <item><term>Status</term><description>Processing status</description></item>
+    /// <item><term>CreatedAt</term><description>Creation date</description></item>
+    /// <item><term>CompletedAt</term><description>Completion date</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Examples:
+    /// <list type="bullet">
+    /// <item><term>PurchaseDate[gte]=2024-01-01</term><description>Purchase date >= 2024-01-01</description></item>
+    /// <item><term>Status[eq]=Succeeded</term><description>Status equals Succeeded</description></item>
+    /// <item><term>PurchasePlace[cn]=Магазин</term><description>Purchase place contains "Магазин"</description></item>
+    /// <item><term>Sum[gt]=1000,PurchaseDate[lt]=2024-12-31</term><description>Multiple filters</description></item>
+    /// </list>
+    /// </para>
     /// </summary>
-    [AliasAs("startDate")]
-    public DateTimeOffset? StartDate { get; set; }
+    [AliasAs("filter")]
+    public string? Filter { get; set; }
 
     /// <summary>
-    /// End date for filtering receipts by purchase date.
+    /// Sorting string for ordering receipts. Format: FieldName[Order] or FieldName (default order is Asc).
+    /// Multiple sortings are separated by commas.
+    /// <para>
+    /// Available orders:
+    /// <list type="bullet">
+    /// <item><term>Asc</term><description>Ascending order</description></item>
+    /// <item><term>Desc</term><description>Descending order</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Available fields (ReceiptSortField):
+    /// <list type="bullet">
+    /// <item><term>PurchaseDate</term><description>Purchase date</description></item>
+    /// <item><term>Sum</term><description>Receipt sum</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Examples:
+    /// <list type="bullet">
+    /// <item><term>PurchaseDate[Desc]</term><description>Sort by purchase date descending</description></item>
+    /// <item><term>Sum[Asc]</term><description>Sort by sum ascending</description></item>
+    /// <item><term>PurchaseDate[Desc],Sum[Asc]</term><description>Multiple sortings</description></item>
+    /// </list>
+    /// </para>
     /// </summary>
-    [AliasAs("endDate")]
-    public DateTimeOffset? EndDate { get; set; }
-
-    /// <summary>
-    /// User identifier for filtering receipts by user.
-    /// </summary>
-    [AliasAs("userId")]
-    public Guid? UserId { get; set; }
-
-    /// <summary>
-    /// Receipt status for filtering receipts by processing status.
-    /// </summary>
-    [AliasAs("status")]
-    public ReceiptStatus? Status { get; set; }
-
-    /// <summary>
-    /// Field name to sort by. Possible values: "Sum", "PurchaseDate", "CreatedAt", "CompletedAt", "PurchasePlace".
-    /// </summary>
-    [AliasAs("sortBy")]
-    public string? SortBy { get; set; }
-
-    /// <summary>
-    /// Sort direction. True for descending, false for ascending.
-    /// </summary>
-    [AliasAs("sortDescending")]
-    public bool? SortDescending { get; set; }
+    [AliasAs("sorting")]
+    public string? Sorting { get; set; }
 
     /// <summary>
     /// Number of receipts to take (pagination).
@@ -335,10 +372,10 @@ public interface IBudgetsApi
     public Task<GetBudgetSpendingsResponse> GetBudgetSpendings(Guid id, [Query] GetBudgetSpendingsQueryParameters query);
 
     /// <summary>
-    /// Returns list of receipts in the budget with optional filtering by date range, user, and status. Supports sorting and pagination. Requires read permission.
+    /// Returns list of receipts in the budget with optional filtering and sorting. Supports pagination. Requires read permission.
     /// </summary>
     /// <param name="id">Budget identifier.</param>
-    /// <param name="query">Query parameters for filtering, sorting and pagination.</param>
+    /// <param name="query">Query parameters for filtering, sorting and pagination. Use Filter parameter for filtering by any receipt field with various operators. Use Sorting parameter for ordering by purchase date or sum.</param>
     /// <returns>Receipts response with list of receipts and total count.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -347,7 +384,7 @@ public interface IBudgetsApi
     /// <item><term>200</term><description>OK - Successfully retrieved receipts.</description></item>
     /// <item><term>404</term><description>Not Found - Budget not found.</description></item>
     /// <item><term>403</term><description>Forbidden - User does not have permission to read this budget.</description></item>
-    /// <item><term>400</term><description>Bad Request - Invalid request parameters.</description></item>
+    /// <item><term>400</term><description>Bad Request - Invalid request parameters (e.g., invalid filter or sorting format).</description></item>
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}/receipts")]

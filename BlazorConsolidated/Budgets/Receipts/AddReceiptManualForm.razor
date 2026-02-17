@@ -1,0 +1,63 @@
+@using ClientServerContracts.Budgets.AddReceiptSpending
+@using MudBlazor
+
+<MudForm Model="Model" @ref="form">
+    <MudTextField 
+        @bind-Value="Model.Fn" 
+        Variant="Variant.Outlined" 
+        Label="ФН (Фискальный номер)"
+        Required="true"
+        OnlyValidateIfDirty="true"
+        HelperText="16-значный номер фискального накопителя"/>
+            
+    <MudTextField 
+        @bind-Value="Model.Fd" 
+        Variant="Variant.Outlined" 
+        Label="ФД (Номер фискального документа)"
+        Required="true"
+        OnlyValidateIfDirty="true"
+        HelperText="Номер фискального документа"/>
+            
+    <MudTextField 
+        @bind-Value="Model.Fp" 
+        Variant="Variant.Outlined" 
+        Label="ФП (Фискальный признак)"
+        Required="true"
+        OnlyValidateIfDirty="true"
+        HelperText="8-значный фискальный признак"/>
+            
+    <MudNumericField 
+        @bind-Value="Model.Sum" 
+        Variant="Variant.Outlined"
+        Label="Сумма (в рублях)"
+        Required="true"
+        Min="0.01m"
+        OnlyValidateIfDirty="true"
+        Format="F2"
+        HelperText="Сумма покупки в рублях"/>
+            
+    <MudDatePicker 
+        @bind-Date="Model.PurchaseDate"
+        Label="Дата покупки"
+        Variant="Variant.Outlined"
+        Required="true"
+        MaxDate="DateTime.Now"
+        HelperText="Дата покупки по чеку"/>
+    
+    @if (IsLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-4"/>
+    }
+    
+    <MudGrid Justify="Justify.FlexEnd" Class="mt-4">
+        <MudItem>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Primary" 
+                OnClick="Submit"
+                Disabled="IsLoading">
+                Добавить
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>

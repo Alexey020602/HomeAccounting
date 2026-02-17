@@ -22,5 +22,11 @@ public abstract partial class BudgetPage: ComponentBase
         }
         
         BudgetId = selectedBudgetState.BudgetId;
+        
+        if (BudgetId == Guid.Empty)
+        {
+            throw new InvalidOperationException("BudgetId is not set");
+        }
+        
     }
 }

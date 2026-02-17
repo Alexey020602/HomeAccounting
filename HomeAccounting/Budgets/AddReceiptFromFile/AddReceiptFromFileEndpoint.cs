@@ -26,7 +26,7 @@ static class AddReceiptFromFileEndpoint
     {
         endpoints.MapPost(
                 "{id:guid}/receipts/file",
-                async (Guid id, ClaimsPrincipal user, IFormFile file, BudgetsContext budgetsContext,
+                async (Guid id, ClaimsPrincipal user, [AsParameters] AddReceiptFromFileRequest request, BudgetsContext budgetsContext,
                     IAuthorizationService authorizationHandler, IEventBus eventBus, IBarcodeService barcodeService,
                     CancellationToken cancellationToken) =>
                 {
@@ -48,7 +48,7 @@ static class AddReceiptFromFileEndpoint
                     string qrCodeString;
                     try
                     {
-                        await using var stream = file.OpenReadStream();
+                        await using var stream = request.File.OpenReadStream();
                         qrCodeString = await barcodeService.ReadBarcodeAsync(stream);
                     }
                     catch (BarcodeException ex)
@@ -117,10 +117,12 @@ static class AddReceiptFromFileEndpoint
 
                     return Results.Created();
                 })
+            
             .WithName("AddReceiptFromFile")
             .WithTags("Budgets")
             .WithSummary("Add receipt from file")
             .WithDescription("Adds a receipt by uploading an image file with QR code. QR code is scanned, fiscal data is parsed, and receipt is processed asynchronously. Requires edit permission.")
+            .DisableAntiforgery()
             .Produces((int)HttpStatusCode.Created)
             .ProducesProblem((int)HttpStatusCode.NotFound)
             .ProducesProblem((int)HttpStatusCode.Forbidden)

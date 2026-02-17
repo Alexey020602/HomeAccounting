@@ -10,8 +10,8 @@
 @using MudBlazor
 @attribute [Authorize]
 @inherits BudgetPage
-@inject IBudgetsApi BudgetsApi
-@inject ISnackbar Snackbar
+@* @inject IBudgetsApi BudgetsApi *@
+@* @inject ISnackbar Snackbar *@
 
 <PageTitle>Список чеков</PageTitle>
 
@@ -19,11 +19,19 @@
     <MudCard>
         <MudCardHeader>
             <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные чеки</MudText>
+            <MudSpacer/>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Primary" 
+                StartIcon="@Icons.Material.Filled.Add"
+                OnClick="OpenAddReceiptDialog">
+                Добавить чек
+            </MudButton>
         </MudCardHeader>
         <MudCardContent>
             <MudDataGrid T="Receipt"
+                         @ref="grid"
                          ServerData="LoadReceiptsGrid"
-                         pageSize="10"
                          Filterable="true"
                          Hover="true"
                          Striped="true"
@@ -51,50 +59,7 @@
 </MudContainer>
 
 @code {
-    private static readonly HashSet<string> AllowedSortBy = ["Sum", "PurchaseDate", "CreatedAt", "CompletedAt", "PurchasePlace"];
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-    }
-
-    private async Task<GridData<Receipt>> LoadReceiptsGrid(GridState<Receipt> state)
-    {
-        if (BudgetId == Guid.Empty)
-        {
-            return new GridData<Receipt> { Items = [], TotalItems = 0 };
-        }
-
-        var query = new GetReceiptsQueryParameters
-        {
-            Skip = state.Page * state.PageSize,
-            Take = state.PageSize
-        };
-
-        query.Filter = state.FilterQuery;
-        query.Sorting = state.SortingQuery;
-
-        var result = await BudgetsApi.GetReceipts(BudgetId, query).TryAsync();
-
-        if (result is Some<GetReceiptsResponse> some)
-        {
-            var response = some.Value;
-            return new GridData<Receipt>
-            {
-                Items = response.Receipts.Select(r => new Receipt(r)),
-                TotalItems = response.TotalCount
-            };
-        }
-
-        Snackbar.Add("Не удалось загрузить список чеков", Severity.Error);
-        return new GridData<Receipt> { Items = [], TotalItems = 0 };
-    }
-
-    private sealed record Receipt(Guid Id, decimal Sum, DateTime PurchaseDate, DateTime CreatedAt, string PurchasePlace, ReceiptStatus Status)
-    {
-        public Receipt(ReceiptDto dto) : this(dto.Id, dto.Sum / 100.0m, dto.PurchaseDate.DateTime, dto.CreatedAt.DateTime, dto.PurchasePlace, dto.Status)
-        {
-        }
-    }
+    private MudDataGrid<Receipt> grid = null!;
+    
 
 }

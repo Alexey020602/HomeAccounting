@@ -431,6 +431,28 @@ public interface IBudgetsApi
     public Task AddReceiptSpending(Guid id, AddReceiptSpendingRequest request);
 
     /// <summary>
+    /// Adds a receipt by uploading an image file with QR code. QR code is scanned, fiscal data is parsed, and receipt is processed asynchronously. Requires edit permission.
+    /// </summary>
+    /// <param name="id">Budget identifier.</param>
+    /// <param name="file">Image file with QR code containing receipt fiscal data.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>201</term><description>Created - Receipt successfully added.</description></item>
+    /// <item><term>404</term><description>Not Found - Budget not found.</description></item>
+    /// <item><term>403</term><description>Forbidden - User does not have permission to edit this budget.</description></item>
+    /// <item><term>409</term><description>Conflict - Receipt with these fiscal data already exists in this budget.</description></item>
+    /// <item><term>400</term><description>Bad Request - Failed to read QR code from image, failed to parse receipt fiscal data, or error processing image file.</description></item>
+    /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
+    /// </list>
+    /// </remarks>
+    [Post("/budgets/{id}/receipts/file")]
+    [Multipart]
+    public Task AddReceiptFromFile(Guid id, [AliasAs("File")] Stream file);
+
+    /// <summary>
     /// Adds a manual spending entry to the budget. Requires edit permission.
     /// </summary>
     /// <param name="id">Budget identifier.</param>

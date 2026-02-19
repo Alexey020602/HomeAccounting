@@ -1,4 +1,4 @@
-namespace ClientServerShared.Model.Money;
+namespace HomeAccounting.Common.Model.ValueObjects;
 
 public static class EnumerableExtensions
 {

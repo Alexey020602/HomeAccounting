@@ -1,7 +1,7 @@
 using ClientServerShared.Model;
-using ClientServerShared.Model.Money;
 using HomeAccounting.Categories.Data;
 using HomeAccounting.Common.Model;
+using HomeAccounting.Common.Model.ValueObjects;
 using HomeAccounting.Users.Data;
 
 namespace HomeAccounting.Budgets.Data;

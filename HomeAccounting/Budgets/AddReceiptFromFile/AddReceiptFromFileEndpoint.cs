@@ -1,7 +1,7 @@
 using System.Net;
 using System.Security.Claims;
-using ClientServerShared.BarCode;
 using ClientServerShared.Model;
+using ClientServerShared.QrCode;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Data.Database;
 using HomeAccounting.Budgets.Events;
@@ -27,7 +27,7 @@ static class AddReceiptFromFileEndpoint
         endpoints.MapPost(
                 "{id:guid}/receipts/file",
                 async (Guid id, ClaimsPrincipal user, [AsParameters] AddReceiptFromFileRequest request, BudgetsContext budgetsContext,
-                    IAuthorizationService authorizationHandler, IEventBus eventBus, IBarcodeService barcodeService,
+                    IAuthorizationService authorizationHandler, IEventBus eventBus, IQrCodeReader qrCodeReader,
                     CancellationToken cancellationToken) =>
                 {
                     var budgetId = new BudgetId(id);
@@ -49,9 +49,9 @@ static class AddReceiptFromFileEndpoint
                     try
                     {
                         await using var stream = request.File.OpenReadStream();
-                        qrCodeString = await barcodeService.ReadBarcodeAsync(stream);
+                        qrCodeString = await qrCodeReader.ReadQrCodeAsync(stream);
                     }
-                    catch (BarcodeException ex)
+                    catch (QrCodeReaderException ex)
                     {
                         return Results.Problem(
                             statusCode: (int)HttpStatusCode.BadRequest,

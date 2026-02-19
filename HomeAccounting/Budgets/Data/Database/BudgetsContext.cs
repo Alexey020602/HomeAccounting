@@ -1,7 +1,7 @@
-using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data.Database.Configurations;
 using Microsoft.EntityFrameworkCore;
 using HomeAccounting.Categories.Data.DataBase.Configurations;
+using HomeAccounting.Common.Model.ValueObjects;
 
 namespace HomeAccounting.Budgets.Data.Database;
 

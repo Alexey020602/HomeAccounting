@@ -1,5 +1,5 @@
-using ClientServerShared.Model.Money;
 using HomeAccounting.Common.Model;
+using HomeAccounting.Common.Model.ValueObjects;
 using HomeAccounting.Users.Data;
 using HomeAccounting.Users.Data.Database;
 

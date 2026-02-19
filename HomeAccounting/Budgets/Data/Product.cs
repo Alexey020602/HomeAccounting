@@ -1,7 +1,7 @@
 using ClientServerShared.Model;
-using ClientServerShared.Model.Money;
 using HomeAccounting.Categories.Data;
 using HomeAccounting.Common.Model;
+using HomeAccounting.Common.Model.ValueObjects;
 
 namespace HomeAccounting.Budgets.Data;
 internal record struct ProductId(Guid Value);

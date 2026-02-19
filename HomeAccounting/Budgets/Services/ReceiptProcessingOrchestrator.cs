@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Configuration;
 using HomeAccounting.Budgets.Data.Database;
+using HomeAccounting.Common.Model.ValueObjects;
 using HomeAccounting.ReceiptProcessing.Contracts;
 using HomeAccounting.ReceiptProcessing.GetReceiptData;
 using Microsoft.EntityFrameworkCore;

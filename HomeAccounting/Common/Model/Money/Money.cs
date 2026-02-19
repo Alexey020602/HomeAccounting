@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace ClientServerShared.Model.Money;
+namespace HomeAccounting.Common.Model.ValueObjects;
 
 public readonly record struct Money : IComparable<Money>
 {
@@ -118,7 +118,7 @@ public readonly record struct Money : IComparable<Money>
         // Важно: InvariantCulture = точка как разделитель
         // AllowLeadingSign: допускаем минус/плюс
         // AllowDecimalPoint: допускаем дробную часть
-        const NumberStyles styles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
+        const NumberStyles styles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint ;
 
         if (!decimal.TryParse(s.Trim(), styles, CultureInfo.InvariantCulture, out var rubles))
             return false;

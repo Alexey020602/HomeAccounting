@@ -1,9 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using ClientServerShared.Model;
 using ClientServerShared.Model.Dates;
-using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
+using HomeAccounting.Common.Model.ValueObjects;
 
 namespace HomeAccounting.Common.Model;
 
@@ -102,12 +100,10 @@ internal sealed record ReceiptFiscalData
             var purchaseDate = new DateTimeOffset(dateTime, TimeSpan.Zero);
 
             // Parse sum (in kopecks)
-            if (!int.TryParse(s, out var sumKopecks))
+            if (!Money.TryParse(s, out var sum))
             {
                 return false;
             }
-
-            var sum = Money.FromKopecks(sumKopecks);
 
             // Create Value Objects with validation
             var fiscalNumber = FiscalNumber.Create(fn);

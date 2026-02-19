@@ -2,9 +2,9 @@ using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets.CreateBudget;
 using ClientServerShared.Model;
-using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Data.Database;
+using HomeAccounting.Common.Model.ValueObjects;
 using HomeAccounting.Users.Data;
 using Microsoft.EntityFrameworkCore;
 

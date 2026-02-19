@@ -2,7 +2,6 @@ using System.Net;
 using System.Security.Claims;
 using ClientServerContracts.Budgets.AddReceiptSpending;
 using ClientServerShared.Model;
-using ClientServerShared.Model.Money;
 using HomeAccounting.Budgets.Data;
 using HomeAccounting.Budgets.Data.Database;
 using HomeAccounting.Budgets.Events;
@@ -12,6 +11,7 @@ using HomeAccounting.Users.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using HomeAccounting.Budgets;
+using HomeAccounting.Common.Model.ValueObjects;
 
 namespace HomeAccounting.Budgets.AddReceiptSpending;
 

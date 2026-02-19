@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using ClientServerShared.Model.Money;
+using HomeAccounting.Common.Model.ValueObjects;
 
 namespace HomeAccounting.Common.Application.Paging;
 

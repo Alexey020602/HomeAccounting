@@ -1,4 +1,4 @@
-using ClientServerShared.Model.Money;
+using HomeAccounting.Common.Model.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HomeAccounting.Budgets.Data.Database;

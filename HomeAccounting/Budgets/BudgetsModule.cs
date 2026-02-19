@@ -1,4 +1,4 @@
-using ClientServerShared.BarCode;
+using ClientServerShared.QrCode;
 using HomeAccounting.Budgets.Configuration;
 using HomeAccounting.Budgets.Services;
 using HomeAccounting.Budgets.Workers;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using HomeAccounting.Budgets.Data.Database;
 using HomeAccounting.Common;
+using HomeAccounting.Common.QrCode;
 
 namespace HomeAccounting.Budgets;
 
@@ -27,8 +28,8 @@ internal static class BudgetsModule
         builder.Services.AddScoped<IReceiptProcessingOrchestrator, ReceiptProcessingOrchestrator>();
         builder.Services.AddHostedService<ReceiptRetryWorker>();
         
-        builder.Services.AddImageSharpBarcode()
-            .Decorate<IBarcodeService, TelemetryBarcodeServiceDecorator>();
+        builder.Services.AddImageSharpQrCode()
+            .Decorate<IQrCodeReader, TelemetryQrCodeReaderDecorator>();
     }
     
 }

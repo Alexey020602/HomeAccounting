@@ -4,14 +4,13 @@ using SixLabors.ImageSharp.PixelFormats;
 using SkiaSharp;
 using ZXing;
 using ZXing.Common;
-using ZXing.ImageSharp;
 using ZXing.SkiaSharp;
 
-namespace ClientServerShared.BarCode;
+namespace ClientServerShared.QrCode;
 
 public static class DependecyInjection
 {
-    public static IServiceCollection AddBarcode(this IServiceCollection services) => services
+    public static IServiceCollection AddSkiaSharpQrCode(this IServiceCollection services) => services
         .AddTransient<IBarcodeReader<SKBitmap>>((_) => new BarcodeReader()
         {
             Options = new DecodingOptions()
@@ -27,12 +26,12 @@ public static class DependecyInjection
             AutoRotate = true,
         })
         
-        .AddTransient<IBarcodeService, SkiaSharpBarcodeService>();
+        .AddTransient<IQrCodeReader, SkiaSharpQrCodeReader>();
     
     /// <summary>
     /// Adds ImageSharp-based barcode service as an alternative to SkiaSharp-based service.
     /// </summary>
-    public static IServiceCollection AddImageSharpBarcode(this IServiceCollection services) => services
+    public static IServiceCollection AddImageSharpQrCode(this IServiceCollection services) => services
         .AddTransient<IBarcodeReader<Image<L8>>>(_ => new ZXing.ImageSharp.BarcodeReader<L8>()
         {
             Options = new DecodingOptions()
@@ -45,5 +44,5 @@ public static class DependecyInjection
             },
             AutoRotate = true,
         })
-        .AddTransient<IBarcodeService, ImageSharpBarcodeService>();
+        .AddTransient<IQrCodeReader, ImageSharpQrCodeReader>();
 }

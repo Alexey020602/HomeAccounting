@@ -1,4 +1,4 @@
-namespace ClientServerShared.BarCode;
+namespace ClientServerShared.QrCode;
 
 public static class StreamExtensions
 {

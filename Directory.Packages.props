@@ -13,6 +13,7 @@
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.1" />
     <!-- Blazor packages -->
     <PackageVersion Include="Blazored.FluentValidation" Version="2.2.0" />
+    <PackageVersion Include="BlazorQrCodeScanner" Version="1.0.0.3" />
     <!-- Entity Framework packages -->
     <PackageVersion Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="8.1.3" />
     <!--    <PackageVersion Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.103" />-->

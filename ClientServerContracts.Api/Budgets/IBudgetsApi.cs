@@ -1,5 +1,6 @@
 using ClientServerContracts.Budgets;
 using ClientServerContracts.Budgets.AddManualSpending;
+using ClientServerContracts.Budgets.AddReceiptFromQrCode;
 using ClientServerContracts.Budgets.AddReceiptSpending;
 using ClientServerContracts.Budgets.ChangeReceiptProductCategory;
 using ClientServerContracts.Budgets.AddUsersInBudget;
@@ -451,6 +452,27 @@ public interface IBudgetsApi
     [Post("/budgets/{id}/receipts/file")]
     [Multipart]
     public Task AddReceiptFromFile(Guid id, [AliasAs("File")] Stream file);
+
+    /// <summary>
+    /// Adds a receipt from raw QR code string. Fiscal data is parsed and receipt is processed asynchronously. Requires edit permission.
+    /// </summary>
+    /// <param name="id">Budget identifier.</param>
+    /// <param name="request">Request with raw QR code string (FNS format: t=...&amp;s=...&amp;fn=...&amp;i=...&amp;fp=...&amp;n=1).</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>201</term><description>Created - Receipt successfully added.</description></item>
+    /// <item><term>404</term><description>Not Found - Budget not found.</description></item>
+    /// <item><term>403</term><description>Forbidden - User does not have permission to edit this budget.</description></item>
+    /// <item><term>409</term><description>Conflict - Receipt with these fiscal data already exists in this budget.</description></item>
+    /// <item><term>400</term><description>Bad Request - Failed to parse receipt fiscal data from QR code string.</description></item>
+    /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
+    /// </list>
+    /// </remarks>
+    [Post("/budgets/{id}/receipts/qrcode")]
+    public Task AddReceiptFromQrCode(Guid id, [Body] AddReceiptFromQrCodeRequest request);
 
     /// <summary>
     /// Adds a manual spending entry to the budget. Requires edit permission.

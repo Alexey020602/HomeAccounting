@@ -63,7 +63,7 @@ public sealed partial class ReceiptsListPage
 
     private sealed record Receipt(Guid Id, decimal Sum, DateTime PurchaseDate, DateTime CreatedAt, string PurchasePlace, ReceiptStatus Status)
     {
-        public Receipt(ReceiptDto dto) : this(dto.Id, dto.Sum / 100.0m, dto.PurchaseDate.DateTime, dto.CreatedAt.DateTime, dto.PurchasePlace, dto.Status)
+        public Receipt(ReceiptDto dto) : this(dto.Id, dto.Sum / 100.0m, dto.PurchaseDate.LocalDateTime, dto.CreatedAt.LocalDateTime, dto.PurchasePlace, dto.Status)
         {
         }
     }

@@ -23,16 +23,28 @@ public sealed partial class AddReceiptWithQrScanForm : IAsyncDisposable
     {
         if (qrScanner is null) return;
         await qrScanner.StartAsync(
-            new MediaTrackConstraintSet { FacingMode = VideoFacingMode.Environment },
+            new MediaTrackConstraintSet
+            {
+                FacingMode = VideoFacingMode.Environment,
+                // Advanced = [
+                    // new MediaTrackConstraintSet { Width = 1920, Height = 1080 },
+                    // new MediaTrackConstraintSet { Width = 1280, Height = 720 },
+                    // new MediaTrackConstraintSet { Width = 640, Height = 480 },
+                // ],
+            },
             new QrCodeConfig
             {
+                DefaultZoomValueIfSupported = 2,
+                UseBarCodeDetectorIfSupported =  false,
+                QrBox = new QrBoxFunction("qrBox70"),
                 FormatsToSupport = [BarcodeType.QR_CODE],
-                Fps = 10
+                Fps = 5
             });
     }
 
     private async Task OnQrCodeScanned(QrCodeScanResult result)
     {
+        Snackbar.Add($"Чек отсканирован {result.Result?.Text}", Severity.Success);
         if (string.IsNullOrWhiteSpace(result?.DecodedText) || IsLoading)
         {
             return;
@@ -68,9 +80,21 @@ public sealed partial class AddReceiptWithQrScanForm : IAsyncDisposable
         }
     }
 
-    private void OnScannerStartFailed()
+    private Task OnScanFailed(string? value)
     {
-        Snackbar.Add("Не удалось запустить камеру. Проверьте разрешения.", Severity.Warning);
+        // Snackbar.Add($"Ошибка сканирования: {value}", Severity.Warning);
+        return Task.CompletedTask;
+    }
+    private Task OnScannerStarted()
+    {
+        Snackbar.Add("Начато сканирование", Severity.Info);
+        return Task.CompletedTask;
+    }
+    
+    private Task OnScannerStartFailed(string? value)
+    {
+        Snackbar.Add($"Не удалось запустить камеру. Проверьте разрешения. value {value}", Severity.Warning);
+        return Task.CompletedTask;
     }
 
     public async ValueTask DisposeAsync()

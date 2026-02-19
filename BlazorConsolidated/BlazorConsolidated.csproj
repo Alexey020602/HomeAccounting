@@ -17,6 +17,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
         <PackageReference Include="Blazored.FluentValidation"/>
         <PackageReference Include="BlazorQrCodeScanner"/>
+        <PackageReference Include="ZXingBlazor" />
         <PackageReference Include="MudBlazor" />
         <PackageReference Include="Refit" />
         <PackageReference Include="Scrutor" />

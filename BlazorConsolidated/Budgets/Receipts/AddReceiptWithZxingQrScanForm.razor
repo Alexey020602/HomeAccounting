@@ -1,0 +1,29 @@
+@using ZXingBlazor.Components
+
+@if (ShowScanner)
+{
+    <BarcodeReader ScanResult="OnQrCodeScanned"
+                  Close="OnCloseScanner"
+                  ScanBtnTitle="Сканировать"
+                  ResetBtnTitle="Сброс"
+                  CloseBtnTitle="Закрыть"
+                  SelectDeviceBtnTitle="Выбрать камеру"
+                  Decodeonce="true"
+                  Options="ZxingOptions"
+                  OnError="OnScanError" />
+}
+else
+{
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ShowScanner = true">
+        Начать сканирование (ZXing)
+    </MudButton>
+}
+
+<MudText Typo="Typo.caption" Class="mt-2">
+    Наведите камеру на QR-код чека. Сканер на базе ZXing.
+</MudText>
+
+@if (IsLoading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-4"/>
+}

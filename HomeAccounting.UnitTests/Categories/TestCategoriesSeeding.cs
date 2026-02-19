@@ -1,4 +1,4 @@
-п»їusing HomeAccounting.Categories.Data;
+using HomeAccounting.Categories.Data;
 
 namespace HomeAccounting.UnitTests.Categories;
 
@@ -25,18 +25,18 @@ public class TestCategoriesSeeding
         var categories = Category.GetCategoriesForSeeding();
         var categoriesById = categories.ToDictionary(c => c.Id);
 
-        // Assert - РєРѕСЂРЅРµРІС‹Рµ РєР°С‚РµРіРѕСЂРёРё РёРјРµСЋС‚ ParentCategoryId = null
+        // Assert - корневые категории имеют ParentCategoryId = null
         var rootCategories = categories.Where(c => c.ParentCategoryId == null).ToList();
         Assert.NotEmpty(rootCategories);
 
-        // Assert - РґРѕС‡РµСЂРЅРёРµ РєР°С‚РµРіРѕСЂРёРё РёРјРµСЋС‚ РїСЂР°РІРёР»СЊРЅС‹Р№ ParentCategoryId
+        // Assert - дочерние категории имеют правильный ParentCategoryId
         foreach (var category in categories)
         {
             if (category.ParentCategoryId.HasValue)
             {
                 var parentId = category.ParentCategoryId.Value;
                 Assert.True(categoriesById.ContainsKey(parentId), 
-                    $"РљР°С‚РµРіРѕСЂРёСЏ '{category.Name}' (ID: {category.Id.Value}) СЃСЃС‹Р»Р°РµС‚СЃСЏ РЅР° РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ СЂРѕРґРёС‚РµР»СЏ (ID: {parentId.Value})");
+                    $"Категория '{category.Name}' (ID: {category.Id.Value}) ссылается на несуществующего родителя (ID: {parentId.Value})");
                 
                 var parent = categoriesById[parentId];
                 Assert.NotNull(parent);
@@ -51,7 +51,7 @@ public class TestCategoriesSeeding
         var categories = Category.GetCategoriesForSeeding();
         var categoriesById = categories.ToDictionary(c => c.Id);
 
-        // Assert - РїСЂРѕРІРµСЂРєР°, С‡С‚Рѕ РЅРµС‚ С†РёРєР»РёС‡РµСЃРєРёС… СЃСЃС‹Р»РѕРє
+        // Assert - проверка, что нет циклических ссылок
         foreach (var category in categories)
         {
             if (category.ParentCategoryId.HasValue)

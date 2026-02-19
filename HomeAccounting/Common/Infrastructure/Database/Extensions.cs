@@ -1,4 +1,4 @@
-﻿using EntityFramework.Exceptions.PostgreSQL;
+using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 

@@ -1,4 +1,4 @@
-п»їnamespace Receipts.DataBase.Entities;
+namespace Receipts.DataBase.Entities;
 
 class Product
 {
@@ -12,6 +12,6 @@ class Product
 
     public override string ToString()
     {
-        return $"{Name} РљР°С‚РµРіРѕСЂРёСЏ {Subcategory}";
+        return $"{Name} Категория {Subcategory}";
     }
 }

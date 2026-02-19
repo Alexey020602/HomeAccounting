@@ -1,4 +1,4 @@
-﻿using Receipts.DataBase;
+using Receipts.DataBase;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

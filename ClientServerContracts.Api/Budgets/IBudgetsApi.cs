@@ -191,6 +191,7 @@ public interface IBudgetsApi
     /// Returns all budgets the authenticated user is a member of.
     /// </summary>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Collection of budgets.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -208,6 +209,7 @@ public interface IBudgetsApi
     /// Creates a new budget. The authenticated user becomes the owner.
     /// </summary>
     /// <param name="request">Budget creation request.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -226,6 +228,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Budget details.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -244,6 +247,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="budgetData">Budget data to update.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -262,6 +266,7 @@ public interface IBudgetsApi
     /// Deletes budget by id. Requires delete permission on the budget.
     /// </summary>
     /// <param name="id">Budget identifier.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -281,6 +286,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Collection of budget users.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -300,6 +306,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="request">Request with user id and role id.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -320,6 +327,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="userId">User identifier to remove.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -340,6 +348,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>User permissions in budget.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -359,6 +368,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Budget spendings response.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -377,6 +387,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="query">Query parameters for filtering, sorting and pagination. Use Filter parameter for filtering by any receipt field with various operators. Use Sorting parameter for ordering by purchase date or sum.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Receipts response with list of receipts and total count.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -396,6 +407,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="query">Query parameters for filtering, sorting and pagination.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Operations response with list of operations and total count.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -415,6 +427,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="request">Receipt spending request with fiscal data.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -436,6 +449,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="file">Image file with QR code containing receipt fiscal data.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -451,13 +465,14 @@ public interface IBudgetsApi
     /// </remarks>
     [Post("/budgets/{id}/receipts/file")]
     [Multipart]
-    public Task AddReceiptFromFile(Guid id, [AliasAs("File")] Stream file, CancellationToken cancellationToken = default);
+    public Task AddReceiptFromFile(Guid id, [AliasAs("File")] StreamPart file, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds a receipt from raw QR code string. Fiscal data is parsed and receipt is processed asynchronously. Requires edit permission.
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="request">Request with raw QR code string (FNS format: t=...&amp;s=...&amp;fn=...&amp;i=...&amp;fp=...&amp;n=1).</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -479,6 +494,7 @@ public interface IBudgetsApi
     /// </summary>
     /// <param name="id">Budget identifier.</param>
     /// <param name="request">Manual spending request.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -501,6 +517,7 @@ public interface IBudgetsApi
     /// <param name="receiptId">Receipt identifier.</param>
     /// <param name="productId">Product identifier.</param>
     /// <param name="request">Request with category id.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -521,6 +538,7 @@ public interface IBudgetsApi
     /// <param name="budgetId">Budget identifier.</param>
     /// <param name="receiptId">Receipt identifier.</param>
     /// <param name="productId">Product identifier.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Task that completes when the request is finished.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>

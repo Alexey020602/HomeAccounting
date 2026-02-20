@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
             .AddDefaultLogoutService()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddTransient<HttpLoggingHandler>()
+            .AddTransient<WasmStreamingRequestHandler>()
             .AddTransient<AuthenticationHandler>()
             // .AddRefitClients(apiUri)
             .AddAuthorizationModule(apiUri)

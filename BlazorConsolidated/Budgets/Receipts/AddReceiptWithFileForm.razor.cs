@@ -88,9 +88,9 @@ public sealed partial class AddReceiptWithFileForm
         try
         {
             await using var stream = SelectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
-            // var streamPart = new StreamPart(stream, SelectedFile.Name, SelectedFile.ContentType);
+            var streamPart = new StreamPart(stream, SelectedFile.Name, SelectedFile.ContentType);
 
-            await BudgetsApi.AddReceiptFromFile(BudgetId, stream);
+            await BudgetsApi.AddReceiptFromFile(BudgetId, streamPart);
             
             Snackbar.Add("Чек успешно добавлен", Severity.Success);
             await OnReceiptAdded.InvokeAsync();

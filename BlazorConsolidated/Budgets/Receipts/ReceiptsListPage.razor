@@ -1,33 +1,13 @@
 @page "/receipts"
 @using System.Globalization
-@using BlazorConsolidated.Budgets.BudgetState
-@using BlazorConsolidated.Common
-@using ClientServerContracts.Api.Budgets
-@using ClientServerContracts.Budgets.GetReceipts
-@using ClientServerShared.Results
-@using MaybeResults
 @using Microsoft.AspNetCore.Authorization
-@using MudBlazor
 @attribute [Authorize]
 @inherits BudgetPage
-@* @inject IBudgetsApi BudgetsApi *@
-@* @inject ISnackbar Snackbar *@
 
 <PageTitle>Список чеков</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudCard>
-        <MudCardHeader>
-            <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные чеки</MudText>
-            <MudSpacer/>
-            <MudButton 
-                Variant="Variant.Filled" 
-                Color="Color.Primary" 
-                StartIcon="@Icons.Material.Filled.Add"
-                OnClick="OpenAddReceiptDialog">
-                Добавить чек
-            </MudButton>
-        </MudCardHeader>
         <MudCardContent>
             <MudDataGrid T="Receipt"
                          @ref="grid"
@@ -36,13 +16,24 @@
                          Hover="true"
                          Striped="true"
                          Dense="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные чеки</MudText>
+                    <MudSpacer/>
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.Add"
+                        OnClick="OpenAddReceiptDialog">
+                        Добавить чек
+                    </MudButton>
+                </ToolBarContent>
                 <Columns>
                     <PropertyColumn Property="x => x.PurchaseDate" Title="Дата покупки" SortBy="x => x.PurchaseDate"
                                     Format="dd.MM.yyyy HH:mm"/>
                     <PropertyColumn Property="x => x.CreatedAt" Title="Добавлен" SortBy="x => x.CreatedAt"
                                     Format="dd.MM.yyyy HH:mm"/>
-                    <PropertyColumn Property="x => x.PurchasePlace" Title="Место покупки" SortBy="x=>x.PurchasePlace"/>
-                    <PropertyColumn Property="x => x.Sum" Title="Сумма" SortBy="x=>x.Sum" Format="F2"
+                    <PropertyColumn Property="x => x.PurchasePlace" Title="Место покупки" SortBy="x => x.PurchasePlace"/>
+                    <PropertyColumn Property="x => x.Sum" Title="Сумма" SortBy="x => x.Sum" Format="F2"
                                     Culture="CultureInfo.InstalledUICulture"/>
                     <TemplateColumn Title="Статус">
                         <CellTemplate>
@@ -57,9 +48,3 @@
         </MudCardContent>
     </MudCard>
 </MudContainer>
-
-@code {
-    private MudDataGrid<Receipt> grid = null!;
-    
-
-}

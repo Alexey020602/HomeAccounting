@@ -32,7 +32,7 @@ public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthent
             return;
         try
         {
-            await localStorage.SetAsync(AuthorizationKey, authorization, cancellationToken);
+            await localStorage.SetAsync(AuthorizationKey, authorization, cancellationToken: cancellationToken);
         }
         finally
         {
@@ -47,7 +47,7 @@ public sealed class AuthenticationStorage(ILocalStorage localStorage) : IAuthent
 
         try
         {
-            return await localStorage.GetAsync<Authentication>(AuthorizationKey, cancellationToken);
+            return await localStorage.GetAsync<Authentication>(AuthorizationKey, cancellationToken: cancellationToken);
         }
         finally
         {

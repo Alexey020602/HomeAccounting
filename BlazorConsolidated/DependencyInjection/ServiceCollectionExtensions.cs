@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
             .AddDefaultLogoutService()
             .AddTransient<ILocalStorage, LocalStorage>()
             .AddTransient<HttpLoggingHandler>()
-            .AddTransient<AuthorizationHandler>()
+            .AddTransient<AuthenticationHandler>()
             // .AddRefitClients(apiUri)
             .AddAuthorizationModule(apiUri)
             .AddBudgetsModule(apiUri);

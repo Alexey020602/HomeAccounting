@@ -11,14 +11,23 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
         {
             return null;
         }
+        
         if (authentication is { Expired: false })
         {
             return authentication.AccessToken;
         }
 
-        await authenticationStorage.RemoveAuthorizationAsync(cancellationToken);
-        
-        return await GetRefreshedToken(cancellationToken);
+        // Не удаляем сразу, пытаемся обновить
+        try
+        {
+            return await GetRefreshedToken(cancellationToken);
+        }
+        catch
+        {
+            // Удаляем только при ошибке обновления
+            await authenticationStorage.RemoveAuthorizationAsync(cancellationToken);
+            return null;
+        }
     }
     public async Task<string> GetRefreshedToken(CancellationToken cancellationToken = default)
     {

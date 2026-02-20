@@ -10,7 +10,7 @@ internal sealed class BudgetStateStorage(ILocalStorage localStorage) : IBudgetSt
         localStorage.GetAsync<SelectedBudgetState>(BudgetsStateKey, cancellationToken: cancellationToken);
 
     public ValueTask SaveBudgetState(SelectedBudgetState budgetState, CancellationToken cancellationToken = default) =>
-        localStorage.SetAsync(BudgetsStateKey, budgetState, cancellationToken);
+        localStorage.SetAsync(BudgetsStateKey, budgetState, cancellationToken:cancellationToken);
 
     public ValueTask DeleteBudgetState(CancellationToken cancellationToken = default) =>
         localStorage.RemoveAsync(BudgetsStateKey, cancellationToken);

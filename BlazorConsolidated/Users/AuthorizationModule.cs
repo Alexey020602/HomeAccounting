@@ -37,12 +37,10 @@ public static class AuthorizationModule
             .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
             .Decorate<IAuthenticationStorage, TelemetryAuthenticationStorage>()
             .AddScoped<IValidator<RegistrationModel>, RegistrationModelValidator>()
-            .AddScopedAsMultipleServices<
-                ILoginService,
-                AuthenticationStateProvider,
-                ILogoutAction,
-                StorageAuthenticationService
-            >();
+            .AddScopedAsMultipleServices<AuthenticationStateProvider, IAuthenticationStateNotifier,
+                AuthenticationStateProviderService>()
+            .AddScoped<ILoginService, LoginService>()
+            .AddScoped<ILogoutAction, AuthenticationStorageLogoutAction>();
 
         serviceCollection.AddBaseRefitClient<IAuthorizationApi>(apiUri);
         serviceCollection.AddHomeAccountingRefitClient<IUsersApi>(apiUri);

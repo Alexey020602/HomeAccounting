@@ -13,6 +13,13 @@ public sealed partial class ReceiptsListPage
     [Inject] public required IBudgetsApi BudgetsApi { get; set; }
     [Inject] public required ISnackbar Snackbar { get; set; }
     [Inject] public required IDialogService DialogService { get; set; }
+    private MudDataGrid<Receipt> grid = new ();
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+        
+    }
+
     private async Task<GridData<Receipt>> LoadReceiptsGrid(GridState<Receipt> state)
     {
         var query = new GetReceiptsQueryParameters

@@ -15,7 +15,7 @@ public sealed class TelemetryAuthenticationStorage(
         {
             logger.LogInformation("Removing authorization");
             await authenticationStorage.RemoveAuthorizationAsync(cancellationToken);
-            logger.LogInformation("Authorization removed successfully");
+            logger.LogDebug("Authorization removed successfully");
         }
         catch (Exception ex)
         {
@@ -30,7 +30,7 @@ public sealed class TelemetryAuthenticationStorage(
         {
             logger.LogInformation("Adding authorization");
             await authenticationStorage.SetAuthorizationAsync(authorization, cancellationToken);
-            logger.LogInformation("Authorization added successfully");
+            logger.LogDebug("Authorization added successfully");
         }
         catch (Exception e)
         {
@@ -45,7 +45,7 @@ public sealed class TelemetryAuthenticationStorage(
         {
             logger.LogInformation("Getting authorization");
             var authentication = await authenticationStorage.GetAuthorizationAsync(cancellationToken);
-            logger.LogInformation("Authorization retrieved successfully");
+            logger.LogDebug("Authorization retrieved successfully");
             return authentication;
         }
         catch (Exception e)

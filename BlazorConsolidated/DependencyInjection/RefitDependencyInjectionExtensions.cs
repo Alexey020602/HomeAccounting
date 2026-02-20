@@ -42,7 +42,7 @@ public static class RefitDependencyInjectionExtensions
         public IHttpClientBuilder AddHomeAccountingRefitClient<T>(Uri apiUri) where T : class
         {
             return serviceCollection.AddBaseRefitClient<T>(apiUri)
-                .AddHttpMessageHandler<AuthorizationHandler>();
+                .AddHttpMessageHandler<AuthenticationHandler>();
         }
 
         public void AddHomeAccountingRefitClient(Type type, Uri apiUri)
@@ -50,7 +50,7 @@ public static class RefitDependencyInjectionExtensions
             serviceCollection.AddRefitClient(type)
                 .ConfigureHttpClient(client => client.BaseAddress = apiUri)
                 .AddHttpMessageHandler<HttpLoggingHandler>()
-                .AddHttpMessageHandler<AuthorizationHandler>();
+                .AddHttpMessageHandler<AuthenticationHandler>();
         }
 
         private void AddRefitClient(Type type, Uri apiUri,
@@ -75,7 +75,7 @@ public static class RefitDependencyInjectionExtensions
             if (apiAttribute is not ApiAuthorizableAttribute) return;
 
             httpClientBuilder
-                .AddHttpMessageHandler<AuthorizationHandler>();
+                .AddHttpMessageHandler<AuthenticationHandler>();
         }
     }
 }

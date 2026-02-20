@@ -33,7 +33,7 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Get("/login/exist")]
-    Task<bool> CheckLoginExist([Query] CheckLoginExistQueryParameters query);
+    Task<bool> CheckLoginExist([Query] CheckLoginExistQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Authenticates user by login and password. Returns JWT and refresh token.
@@ -50,7 +50,7 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/login")]
-    Task<AuthorizationResponse> Login(LoginRequest loginRequest);
+    Task<AuthorizationResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new user account with the provided credentials.
@@ -66,7 +66,7 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/register")]
-    Task Register(RegistrationRequest registrationRequest);
+    Task Register(RegistrationRequest registrationRequest, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Exchanges a valid refresh token for new JWT and refresh token.
@@ -83,5 +83,5 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/refresh")]
-    Task<AuthorizationResponse> RefreshToken([Body] string refreshToken);
+    Task<AuthorizationResponse> RefreshToken([Body] string refreshToken, CancellationToken cancellationToken = default);
 }

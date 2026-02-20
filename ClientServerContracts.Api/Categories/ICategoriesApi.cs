@@ -35,7 +35,7 @@ public interface ICategoriesApi
     /// </list>
     /// </remarks>
     [Get("/categories")]
-    Task<IReadOnlyCollection<CategoryDto>> GetCategories([Query] GetCategoriesQueryParameters query);
+    Task<IReadOnlyCollection<CategoryDto>> GetCategories([Query] GetCategoriesQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns all categories as a hierarchical tree with parent-child structure.
@@ -51,5 +51,5 @@ public interface ICategoriesApi
     /// </list>
     /// </remarks>
     [Get("/categories/tree")]
-    Task<IReadOnlyCollection<CategoryTreeDto>> GetCategoriesTree();
+    Task<IReadOnlyCollection<CategoryTreeDto>> GetCategoriesTree(CancellationToken cancellationToken = default);
 }

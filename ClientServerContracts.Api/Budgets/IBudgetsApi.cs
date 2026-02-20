@@ -202,7 +202,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets")]
-    public Task<IReadOnlyCollection<BudgetDto>> GetBudgets([Query] GetBudgetsQueryParameters query);
+    public Task<IReadOnlyCollection<BudgetDto>> GetBudgets([Query] GetBudgetsQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new budget. The authenticated user becomes the owner.
@@ -219,7 +219,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Post("/budgets")] 
-    public Task CreateBudget(CreateBudgetRequest request);
+    public Task CreateBudget(CreateBudgetRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns budget details by id. Requires read permission on the budget.
@@ -237,7 +237,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}")]
-    public Task<BudgetDetailDto> GetBudgetDetail(Guid id);
+    public Task<BudgetDetailDto> GetBudgetDetail(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates budget by id. Requires edit permission on the budget.
@@ -256,7 +256,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Put("/budgets/{id}")]
-    public Task UpdateBudget(Guid id, BudgetData budgetData);
+    public Task UpdateBudget(Guid id, BudgetData budgetData, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes budget by id. Requires delete permission on the budget.
@@ -274,7 +274,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Delete("/budgets/{id}")]
-    public Task DeleteBudget(Guid id);
+    public Task DeleteBudget(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns list of users in the budget with their roles. Requires read permission.
@@ -293,7 +293,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}/users")]
-    public Task<IReadOnlyCollection<BudgetUserDto>> GetBudgetUsers(Guid id, [Query] GetBudgetUsersQueryParameters query);
+    public Task<IReadOnlyCollection<BudgetUserDto>> GetBudgetUsers(Guid id, [Query] GetBudgetUsersQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds a user to the budget with the specified role. Requires edit permission.
@@ -313,7 +313,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Post("/budgets/{id}/users")]
-    public Task AddUsersInBudget(Guid id, AddUsersInBudgetRequest request);
+    public Task AddUsersInBudget(Guid id, AddUsersInBudgetRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes a user from the budget. Requires edit permission.
@@ -333,7 +333,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Delete("/budgets/{id}/users/{userId}")]
-    public Task DeleteUserFromBudget(Guid id, Guid userId);
+    public Task DeleteUserFromBudget(Guid id, Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns the current user's permissions (edit, delete) for the budget. Requires read permission.
@@ -352,7 +352,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}/permissions")]
-    public Task<UserInBudgetPermissionsDto> GetUserPermissions(Guid id);
+    public Task<UserInBudgetPermissionsDto> GetUserPermissions(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns list of spendings in the budget. Requires read permission.
@@ -370,7 +370,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}/spendings")]
-    public Task<GetBudgetSpendingsResponse> GetBudgetSpendings(Guid id, [Query] GetBudgetSpendingsQueryParameters query);
+    public Task<GetBudgetSpendingsResponse> GetBudgetSpendings(Guid id, [Query] GetBudgetSpendingsQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns list of receipts in the budget with optional filtering and sorting. Supports pagination. Requires read permission.
@@ -389,7 +389,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}/receipts")]
-    public Task<GetReceiptsResponse> GetReceipts(Guid id, [Query] GetReceiptsQueryParameters query);
+    public Task<GetReceiptsResponse> GetReceipts(Guid id, [Query] GetReceiptsQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns list of operations (manual spendings) in the budget with optional filtering by date range, category, and user. Supports sorting and pagination. Requires read permission.
@@ -408,7 +408,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Get("/budgets/{id}/operations")]
-    public Task<GetOperationsResponse> GetOperations(Guid id, [Query] GetOperationsQueryParameters query);
+    public Task<GetOperationsResponse> GetOperations(Guid id, [Query] GetOperationsQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds spending from a receipt by fiscal data. Receipt is processed asynchronously. Requires edit permission.
@@ -429,7 +429,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Post("/budgets/{id}/receipts")]
-    public Task AddReceiptSpending(Guid id, AddReceiptSpendingRequest request);
+    public Task AddReceiptSpending(Guid id, AddReceiptSpendingRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds a receipt by uploading an image file with QR code. QR code is scanned, fiscal data is parsed, and receipt is processed asynchronously. Requires edit permission.
@@ -451,7 +451,7 @@ public interface IBudgetsApi
     /// </remarks>
     [Post("/budgets/{id}/receipts/file")]
     [Multipart]
-    public Task AddReceiptFromFile(Guid id, [AliasAs("File")] Stream file);
+    public Task AddReceiptFromFile(Guid id, [AliasAs("File")] Stream file, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds a receipt from raw QR code string. Fiscal data is parsed and receipt is processed asynchronously. Requires edit permission.
@@ -472,7 +472,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Post("/budgets/{id}/receipts/qrcode")]
-    public Task AddReceiptFromQrCode(Guid id, [Body] AddReceiptFromQrCodeRequest request);
+    public Task AddReceiptFromQrCode(Guid id, [Body] AddReceiptFromQrCodeRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds a manual spending entry to the budget. Requires edit permission.
@@ -492,7 +492,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Post("/budgets/{id}/spendings/manual")]
-    public Task AddManualSpending(Guid id, AddManualSpendingRequest request);
+    public Task AddManualSpending(Guid id, AddManualSpendingRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sets category for a product in a receipt. Requires edit permission.
@@ -513,7 +513,7 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Put("/budgets/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
-    public Task ChangeReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId, ChangeReceiptProductCategoryRequest request);
+    public Task ChangeReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId, ChangeReceiptProductCategoryRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes category from a product in a receipt. Requires edit permission.
@@ -533,5 +533,5 @@ public interface IBudgetsApi
     /// </list>
     /// </remarks>
     [Delete("/budgets/{budgetId}/receipts/{receiptId}/products/{productId}/category")]
-    public Task DeleteReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId);
+    public Task DeleteReceiptProductCategory(Guid budgetId, Guid receiptId, Guid productId, CancellationToken cancellationToken = default);
 }

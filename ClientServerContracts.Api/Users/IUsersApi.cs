@@ -24,7 +24,7 @@ public interface IUsersApi
     /// </list>
     /// </remarks>
     [Get("/users/{id}")]
-    public Task<User> GetUser(Guid id);
+    public Task<User> GetUser(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns user by username.
@@ -40,7 +40,7 @@ public interface IUsersApi
     /// </list>
     /// </remarks>
     [Get("/users/{username}")]
-    public Task<User> GetUserByUsername(string username);
+    public Task<User> GetUserByUsername(string username, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates user full name and username by id.
@@ -58,5 +58,5 @@ public interface IUsersApi
     /// </list>
     /// </remarks>
     [Put("/users/{id}")]
-    public Task UpdateUser(Guid id, UpdatedUserDto user);
+    public Task UpdateUser(Guid id, UpdatedUserDto user, CancellationToken cancellationToken = default);
 }

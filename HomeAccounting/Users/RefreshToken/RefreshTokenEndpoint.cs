@@ -28,7 +28,7 @@ static class RefreshTokenEndpoint
                             user => user.RefreshToken != null && user.RefreshToken.Token == refreshToken
                             ) is not {} user)
                     {
-                        return Results.NotFound("User not found");
+                        return Results.Unauthorized();
                     }
 
                     if (user.RefreshToken == null || user.RefreshToken.Expires < DateTimeOffset.UtcNow)
@@ -41,7 +41,8 @@ static class RefreshTokenEndpoint
                     user.AddRefreshToken(newRefreshToken);
 
                     await userManager.UpdateAsync(user);
-                    
+
+                    var accessToken = tokenProvider.CreateTokenForUser(user);
                     return Results.Ok(
                         new AuthorizationResponse(
                             JwtBearerDefaults.AuthenticationScheme,
@@ -49,9 +50,9 @@ static class RefreshTokenEndpoint
                                 user.Id.Value,
                                 user.UserName ?? throw UserException.NoUserName,
                                 user.FullName),
-                            tokenProvider.CreateTokenForUser(user),
+                            accessToken.Token,
                             newRefreshToken.Token,
-                            newRefreshToken.Expires
+                            accessToken.ExpiresAt
                         ));
                 })
             .WithName("RefreshToken")
@@ -59,7 +60,8 @@ static class RefreshTokenEndpoint
             .WithSummary("Refresh token")
             .WithDescription("Exchanges a valid refresh token for new JWT and refresh token.")
             .Produces((int)HttpStatusCode.OK, typeof(AuthorizationResponse))
-            .ProducesProblem((int)HttpStatusCode.NotFound)
-            .ProducesProblem((int)HttpStatusCode.Unauthorized);
+            .ProducesProblem((int)HttpStatusCode.BadRequest)
+            .ProducesProblem((int)HttpStatusCode.Unauthorized)
+            .AllowAnonymous();
     }
 }

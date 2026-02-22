@@ -34,6 +34,7 @@ static class LoginEndpoint
 
                 user.AddRefreshToken(refreshToken);
 
+                var accessToken = tokenProvider.CreateTokenForUser(user);
                 return Results.Ok(
                     new AuthorizationResponse(
                         JwtBearerDefaults.AuthenticationScheme,
@@ -41,9 +42,10 @@ static class LoginEndpoint
                             user.Id.Value,
                             user.UserName ?? throw UserException.NoUserName,
                             user.FullName),
-                        tokenProvider.CreateTokenForUser(user),
+                        accessToken.Token
+                        ,
                         refreshToken.Token,
-                        refreshToken.Expires
+                        accessToken.ExpiresAt
                     ));
             })
             .WithName("Login")

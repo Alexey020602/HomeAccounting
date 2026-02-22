@@ -37,11 +37,13 @@ public class TokenProvider(IOptions<JwtTokenSettings> settings, ILogger<TokenPro
             Expires = Settings.RefreshTokenExpirationDate,
         };
     }
-    public string CreateToken(IReadOnlyList<Claim> claims)
+    public AccessToken CreateToken(IReadOnlyList<Claim> claims)
     {
         var token = CreateJwtSecurityToken(claims);
+        var accessToken = tokenHandler.WriteToken(token);
+        DateTimeOffset expiredAt = token.ValidTo;
         logger.LogInformation("JWT Token created");
-        return tokenHandler.WriteToken(token);
+        return new AccessToken(accessToken, expiredAt);
     }
     
     private JwtSecurityToken CreateJwtSecurityToken(IEnumerable<Claim> claims) =>

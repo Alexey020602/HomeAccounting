@@ -7,5 +7,5 @@ public interface ITokenProvider
 {
     ClaimsPrincipal GetPrincipal(string token);
     Data.RefreshToken CreateRefreshToken();
-    string CreateToken(IReadOnlyList<Claim> claims);
+    AccessToken CreateToken(IReadOnlyList<Claim> claims);
 }

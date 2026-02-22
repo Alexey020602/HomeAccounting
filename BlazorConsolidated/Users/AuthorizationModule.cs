@@ -11,7 +11,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Refit;
 
 namespace BlazorConsolidated.Users;
 
@@ -33,14 +32,14 @@ public static class AuthorizationModule
                 ))
             .AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>()
             .AddCascadingAuthenticationState()
-            .AddScoped<ITokenService, TokenService>()
-            .AddScoped<IAuthenticationStorage, AuthenticationStorage>()
+            .AddSingleton<ITokenService, TokenService>()
+            .AddSingleton<IAuthenticationStorage, AuthenticationStorage>()
             .Decorate<IAuthenticationStorage, TelemetryAuthenticationStorage>()
             .AddScoped<IValidator<RegistrationModel>, RegistrationModelValidator>()
-            .AddScopedAsMultipleServices<AuthenticationStateProvider, IAuthenticationStateNotifier,
-                AuthenticationStateProviderService>()
-            .AddScoped<ILoginService, LoginService>()
-            .AddScoped<ILogoutAction, AuthenticationStorageLogoutAction>();
+            .AddSingletonAsMultipleServices<AuthenticationStateProvider, IAuthenticationStateNotifier, AuthenticationStateProviderService>()
+            .AddSingleton<ILoginService, LoginService>()
+            .AddSingleton<ILogoutAction, AuthenticationStorageLogoutAction>()
+            .AddTransient<AuthenticationHandler>();
 
         serviceCollection.AddBaseRefitClient<IAuthorizationApi>(apiUri);
         serviceCollection.AddHomeAccountingRefitClient<IUsersApi>(apiUri);

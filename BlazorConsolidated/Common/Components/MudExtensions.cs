@@ -5,8 +5,17 @@ namespace BlazorConsolidated.Common.Components;
 
 public static class MudExtensions
 {
-    public static Snackbar? ProcessError(this ISnackbar snackbar, INone error, Action<SnackbarOptions>? configure = null)
+    extension(ISnackbar snackbar)
     {
-        return snackbar.Add(error.Message, Severity.Error, configure);
+        public Snackbar? ProcessError(INone error, Action<SnackbarOptions>? configure = null)
+        {
+            return snackbar.Add(error.Message, Severity.Error, configure);
+        }
+
+        public Snackbar? ProcessException(Exception exception,
+            Action<SnackbarOptions>? configure = null)
+        {
+            return snackbar.Add(exception.Message, Severity.Error, configure);
+        }
     }
 }

@@ -1,4 +1,3 @@
-using BlazorConsolidated.Common.Logout;
 using ClientServerContracts.Budgets.GetBudgets;
 
 namespace BlazorConsolidated.Budgets.BudgetState;
@@ -26,13 +25,5 @@ internal sealed class BudgetStateService(IBudgetStateStorage budgetStateStorage)
     {
         await budgetStateStorage.DeleteBudgetState(cancellationToken);
         await NotifyBudgetStateChanged(Task.FromResult(new BudgetState()));
-    }
-}
-
-internal sealed class BudgetsLogoutAction(IBudgetsStateService budgetsStateService): ILogoutAction
-{
-    public Task Logout(CancellationToken cancellationToken = default)
-    {
-        return budgetsStateService.UnselectBudget(cancellationToken).AsTask();
     }
 }

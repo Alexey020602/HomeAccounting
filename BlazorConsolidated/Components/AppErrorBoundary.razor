@@ -11,19 +11,12 @@
 @ChildContent
 
 @code {
-    protected override async Task OnErrorAsync(Exception exception)
+    protected override Task OnErrorAsync(Exception exception)
     {
-        if (exception is not ApiException
-            {
-                StatusCode: HttpStatusCode.Unauthorized
-            })
-        {
-            Logger.LogError(exception, "Error in app: {Message}",  exception.Message);
-            ProcessError(exception);
-            return;
-        }
-        await LoginStateProvider.Logout();
-        NavigationManager.NavigateTo($"/login?returnUrl={NavigationManager.GetCurrentPath()}");
+
+        Logger.LogError(exception, "Error in app: {Message}",  exception.Message);
+        ProcessError(exception);
+        return Task.CompletedTask;
     }
 
     private void ProcessError(Exception exception)

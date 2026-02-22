@@ -24,10 +24,9 @@ public static class ServiceCollectionExtensions
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
             .AddDefaultLogoutService()
-            .AddTransient<ILocalStorage, LocalStorage>()
+            .AddSingleton<ILocalStorage, LocalStorage>()
             .AddTransient<HttpLoggingHandler>()
             .AddTransient<WasmStreamingRequestHandler>()
-            .AddTransient<AuthenticationHandler>()
             // .AddRefitClients(apiUri)
             .AddAuthorizationModule(apiUri)
             .AddBudgetsModule(apiUri);

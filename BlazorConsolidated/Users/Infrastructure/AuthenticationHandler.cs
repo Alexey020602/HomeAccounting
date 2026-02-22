@@ -6,7 +6,7 @@ using BlazorConsolidated.Users.Infrastructure.Abstractions;
 namespace BlazorConsolidated.Users.Infrastructure;
 
 public class AuthenticationHandler(
-    ITokenService tokenService)
+    ITokenService tokenService, ILogoutService logoutService)
     : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
@@ -17,7 +17,7 @@ public class AuthenticationHandler(
 
         if (await tokenService.GetFreshAccessToken(cancellationToken) is not {} accessToken)
         {
-            // await logoutService.Logout(cancellationToken);
+            await logoutService.Logout(cancellationToken);
             return CreateUnauthorizedMessage(request);
         }
 
@@ -33,7 +33,7 @@ public class AuthenticationHandler(
         }
         catch 
         {
-            // await logoutService.Logout(cancellationToken);
+            await logoutService.Logout(cancellationToken);
             return CreateUnauthorizedMessage(request);
         }
         finally
@@ -42,8 +42,8 @@ public class AuthenticationHandler(
         }
 
         var secondResponse = await base.SendAsync(request, cancellationToken);
-        // if (secondResponse.StatusCode == HttpStatusCode.Unauthorized) 
-        //     await logoutService.Logout(cancellationToken);
+        if (secondResponse.StatusCode == HttpStatusCode.Unauthorized) 
+            await logoutService.Logout(cancellationToken);
         return secondResponse;
     }
 

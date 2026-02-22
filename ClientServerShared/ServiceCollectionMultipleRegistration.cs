@@ -32,7 +32,7 @@ public static class ServiceCollectionMultipleRegistration
 
         services.Add(new ServiceDescriptor(typeof(TService), implementationFactory, lifetime));
 
-        return AddServicesForService(services, typeof(TService), serviceTypes);
+        return services.AddServicesForService(lifetime,typeof(TService), serviceTypes);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public static class ServiceCollectionMultipleRegistration
 
         services.Add(new ServiceDescriptor(implementationType, implementationType, lifetime));
 
-        return AddServicesForService(services, implementationType, serviceTypes);
+        return services.AddServicesForService(lifetime, implementationType, serviceTypes);
     }
 
     #region Sigleton Methods
@@ -363,21 +363,24 @@ public static class ServiceCollectionMultipleRegistration
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="serviceType">Тип сервиса.</param>
     /// <param name="implementationType">Тип реализации.</param>
+    /// <param name="lifetime">Lifetime сервиса</param>
     /// <returns>Обновленная коллекция сервисов.</returns>
     /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="services"/>, <paramref name="serviceType"/> или <paramref name="implementationType"/> равны null.</exception>
     public static IServiceCollection AddServiceForService(
         this IServiceCollection services,
         Type serviceType,
-        Type implementationType
+        Type implementationType,
+        ServiceLifetime lifetime
     )
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(serviceType);
         ArgumentNullException.ThrowIfNull(implementationType);
-        return services.AddTransient(
-            serviceType,
-            sp => sp.GetRequiredService(implementationType)
-        );
+         services.Add(new ServiceDescriptor(
+            serviceType, 
+            sp => sp.GetRequiredService(implementationType),
+            lifetime: lifetime));
+         return  services;
     }
 
     /// <summary>
@@ -386,31 +389,34 @@ public static class ServiceCollectionMultipleRegistration
     /// <typeparam name="TService">Тип сервиса.</typeparam>
     /// <typeparam name="TImplementation">Тип реализации, который реализует <typeparamref name="TService"/>.</typeparam>
     /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Lifetime сервиса</param>
     /// <returns>Обновленная коллекция сервисов.</returns>
     /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="services"/> равно null.</exception>
-    public static IServiceCollection AddServiceForService<TService, TImplementation>(this IServiceCollection services)
+    public static IServiceCollection AddServiceForService<TService, TImplementation>(this IServiceCollection services, ServiceLifetime lifetime)
         where TService : class
         where TImplementation : class, TService
     {
-        return services.AddServiceForService(typeof(TService), typeof(TImplementation));
+        return services.AddServiceForService(typeof(TService), typeof(TImplementation), lifetime);
     }
 
     /// <summary>
     /// Добавляет несколько сервисов, которые ссылаются на одну реализацию.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Lifetime сервиса</param>
     /// <param name="implementationType">Тип реализации.</param>
     /// <param name="serviceTypes">Типы сервисов.</param>
     /// <returns>Обновленная коллекция сервисов.</returns>
     /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="services"/>, <paramref name="implementationType"/> или <paramref name="serviceTypes"/> равны null.</exception>
     public static IServiceCollection AddServicesForService(
         this IServiceCollection services,
+        ServiceLifetime lifetime,
         Type implementationType,
         params Type[] serviceTypes)
     {
         foreach (var serviceType in serviceTypes)
         {
-            services.AddServiceForService(serviceType, implementationType);
+            services.AddServiceForService(serviceType, implementationType, lifetime);
         }
 
         return services;
@@ -423,15 +429,17 @@ public static class ServiceCollectionMultipleRegistration
     /// <typeparam name="TServiceSecond">Второй тип сервиса.</typeparam>
     /// <typeparam name="TImplementation">Тип реализации, который реализует <typeparamref name="TServiceFirst"/> и <typeparamref name="TServiceSecond"/>.</typeparam>
     /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Lifetime сервиса</param>
     /// <returns>Обновленная коллекция сервисов.</returns>
     /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="services"/> равно null.</exception>
     public static IServiceCollection AddServicesForService<TServiceFirst, TServiceSecond, TImplementation>(
-        this IServiceCollection services)
+        this IServiceCollection services, ServiceLifetime lifetime)
         where TServiceFirst : class
         where TServiceSecond : class
         where TImplementation : class, TServiceFirst, TServiceSecond
     {
         return services.AddServicesForService(
+            lifetime,
             typeof(TImplementation),
             typeof(TServiceFirst),
             typeof(TServiceSecond)
@@ -446,17 +454,19 @@ public static class ServiceCollectionMultipleRegistration
     /// <typeparam name="TServiceThird">Третий тип сервиса.</typeparam>
     /// <typeparam name="TImplementation">Тип реализации, который реализует <typeparamref name="TServiceFirst"/>, <typeparamref name="TServiceSecond"/> и <typeparamref name="TServiceThird"/>.</typeparam>
     /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Lifetime сервиса</param>
     /// <returns>Обновленная коллекция сервисов.</returns>
     /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="services"/> равно null.</exception>
     public static IServiceCollection AddServicesForService<TServiceFirst, TServiceSecond, TServiceThird,
         TImplementation>(
-        this IServiceCollection services)
+        this IServiceCollection services, ServiceLifetime lifetime)
         where TServiceFirst : class
         where TServiceSecond : class
         where TServiceThird : class
         where TImplementation : class, TServiceFirst, TServiceSecond, TServiceThird
     {
         return services.AddServicesForService(
+            lifetime,
             typeof(TImplementation),
             typeof(TServiceFirst),
             typeof(TServiceSecond),

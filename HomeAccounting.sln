@@ -110,6 +110,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAccounting.UnitTests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServerContracts.Api", "ClientServerContracts.Api\ClientServerContracts.Api.csproj", "{61A5156D-0FB7-478B-802E-AB2EA2150212}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorConsolidated.Tests", "BlazorConsolidated.Tests\BlazorConsolidated.Tests.csproj", "{89821762-7E8A-4296-93EE-BB2F571F3BD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -260,6 +262,10 @@ Global
 		{61A5156D-0FB7-478B-802E-AB2EA2150212}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61A5156D-0FB7-478B-802E-AB2EA2150212}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61A5156D-0FB7-478B-802E-AB2EA2150212}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89821762-7E8A-4296-93EE-BB2F571F3BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89821762-7E8A-4296-93EE-BB2F571F3BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89821762-7E8A-4296-93EE-BB2F571F3BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89821762-7E8A-4296-93EE-BB2F571F3BD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F85C2AB1-BC60-4CD6-9B46-61E7CD87E15B} = {0DDAEF3F-EE2A-4277-AF34-BF5A5F121B57}

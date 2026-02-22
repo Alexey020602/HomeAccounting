@@ -39,4 +39,8 @@
       <Folder Include="Categories\" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="BlazorConsolidated.Tests" />
+    </ItemGroup>
+
 </Project>

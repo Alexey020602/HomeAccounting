@@ -1,0 +1,20 @@
+@using BlazorQrCodeScanner
+
+<QrCodeScanner @ref="qrScanner"
+               Width="100%"
+               Height="400px"
+               Style="display: flex; align-items: center; justify-content: center; overflow: hidden;"
+               OnCreated="OnScannerCreated"
+               OnQrSuccess="OnQrCodeScanned"
+               OnScannerStarted="OnScannerStarted"
+               OnQrScanFailed="OnScanFailed"
+               OnScannerStartFailed="OnScannerStartFailed"/>
+
+<MudText Typo="Typo.caption" Class="mt-2">
+    Наведите камеру на QR-код чека.
+</MudText>
+
+@if (IsLoading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-4"/>
+}

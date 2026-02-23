@@ -1,0 +1,49 @@
+@page "/User/{id:guid}/edit"
+@using BlazorConsolidated.Common.Components
+@using BlazorConsolidated.Common.RefitWithResult
+@using BlazorConsolidated.Users.Pages
+@using ClientServerContracts.Api.Users
+@using ClientServerContracts.Users.GetUser
+@using ClientServerContracts.Users.UpdateUser
+@using FluentValidation
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+@using Severity = MudBlazor.Severity
+@inject ISnackbar Snackbar
+@inject IUsersApi UsersApi
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<AuthorizeView Policy="@AuthorizationModule.UserbyidPolicyName" Resource="Id">
+    <Authorized>
+        <MaybeComponent Result="UserMaybe" Context="user">
+            <UserEditForm User="user" OnSubmit="@Update"/>
+        </MaybeComponent>
+    </Authorized>
+    <NotAuthorized>
+        У вас нет прав редактировать данного пользоа=вателя
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private IMaybe<User>? UserMaybe { get; set; }
+
+    private async Task Update(UpdatedUserDto user)
+    {
+        if (await UsersApi.UpdateUser(Id, user).ToMaybe() is INone error)
+        {
+            Snackbar.ProcessError(error);
+        }
+        else
+        {
+            Snackbar.Add("Данные пользователя успешно обновлены", Severity.Success);
+            NavigationManager.NavigateTo($"/user/{Id}");
+        }
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        UserMaybe = await UsersApi.GetUser(Id).ToMaybe();
+    }
+}

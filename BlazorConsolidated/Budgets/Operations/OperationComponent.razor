@@ -1,0 +1,66 @@
+@using ClientServerContracts.Budgets.GetOperations
+
+<MudCard>
+    <MudCardHeader @onclick="Toggle" Style="cursor: pointer">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Покупка:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Operation.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Добавлен:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Operation.AddedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Описание:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Operation.Description</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Сумма:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Operation.Sum</MudText>
+            </MudItem>
+            @if (Operation.CategoryId.HasValue)
+            {
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body1">Категория:</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body1">@Operation.CategoryId.Value</MudText>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudCollapse @bind-Expanded="ShowDetails">
+            <MudGrid Class="mt-2">
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body2"><strong>ID:</strong> @Operation.Id</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body2"><strong>Пользователь:</strong> @Operation.UserId</MudText>
+                </MudItem>
+                @if (Operation.CategoryId.HasValue)
+                {
+                    <MudItem xs="12" md="6">
+                        <MudText Typo="Typo.body2"><strong>ID категории:</strong> @Operation.CategoryId.Value</MudText>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudCollapse>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public OperationDto Operation { get; set; } = null!;
+    private bool ShowDetails { get; set; }
+    
+    private void Toggle() => ShowDetails = !ShowDetails;
+}

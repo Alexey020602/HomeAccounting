@@ -1,0 +1,73 @@
+<MudCard>
+    <MudCardHeader @onclick="Toggle" Style="cursor: pointer">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Покупка:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Receipt.PurchaseDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Добавлен:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Receipt.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+            </MudItem>
+            @if (Receipt.CompletedAt.HasValue)
+            {
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body1">Завершен:</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body1">@Receipt.CompletedAt.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</MudText>
+                </MudItem>
+            }
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Место покупки:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Receipt.PurchasePlace</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Сумма:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">@Receipt.Sum</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">Статус:</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <ReceiptStatusComponent Status="Receipt.Status"/>
+            </MudItem>
+        </MudGrid>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudCollapse @bind-Expanded="ShowDetails">
+            @if (Receipt.Status == ReceiptStatus.Failed && !string.IsNullOrEmpty(Receipt.LastErrorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-2">
+                    <MudText Typo="Typo.body2"><strong>Ошибка:</strong> @Receipt.LastErrorMessage</MudText>
+                </MudAlert>
+            }
+            <MudGrid Class="mt-2">
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body2"><strong>ФН:</strong> @Receipt.Fn</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body2"><strong>ФД:</strong> @Receipt.Fd</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.body2"><strong>ФП:</strong> @Receipt.Fp</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudCollapse>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public required ReceiptDto Receipt { get; set; }
+    private bool ShowDetails { get; set; }
+    
+    private void Toggle() => ShowDetails = !ShowDetails;
+}

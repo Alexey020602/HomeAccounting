@@ -1,0 +1,3 @@
+namespace ClientServerContracts.Budgets.ChangeReceiptProductCategory;
+
+public sealed record ChangeReceiptProductCategoryRequest(int CategoryId);

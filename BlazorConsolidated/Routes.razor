@@ -1,22 +1,11 @@
-@using Authorization.UI.Pages
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorConsolidated.Components
 @using BlazorConsolidated.Layouts
-@using Budgets.UI.BudgetsList
-@using global::Reports.UI
 @inject NavigationManager NavigationManager
-<CascadingAuthenticationState @rendermode="AssignedRenderMode">
+@* <CascadingAuthenticationState @rendermode="AssignedRenderMode"> *@
     <AppErrorBoundary>
         @* <ChildContent> *@
-        <Router AppAssembly="@typeof(MainLayout).Assembly"
-                AdditionalAssemblies="new []
-                { 
-                    typeof(Login).Assembly, 
-                    typeof(global::Receipts.UI.Receipts).Assembly, 
-                    typeof(MonthReport).Assembly,
-                    typeof(BudgetsPage).Assembly
-                    }"
-        >
+        <Router AppAssembly="@typeof(MainLayout).Assembly">
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                     <Authorizing>
@@ -38,4 +27,4 @@
         </Router>
         @* </ChildContent> *@
     </AppErrorBoundary>
-</CascadingAuthenticationState>
+@* </CascadingAuthenticationState> *@

@@ -1,4 +1,4 @@
-﻿services:
+services:
   docker-dashboard:
     image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
     expose:

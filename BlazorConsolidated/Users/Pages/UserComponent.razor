@@ -1,0 +1,31 @@
+@using BlazorConsolidated.Common.Logout
+@using ClientServerShared.Users
+@inject ILogoutService LogoutService
+
+<AuthorizeView Context="authenticationState">
+    <MudNavGroup Icon="@Icons.Material.Sharp.Person" Style="width:100%" Title="Профиль" >
+        @{
+            var user = authenticationState.User.CreateUser();
+        }
+        <MudNavLink Href="@($"/user/{user.Id}")">
+            @user.UserName
+        </MudNavLink>
+        @if (ChildContent is not null)
+        {
+            <MudDivider/>
+            @ChildContent(authenticationState)
+            <MudDivider/>
+        }
+        <MudNavLink
+            IconColor="Color.Error"
+            OnClick="@Logout"
+            Icon="@Icons.Material.Filled.Logout">
+            <MudText Color="Color.Error">Выйти</MudText>
+        </MudNavLink>
+    </MudNavGroup>
+</AuthorizeView>
+
+@code {
+    private Task Logout() => LogoutService.Logout();
+    [Parameter] public RenderFragment<AuthenticationState>? ChildContent { get; set; }
+}

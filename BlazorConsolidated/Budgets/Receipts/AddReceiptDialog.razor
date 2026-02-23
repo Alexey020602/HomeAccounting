@@ -1,0 +1,50 @@
+<MudDialog>
+    <DialogContent>
+        <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="false">
+            <MudTabPanel Text="Ручной ввод">
+                <AddReceiptManualForm BudgetId="BudgetId" OnReceiptAdded="OnReceiptAdded"/>
+            </MudTabPanel>
+            <MudTabPanel Text="Загрузка изображения">
+                <AddReceiptWithFileForm BudgetId="BudgetId" OnReceiptAdded="OnReceiptAdded"/>
+            </MudTabPanel>
+            <MudTabPanel Text="Сканирование QR">
+                <MudRadioGroup @bind-Value="SelectedScanner" T="string" Class="mb-3">
+                    <MudRadio T="string" Value="@("BlazorQrCodeScanner")">BlazorQrCodeScanner</MudRadio>
+                    <MudRadio T="string" Value="@("ZXingBlazor")">ZXingBlazor</MudRadio>
+                </MudRadioGroup>
+                @if (SelectedScanner == "BlazorQrCodeScanner")
+                {
+                    <AddReceiptWithQrScanForm BudgetId="BudgetId" OnReceiptAdded="OnReceiptAdded"/>
+                }
+                @if (SelectedScanner == "ZXingBlazor")
+                {
+                    <AddReceiptWithZxingQrScanForm BudgetId="BudgetId" OnReceiptAdded="OnReceiptAdded"/>
+                }
+            </MudTabPanel>
+        </MudTabs>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Отмена</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [Parameter] public required Guid BudgetId { get; set; }
+    
+    [CascadingParameter] public IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private string SelectedScanner { get; set; } = "BlazorQrCodeScanner";
+
+    private Task OnReceiptAdded()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+        return Task.CompletedTask;
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+}

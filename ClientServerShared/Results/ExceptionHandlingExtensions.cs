@@ -1,0 +1,109 @@
+using MaybeResults;
+
+namespace ClientServerShared.Results;
+
+public static class ExceptionHandlingExtensions
+{
+}
+
+public static class ExceptionHandler
+{
+    public static IMaybe Try(this Action action) => Try(action, HandleException);
+
+    public static IMaybe Try(this Action action, Func<Exception, IMaybe> exceptionHandler)
+    {
+        try
+        {
+            action();
+            return Maybe.Create();
+        }
+        catch (Exception ex)
+        {
+            return exceptionHandler(ex);
+        }
+    }
+
+    public static IMaybe<T> Try<T>(this Func<T> func, Func<Exception, IMaybe<T>> exceptionHandler)
+    {
+        try
+        {
+            return Maybe.Create(func());
+        }
+        catch (Exception ex)
+        {
+            return exceptionHandler(ex);
+        }
+    }
+    
+    public static IMaybe<T> Try<T>(this Func<T> func) => Try(func, HandleException<T>);
+
+    public static async Task<IMaybe> TryAsync(this Task task, Func<Exception, IMaybe> exceptionHandler)
+    {
+        try
+        {
+            await task;
+            return Maybe.Create();
+        }
+        catch (Exception ex)
+        {
+            return exceptionHandler(ex);
+        }
+    }
+
+    public static Task<IMaybe> TryAsync(this Task task) => TryAsync(task, HandleException);
+
+    // public static async Task<IMaybe<T>> TryAsync<T>(this Task<T> task, Func<Exception, IMaybe<T>> exceptionHandler)
+    // {
+    //     try
+    //     {
+    //         return Maybe.Create(await task);
+    //     }
+    //     catch (Exception  e)
+    //     {
+    //         return exceptionHandler(e);
+    //     }
+    // }
+    public static Task<IMaybe<T>> TryAsync<T>(this Task<T> task) => TryAsync(task, HandleException<T>);
+    public static Task<IMaybe<TResult>> TryAsync<TResult>(this Task<TResult> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler) =>
+        TryAsync<TResult, TResult>(
+            task,
+            exceptionHandler,
+            resultSelector: t => t
+        );
+    public static Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task) where TResult : class
+        where
+        T : TResult => TryAsync(task, HandleException<TResult>);
+
+    public static Task<IMaybe<TResult>> TryAsync<TResult, T>(this Task<T> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler) where TResult : class where T : TResult => TryAsync<TResult, T>(
+        task,
+        exceptionHandler,
+        resultSelector: t => t
+    );
+
+    public static async Task<IMaybe<TResult>> TryAsync<TResult, T>(
+        this Task<T> task,
+        Func<Exception, IMaybe<TResult>> exceptionHandler,
+        Func<T, TResult> resultSelector
+        )
+    {
+        try
+        {
+            return Maybe.Create(resultSelector(await task));
+        }
+        catch (Exception e)
+        {
+            return exceptionHandler(e);
+        }
+    }
+    private static ExceptionError HandleException(Exception ex) => new ExceptionError(ex);
+
+    private static ExceptionError<TResult> HandleException<TResult>(Exception ex) => new ExceptionError<TResult>(ex);
+        // new ExceptionError<TResult>(
+        // ex.ErrorMessage(),
+        // ex.GetNoneDetails());
+}
+
+// public partial record ExceptionError<TResult>(string Message, Exception Exception);
+// [None] public partial record ExceptionError<TResult>(string Message, Exception Exception);

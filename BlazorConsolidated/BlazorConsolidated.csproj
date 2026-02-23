@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <WarningsAsErrors>Nullable</WarningsAsErrors>
@@ -13,24 +12,35 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.9" />
-        <PackageReference Include="Refit" Version="8.0.0"/>
-        <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+        <PackageReference Include="Blazored.FluentValidation"/>
+        <PackageReference Include="BlazorQrCodeScanner"/>
+        <PackageReference Include="ZXingBlazor" />
+        <PackageReference Include="MudBlazor" />
+        <PackageReference Include="Refit" />
+        <PackageReference Include="Scrutor" />
+        <PackageReference Include="Refit.HttpClientFactory" />
+        <PackageReference Include="WTorricos.Results" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Authorization.UI\Authorization.UI.csproj" />
-      <ProjectReference Include="..\Budgets.UI\Budgets.UI.csproj" />
-      <ProjectReference Include="..\Receipts.UI\Receipts.UI.csproj" />
-      <ProjectReference Include="..\Reports.Contracts\Reports.Contracts.csproj" />
-      <ProjectReference Include="..\Reports.UI\Reports.UI.csproj" />
-      <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
+      <ProjectReference Include="..\ClientServerContracts\ClientServerContracts.csproj" />
+        <ProjectReference Include="..\ClientServerContracts.Api\ClientServerContracts.Api.csproj" />
+      <ProjectReference Include="..\ClientServerShared\ClientServerShared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+      <UpToDateCheckInput Remove="Receipts\_Imports.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Categories\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="BlazorConsolidated.Tests" />
     </ItemGroup>
 
 </Project>

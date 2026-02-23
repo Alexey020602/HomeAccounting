@@ -1,0 +1,59 @@
+@page "/operations"
+@using BlazorConsolidated.Budgets.BudgetState
+@using BlazorConsolidated.Common.Components
+@using ClientServerContracts.Api.Budgets
+@using ClientServerContracts.Budgets.GetOperations
+@using ClientServerShared.Results
+@using MaybeResults
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inherits BudgetPage
+@inject IBudgetsApi BudgetsApi
+
+<PageTitle>Список операций</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MaybeComponent TResult="GetOperationsResponse" Result="OperationsResult" Context="response">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные операции</MudText>
+            </MudCardHeader>
+            
+            <MudCardContent>
+                @if (response.Operations.Length == 0)
+                {
+                    <MudText Typo="Typo.body1" Align="Align.Center" Class="pa-4">
+                        Операции не найдены
+                    </MudText>
+                }
+                else
+                {
+                    <MudList T="OperationDto" ReadOnly="true">
+                        @foreach (var operation in response.Operations)
+                        {
+                            <MudListItem Value="operation">
+                                <OperationComponent Operation="operation"/>
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+            </MudCardContent>
+        </MudCard>
+    </MaybeComponent>
+</MudContainer>
+
+@code {
+    private IMaybe<GetOperationsResponse>? OperationsResult { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        if (BudgetId == Guid.Empty)
+        {
+            return;
+        }
+        
+        OperationsResult = await BudgetsApi.GetOperations(BudgetId, new GetOperationsQueryParameters()).TryAsync();
+    }
+}

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClientServerContracts\ClientServerContracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="SkiaSharp" />
+      <PackageReference Include="SixLabors.ImageSharp" />
+      <PackageReference Include="WTorricos.Results" />
+      <PackageReference Include="ZXing.Net" />
+      <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" />
+      <PackageReference Include="ZXing.Net.Bindings.ImageSharp.V3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="MediatorWithResults\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="MediatorWithResults\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="MediatorWithResults\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Refit\" />
+    </ItemGroup>
+
+</Project>

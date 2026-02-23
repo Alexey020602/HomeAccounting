@@ -1,21 +1,14 @@
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
-using Authorization.UI;
-using Authorization.UI.Infrastructure;
+using BlazorConsolidated.Budgets;
+using BlazorConsolidated.Common;
+using BlazorConsolidated.Common.Logout;
+using BlazorConsolidated.Users;
+using BlazorConsolidated.Users.Infrastructure;
 using BlazorConsolidated.Utils;
-using Budgets.UI;
-using Microsoft.AspNetCore.Components.Authorization;
+using ClientServerContracts.Api.Users;
+using ClientServerShared;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using Receipts.UI;
-using Refit;
-using Reports.UI;
-using Shared.Blazor;
-using Shared.Blazor.Attributes;
-using Shared.Blazor.Logout;
-using Shared.Utils;
 
 namespace BlazorConsolidated.DependencyInjection;
 
@@ -31,70 +24,10 @@ public static class ServiceCollectionExtensions
                 config.SnackbarConfiguration.VisibleStateDuration = 4000;
             })
             .AddDefaultLogoutService()
-            .AddTransient<ILocalStorage, LocalStorage>()
-            .AddScoped<HttpLoggingHandler>()
-            .AddTransient<AuthorizationHandler>()
-            .AddBudgetsModule()
-            .AddRefitClients(apiUri)
-            .AddReceipt()
-            .AddAuthorizationModule();
-
-    private static IServiceCollection AddRefitClients(this IServiceCollection serviceCollection, Uri apiUri)
-    {
-        List<Assembly> assemblies =
-        [
-            Assembly.GetExecutingAssembly(),
-            typeof(IAuthorizationApi).Assembly,
-            typeof(IChecksApi).Assembly,
-            typeof(IReportsApi).Assembly,
-            typeof(IBudgetsApi).Assembly
-        ];
-        foreach (var type in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsInterface))
-        {
-            var attributes = type.GetCustomAttributes();
-
-            foreach (var apiAttribute in attributes.OfType<ApiAttribute>())
-            {
-                serviceCollection.AddRefitClient(type, apiUri, apiAttribute);
-            }
-        }
-
-        return serviceCollection;
-    }
-    private static IServiceCollection AddRefitClient(this IServiceCollection serviceCollection, Type type, Uri apiUri,
-        ApiAttribute apiAttribute)
-    {
-        var jsonSerializerOptions = SystemTextJsonContentSerializer.GetDefaultJsonSerializerOptions();
-        
-        jsonSerializerOptions.Converters.Add(new UnitJsonConverter());
-        
-        var jsonContentSerializer = new SystemTextJsonContentSerializer(
-            jsonSerializerOptions
-        );
-        var settings = new RefitSettings
-        {
-            ContentSerializer = jsonContentSerializer
-        };
-        var httpClientBuilder = serviceCollection.AddRefitClient(type)
-            .ConfigureHttpClient(client =>
-                client.BaseAddress = apiUri//.AppendingPath("api", apiAttribute.BasePath)
-                    .AppendingPath($"api/{apiAttribute.BasePath}")
-            )
-            .AddHttpMessageHandler<HttpLoggingHandler >();
-
-        if (apiAttribute is not ApiAuthorizableAttribute) return serviceCollection;
-
-        httpClientBuilder
-            .AddHttpMessageHandler<AuthorizationHandler>();
-        return serviceCollection;
-    }
-
-    private static Uri AppendingPath(this Uri uri, string? path)
-    {
-        if (path is null) return uri;
-
-        var uriBuilder = new UriBuilder(uri);
-        uriBuilder.Path += path;
-        return uriBuilder.Uri;
-    }
+            .AddSingleton<ILocalStorage, LocalStorage>()
+            .AddTransient<HttpLoggingHandler>()
+            .AddTransient<WasmStreamingRequestHandler>()
+            // .AddRefitClients(apiUri)
+            .AddAuthorizationModule(apiUri)
+            .AddBudgetsModule(apiUri);
 }

@@ -1,0 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace HomeAccounting.Categories.Data.DataBase.Configurations;
+
+internal sealed class CategoryConfiguration: IEntityTypeConfiguration<Category>
+{
+    public void Configure(EntityTypeBuilder<Category> builder)
+    {
+        builder.HasKey(p => p.Id);
+        
+        builder.Property(c => c.Id)
+            .HasConversion(x => x.Value, x => new CategoryId(x))
+            .UseHiLo("CategoriesSequence");
+
+        builder.HasIndex(c => c.Name).IsUnique();
+        
+        builder.Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(c => c.ParentCategoryId)
+            .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
+    }
+}

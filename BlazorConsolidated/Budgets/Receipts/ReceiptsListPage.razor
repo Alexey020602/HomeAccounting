@@ -1,0 +1,50 @@
+@page "/receipts"
+@using System.Globalization
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inherits BudgetPage
+
+<PageTitle>Список чеков</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudCard>
+        <MudCardContent>
+            <MudDataGrid T="Receipt"
+                         @ref="grid"
+                         ServerData="LoadReceiptsGrid"
+                         Filterable="true"
+                         Hover="true"
+                         Striped="true"
+                         Dense="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h5" Color="Color.Primary">Добавленные чеки</MudText>
+                    <MudSpacer/>
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.Add"
+                        OnClick="OpenAddReceiptDialog">
+                        Добавить чек
+                    </MudButton>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.PurchaseDate" Title="Дата покупки" SortBy="x => x.PurchaseDate"
+                                    Format="dd.MM.yyyy HH:mm"/>
+                    <PropertyColumn Property="x => x.CreatedAt" Title="Добавлен" SortBy="x => x.CreatedAt"
+                                    Format="dd.MM.yyyy HH:mm"/>
+                    <PropertyColumn Property="x => x.PurchasePlace" Title="Место покупки" SortBy="x => x.PurchasePlace"/>
+                    <PropertyColumn Property="x => x.Sum" Title="Сумма" SortBy="x => x.Sum" Format="F2"
+                                    Culture="CultureInfo.InstalledUICulture"/>
+                    <TemplateColumn Title="Статус">
+                        <CellTemplate>
+                            <ReceiptStatusComponent Status="context.Item.Status"/>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager PageSizeSelector="false"/>
+                </PagerContent>
+            </MudDataGrid>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>

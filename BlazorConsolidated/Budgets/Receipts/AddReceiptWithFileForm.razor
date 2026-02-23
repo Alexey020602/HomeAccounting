@@ -1,0 +1,68 @@
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudForm @ref="form">
+    <MudFileUpload
+        T="IBrowserFile"
+        Accept="image/*"
+        @bind-Files="SelectedFile"
+        Disabled="IsLoading">
+        <CustomContent>
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Filled.CloudUpload"
+                Disabled="IsLoading">
+                Выбрать изображение
+            </MudButton>
+        </CustomContent>
+        @* <ButtonTemplate> *@
+        @*     <MudButton *@
+        @*         Variant="Variant.Filled" *@
+        @*         Color="Color.Primary" *@
+        @*         StartIcon="@Icons.Material.Filled.CloudUpload" *@
+        @*         Disabled="IsLoading"> *@
+        @*         Выбрать изображение *@
+        @*     </MudButton> *@
+        @* </ButtonTemplate> *@
+        <SelectedTemplate>
+            @if (context is not null)
+            {
+                <MudChip
+                    T="IBrowserFile"
+                    Text="@context.Name"
+                    Color="Color.Success"
+                    Variant="Variant.Filled"
+                    Size="Size.Small"
+                    OnClose="RemoveFile"/>
+            }
+        </SelectedTemplate>
+    </MudFileUpload>
+    
+    @if (!string.IsNullOrEmpty(ValidationError))
+    {
+        <MudAlert Severity="Severity.Warning" Class="mt-2">@ValidationError</MudAlert>
+    }
+    
+    <MudText Typo="Typo.caption" Class="mt-2">
+        Загрузите изображение чека с QR-кодом. Поддерживаются форматы: JPG, JPEG, PNG. Максимальный размер: 10 МБ.
+    </MudText>
+    
+    @if (IsLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-4"/>
+    }
+    
+    <MudGrid Justify="Justify.FlexEnd" Class="mt-4">
+        <MudItem>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Primary" 
+                OnClick="Submit"
+                Disabled="IsLoading || SelectedFile == null"
+                StartIcon="@Icons.Material.Filled.Add">
+                Добавить
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>

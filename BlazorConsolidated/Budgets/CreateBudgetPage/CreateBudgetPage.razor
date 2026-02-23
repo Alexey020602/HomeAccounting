@@ -1,0 +1,35 @@
+@page "/budgets/create"
+@using BlazorConsolidated.Common.Components
+@using BlazorConsolidated.Common.RefitWithResult
+@using ClientServerContracts.Api.Budgets
+@using ClientServerContracts.Budgets.CreateBudget
+@using ClientServerContracts.Budgets.GetBudgetDetail
+@using Microsoft.AspNetCore.Authorization
+@using MaybeResults
+@attribute [Authorize]
+@inject IBudgetsApi BudgetsApi
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<MudContainer>
+    <MudCard>
+        <MudCardContent>
+            <BudgetForm OnSubmit="@CreateBudget"/>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private async Task CreateBudget(BudgetDetailDto budgetFullDetail)
+    {
+        if (await BudgetsApi.CreateBudget(new CreateBudgetRequest(budgetFullDetail.Name, budgetFullDetail.Limit, budgetFullDetail.BeginOfPeriod)).ToMaybe() is INone error)
+        {
+            Snackbar.ProcessError(error);
+            return;
+        }
+
+        Snackbar.Add("Бюджет успешно создан");
+        NavigationManager.NavigateTo("/budgets");
+    }
+
+}

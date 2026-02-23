@@ -61,7 +61,7 @@
     <!-- Microsoft.Data packages -->
     <PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="10.0.3" />
     <!-- MudBlazor -->
-    <PackageVersion Include="MudBlazor" Version="8.15.0" />
+    <PackageVersion Include="MudBlazor" Version="9.0.0" />
     <!-- NSwag -->
     <PackageVersion Include="NSwag.AspNetCore" Version="14.6.3" />
     <!-- Npgsql packages -->
@@ -85,7 +85,7 @@
     <PackageVersion Include="Refit" Version="10.0.1" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="10.0.1" />
     <!-- Scalar -->
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.44" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.46" />
     <!-- Scrutor -->
     <PackageVersion Include="Scrutor" Version="7.0.0" />
     <!-- Serilog packages -->

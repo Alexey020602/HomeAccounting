@@ -48,14 +48,14 @@
     [Parameter] public BudgetDetailDto EditedBudget { get; set; } = DefaultBudgetDetail;
     [Parameter] public EventCallback<BudgetDetailDto> OnSubmit { get; set; }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        Reset();
+        await Reset();
     }
 
-    private void Reset()
+    private async Task Reset()
     {
-        form.ResetValidation();
+        await form.ResetValidationAsync();
         Model.ResetWithBudget(EditedBudget);
     }
     

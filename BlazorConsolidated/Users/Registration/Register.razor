@@ -105,10 +105,12 @@
         {
             var errorText = $"Логин {registrationModel.Login} уже существует";
             loginTextField.ValidationErrors.Add(errorText);
-            #pragma warning disable BL0005
-            loginTextField.Error = true;
-            loginTextField.ErrorText = errorText;
-            #pragma warning restore BL0005
+            //todo: Придумать, как добавлять ошибку при проверке существования логина
+            
+            // #pragma warning disable BL0005
+            // loginTextField.Error = true;
+            // loginTextField.ErrorText = errorText;
+            // #pragma warning restore BL0005
             StateHasChanged();
             return;
         }

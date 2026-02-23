@@ -7,7 +7,7 @@
         Accept="image/*"
         @bind-Files="SelectedFile"
         Disabled="IsLoading">
-        <ActivatorContent>
+        <CustomContent>
             <MudButton
                 Variant="Variant.Filled"
                 Color="Color.Primary"
@@ -15,7 +15,7 @@
                 Disabled="IsLoading">
                 Выбрать изображение
             </MudButton>
-        </ActivatorContent>
+        </CustomContent>
         @* <ButtonTemplate> *@
         @*     <MudButton *@
         @*         Variant="Variant.Filled" *@
@@ -26,13 +26,16 @@
         @*     </MudButton> *@
         @* </ButtonTemplate> *@
         <SelectedTemplate>
-            <MudChip
-                T="IBrowserFile"
-                Text="@context?.Name"
-                Color="Color.Success"
-                Variant="Variant.Filled"
-                Size="Size.Small"
-                OnClose="RemoveFile"/>
+            @if (context is not null)
+            {
+                <MudChip
+                    T="IBrowserFile"
+                    Text="@context.Name"
+                    Color="Color.Success"
+                    Variant="Variant.Filled"
+                    Size="Size.Small"
+                    OnClose="RemoveFile"/>
+            }
         </SelectedTemplate>
     </MudFileUpload>
     

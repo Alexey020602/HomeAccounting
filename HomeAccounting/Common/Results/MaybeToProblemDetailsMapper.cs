@@ -1,10 +1,9 @@
 using System.Net;
 using MaybeResults;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shared.Web;
+namespace HomeAccounting.Common.Results;
 
 public static class MaybeToProblemDetailsMapper
 {

@@ -67,7 +67,7 @@ public static class MudGridStateExtensions
         {
             get
             {
-                if (filter.Column is not { PropertyName: var propertyName} ) return null;
+                if (filter.Column is not { PropertyName: var propertyName} || propertyName is null ) return null;
                 var dotIndex = propertyName.IndexOf('.');
                 return dotIndex == -1 ? propertyName : propertyName[..dotIndex];
             }

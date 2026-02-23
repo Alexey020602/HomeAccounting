@@ -59,7 +59,7 @@ public sealed partial class AddReceiptManualForm
             Snackbar.Add("Чек успешно добавлен", Severity.Success);
             await OnReceiptAdded.InvokeAsync();
             Model.Reset();
-            form.ResetValidation();
+            await form.ResetValidationAsync();
         }
         catch (Exception ex)
         {

@@ -5,6 +5,7 @@ using MaybeResults;
 using Microsoft.AspNetCore.Components;
 using BlazorConsolidated.Common;
 using MudBlazor;
+using MudBlazor.Extensions;
 
 namespace BlazorConsolidated.Budgets.Receipts;
 
@@ -14,13 +15,8 @@ public sealed partial class ReceiptsListPage
     [Inject] public required ISnackbar Snackbar { get; set; }
     [Inject] public required IDialogService DialogService { get; set; }
     private MudDataGrid<Receipt> grid = new ();
-    protected override Task OnParametersSetAsync()
-    {
-        return base.OnParametersSetAsync();
-        
-    }
 
-    private async Task<GridData<Receipt>> LoadReceiptsGrid(GridState<Receipt> state)
+    private async Task<GridData<Receipt>> LoadReceiptsGrid(GridState<Receipt> state, CancellationToken cancellation)
     {
         var query = new GetReceiptsQueryParameters
         {
@@ -30,7 +26,7 @@ public sealed partial class ReceiptsListPage
             Sorting = state.SortingQuery
         };
 
-        var result = await BudgetsApi.GetReceipts(BudgetId, query).TryAsync();
+        var result = await BudgetsApi.GetReceipts(BudgetId, query, cancellation).TryAsync();
 
         if (result is Some<GetReceiptsResponse> some)
         {

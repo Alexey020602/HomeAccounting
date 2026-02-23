@@ -24,7 +24,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Client\Client.csproj"/>
-        <ProjectReference Include="..\Api\Api.csproj"/>
         <ProjectReference Include="..\HomeAccounting\HomeAccounting.csproj" />
     </ItemGroup>
 

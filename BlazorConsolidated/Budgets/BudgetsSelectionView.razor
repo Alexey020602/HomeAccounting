@@ -1,12 +1,18 @@
 @using BlazorConsolidated.Budgets.BudgetState
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
-@(budgetState switch 
-{
-    null => DeterminingBudgetState,
-    SelectedBudgetState selectedBudgetState => SelectedBudgetContent?.Invoke(selectedBudgetState),
-    _ => BudgetNotSelected?.Invoke(budgetState)
-})
+@using Microsoft.AspNetCore.Components.Authorization
+@* @attribute [Authorize] *@
+
+<AuthorizeView Authorizing="Authorizing" NotAuthorized="NotAuthorized">
+    <Authorized>
+        @(budgetState switch 
+        {
+            null => DeterminingBudgetState,
+            SelectedBudgetState selectedBudgetState => SelectedBudgetContent?.Invoke(selectedBudgetState),
+            _ => BudgetNotSelected?.Invoke(budgetState)
+        })
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private BudgetState.BudgetState? budgetState;
@@ -14,6 +20,8 @@
     [Parameter] public RenderFragment<BudgetState.BudgetState>? BudgetNotSelected { get; set; }
     [Parameter] public RenderFragment<SelectedBudgetState>? BudgetSelected { get; set; }
     [Parameter] public RenderFragment? DeterminingBudgetState { get; set; }
+    [Parameter] public RenderFragment? Authorizing { get; set; }
+    [Parameter] public RenderFragment<AuthenticationState>? NotAuthorized { get; set; }
     [CascadingParameter] private Task<BudgetState.BudgetState>? BudgetState { get; set; }
 
     protected override async Task OnParametersSetAsync()

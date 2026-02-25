@@ -1,8 +1,11 @@
 <MudAppBar Elevation="3" Color="Color.Primary">
-    @ChildContent
+    @(BeforeTitleContent ?? ChildContent)
     <MudText Typo="Typo.h6" Class="ml-3 white--text">Домашняя бухгалтерия</MudText>
+    @AfterTitleContent
 </MudAppBar>
 
 @code {
+    [Parameter] public RenderFragment? BeforeTitleContent { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? AfterTitleContent { get; set; }
 }

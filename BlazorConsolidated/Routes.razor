@@ -1,13 +1,14 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using BlazorConsolidated.Components
 @using BlazorConsolidated.Layouts
+@using BlazorConsolidated.Common.Layouts
 @inject NavigationManager NavigationManager
 @* <CascadingAuthenticationState @rendermode="AssignedRenderMode"> *@
     <AppErrorBoundary>
         @* <ChildContent> *@
         <Router AppAssembly="@typeof(MainLayout).Assembly">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(GuestLayout)">
                     <Authorizing>
                         Проверка авторизации
                     </Authorizing>
@@ -20,7 +21,7 @@
             </Found>
             <NotFound>
                 <PageTitle>Not found</PageTitle>
-                <LayoutView Layout="@typeof(MainLayout)">
+                <LayoutView Layout="@typeof(GuestLayout)">
                     <p role="alert">Sorry, there's nothing at this address.</p>
                 </LayoutView>
             </NotFound>

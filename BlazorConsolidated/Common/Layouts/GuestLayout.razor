@@ -1,0 +1,19 @@
+@using BlazorConsolidated.Common
+@inherits LayoutComponentBase
+@layout BaseLayout
+
+<AppBar>
+    <AfterTitleContent>
+        <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Class="ms-auto" Spacing="2">
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/">Главная</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/login">Войти</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/register">Регистрация</MudButton>
+        </MudStack>
+    </AfterTitleContent>
+</AppBar>
+
+<MudMainContent>
+    <MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+        @Body
+    </MudContainer>
+</MudMainContent>

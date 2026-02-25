@@ -13,7 +13,7 @@ public static class BudgetsModule
     {
         services
             .AddSingletonAsMultipleServices<IBudgetsStateService, BudgetsStateProvider, BudgetStateService>()
-            .AddSingleton<ILogoutAction, BudgetsLogoutAction>()
+            // .AddSingleton<ILogoutAction, BudgetsLogoutAction>()
             .AddSingleton<IBudgetStateStorage, BudgetStateStorage>()
             .Decorate<IBudgetStateStorage, TelemetryBudgetStateStorage>()
             .AddCascadingBudgetsState();

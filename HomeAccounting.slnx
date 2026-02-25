@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/Aspire/">
+    <File Path="Directory.Build.props" />
+    <Project Path="AppHost/AppHost.csproj" />
+    <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path=".gitignore" />
+    <File Path="Agents.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.yaml" />
+    <File Path="nginx.conf" />
+    <File Path="proxy.conf" />
+    <File Path="Readme.md" />
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="BlazorConsolidated/BlazorConsolidated.csproj" />
+    <Project Path="Client/Client.csproj" />
+  </Folder>
+  <Project Path="BlazorConsolidated.Tests/BlazorConsolidated.Tests.csproj" />
+  <Project Path="ClientServerContracts.Api/ClientServerContracts.Api.csproj" />
+  <Project Path="ClientServerContracts/ClientServerContracts.csproj" />
+  <Project Path="ClientServerShared/ClientServerShared.csproj" />
+  <Project Path="HomeAccounting.UnitTests/HomeAccounting.UnitTests.csproj" />
+  <Project Path="HomeAccounting/HomeAccounting.csproj" />
+</Solution>

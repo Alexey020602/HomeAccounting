@@ -5,7 +5,7 @@ namespace HomeAccounting.Users.Data;
 sealed class User: IdentityUser<UserId>
 {
     public string FullName { get; private set; }
-    public RefreshToken? RefreshToken { get; private set; }
+    // public RefreshToken? RefreshToken { get; private set; }
     private User(): base()
     {
         FullName = string.Empty;
@@ -33,5 +33,5 @@ sealed class User: IdentityUser<UserId>
     public void UpdateUserName(string userName) => UserName = userName;
 
     public void UpdateFullName(string fullName) => FullName = fullName;
-    internal void AddRefreshToken(RefreshToken refreshToken) => RefreshToken = refreshToken; 
+    // internal void AddRefreshToken(RefreshToken refreshToken) => RefreshToken = refreshToken; 
 }

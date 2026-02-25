@@ -7,7 +7,6 @@ sealed class UserConfiguration: IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.OwnsOne<RefreshToken>(u => u.RefreshToken);
         builder.Property(x => x.Id)
             .HasConversion(x => x.Value, x => new UserId(x))
             .HasDefaultValueSql("gen_random_uuid()");

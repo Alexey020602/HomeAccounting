@@ -7,7 +7,7 @@ using HomeAccounting.Users.Data;
 
 namespace HomeAccounting.Users.Login;
 
-public class TokenProvider(IOptions<JwtTokenSettings> settings, ILogger<TokenProvider> logger): ITokenProvider
+internal sealed class TokenProvider(IOptions<JwtTokenSettings> settings, ILogger<TokenProvider> logger): ITokenProvider
 {
     // private const int ExpirationMinutes = 60;
     

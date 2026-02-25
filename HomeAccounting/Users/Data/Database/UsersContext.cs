@@ -9,6 +9,7 @@ sealed class UsersContext(DbContextOptions<UsersContext> options): IdentityUserC
     {
         base.OnModelCreating(builder);
         builder.ApplyConfiguration(new UserConfiguration());
+        builder.ApplyConfiguration(new RefreshTokenConfiguration());
         builder.HasDefaultSchema(AuthorizationDbConstants.ShemaName);
     }
 }

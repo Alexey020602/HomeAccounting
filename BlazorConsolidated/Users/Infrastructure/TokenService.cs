@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
+using BlazorConsolidated.Users.Dto;
 using BlazorConsolidated.Users.Infrastructure.Abstractions;
 using ClientServerContracts.Api.Users;
+using ClientServerContracts.Users.Refresh;
 
 namespace BlazorConsolidated.Users.Infrastructure;
 
@@ -15,7 +17,7 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
             return null;
         }
         
-        if (authentication is { Expired: false })
+        if (!authentication.AccessTokenExpired(DateTimeOffset.UtcNow))
         {
             return authentication.AccessToken;
         }
@@ -23,7 +25,7 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
         // Не удаляем сразу, пытаемся обновить
         try
         {
-            return await GetRefreshedTokenTask(authentication.RefreshToken).WaitAsync(cancellationToken);
+            return await GetRefreshedTokenTask(authentication).WaitAsync(cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -41,37 +43,38 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
             throw new InvalidOperationException("No refresh token found");
         }
         
-        return await GetRefreshedTokenTask(authentication.RefreshToken).WaitAsync(cancellationToken);
+        return await GetRefreshedTokenTask(authentication).WaitAsync(cancellationToken);
     }
 
-    private Task<string> GetRefreshedTokenTask(string refreshToken)
+    private Task<string> GetRefreshedTokenTask(Authentication authentication)
     {
+        var key = authentication.RefreshToken;
         using var enterScope = @lock.EnterScope();
-        
-        if (refreshTokenTasks.TryGetValue(refreshToken, out var existingTask)) return existingTask;
-        
-        
-        var task = RefreshTokenCore(refreshToken);
-        
-        refreshTokenTasks[refreshToken] = task;
+
+        if (refreshTokenTasks.TryGetValue(key, out var existingTask)) return existingTask;
+
+        var task = RefreshTokenCore(authentication);
+
+        refreshTokenTasks[key] = task;
 
         _ = task.ContinueWith((t, state) =>
             {
-                var (token, dictionary) = ((string, ConcurrentDictionary<string, Task<string>>))state!;
+                var (tokenKey, dictionary) = ((string, ConcurrentDictionary<string, Task<string>>))state!;
                 using var scope = @lock.EnterScope();
-                if  (dictionary.TryGetValue(token, out var completedTask) && completedTask == t)
-                    dictionary.TryRemove(token, out _);
+                if (dictionary.TryGetValue(tokenKey, out var completedTask) && completedTask == t)
+                    dictionary.TryRemove(tokenKey, out _);
             },
-            (refreshToken, refreshTokenTasks),
+            (key, refreshTokenTasks),
             TaskScheduler.Default
         );
         return task;
     }
 
-    private async Task<string> RefreshTokenCore(string refreshToken)
+    private async Task<string> RefreshTokenCore(Authentication authentication)
     {
-        var authorizationResponse = await authorizationApi.RefreshToken(refreshToken);
-        await authenticationStorage.SetAuthorizationAsync(authorizationResponse.ConvertToAuthentication());
+        var request = new RefreshTokenRequest(authentication.AccessToken, authentication.RefreshToken);
+        var authorizationResponse = await authorizationApi.RefreshToken(request);
+        await authenticationStorage.SetAuthorizationAsync(authorizationResponse.ConvertToAuthentication(DateTimeOffset.UtcNow));
         return authorizationResponse.AccessToken;
     }
     

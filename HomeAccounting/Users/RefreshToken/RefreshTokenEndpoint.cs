@@ -1,11 +1,13 @@
 using System.Net;
 using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Refresh;
 using ClientServerShared.Users;
 using HomeAccounting.Users.Data;
 using HomeAccounting.Users.Login;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HomeAccounting.Users.RefreshToken;
 
@@ -22,44 +24,43 @@ static class RefreshTokenEndpoint
         endpoints
             .MapPost(
                 "refresh",
-                async (string refreshToken, UserManager<User> userManager, ITokenProvider tokenProvider) =>
+                async (RefreshTokenRequest request, UserManager<User> userManager, ITokenProvider tokenProvider, CancellationToken cancellationToken) =>
                 {
-                    if (await userManager.Users.FirstOrDefaultAsync(
-                            user => user.RefreshToken != null && user.RefreshToken.Token == refreshToken
-                            ) is not {} user)
+                    TokenResult tokenResult;
+                    try
+                    {
+                        tokenResult = await tokenProvider.RefreshToken(request.Token, request.RefreshToken, cancellationToken);
+                    }
+                    catch (SecurityTokenException)
                     {
                         return Results.Unauthorized();
                     }
+                    
+                    var user = await userManager.FindByIdAsync(tokenResult.UserId);
 
-                    if (user.RefreshToken == null || user.RefreshToken.Expires < DateTimeOffset.UtcNow)
+                    if (user is null)
                     {
                         return Results.Unauthorized();
                     }
-
-
-                    var newRefreshToken = tokenProvider.CreateRefreshToken();
-                    user.AddRefreshToken(newRefreshToken);
-
-                    await userManager.UpdateAsync(user);
-
-                    var accessToken = tokenProvider.CreateTokenForUser(user);
+                    
                     return Results.Ok(
-                        new AuthorizationResponse(
+                        new TokenResponse(
                             JwtBearerDefaults.AuthenticationScheme,
                             new(
                                 user.Id.Value,
                                 user.UserName ?? throw UserException.NoUserName,
                                 user.FullName),
-                            accessToken.Token,
-                            newRefreshToken.Token,
-                            accessToken.ExpiresAt
+                            tokenResult.Token,
+                            tokenResult.RefreshToken,
+                            tokenResult.ExpiresIn,
+                            tokenResult.RefreshExpiresIn
                         ));
                 })
             .WithName("RefreshToken")
             .WithTags("Users")
             .WithSummary("Refresh token")
             .WithDescription("Exchanges a valid refresh token for new JWT and refresh token.")
-            .Produces((int)HttpStatusCode.OK, typeof(AuthorizationResponse))
+            .Produces((int)HttpStatusCode.OK, typeof(TokenResponse))
             .ProducesProblem((int)HttpStatusCode.BadRequest)
             .ProducesProblem((int)HttpStatusCode.Unauthorized)
             .AllowAnonymous();

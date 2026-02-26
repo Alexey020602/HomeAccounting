@@ -5,6 +5,7 @@ namespace HomeAccounting.Users.Data.Database;
 
 sealed class UsersContext(DbContextOptions<UsersContext> options): IdentityUserContext<User, UserId>(options)
 {
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

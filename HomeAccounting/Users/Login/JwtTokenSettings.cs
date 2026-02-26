@@ -22,6 +22,6 @@ public class JwtTokenSettings
         ValidateIssuerSigningKey = false,
         IssuerSigningKey = SecurityKey,
         ValidateLifetime = true,
-        
+        ClockSkew = TimeSpan.FromSeconds(30),
     };
 }

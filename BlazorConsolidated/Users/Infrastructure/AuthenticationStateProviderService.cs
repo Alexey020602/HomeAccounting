@@ -9,7 +9,7 @@ public sealed class AuthenticationStateProviderService(
 {
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        if (await storage.GetAuthorizationAsync() is not { } authentication || authentication.Expired)
+        if (await storage.GetAuthorizationAsync() is not { } authentication || authentication.RefreshTokenExpired(DateTimeOffset.UtcNow))
         {
             return AuthenticationStateExtensions.GetAnonymous();
         }

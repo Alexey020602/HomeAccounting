@@ -5,9 +5,8 @@ namespace HomeAccounting.Users.Login;
 
 internal interface ITokenProvider
 {
-    ClaimsPrincipal GetPrincipal(string token);
-    Data.RefreshToken CreateRefreshToken();
-    AccessToken CreateToken(IReadOnlyList<Claim> claims);
+    Task<TokenResult> CreateToken(User user, CancellationToken cancellationToken);
+    Task<TokenResult> RefreshToken(string token, string refreshToken, CancellationToken cancellationToken);
 }
 
-internal record RefreshTokenResult();
+internal record TokenResult(UserId UserId, string Token, string RefreshToken, int ExpiresIn, int RefreshExpiresIn);

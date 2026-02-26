@@ -1,4 +1,5 @@
 using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Refresh;
 using ClientServerContracts.Users.Register;
 using Refit;
 
@@ -50,7 +51,7 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/login")]
-    Task<AuthorizationResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default);
+    Task<TokenResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new user account with the provided credentials.
@@ -71,7 +72,7 @@ public interface IAuthorizationApi
     /// <summary>
     /// Exchanges a valid refresh token for new JWT and refresh token.
     /// </summary>
-    /// <param name="refreshToken">Refresh token string.</param>
+    /// <param name="request">Request body with current access token (Token) and refresh token (RefreshToken).</param>
     /// <returns>Authorization response with new JWT and refresh token.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -83,5 +84,5 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/refresh")]
-    Task<AuthorizationResponse> RefreshToken([Body] string refreshToken, CancellationToken cancellationToken = default);
+    Task<TokenResponse> RefreshToken([Body] RefreshTokenRequest request, CancellationToken cancellationToken = default);
 }

@@ -5,11 +5,17 @@ using ClientServerShared.Users;
 
 namespace BlazorConsolidated.Users.Dto;
 
-public record Authentication(string AccessToken, string RefreshToken, User User, DateTimeOffset ExpiresAt)
+public record Authentication(
+    string AccessToken, 
+    string RefreshToken, 
+    User User, 
+    DateTimeOffset ExpiresAt, 
+    DateTimeOffset RefreshTokenExpiresAt)
 {
     [JsonIgnore] public ClaimsPrincipal Principal => User.GetPrincipal();
 
-    [JsonIgnore] public bool Expired => DateTimeOffset.UtcNow > ExpiresAt;
+    public bool AccessTokenExpired(DateTimeOffset pointTime) => ExpiresAt > pointTime;
+    public bool RefreshTokenExpired(DateTimeOffset pointTime) => RefreshTokenExpiresAt > pointTime;
     public override string ToString()
     {
         return $"""

@@ -13,10 +13,10 @@ public class TokenServiceTests
     private static readonly User TestUser = new(Guid.NewGuid(), "test", "Test User");
 
     private static Authentication NotExpiredAuth(string accessToken = "access", string refreshToken = "refresh") =>
-        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddHours(1));
+        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddHours(1), DateTimeOffset.UtcNow.AddDays(30));
 
     private static Authentication ExpiredAuth(string accessToken = "old-access", string refreshToken = "refresh") =>
-        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddSeconds(-1));
+        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddDays(30));
 
     private static ITokenService CreateTokenService(
         FakeAuthenticationStorage storage,
@@ -93,7 +93,7 @@ public class TokenServiceTests
     {
         var storage = new FakeAuthenticationStorage();
         storage.SetCurrent(ExpiredAuth("old", "rt"));
-        var tcs = new TaskCompletionSource<AuthorizationResponse>();
+        var tcs = new TaskCompletionSource<TokenResponse>();
         var api = new FakeAuthorizationApi((_, ct) =>
         {
             ct.ThrowIfCancellationRequested();
@@ -147,7 +147,7 @@ public class TokenServiceTests
     {
         var storage = new FakeAuthenticationStorage();
         storage.SetCurrent(NotExpiredAuth("any", "rt"));
-        var tcs = new TaskCompletionSource<AuthorizationResponse>();
+        var tcs = new TaskCompletionSource<TokenResponse>();
         var api = new FakeAuthorizationApi((_, ct) =>
         {
             ct.ThrowIfCancellationRequested();

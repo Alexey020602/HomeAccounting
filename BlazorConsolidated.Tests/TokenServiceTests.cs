@@ -106,7 +106,7 @@ public class TokenServiceTests
         await Task.Delay(50);
         await cts.CancelAsync();
 
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
         tcs.SetResult(FakeAuthorizationApi.ResponseWithAccessToken("ignored", "rt"));
     }
 
@@ -160,7 +160,7 @@ public class TokenServiceTests
         await Task.Delay(50);
         await cts.CancelAsync();
 
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
         // tcs.SetResult(FakeAuthorizationApi.ResponseWithAccessToken("ignored", "rt"));
     }
 

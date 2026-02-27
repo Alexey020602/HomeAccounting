@@ -14,8 +14,8 @@ public record Authentication(
 {
     [JsonIgnore] public ClaimsPrincipal Principal => User.GetPrincipal();
 
-    public bool AccessTokenExpired(DateTimeOffset pointTime) => ExpiresAt > pointTime;
-    public bool RefreshTokenExpired(DateTimeOffset pointTime) => RefreshTokenExpiresAt > pointTime;
+    public bool AccessTokenExpired(DateTimeOffset pointTime) => ExpiresAt <= pointTime;
+    public bool RefreshTokenExpired(DateTimeOffset pointTime) => RefreshTokenExpiresAt <= pointTime;
     public override string ToString()
     {
         return $"""

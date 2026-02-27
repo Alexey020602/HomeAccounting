@@ -218,7 +218,7 @@ public class TokenServiceTests
 
         storage.SetCurrent(ExpiredAuth("first-token", "rt-one"));
         var second = await sut.GetFreshAccessToken();
-        Assert.Equal("second-token", second);
         Assert.Equal(2, api.RefreshTokenCallCount);
+        Assert.Equal("second-token", second);
     }
 }

@@ -53,22 +53,24 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
 
         if (refreshTokenTasks.TryGetValue(key, out var existingTask)) return existingTask;
 
-        var task = RefreshTokenCore(authentication);
-
+        var baseTask = RefreshTokenCore(authentication);
+        var task = ClearKeyOnComplete(baseTask, key);
         refreshTokenTasks[key] = task;
 
-        _ = task.ContinueWith((t, state) =>
-            {
-                var (tokenKey, dictionary) = ((string, ConcurrentDictionary<string, Task<string>>))state!;
-                using var scope = @lock.EnterScope();
-                if (dictionary.TryGetValue(tokenKey, out var completedTask) && completedTask == t)
-                    dictionary.TryRemove(tokenKey, out _);
-            },
-            (key, refreshTokenTasks),
-            TaskScheduler.Default
-        );
+        // _ = task.ContinueWith((t, state) =>
+        //     {
+        //         var (tokenKey, dictionary) = ((string, ConcurrentDictionary<string, Task<string>>))state!;
+        //         using var scope = @lock.EnterScope();
+        //         if (dictionary.TryGetValue(tokenKey, out var completedTask) && completedTask == t)
+        //             dictionary.TryRemove(tokenKey, out _);
+        //     },
+        //     (key, refreshTokenTasks),
+        //     TaskScheduler.Default
+        // );
         return task;
     }
+    
+    
 
     private async Task<string> RefreshTokenCore(Authentication authentication)
     {
@@ -77,5 +79,18 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
         await authenticationStorage.SetAuthorizationAsync(authorizationResponse.ConvertToAuthentication(DateTimeOffset.UtcNow));
         return authorizationResponse.AccessToken;
     }
-    
+
+    private async Task<string> ClearKeyOnComplete(Task<string> task, string key)
+    {
+        try
+        {
+            return await task;
+        }
+        finally
+        {
+            using var scope = @lock.EnterScope();
+            if (refreshTokenTasks.TryGetValue(key, out var existingTask) && existingTask == task)
+                refreshTokenTasks.TryRemove(key, out _);
+        }
+    }
 }

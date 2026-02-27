@@ -6,10 +6,9 @@ using HomeAccounting.Users.Data;
 using HomeAccounting.Users.Login;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace HomeAccounting.Users.RefreshToken;
+namespace HomeAccounting.Users.Refresh;
 
 /// <summary>
 /// Endpoint for refreshing JWT using a valid refresh token.

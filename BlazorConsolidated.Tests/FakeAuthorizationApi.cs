@@ -1,6 +1,7 @@
 using ClientServerContracts.Api.Users;
 using ClientServerContracts.Users.GetUser;
 using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Logout;
 using ClientServerContracts.Users.Refresh;
 using ClientServerContracts.Users.Register;
 
@@ -53,6 +54,10 @@ public sealed class FakeAuthorizationApi : IAuthorizationApi
 
     public Task Register(RegistrationRequest registrationRequest, CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
+
+    public Task Logout(LogoutRequest request, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+    public Task LogoutAll(LogoutRequest request, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
     public Task<TokenResponse> RefreshToken(RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {

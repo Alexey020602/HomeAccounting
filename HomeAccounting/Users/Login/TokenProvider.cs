@@ -69,14 +69,8 @@ internal sealed class TokenProvider(IOptions<JwtTokenSettings> settings, UsersCo
     {
         var principal = GetPrincipal(token);
         
-        var jtiValue = principal.Claims.SingleOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
-        if (jtiValue is null || !Guid.TryParse(jtiValue, out var jti))
-        {
-            throw new SecurityTokenException("Token not contains jti");
-        }
-        
-        var jwtId = new JwtId(jti);
-        
+        var jwtId = GetJwtIdFromPrincipal(principal);
+
         var refreshTokenHash = HashRefreshToken(refreshToken);
         var storedRefreshToken = await usersContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshTokenHash, cancellationToken);
 
@@ -126,6 +120,49 @@ internal sealed class TokenProvider(IOptions<JwtTokenSettings> settings, UsersCo
         );
     }
 
+    private static JwtId GetJwtIdFromPrincipal(ClaimsPrincipal principal)
+    {
+        var jtiValue = principal.Claims.SingleOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+        if (jtiValue is null || !Guid.TryParse(jtiValue, out var jti))
+        {
+            throw new SecurityTokenException("Token not contains jti");
+        }
+        
+        var jwtId = new JwtId(jti);
+        return jwtId;
+    }
+
+    /// <summary>
+    /// Revokes the session associated with the given refresh token. Idempotent: if the token is unknown or already revoked, completes without error.
+    /// </summary>
+    public async Task LogoutUserSession(string refreshToken, CancellationToken cancellationToken)
+    {
+        var refreshTokenHash = HashRefreshToken(refreshToken);
+        var stored = await usersContext.RefreshTokens.AsNoTracking()
+            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenHash, cancellationToken);
+        if (stored is null)
+            return;
+
+        await usersContext.RefreshTokens
+            .Where(rt => rt.SessionId == stored.SessionId)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Revokes all sessions of the user associated with the given refresh token. Idempotent: if the token is unknown or already revoked, completes without error.
+    /// </summary>
+    public async Task LogoutAllUserSessions(string refreshToken, CancellationToken cancellationToken)
+    {
+        var refreshTokenHash = HashRefreshToken(refreshToken);
+        var stored = await usersContext.RefreshTokens.AsNoTracking()
+            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenHash, cancellationToken);
+        if (stored is null)
+            return;
+
+        await usersContext.RefreshTokens
+            .Where(rt => rt.UserId == stored.UserId)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
     private async Task DeleteSessionsTokens(SessionId sessionId, CancellationToken cancellationToken)
     {
         var tokens = await usersContext.RefreshTokens.Where(rt => rt.SessionId == sessionId)

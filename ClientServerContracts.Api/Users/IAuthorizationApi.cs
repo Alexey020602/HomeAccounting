@@ -1,4 +1,5 @@
 using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Logout;
 using ClientServerContracts.Users.Refresh;
 using ClientServerContracts.Users.Register;
 using Refit;
@@ -85,4 +86,36 @@ public interface IAuthorizationApi
     /// </remarks>
     [Post("/refresh")]
     Task<TokenResponse> RefreshToken([Body] RefreshTokenRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Revokes the session associated with the given refresh token. Idempotent.
+    /// </summary>
+    /// <param name="request">Request body containing the refresh token.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>204</term><description>No Content - Session revoked or token unknown (idempotent).</description></item>
+    /// </list>
+    /// </remarks>
+    [Post("/logout")]
+    Task Logout([Body] LogoutRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Revokes all sessions of the user identified by the given refresh token. Idempotent.
+    /// </summary>
+    /// <param name="request">Request body containing the refresh token.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>204</term><description>No Content - All sessions revoked or token unknown (idempotent).</description></item>
+    /// </list>
+    /// </remarks>
+    [Post("/logout/all")]
+    Task LogoutAll([Body] LogoutRequest request, CancellationToken cancellationToken = default);
 }

@@ -128,7 +128,7 @@ public class TokenServiceTests
     public async Task GetRefreshedToken_HasAuthorization_CallsRefresh_ReturnsNewAccessToken()
     {
         var storage = new FakeAuthenticationStorage();
-        storage.SetCurrent(NotExpiredAuth("any", "refresh-2"));
+        storage.SetCurrent(NotExpiredAuth("any", "refresh"));
         var response = FakeAuthorizationApi.ResponseWithAccessToken("refreshed-token", "refresh-2");
         var api = new FakeAuthorizationApi(response);
         var sut = CreateTokenService(storage, api);
@@ -190,7 +190,11 @@ public class TokenServiceTests
         var storage = new FakeAuthenticationStorage();
         storage.SetCurrent(NotExpiredAuth("any", "same-rt"));
         var response = FakeAuthorizationApi.ResponseWithAccessToken("single-token", "same-rt");
-        var api = new FakeAuthorizationApi(response);
+        var api = new FakeAuthorizationApi(async (_, _) =>
+        {
+            await Task.Delay(50);
+            return response;
+        });
         var sut = CreateTokenService(storage, api);
 
         var results = await Task.WhenAll(

@@ -5,7 +5,7 @@ using ClientServerShared.Users;
 
 namespace BlazorConsolidated.Users.Dto;
 
-public record Authentication(
+public sealed record Authentication(
     string AccessToken, 
     string RefreshToken, 
     User User, 

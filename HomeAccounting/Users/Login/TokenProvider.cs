@@ -13,11 +13,6 @@ namespace HomeAccounting.Users.Login;
 
 internal sealed class TokenProvider(IOptions<JwtTokenSettings> settings, UsersContext usersContext): ITokenProvider
 {
-    // private const int ExpirationMinutes = 60;
-    
-    // private const string ValidIssuer = "ValidIssuer";
-    // private const string ValidAudience = "ValidAudience";
-    // private const string SymmetricSecurityKey = "SymmetricSecurityKey";
     private const int SecondsInMinute = 60;
     private const int SecondsInDay = 60 * 60 * 24;
     private readonly SecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
@@ -39,15 +34,6 @@ internal sealed class TokenProvider(IOptions<JwtTokenSettings> settings, UsersCo
     }
     public async Task<TokenResult> CreateToken(User user, CancellationToken cancellationToken)
     {
-
-        // //todo Сделать поиск пользователя
-        // var user = await usersContext.Users.FindAsync(cancellationToken);
-        //
-        // if (user is null)
-        // {
-        //     throw new SecurityTokenException("User not found");
-        // }
-
         var sessionId = SessionId.CreateNew();
         
         var newToken = GenerateJwtToken(user);

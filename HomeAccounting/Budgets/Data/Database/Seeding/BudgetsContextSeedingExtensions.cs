@@ -10,6 +10,7 @@ internal static class BudgetsContextSeedingExtensions
     {
         internal void AddBudgetRoles()
         {
+            if(budgetsContext.BudgetRoles.Any()) return;
             foreach (var budgetRole in BudgetRole.GetDefaultRoles())
             {
                 if (budgetsContext.BudgetRoles.SingleOrDefault(b => b.Id == budgetRole.Id) is not null)
@@ -19,6 +20,7 @@ internal static class BudgetsContextSeedingExtensions
         }
         public async Task AddBudgetRolesAsync(CancellationToken cancellationToken)
         {
+            if(await budgetsContext.BudgetRoles.AnyAsync(cancellationToken)) return;
             foreach (var budget in BudgetRole.GetDefaultRoles())
             {
                 if (await budgetsContext.BudgetRoles.SingleOrDefaultAsync(r => r.Id == budget.Id,
@@ -31,6 +33,7 @@ internal static class BudgetsContextSeedingExtensions
 
         public void AddBudgets()
         {
+            if(budgetsContext.Budgets.Any()) return;
             foreach (var budget in Budget.GetDefaultBudgets())
             {
                 if (budgetsContext.Budgets.SingleOrDefault(b => b.Id == budget.Id) is not null)
@@ -42,6 +45,7 @@ internal static class BudgetsContextSeedingExtensions
 
         public async Task AddBudgetsAsync(CancellationToken cancellationToken)
         {
+            if (await budgetsContext.Budgets.AnyAsync(cancellationToken)) return;
             foreach (var budget in Budget.GetDefaultBudgets())
             {
                 if (await budgetsContext.Budgets.SingleOrDefaultAsync(b => b.Id == budget.Id,
@@ -54,6 +58,7 @@ internal static class BudgetsContextSeedingExtensions
 
         public void AddReceipts()
         {
+            if(budgetsContext.Receipts.Any()) return;
             foreach (var receipt in Receipt.GetDefaultReceiptsForFirstBudget().Concat(Receipt.GetDefaultReceiptsForSecondBudget()))
             {
                 if (budgetsContext.Receipts.SingleOrDefault(r => r.Id == receipt.Id) is not null)
@@ -64,6 +69,7 @@ internal static class BudgetsContextSeedingExtensions
 
         public async Task AddReceiptsAsync(CancellationToken cancellationToken)
         {
+            if (await budgetsContext.Receipts.AnyAsync(cancellationToken)) return;
             foreach (var receipt in Receipt.GetDefaultReceiptsForFirstBudget().Concat(Receipt.GetDefaultReceiptsForSecondBudget()))
             {
                 if (await budgetsContext.Receipts.SingleOrDefaultAsync(r => r.Id == receipt.Id, cancellationToken) is not null)

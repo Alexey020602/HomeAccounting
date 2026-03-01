@@ -19,7 +19,7 @@ public static class DbContextOptionsExtensions
     private static void Seed(DbContext context, bool dbHasChanges)
     {
         if (context is not UsersContext identityContext) return;
-
+        if(identityContext.Users.Any()) return;
         var user = GetDefaultDevelopmentUser();
         if (identityContext.Users.FirstOrDefault(user.UserPredicate()) is not null) return;
         identityContext.Users.Add(user);
@@ -29,6 +29,7 @@ public static class DbContextOptionsExtensions
     private static async Task SeedAsync(DbContext context, bool dbHasChanges, CancellationToken cancellationToken)
     {
         if (context is not UsersContext identityContext) return;
+        if(await identityContext.Users.AnyAsync(cancellationToken)) return;
         List<User> users =
         [
             GetDefaultDevelopmentUser(),

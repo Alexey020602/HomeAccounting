@@ -8,6 +8,7 @@ internal static class CategoriesContextSeedingExtensions
     {
         internal void AddCategories()
         {
+            if (categoriesContext.Categories.Any()) return;
             foreach (var category in Category.GetCategoriesForSeeding())
             {
                 if (categoriesContext.Categories.Any(c=> c.Id == category.Id))  continue;
@@ -17,6 +18,7 @@ internal static class CategoriesContextSeedingExtensions
 
         internal async Task AddCategoriesAsync(CancellationToken cancellationToken)
         {
+            if (await categoriesContext.Categories.AnyAsync(cancellationToken)) return;
             foreach (var category in Category.GetCategoriesForSeeding())
             {
                 if(await categoriesContext.Categories.AnyAsync(c=>c.Id == category.Id, cancellationToken)) continue;

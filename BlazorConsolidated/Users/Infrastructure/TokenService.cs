@@ -1,13 +1,14 @@
-using System.Collections.Concurrent;
+using BlazorConsolidated.Users.Dto;
 using BlazorConsolidated.Users.Infrastructure.Abstractions;
 using ClientServerContracts.Api.Users;
+using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Refresh;
 
 namespace BlazorConsolidated.Users.Infrastructure;
 
-internal sealed class TokenService(IAuthenticationStorage authenticationStorage, IAuthorizationApi authorizationApi): ITokenService
+internal sealed class TokenService(IAuthenticationStorage authenticationStorage, IAuthorizationApi authorizationApi): ITokenService, IDisposable, IAsyncDisposable
 {
-    private readonly ConcurrentDictionary<string, Task<string>> refreshTokenTasks = new();
-    private readonly Lock @lock = new();
+    private SemaphoreSlim semaphore = new(1, 1);
     public async Task<string?> GetFreshAccessToken(CancellationToken cancellationToken = default)
     {
         if (await authenticationStorage.GetAuthorizationAsync(cancellationToken) is not { } authentication)
@@ -15,7 +16,7 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
             return null;
         }
         
-        if (authentication is { Expired: false })
+        if (!authentication.AccessTokenExpired(DateTimeOffset.UtcNow))
         {
             return authentication.AccessToken;
         }
@@ -23,7 +24,7 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
         // Не удаляем сразу, пытаемся обновить
         try
         {
-            return await GetRefreshedTokenTask(authentication.RefreshToken).WaitAsync(cancellationToken);
+            return (await RefreshToken(authentication).WaitAsync(cancellationToken)).AccessToken;
         }
         catch (OperationCanceledException)
         {
@@ -40,39 +41,75 @@ internal sealed class TokenService(IAuthenticationStorage authenticationStorage,
         {
             throw new InvalidOperationException("No refresh token found");
         }
-        
-        return await GetRefreshedTokenTask(authentication.RefreshToken).WaitAsync(cancellationToken);
+
+        // await authenticationStorage.RemoveAuthorizationAsync(cancellationToken);
+        return (await ForceRefreshToken(authentication, CancellationToken.None).WaitAsync(cancellationToken)).AccessToken;
     }
 
-    private Task<string> GetRefreshedTokenTask(string refreshToken)
+    private async Task<Authentication> ForceRefreshToken(Authentication authentication,
+        CancellationToken cancellationToken = default)
     {
-        using var enterScope = @lock.EnterScope();
+        if(!await semaphore.WaitAsync(120*1000, cancellationToken))
+            throw new InvalidOperationException("Refresh token operation timed out");
         
-        if (refreshTokenTasks.TryGetValue(refreshToken, out var existingTask)) return existingTask;
-        
-        
-        var task = RefreshTokenCore(refreshToken);
-        
-        refreshTokenTasks[refreshToken] = task;
-
-        _ = task.ContinueWith((t, state) =>
+        try
+        {
+            // if (!forceRefresh){
+            var storedAuthentication = await authenticationStorage.GetAuthorizationAsync(cancellationToken);
+            if (storedAuthentication != null && 
+                storedAuthentication != authentication)
             {
-                var (token, dictionary) = ((string, ConcurrentDictionary<string, Task<string>>))state!;
-                using var scope = @lock.EnterScope();
-                if  (dictionary.TryGetValue(token, out var completedTask) && completedTask == t)
-                    dictionary.TryRemove(token, out _);
-            },
-            (refreshToken, refreshTokenTasks),
-            TaskScheduler.Default
-        );
-        return task;
+                return storedAuthentication;
+            }
+            // }
+            return await RefreshAuthentication(authentication, cancellationToken);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    }
+    private async Task<Authentication> RefreshToken(Authentication authentication, CancellationToken cancellationToken = default)
+    {
+        if(!await semaphore.WaitAsync(120*1000, cancellationToken))
+            throw new InvalidOperationException("Refresh token operation timed out");
+        
+        try
+        {
+            // if (!forceRefresh){
+                var storedAuthentication = await authenticationStorage.GetAuthorizationAsync(cancellationToken);
+                if (storedAuthentication != null && 
+                    !storedAuthentication.AccessTokenExpired(DateTimeOffset.UtcNow))
+                {
+                    return storedAuthentication;
+                }
+            // }
+            return await RefreshAuthentication(authentication, cancellationToken);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
     }
 
-    private async Task<string> RefreshTokenCore(string refreshToken)
+    private async Task<Authentication> RefreshAuthentication(Authentication authentication, CancellationToken cancellationToken)
     {
-        var authorizationResponse = await authorizationApi.RefreshToken(refreshToken);
-        await authenticationStorage.SetAuthorizationAsync(authorizationResponse.ConvertToAuthentication());
-        return authorizationResponse.AccessToken;
+        var request = new RefreshTokenRequest(authentication.AccessToken, authentication.RefreshToken);
+        var authorizationResponse = await authorizationApi.RefreshToken(request, cancellationToken);
+
+        var newAuthentication = authorizationResponse.ConvertToAuthentication(DateTimeOffset.UtcNow);
+        await authenticationStorage.SetAuthorizationAsync(newAuthentication, cancellationToken);
+        return newAuthentication;
     }
-    
+
+    public void Dispose()
+    {
+        semaphore.Dispose();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        Dispose();
+        return ValueTask.CompletedTask;
+    }
 }

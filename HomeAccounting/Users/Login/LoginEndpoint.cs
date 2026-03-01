@@ -18,7 +18,7 @@ static class LoginEndpoint
     public static void MapLogin(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/login",
-            async (LoginRequest loginRequest, UserManager<User> userManager, ITokenProvider tokenProvider) =>
+            async (LoginRequest loginRequest, UserManager<User> userManager, ITokenProvider tokenProvider, CancellationToken cancellationToken) =>
             {
                 if (await userManager.FindByNameAsync(loginRequest.Login) is not { } user)
                 {
@@ -30,29 +30,30 @@ static class LoginEndpoint
                     return Results.BadRequest("Wrong password");
                 }
 
-                var refreshToken = tokenProvider.CreateRefreshToken();
+                var tokenResult = await tokenProvider.CreateToken(user, cancellationToken);
+                // var refreshToken = tokenProvider.CreateRefreshToken();
 
-                user.AddRefreshToken(refreshToken);
+                // user.AddRefreshToken(refreshToken);
 
-                var accessToken = tokenProvider.CreateTokenForUser(user);
+                // var accessToken = tokenProvider.CreateTokenForUser(user);
                 return Results.Ok(
-                    new AuthorizationResponse(
+                    new TokenResponse(
                         JwtBearerDefaults.AuthenticationScheme,
                         new(
                             user.Id.Value,
                             user.UserName ?? throw UserException.NoUserName,
                             user.FullName),
-                        accessToken.Token
-                        ,
-                        refreshToken.Token,
-                        accessToken.ExpiresAt
+                        tokenResult.Token,
+                        tokenResult.RefreshToken,
+                        tokenResult.ExpiresIn,
+                        tokenResult.RefreshExpiresIn
                     ));
             })
             .WithName("Login")
             .WithTags("Users")
             .WithSummary("Login")
             .WithDescription("Authenticates user by login and password. Returns JWT and refresh token.")
-            .Produces((int)HttpStatusCode.OK, typeof(AuthorizationResponse))
+            .Produces((int)HttpStatusCode.OK, typeof(TokenResponse))
             .AllowAnonymous();
     }
 }

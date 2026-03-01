@@ -1,6 +1,8 @@
 using ClientServerContracts.Api.Users;
 using ClientServerContracts.Users.GetUser;
 using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Logout;
+using ClientServerContracts.Users.Refresh;
 using ClientServerContracts.Users.Register;
 
 namespace BlazorConsolidated.Tests;
@@ -11,20 +13,23 @@ namespace BlazorConsolidated.Tests;
 /// </summary>
 public sealed class FakeAuthorizationApi : IAuthorizationApi
 {
-    private readonly Func<string, AuthorizationResponse>? _refreshTokenResponse;
-    private readonly Func<string, CancellationToken, Task<AuthorizationResponse>>? _refreshTokenTaskResponse;
+    private const int DefaultExpiresInSeconds = 3600;
+    private const int DefaultRefreshExpiresInSeconds = 86400 * 30;
+
+    private readonly Func<RefreshTokenRequest, TokenResponse>? _refreshTokenResponse;
+    private readonly Func<RefreshTokenRequest, CancellationToken, Task<TokenResponse>>? _refreshTokenTaskResponse;
     private readonly Exception? _refreshTokenException;
     private int _refreshTokenCallCount;
 
     public FakeAuthorizationApi(
-        AuthorizationResponse? refreshTokenResponse = null,
+        TokenResponse? refreshTokenResponse = null,
         Exception? refreshTokenException = null)
     {
         _refreshTokenResponse = refreshTokenResponse is not null ? _ => refreshTokenResponse : null;
         _refreshTokenException = refreshTokenException;
     }
 
-    public FakeAuthorizationApi(Func<string, AuthorizationResponse> refreshTokenResponse)
+    public FakeAuthorizationApi(Func<RefreshTokenRequest, TokenResponse> refreshTokenResponse)
     {
         _refreshTokenResponse = refreshTokenResponse;
         _refreshTokenException = null;
@@ -34,7 +39,7 @@ public sealed class FakeAuthorizationApi : IAuthorizationApi
     /// Use when the test needs to control when the refresh completes (e.g. cancellation tests).
     /// Returns the task without blocking the calling thread.
     /// </summary>
-    public FakeAuthorizationApi(Func<string, CancellationToken, Task<AuthorizationResponse>> refreshTokenTaskResponse)
+    public FakeAuthorizationApi(Func<RefreshTokenRequest, CancellationToken, Task<TokenResponse>> refreshTokenTaskResponse)
     {
         _refreshTokenTaskResponse = refreshTokenTaskResponse;
     }
@@ -44,54 +49,60 @@ public sealed class FakeAuthorizationApi : IAuthorizationApi
     public Task<bool> CheckLoginExist(CheckLoginExistQueryParameters query, CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
 
-    public Task<AuthorizationResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default) =>
+    public Task<TokenResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
 
     public Task Register(RegistrationRequest registrationRequest, CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
 
-    public Task<AuthorizationResponse> RefreshToken(string refreshToken, CancellationToken cancellationToken = default)
+    public Task Logout(LogoutRequest request, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+    public Task LogoutAll(LogoutRequest request, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+    public Task<TokenResponse> RefreshToken(RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Interlocked.Increment(ref _refreshTokenCallCount);
         if (_refreshTokenException is not null)
             throw _refreshTokenException;
         if (_refreshTokenTaskResponse is not null)
-            return _refreshTokenTaskResponse(refreshToken, cancellationToken);
+            return _refreshTokenTaskResponse(request, cancellationToken);
         if (_refreshTokenResponse is not null)
-            return Task.FromResult(_refreshTokenResponse(refreshToken));
-        return Task.FromResult(CreateDefaultResponse(refreshToken));
+            return Task.FromResult(_refreshTokenResponse(request));
+        return Task.FromResult(CreateDefaultResponse(request));
     }
 
-    private static AuthorizationResponse CreateDefaultResponse(string refreshToken)
+    private static TokenResponse CreateDefaultResponse(RefreshTokenRequest request)
     {
         var user = new User(Guid.NewGuid(), "test", "Test User");
-        return new AuthorizationResponse(
+        return new TokenResponse(
             "Bearer",
             user,
             "new-access-token",
             "new-refresh-token",
-            DateTimeOffset.UtcNow.AddHours(1));
+            DefaultExpiresInSeconds,
+            DefaultRefreshExpiresInSeconds);
     }
 
     /// <summary>
     /// Creates a response with the given access token (e.g. to assert same token in deduplication test).
     /// </summary>
-    public static AuthorizationResponse ResponseWithAccessToken(string accessToken, string refreshToken = "rt")
+    public static TokenResponse ResponseWithAccessToken(string accessToken, string refreshToken = "rt")
     {
         var user = new User(Guid.NewGuid(), "test", "Test User");
-        return new AuthorizationResponse(
+        return new TokenResponse(
             "Bearer",
             user,
             accessToken,
             refreshToken,
-            DateTimeOffset.UtcNow.AddHours(1));
+            DefaultExpiresInSeconds,
+            DefaultRefreshExpiresInSeconds);
     }
 
     /// <summary>
     /// Creates a fake that returns a different response per call (by call count).
     /// </summary>
-    public static FakeAuthorizationApi WithSequentialResponses(params AuthorizationResponse[] responses)
+    public static FakeAuthorizationApi WithSequentialResponses(params TokenResponse[] responses)
     {
         var index = -1;
         return new FakeAuthorizationApi(_ => responses[Interlocked.Increment(ref index)]);

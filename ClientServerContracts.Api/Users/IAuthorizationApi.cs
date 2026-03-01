@@ -1,4 +1,6 @@
 using ClientServerContracts.Users.Login;
+using ClientServerContracts.Users.Logout;
+using ClientServerContracts.Users.Refresh;
 using ClientServerContracts.Users.Register;
 using Refit;
 
@@ -50,7 +52,7 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/login")]
-    Task<AuthorizationResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default);
+    Task<TokenResponse> Login(LoginRequest loginRequest, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new user account with the provided credentials.
@@ -71,7 +73,7 @@ public interface IAuthorizationApi
     /// <summary>
     /// Exchanges a valid refresh token for new JWT and refresh token.
     /// </summary>
-    /// <param name="refreshToken">Refresh token string.</param>
+    /// <param name="request">Request body with current access token (Token) and refresh token (RefreshToken).</param>
     /// <returns>Authorization response with new JWT and refresh token.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -83,5 +85,37 @@ public interface IAuthorizationApi
     /// </list>
     /// </remarks>
     [Post("/refresh")]
-    Task<AuthorizationResponse> RefreshToken([Body] string refreshToken, CancellationToken cancellationToken = default);
+    Task<TokenResponse> RefreshToken([Body] RefreshTokenRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Revokes the session associated with the given refresh token. Idempotent.
+    /// </summary>
+    /// <param name="request">Request body containing the refresh token.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>204</term><description>No Content - Session revoked or token unknown (idempotent).</description></item>
+    /// </list>
+    /// </remarks>
+    [Post("/logout")]
+    Task Logout([Body] LogoutRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Revokes all sessions of the user identified by the given refresh token. Idempotent.
+    /// </summary>
+    /// <param name="request">Request body containing the refresh token.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Task that completes when the request is finished.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Possible status codes:
+    /// <list type="table">
+    /// <item><term>204</term><description>No Content - All sessions revoked or token unknown (idempotent).</description></item>
+    /// </list>
+    /// </remarks>
+    [Post("/logout/all")]
+    Task LogoutAll([Body] LogoutRequest request, CancellationToken cancellationToken = default);
 }

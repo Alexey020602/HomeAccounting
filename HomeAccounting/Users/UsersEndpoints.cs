@@ -1,7 +1,8 @@
 using HomeAccounting.Users.CheckLogin;
 using HomeAccounting.Users.GetUser;
 using HomeAccounting.Users.Login;
-using HomeAccounting.Users.RefreshToken;
+using HomeAccounting.Users.Logout;
+using HomeAccounting.Users.Refresh;
 using HomeAccounting.Users.Register;
 using HomeAccounting.Users.UpdateUser;
 
@@ -15,7 +16,9 @@ static class UsersEndpoints
         endpoints.MapRegister();
         endpoints.MapCheckLogin();
         endpoints.MapRefreshToken();
-        
+        endpoints.MapLogout();
+        endpoints.MapLogoutAll();
+
         var usersGroup = endpoints.MapGroup("users");
         usersGroup.MapGetUser();
         usersGroup.MapUpdateUserEndpoint();

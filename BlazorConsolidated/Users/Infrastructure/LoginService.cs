@@ -12,7 +12,7 @@ public sealed class LoginService(
 {
     public async Task Login(LoginRequest loginRequest, CancellationToken cancellationToken = default)
     {
-        var authentication = (await authorizationApi.Login(loginRequest)).ConvertToAuthentication();
+        var authentication = (await authorizationApi.Login(loginRequest, cancellationToken)).ConvertToAuthentication(DateTimeOffset.UtcNow);
         await storage.SetAuthorizationAsync(authentication, cancellationToken);
         authenticationStateNotifier.NotifyAuthenticationStateChanged(Task.FromResult(authentication.GetAuthenticationState()));
     }

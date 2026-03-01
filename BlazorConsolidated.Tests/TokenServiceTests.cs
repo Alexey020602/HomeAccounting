@@ -13,10 +13,10 @@ public class TokenServiceTests
     private static readonly User TestUser = new(Guid.NewGuid(), "test", "Test User");
 
     private static Authentication NotExpiredAuth(string accessToken = "access", string refreshToken = "refresh") =>
-        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddHours(1));
+        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddHours(1), DateTimeOffset.UtcNow.AddDays(30));
 
     private static Authentication ExpiredAuth(string accessToken = "old-access", string refreshToken = "refresh") =>
-        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddSeconds(-1));
+        new(accessToken, refreshToken, TestUser, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddDays(30));
 
     private static ITokenService CreateTokenService(
         FakeAuthenticationStorage storage,
@@ -93,7 +93,7 @@ public class TokenServiceTests
     {
         var storage = new FakeAuthenticationStorage();
         storage.SetCurrent(ExpiredAuth("old", "rt"));
-        var tcs = new TaskCompletionSource<AuthorizationResponse>();
+        var tcs = new TaskCompletionSource<TokenResponse>();
         var api = new FakeAuthorizationApi((_, ct) =>
         {
             ct.ThrowIfCancellationRequested();
@@ -106,7 +106,7 @@ public class TokenServiceTests
         await Task.Delay(50);
         await cts.CancelAsync();
 
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
         tcs.SetResult(FakeAuthorizationApi.ResponseWithAccessToken("ignored", "rt"));
     }
 
@@ -128,7 +128,7 @@ public class TokenServiceTests
     public async Task GetRefreshedToken_HasAuthorization_CallsRefresh_ReturnsNewAccessToken()
     {
         var storage = new FakeAuthenticationStorage();
-        storage.SetCurrent(NotExpiredAuth("any", "refresh-2"));
+        storage.SetCurrent(NotExpiredAuth("any", "refresh"));
         var response = FakeAuthorizationApi.ResponseWithAccessToken("refreshed-token", "refresh-2");
         var api = new FakeAuthorizationApi(response);
         var sut = CreateTokenService(storage, api);
@@ -147,7 +147,7 @@ public class TokenServiceTests
     {
         var storage = new FakeAuthenticationStorage();
         storage.SetCurrent(NotExpiredAuth("any", "rt"));
-        var tcs = new TaskCompletionSource<AuthorizationResponse>();
+        var tcs = new TaskCompletionSource<TokenResponse>();
         var api = new FakeAuthorizationApi((_, ct) =>
         {
             ct.ThrowIfCancellationRequested();
@@ -160,7 +160,7 @@ public class TokenServiceTests
         await Task.Delay(50);
         await cts.CancelAsync();
 
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
         // tcs.SetResult(FakeAuthorizationApi.ResponseWithAccessToken("ignored", "rt"));
     }
 
@@ -190,7 +190,11 @@ public class TokenServiceTests
         var storage = new FakeAuthenticationStorage();
         storage.SetCurrent(NotExpiredAuth("any", "same-rt"));
         var response = FakeAuthorizationApi.ResponseWithAccessToken("single-token", "same-rt");
-        var api = new FakeAuthorizationApi(response);
+        var api = new FakeAuthorizationApi(async (_, _) =>
+        {
+            await Task.Delay(50);
+            return response;
+        });
         var sut = CreateTokenService(storage, api);
 
         var results = await Task.WhenAll(
@@ -218,7 +222,7 @@ public class TokenServiceTests
 
         storage.SetCurrent(ExpiredAuth("first-token", "rt-one"));
         var second = await sut.GetFreshAccessToken();
-        Assert.Equal("second-token", second);
         Assert.Equal(2, api.RefreshTokenCallCount);
+        Assert.Equal("second-token", second);
     }
 }

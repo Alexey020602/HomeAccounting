@@ -2,6 +2,7 @@ using HomeAccounting.Users.Data;
 using HomeAccounting.Users.Data.Database;
 using HomeAccounting.Users.GetUsers;
 using HomeAccounting.Users.Login;
+using HomeAccounting.Users.TokensCleanup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -34,6 +35,8 @@ static class UsersModule
                                                     throw new InvalidOperationException(
                                                         "Missing JwtTokenSettings in appsettings.json");
             });
+        
+        builder.Services.AddTokensCleanup();
         
         builder.Services.AddScoped<ITokenProvider, TokenProvider>();
         

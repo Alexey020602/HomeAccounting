@@ -1,4 +1,5 @@
 using HomeAccounting.Categories.GetCategories;
+using HomeAccounting.Categories.GetCategoriesCsv;
 using HomeAccounting.Categories.GetCategoriesTree;
 
 namespace HomeAccounting.Categories;
@@ -11,5 +12,6 @@ internal static class CategoriesEndpoints
         
         categoriesGroup.MapGetCategories();
         categoriesGroup.MapGetCategoriesTree();
+        categoriesGroup.MapGetCategoriesCsv();
     }
 }

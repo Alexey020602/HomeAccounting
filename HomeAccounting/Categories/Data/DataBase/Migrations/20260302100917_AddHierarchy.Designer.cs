@@ -2,6 +2,7 @@
 using HomeAccounting.Categories.Data.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeAccounting.Categories.Data.Database.Migrations
 {
     [DbContext(typeof(CategoriesContext))]
-    partial class CategoriesContextModelSnapshot : ModelSnapshot
+    [Migration("20260302100917_AddHierarchy")]
+    partial class AddHierarchy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,23 +54,7 @@ namespace HomeAccounting.Categories.Data.Database.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("ParentCategoryId");
-
                     b.ToTable("Categories", "categories");
-                });
-
-            modelBuilder.Entity("HomeAccounting.Categories.Data.Category", b =>
-                {
-                    b.HasOne("HomeAccounting.Categories.Data.Category", "ParentCategory")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentCategoryId");
-
-                    b.Navigation("ParentCategory");
-                });
-
-            modelBuilder.Entity("HomeAccounting.Categories.Data.Category", b =>
-                {
-                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }

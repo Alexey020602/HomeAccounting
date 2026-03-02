@@ -7,7 +7,7 @@ internal static class CategoriesEndpoints
 {
     public static void MapCategoriesEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var categoriesGroup = endpoints.MapGroup("categories");
+        var categoriesGroup = endpoints.MapGroup("categories").AllowAnonymous();
         
         categoriesGroup.MapGetCategories();
         categoriesGroup.MapGetCategoriesTree();

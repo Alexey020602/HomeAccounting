@@ -9,7 +9,7 @@ partial class Category
         {
         }
 
-        public List<Category> CreateCategories(ref int i, CategoryId? parentId)
+        public List<Category> CreateCategories(ref int i, Category? parentId)
         {
             var categories = new List<Category>();
 
@@ -23,7 +23,7 @@ partial class Category
 
             foreach (var child in Children)
             {
-                categories.AddRange(child.CreateCategories(ref i, category.Id));
+                categories.AddRange(child.CreateCategories(ref i, category));
             }
             
             return categories;

@@ -1,4 +1,5 @@
 using ClientServerContracts.Categories.GetCategories;
+using ClientServerContracts.Categories.GetCategoriesTree;
 using Refit;
 
 namespace ClientServerContracts.Api.Categories;
@@ -17,13 +18,14 @@ public sealed class GetCategoriesQueryParameters
 /// <summary>
 /// Refit client for Categories API endpoints.
 /// </summary>
-[Headers("Authorization: Bearer")]
+// [Headers("Authorization: Bearer")]
 public interface ICategoriesApi
 {
     /// <summary>
     /// Returns categories, optionally filtered by parent category id. Use null or omit ParentId for root categories.
     /// </summary>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Collection of categories.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -35,7 +37,7 @@ public interface ICategoriesApi
     /// </list>
     /// </remarks>
     [Get("/categories")]
-    Task<IReadOnlyCollection<CategoryDto>> GetCategories([Query] GetCategoriesQueryParameters query, CancellationToken cancellationToken = default);
+    Task<CategoriesResponse> GetCategories([Query] GetCategoriesQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns all categories as a hierarchical tree with parent-child structure.

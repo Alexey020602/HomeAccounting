@@ -1,0 +1,71 @@
+@page "/categories/{categoryId:int?}"
+@* @page "/categories/{*CategoryPath}" *@
+@using BlazorConsolidated.Common.Components
+@using BlazorConsolidated.Common.Layouts
+@using ClientServerContracts.Api.Categories
+@using ClientServerContracts.Categories.GetCategories
+@using ClientServerShared.Results
+@using MaybeResults
+@layout AuthLayout
+@inject ICategoriesApi CategoriesApi
+@inject NavigationManager NavigationManager
+
+<PageTitle>Категории</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <CategoriesComponent CategoriesResult="CategoriesResult"/>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? CategoryId { get; set; }
+    private IMaybe<CategoriesResponse>? CategoriesResult { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // _pathIds = ParsePathIds(CategoryPath);
+
+        // if (_pathIds.Count > 0)
+        // {
+        //     for (var i = 0; i < _pathIds.Count; i++)
+        //     {
+        //         var levelParentId = i == 0 ? null : (int?)_pathIds[i - 1];
+        //         var categoriesAtLevel = await CategoriesApi.GetCategories(
+        //             new GetCategoriesQueryParameters { ParentId = levelParentId });
+        //         var category = categoriesAtLevel.FirstOrDefault(c => c.Id == _pathIds[i]);
+        //         if (category == null)
+        //             break;
+        //         BreadcrumbItems.Add((category.Id, category.Name));
+        //     }
+        // }
+
+        CategoriesResult = await CategoriesApi
+            .GetCategories(new GetCategoriesQueryParameters { ParentId = CategoryId })
+            .TryAsync();
+
+    }
+
+    // private static List<int> ParsePathIds(string? path)
+    // {
+    //     if (string.IsNullOrWhiteSpace(path))
+    //         return [];
+    //
+    //     var ids = new List<int>();
+    //     var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+    //     foreach (var segment in segments)
+    //     {
+    //         if (!int.TryParse(segment, out var id))
+    //             return [];
+    //         ids.Add(id);
+    //     }
+    //
+    //     return ids;
+    // }
+
+    // private string GetBreadcrumbHref(int breadcrumbIndex)
+    // {
+    //     var segmentCount = breadcrumbIndex + 1;
+    //     var path = string.Join("/", _pathIds.Take(segmentCount));
+    //     return $"/categories/{path}";
+    // }
+}

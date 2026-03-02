@@ -1,0 +1,59 @@
+@using BlazorConsolidated.Common.Components
+@using ClientServerContracts.Categories.GetCategories
+@using MaybeResults
+
+<MaybeComponent Result="CategoriesResult">
+    <MudBreadcrumbs Items="BreadcrumbItems" Class="mb-4"/>
+    <MudCard>
+        @{
+            var categories = context.Categories;
+        }
+        <MudCardContent>
+            @if (categories.Count == 0)
+            {
+                <MudText Typo="Typo.body1" Align="Align.Center" Class="pa-4">
+                    Нет категорий
+                </MudText>
+            }
+            else
+            {
+                <MudList T="CategoryDto" Dense="true">
+                    @foreach (var category in categories)
+                    {
+                        <MudListItem T="CategoryDto"
+                                     Href="@(category.HasChildren ? GetCategoryNavigatePath(category.Id) : null)">
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
+                                <MudText Typo="Typo.body1">@category.Name</MudText>
+                                @if (category.HasChildren)
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small"/>
+                                }
+                            </MudStack>
+                        </MudListItem>
+                    }
+                </MudList>
+            }
+        </MudCardContent>
+    </MudCard>
+</MaybeComponent>
+
+@code {
+    [Parameter] public required IMaybe<CategoriesResponse> CategoriesResult { get; set; }
+
+    private IReadOnlyList<BreadcrumbItem> BreadcrumbItems => CategoriesResult is Some<CategoriesResponse> categoriesResult
+        ?
+        [
+            new BreadcrumbItem("Категории", RoutesConstants.Categories),
+            ..categoriesResult.Value.Path
+                .Select(i => new BreadcrumbItem(i.Name, GetCategoryNavigatePath(i.Id)))
+        ]
+        : 
+        [];
+    
+
+    private static string GetCategoryNavigatePath(int categoryId)
+    {
+        return $"/{RoutesConstants.Categories}/{categoryId}";
+    }
+
+}

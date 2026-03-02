@@ -1,4 +1,5 @@
 using BlazorConsolidated.Budgets;
+using BlazorConsolidated.Categories;
 using BlazorConsolidated.Common;
 using BlazorConsolidated.Common.Logout;
 using BlazorConsolidated.Users;
@@ -29,5 +30,6 @@ public static class ServiceCollectionExtensions
             .AddTransient<WasmStreamingRequestHandler>()
             // .AddRefitClients(apiUri)
             .AddAuthorizationModule(apiUri)
-            .AddBudgetsModule(apiUri);
+            .AddBudgetsModule(apiUri)
+            .AddCategoriesModule(apiUri);
 }

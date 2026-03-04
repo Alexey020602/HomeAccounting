@@ -1,0 +1,45 @@
+@page "/products"
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+@layout BlazorConsolidated.Common.Layouts.GuestLayout
+@using ClientServerContracts.Api.Products
+@using ClientServerContracts.Products.GetProductNames
+@using ClientServerShared.Results
+@using MaybeResults
+@using Microsoft.JSInterop
+@using BlazorConsolidated.Common
+
+<PageTitle>Список товаров</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudCard>
+        <MudCardContent>
+            <MudStack Row="true" Class="mb-4" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h5" Color="Color.Primary">Товары</MudText>
+                <a href="/api/products/csv">Скачать файл</a>
+                <MudLink Href="/api/products/csv"/>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Download"
+                           Disabled="@_csvDownloading"
+                           OnClick="DownloadCsvAsync">
+                    Скачать CSV
+                </MudButton>
+            </MudStack>
+            <MudDataGrid T="ProductDto"
+                         @ref="_grid"
+                         ServerData="LoadProductsGrid"
+                         Filterable="true"
+                         Hover="true"
+                         Striped="true"
+                         Dense="true">
+                <Columns>
+                    <PropertyColumn Property="x => x.Name" Title="Название" SortBy="x => x.Name"/>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager PageSizeSelector="true"/>
+                </PagerContent>
+            </MudDataGrid>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>

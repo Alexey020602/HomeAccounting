@@ -1,6 +1,7 @@
 using BlazorConsolidated.Budgets;
 using BlazorConsolidated.Categories;
 using BlazorConsolidated.Common;
+using BlazorConsolidated.Products;
 using BlazorConsolidated.Common.Logout;
 using BlazorConsolidated.Users;
 using BlazorConsolidated.Users.Infrastructure;
@@ -31,5 +32,6 @@ public static class ServiceCollectionExtensions
             // .AddRefitClients(apiUri)
             .AddAuthorizationModule(apiUri)
             .AddBudgetsModule(apiUri)
-            .AddCategoriesModule(apiUri);
+            .AddCategoriesModule(apiUri)
+            .AddProductsModule(apiUri);
 }

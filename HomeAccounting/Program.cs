@@ -4,6 +4,7 @@ using HomeAccounting.Budgets;
 using HomeAccounting.Budgets.Data.Database.Seeding;
 using HomeAccounting.Categories;
 using HomeAccounting.Categories.Data.DataBase.Seeding;
+using HomeAccounting.Products;
 using HomeAccounting.Common.Infrastructure.Events.EventBus;
 using HomeAccounting.ReceiptProcessing;
 using HomeAccounting.Users;
@@ -101,6 +102,9 @@ var apiGroup = app.MapGroup("api").RequireAuthorization();
 apiGroup.MapUsersEndpoints();
 apiGroup.MapBudgetsEndpoints();
 apiGroup.MapCategoriesEndpoints();
+
+var productsGroup = app.MapGroup("api/products").AllowAnonymous();
+productsGroup.MapProductsEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

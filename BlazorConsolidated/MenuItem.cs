@@ -32,6 +32,13 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
         Icons.Material.Filled.Category
         );
 
+    public static readonly MenuItem Products = new(
+        "Товары",
+        "Список уникальных наименований товаров",
+        RoutesConstants.Products,
+        Icons.Material.Filled.Inventory
+        );
+
     // public static readonly MenuItem Report = new(
     //     "Отчет",
     //     "Просмотр отчета о текущем бюджете",
@@ -56,6 +63,7 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
 
     public static IReadOnlyList<MenuItem> PublicItems =>
     [
-        Categories
+        Categories,
+        Products
     ];
 }

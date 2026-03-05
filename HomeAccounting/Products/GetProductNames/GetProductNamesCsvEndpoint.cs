@@ -29,7 +29,6 @@ static class GetProductNamesCsvEndpoint
                         .GroupBy(p => p.Name)
                         .Select(g => new ProductDto(g.Key))
                         .ToAsyncEnumerable();
-                    var names = StreamManyAsync(productsResult, 1_000_000, cancellationToken);
                     // var sb = new StringBuilder();
                     // sb.AppendLine("Name");
                     // foreach (var name in names)
@@ -43,7 +42,7 @@ static class GetProductNamesCsvEndpoint
                     context.Response.Headers.ContentDisposition = "attachment; filename=\"products.csv\"";
                     await using var writer = new StreamWriter(context.Response.Body, leaveOpen: true);
                     await using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
-                    await csvWriter.WriteRecordsAsync(names, cancellationToken);
+                    await csvWriter.WriteRecordsAsync(productsResult, cancellationToken);
                     // await csvWriter.FlushAsync();
                     // await writer.FlushAsync(cancellationToken);
                     

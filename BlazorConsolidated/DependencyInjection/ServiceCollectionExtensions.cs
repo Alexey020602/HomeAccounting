@@ -16,8 +16,9 @@ namespace BlazorConsolidated.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri) =>
-        serviceCollection
+    public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri)
+    {
+        var services = serviceCollection
             .AddLogging()
             .AddMudServices(config =>
             {
@@ -34,4 +35,8 @@ public static class ServiceCollectionExtensions
             .AddBudgetsModule(apiUri)
             .AddCategoriesModule(apiUri)
             .AddProductsModule(apiUri);
+        
+        services.AddBrowserFileDownloader();
+        return services;
+    }
 }

@@ -18,33 +18,6 @@
 <script src="_framework/blazor.web.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-<script>
-    window.saveFileAs = async function (suggestedName, contentType, base64Data) {
-        const binary = atob(base64Data);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-
-        if ('showSaveFilePicker' in window) {
-            try {
-                const handle = await window.showSaveFilePicker({ suggestedName });
-                const writable = await handle.createWritable();
-                await writable.write(bytes);
-                await writable.close();
-                return;
-            } catch (e) {
-                if (e.name === 'AbortError') return;
-            }
-        }
-
-        const blob = new Blob([bytes], { type: contentType });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = suggestedName;
-        a.click();
-        URL.revokeObjectURL(url);
-    };
-</script>
 </body>
 
 </html>

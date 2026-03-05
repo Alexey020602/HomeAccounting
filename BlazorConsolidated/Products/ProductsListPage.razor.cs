@@ -14,7 +14,8 @@ public sealed partial class ProductsListPage
 {
     [Inject] public required IProductsApi ProductsApi { get; set; }
     [Inject] public required ISnackbar Snackbar { get; set; }
-    [Inject] public required IJSRuntime JSRuntime { get; set; }
+    // [Inject] public required IJSRuntime JSRuntime { get; set; }
+    [Inject] public required IFileDownloader FileDownloader { get; set; }
 
     private MudDataGrid<ProductDto> _grid = new();
     private bool _csvDownloading;
@@ -51,11 +52,7 @@ public sealed partial class ProductsListPage
         _csvDownloading = true;
         try
         {
-            await using var stream = await ProductsApi.GetProductsCsv();
-            using var memory = new MemoryStream();
-            await stream.CopyToAsync(memory);
-            var base64 = Convert.ToBase64String(memory.ToArray());
-            await JSRuntime.InvokeAsync<object>("saveFileAs", "products.csv", "text/csv", base64);
+            await FileDownloader.DownloadFileAsync( "/api/products/csv");
         }
         finally
         {

@@ -1,0 +1,108 @@
+@page "/categories/{categoryId:int?}"
+@* @page "/categories/{*CategoryPath}" *@
+@using System.IO
+@using BlazorConsolidated.Common
+@using BlazorConsolidated.Common.Components
+@using BlazorConsolidated.Common.Layouts
+@using ClientServerContracts.Api.Categories
+@using ClientServerContracts.Categories.GetCategories
+@using ClientServerShared.Results
+@using MaybeResults
+@using Microsoft.JSInterop
+@layout AuthLayout
+@inject ICategoriesApi CategoriesApi
+@* @inject IJSRuntime JSRuntime *@
+@inject IFileDownloader FileDownloader
+
+<PageTitle>Категории</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    @if (CategoryId is null)
+    {
+        <MudStack Row="true" Class="mb-4" Justify="Justify.FlexEnd">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Download"
+                       Disabled="@_csvDownloading"
+                       OnClick="DownloadCategoriesCsvAsync">
+                Скачать CSV
+            </MudButton>
+        </MudStack>
+    }
+    <CategoriesComponent CategoriesResult="CategoriesResult"/>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? CategoryId { get; set; }
+    private IMaybe<CategoriesResponse>? CategoriesResult { get; set; }
+    private bool _csvDownloading;
+
+    private async Task DownloadCategoriesCsvAsync()
+    {
+        if (_csvDownloading) return;
+        _csvDownloading = true;
+        try
+        {
+            await FileDownloader.DownloadFileAsync("/api/categories/csv");
+            // await using var stream = await CategoriesApi.GetCategoriesCsv();
+            // using var memory = new MemoryStream();
+            // await stream.CopyToAsync(memory);
+            // var base64 = Convert.ToBase64String(memory.ToArray());
+            // await JSRuntime.InvokeAsync<object>("saveFileAs", "categories.csv", "text/csv", base64);
+        }
+        finally
+        {
+            _csvDownloading = false;
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // _pathIds = ParsePathIds(CategoryPath);
+
+        // if (_pathIds.Count > 0)
+        // {
+        //     for (var i = 0; i < _pathIds.Count; i++)
+        //     {
+        //         var levelParentId = i == 0 ? null : (int?)_pathIds[i - 1];
+        //         var categoriesAtLevel = await CategoriesApi.GetCategories(
+        //             new GetCategoriesQueryParameters { ParentId = levelParentId });
+        //         var category = categoriesAtLevel.FirstOrDefault(c => c.Id == _pathIds[i]);
+        //         if (category == null)
+        //             break;
+        //         BreadcrumbItems.Add((category.Id, category.Name));
+        //     }
+        // }
+
+        CategoriesResult = await CategoriesApi
+            .GetCategories(new GetCategoriesQueryParameters { ParentId = CategoryId })
+            .TryAsync();
+
+    }
+
+    // private static List<int> ParsePathIds(string? path)
+    // {
+    //     if (string.IsNullOrWhiteSpace(path))
+    //         return [];
+    //
+    //     var ids = new List<int>();
+    //     var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+    //     foreach (var segment in segments)
+    //     {
+    //         if (!int.TryParse(segment, out var id))
+    //             return [];
+    //         ids.Add(id);
+    //     }
+    //
+    //     return ids;
+    // }
+
+    // private string GetBreadcrumbHref(int breadcrumbIndex)
+    // {
+    //     var segmentCount = breadcrumbIndex + 1;
+    //     var path = string.Join("/", _pathIds.Take(segmentCount));
+    //     return $"/categories/{path}";
+    // }
+}

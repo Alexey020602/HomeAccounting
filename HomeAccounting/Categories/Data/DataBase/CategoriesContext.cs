@@ -1,3 +1,4 @@
+using HomeAccounting.Budgets.Data.Database;
 using HomeAccounting.Categories.Data.DataBase.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,5 +16,13 @@ internal sealed class CategoriesContext(DbContextOptions<CategoriesContext> opti
         modelBuilder.HasDefaultSchema(Schema);
         
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder.Properties<CategoryHierarchy>()
+            .HaveConversion<HierarchyConverter>();
     }
 }

@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="CsvHelper" />
         <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" />
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="Mediator.Abstractions" />

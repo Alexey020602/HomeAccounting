@@ -7,4 +7,6 @@ internal static class RoutesConstants
     public const string Operations = "operations";
     // public const string Report = "monthreport";
     public const string Budgets = "budgets";
+    public const string Categories = "categories";
+    public const string Products = "products";
 }

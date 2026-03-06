@@ -19,6 +19,13 @@ internal sealed class CategoryConfiguration: IEntityTypeConfiguration<Category>
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Navigation(c => c.Children)
+            .HasField("children");
+        
+        builder.Property(c=>c.Hierarchy)
+            .IsRequired()
+            .HasMaxLength(100);
+
         builder.Property(c => c.ParentCategoryId)
             .HasConversion(x => x!.Value.Value, x => new CategoryId(x));
     }

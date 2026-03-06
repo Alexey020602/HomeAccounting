@@ -14,17 +14,7 @@
                 <MudText Typo="Typo.h5">Вы работаете с бюджетом @budgetState.Name</MudText>
             </MudCardHeader>
             <MudCardContent>
-                <MudList T="string">
-                    @foreach (var menuItem in MenuItem.Menu)
-                    {
-                        <MudListItem
-                            Href="@menuItem.Href"
-                            Text="@menuItem.Name"
-                            SecondaryText="@menuItem.Description"
-                            Icon="@menuItem.Icon"
-                            Ripple="true"/>
-                    }
-                </MudList>
+                @List(MenuItem.AuthorizedUserMenu)
             </MudCardContent>
         </MudCard>
     </BudgetSelected>
@@ -35,5 +25,28 @@
     <NotAuthorized>
         Для работы с бюджетами необходимо авторизоваться
         <MudLink Href="/login">К авторизации</MudLink>
+        <MudCard>
+            <MudCardHeader>
+                
+            </MudCardHeader>
+            <MudCardContent>
+                @List(MenuItem.PublicItems)
+            </MudCardContent>
+        </MudCard>
     </NotAuthorized>
 </BudgetsSelectionView>
+
+@code
+{
+    private RenderFragment List(IReadOnlyList<MenuItem> menuItems) => @<MudList T="MenuItem">
+                                                                          @foreach (var menuItem in menuItems)
+                                                                          {
+                                                                              <MudListItem
+                                                                                  Href="@menuItem.Href"
+                                                                                  Text="@menuItem.Name"
+                                                                                  SecondaryText="@menuItem.Description"
+                                                                                  Icon="@menuItem.Icon"
+                                                                                  Ripple="true"/>
+                                                                          }
+                                                                      </MudList>;
+}

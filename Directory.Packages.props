@@ -14,6 +14,7 @@
     <!-- Blazor packages -->
     <PackageVersion Include="Blazored.FluentValidation" Version="2.2.0" />
     <PackageVersion Include="BlazorQrCodeScanner" Version="1.0.0.3" />
+    <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="ZXingBlazor" Version="1.1.5" />
     <!-- Entity Framework packages -->
     <PackageVersion Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="8.1.3" />

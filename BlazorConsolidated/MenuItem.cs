@@ -25,6 +25,20 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
         Icons.Material.Filled.ShoppingCart
     );
 
+    public static readonly MenuItem Categories = new(
+        "Категории",
+        "Просмотр категорий приложения",
+        RoutesConstants.Categories,
+        Icons.Material.Filled.Category
+        );
+
+    public static readonly MenuItem Products = new(
+        "Товары",
+        "Список уникальных наименований товаров",
+        RoutesConstants.Products,
+        Icons.Material.Filled.Inventory
+        );
+
     // public static readonly MenuItem Report = new(
     //     "Отчет",
     //     "Просмотр отчета о текущем бюджете",
@@ -39,11 +53,17 @@ internal record MenuItem(string Name, string Description, string Href, string Ic
         Icons.Material.Filled.AttachMoney
         );
 
-    public static readonly IReadOnlyList<MenuItem> Menu =
+    public static IReadOnlyList<MenuItem> AuthorizedUserMenu =>
     [
         AddReceipt,
         ReceiptsList,
         OperationsList,
-        // Report,
+        ..PublicItems
+    ];
+
+    public static IReadOnlyList<MenuItem> PublicItems =>
+    [
+        Categories,
+        Products
     ];
 }

@@ -1,5 +1,7 @@
 using BlazorConsolidated.Budgets;
+using BlazorConsolidated.Categories;
 using BlazorConsolidated.Common;
+using BlazorConsolidated.Products;
 using BlazorConsolidated.Common.Logout;
 using BlazorConsolidated.Users;
 using BlazorConsolidated.Users.Infrastructure;
@@ -14,8 +16,9 @@ namespace BlazorConsolidated.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri) =>
-        serviceCollection
+    public static IServiceCollection AddBlazorShared(this IServiceCollection serviceCollection, Uri apiUri)
+    {
+        var services = serviceCollection
             .AddLogging()
             .AddMudServices(config =>
             {
@@ -29,5 +32,11 @@ public static class ServiceCollectionExtensions
             .AddTransient<WasmStreamingRequestHandler>()
             // .AddRefitClients(apiUri)
             .AddAuthorizationModule(apiUri)
-            .AddBudgetsModule(apiUri);
+            .AddBudgetsModule(apiUri)
+            .AddCategoriesModule(apiUri)
+            .AddProductsModule(apiUri);
+        
+        services.AddBrowserFileDownloader();
+        return services;
+    }
 }

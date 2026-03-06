@@ -1,5 +1,6 @@
 using System.Net;
 using ClientServerContracts.Categories.GetCategories;
+using ClientServerContracts.Categories.GetCategoriesTree;
 using HomeAccounting.Categories.Data;
 using HomeAccounting.Categories.Data.DataBase;
 using Microsoft.EntityFrameworkCore;

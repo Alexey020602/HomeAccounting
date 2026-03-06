@@ -20,7 +20,7 @@
            Variant="DrawerVariant.Responsive"
            ClipMode="DrawerClipMode.Always">
     <MudNavMenu>
-        @foreach (var menuItem in MenuItem.Menu)
+        @foreach (var menuItem in MenuItem.AuthorizedUserMenu)
         {
             <MudNavLink Href="@menuItem.Href" Icon="@menuItem.Icon">@menuItem.Name</MudNavLink>
         }

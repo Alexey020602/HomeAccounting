@@ -1,4 +1,6 @@
+using System.IO;
 using ClientServerContracts.Categories.GetCategories;
+using ClientServerContracts.Categories.GetCategoriesTree;
 using Refit;
 
 namespace ClientServerContracts.Api.Categories;
@@ -17,13 +19,14 @@ public sealed class GetCategoriesQueryParameters
 /// <summary>
 /// Refit client for Categories API endpoints.
 /// </summary>
-[Headers("Authorization: Bearer")]
+// [Headers("Authorization: Bearer")]
 public interface ICategoriesApi
 {
     /// <summary>
     /// Returns categories, optionally filtered by parent category id. Use null or omit ParentId for root categories.
     /// </summary>
     /// <param name="query">Query parameters.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Collection of categories.</returns>
     /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
     /// <remarks>
@@ -35,7 +38,7 @@ public interface ICategoriesApi
     /// </list>
     /// </remarks>
     [Get("/categories")]
-    Task<IReadOnlyCollection<CategoryDto>> GetCategories([Query] GetCategoriesQueryParameters query, CancellationToken cancellationToken = default);
+    Task<CategoriesResponse> GetCategories([Query] GetCategoriesQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns all categories as a hierarchical tree with parent-child structure.
@@ -52,4 +55,20 @@ public interface ICategoriesApi
     /// </remarks>
     [Get("/categories/tree")]
     Task<IReadOnlyCollection<CategoryTreeDto>> GetCategoriesTree(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets all categories as CSV file.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Stream containing CSV file content. Caller is responsible for disposing the stream.</returns>
+    /// <exception cref="ApiException">Thrown on non-success status codes.</exception>
+    /// <remarks>
+    /// Gets all categories as CSV file. Response content type is text/csv.
+    /// <list type="table">
+    /// <item><term>200</term><description>OK - CSV file with categories.</description></item>
+    /// <item><term>500</term><description>Internal Server Error - Server error occurred.</description></item>
+    /// </list>
+    /// </remarks>
+    [Get("/categories/csv")]
+    Task<Stream> GetCategoriesCsv(CancellationToken cancellationToken = default);
 }

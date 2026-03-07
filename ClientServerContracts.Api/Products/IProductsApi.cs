@@ -1,4 +1,4 @@
-using ClientServerContracts.Products.GetProductNames;
+using ClientServerContracts.Budgets.GetProducts;
 using Refit;
 
 namespace ClientServerContracts.Api.Products;
@@ -24,7 +24,7 @@ public interface IProductsApi
     /// </list>
     /// </remarks>
     [Get("/products")]
-    Task<GetProductNamesResponse> GetProductNames([Query] GetProductNamesQueryParameters query, CancellationToken cancellationToken = default);
+    Task<GetProductsResponse> GetProducts([Query] GetProductsQueryParameters query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets all unique product names as CSV file.

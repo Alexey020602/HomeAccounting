@@ -11,11 +11,11 @@ sealed class UsersContext(DbContextOptions<UsersContext> options): IdentityUserC
         base.OnModelCreating(builder);
         builder.ApplyConfiguration(new UserConfiguration());
         builder.ApplyConfiguration(new RefreshTokenConfiguration());
-        builder.HasDefaultSchema(AuthorizationDbConstants.ShemaName);
+        builder.HasDefaultSchema(AuthorizationDbConstants.SchemaName);
     }
 }
 
 public static class AuthorizationDbConstants
 {
-    public const string? ShemaName = "Identity";
+    public const string? SchemaName = "Identity";
 }

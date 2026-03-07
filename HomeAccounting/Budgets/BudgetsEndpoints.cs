@@ -12,6 +12,8 @@ using HomeAccounting.Budgets.GetBudgetDetail;
 using HomeAccounting.Budgets.GetBudgetSpendings;
 using HomeAccounting.Budgets.GetBudgetUsers;
 using HomeAccounting.Budgets.GetOperations;
+using HomeAccounting.Budgets.GetProducts;
+using HomeAccounting.Budgets.GetProductsCsv;
 using HomeAccounting.Budgets.GetReceipts;
 using HomeAccounting.Budgets.GetUserPermissions;
 using HomeAccounting.Budgets.GetBudgets;
@@ -43,5 +45,14 @@ static class BudgetsEndpoints
         budgetsGroup.MapAddReceiptFromQrCode();
         budgetsGroup.MapChangeReceiptProductCategory();
         budgetsGroup.MapDeleteReceiptProductCategory();
+    }
+
+    /// <summary>
+    /// Maps product names endpoints (GET /api/products, GET /api/products/csv) onto the given group. Call on MapGroup("api/products").
+    /// </summary>
+    public static void MapProductsEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapGetProducts();
+        endpoints.MapGetProductsCsv();
     }
 }

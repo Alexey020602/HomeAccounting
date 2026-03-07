@@ -4,7 +4,6 @@ using HomeAccounting.Budgets;
 using HomeAccounting.Budgets.Data.Database.Seeding;
 using HomeAccounting.Categories;
 using HomeAccounting.Categories.Data.DataBase.Seeding;
-using HomeAccounting.Products;
 using HomeAccounting.Common.Infrastructure.Events.EventBus;
 using HomeAccounting.ReceiptProcessing;
 using HomeAccounting.Users;

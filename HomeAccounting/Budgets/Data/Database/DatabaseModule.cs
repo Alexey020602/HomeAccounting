@@ -21,7 +21,7 @@ static class DatabaseModule
                     options.SetUpBudgets();
                 }
             },
-            npgsqlOptionsAction: options => options.MigrationsHistoryTable(DbConstants.MigrationTableName, BudgetsContext.ShemaName)
+            npgsqlOptionsAction: options => options.MigrationsHistoryTable(DbConstants.MigrationTableName, BudgetsContext.SchemaName)
             );
     }
     

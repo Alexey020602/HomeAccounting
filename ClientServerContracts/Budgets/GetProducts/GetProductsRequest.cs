@@ -1,4 +1,4 @@
-namespace ClientServerContracts.Products.GetProductNames;
+namespace ClientServerContracts.Budgets.GetProducts;
 
 /// <summary>
 /// Request parameters for getting unique product names list.
@@ -57,7 +57,7 @@ namespace ClientServerContracts.Products.GetProductNames;
 /// </param>
 /// <param name="Take">Number of items to take (pagination).</param>
 /// <param name="Skip">Number of items to skip (pagination).</param>
-public sealed record GetProductNamesRequest(
+public sealed record GetProductsRequest(
     string? Filter = null,
     string? Sorting = null,
     int? Take = null,

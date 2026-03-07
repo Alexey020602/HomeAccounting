@@ -1,6 +1,6 @@
 @using BlazorConsolidated.Common.Components
 @inject NavigationManager NavigationManager
-<RedirectComponent RedirectUrl="@($"{PathConstants.Login}?returnUrl={ReturnUrl}")" />
+<RedirectComponent RedirectUrl="@($"{RoutesConstants.Login}?returnUrl={ReturnUrl}")" />
 @code {
     [Parameter] public string ReturnUrl { get; set; } = string.Empty;
     protected override void OnInitialized()

@@ -1,4 +1,4 @@
-namespace ClientServerContracts.Products.GetProductNames;
+namespace ClientServerContracts.Budgets.GetProducts;
 
 /// <summary>
 /// Product name DTO for the product names list.

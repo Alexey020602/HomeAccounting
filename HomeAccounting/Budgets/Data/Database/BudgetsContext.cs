@@ -7,7 +7,7 @@ namespace HomeAccounting.Budgets.Data.Database;
 
 sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContext(options)
 {
-    public const string ShemaName = "budgets";
+    public const string SchemaName = "budgets";
 
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetRole> BudgetRoles { get; set; }
@@ -18,7 +18,7 @@ sealed class BudgetsContext(DbContextOptions<BudgetsContext> options) : DbContex
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.HasDefaultSchema(ShemaName);
+        modelBuilder.HasDefaultSchema(SchemaName);
 
         modelBuilder.ApplyConfiguration(new OperationConfiguration());
         modelBuilder.ApplyConfiguration(new ReceiptConfiguration());

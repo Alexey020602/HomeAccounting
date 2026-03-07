@@ -1,9 +1,9 @@
 namespace ClientServerContracts.Api.Products;
 
 /// <summary>
-/// Query parameters for GetProductNames endpoint.
+/// Query parameters for GetProducts endpoint.
 /// </summary>
-public sealed class GetProductNamesQueryParameters
+public sealed class GetProductsQueryParameters
 {
     /// <summary>
     /// Filter string for filtering by product name. Format: FieldName[Operator]=Value or FieldName=Value (default operator is Eq).

@@ -4,58 +4,36 @@ namespace BlazorConsolidated;
 
 internal record MenuItem(string Name, string Description, string Href, string Icon)
 {
-    public static readonly MenuItem AddReceipt = new(
-        "Добавление чека",
-        "Добавление нового чека в бюджет",
-        RoutesConstants.ReceiptAdding,
-        Icons.Material.Filled.Receipt
-        );
-
-    public static readonly MenuItem ReceiptsList = new(
+    private static readonly MenuItem ReceiptsList = new(
         "Чеки",
         "Просмотр чеков, добавленных в бюджет",
         RoutesConstants.Receipts,
         Icons.Material.Filled.List
     );
 
-    public static readonly MenuItem OperationsList = new(
+    private static readonly MenuItem OperationsList = new(
         "Операции",
         "Просмотр операций (ручных трат), добавленных в бюджет",
         RoutesConstants.Operations,
         Icons.Material.Filled.ShoppingCart
     );
 
-    public static readonly MenuItem Categories = new(
+    private static readonly MenuItem Categories = new(
         "Категории",
         "Просмотр категорий приложения",
         RoutesConstants.Categories,
         Icons.Material.Filled.Category
         );
 
-    public static readonly MenuItem Products = new(
+    private static readonly MenuItem Products = new(
         "Товары",
         "Список уникальных наименований товаров",
         RoutesConstants.Products,
         Icons.Material.Filled.Inventory
         );
 
-    // public static readonly MenuItem Report = new(
-    //     "Отчет",
-    //     "Просмотр отчета о текущем бюджете",
-    //     RoutesConstants.Report,
-    //     Icons.Material.Filled.Report
-    // );
-
-    public static readonly MenuItem Budget = new(
-        "Бюджеты",
-        "Страница выбора бюджетов",
-        RoutesConstants.Budgets,
-        Icons.Material.Filled.AttachMoney
-        );
-
     public static IReadOnlyList<MenuItem> AuthorizedUserMenu =>
     [
-        AddReceipt,
         ReceiptsList,
         OperationsList,
         ..PublicItems

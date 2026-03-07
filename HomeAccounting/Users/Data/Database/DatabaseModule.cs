@@ -19,7 +19,7 @@ static class DatabaseModule
                     options.SetUpAuthorization();
                 }
             },
-            npgsqlOptionsAction: options => options.MigrationsHistoryTable(DbConstants.MigrationTableName, AuthorizationDbConstants.ShemaName)
+            npgsqlOptionsAction: options => options.MigrationsHistoryTable(DbConstants.MigrationTableName, AuthorizationDbConstants.SchemaName)
         );
     }
 }

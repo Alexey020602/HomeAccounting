@@ -1,4 +1,4 @@
-namespace HomeAccounting.Products.GetProductNames;
+namespace HomeAccounting.Budgets.GetProducts;
 
 /// <summary>
 /// Fields available for filtering product names list.

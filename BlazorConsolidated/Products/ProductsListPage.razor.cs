@@ -1,6 +1,6 @@
 using BlazorConsolidated.Common;
 using ClientServerContracts.Api.Products;
-using ClientServerContracts.Products.GetProductNames;
+using ClientServerContracts.Budgets.GetProducts;
 using ClientServerShared.Results;
 using MaybeResults;
 using Microsoft.AspNetCore.Components;
@@ -22,7 +22,7 @@ public sealed partial class ProductsListPage
 
     private async Task<GridData<ProductDto>> LoadProductsGrid(GridState<ProductDto> state, CancellationToken cancellation)
     {
-        var query = new GetProductNamesQueryParameters
+        var query = new GetProductsQueryParameters
         {
             Skip = state.Page * state.PageSize,
             Take = state.PageSize,
@@ -30,9 +30,9 @@ public sealed partial class ProductsListPage
             Sorting = state.SortingQuery
         };
 
-        var result = await ProductsApi.GetProductNames(query, cancellation).TryAsync();
+        var result = await ProductsApi.GetProducts(query, cancellation).TryAsync();
 
-        if (result is Some<GetProductNamesResponse> some)
+        if (result is Some<GetProductsResponse> some)
         {
             var response = some.Value;
             return new GridData<ProductDto>

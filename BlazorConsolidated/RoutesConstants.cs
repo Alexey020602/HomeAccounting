@@ -9,4 +9,5 @@ internal static class RoutesConstants
     public const string Budgets = "budgets";
     public const string Categories = "categories";
     public const string Products = "products";
+    public const string Login = "login";
 }

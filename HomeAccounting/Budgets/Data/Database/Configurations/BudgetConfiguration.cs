@@ -51,7 +51,7 @@ sealed class BudgetRoleConfiguration : IEntityTypeConfiguration<BudgetRole>
         
         builder.Property(x => x.Id)
             .HasConversion(x=> x.Value, x => new (x))
-            .UseHiLo("BudgetRoleSequence", BudgetsContext.ShemaName);
+            .UseHiLo("BudgetRoleSequence", BudgetsContext.SchemaName);
     }
 }
 

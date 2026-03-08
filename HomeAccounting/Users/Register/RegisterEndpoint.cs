@@ -21,7 +21,11 @@ static class RegisterEndpoint
                 {
                     if (await userManager.FindByNameAsync(request.UserName) is not null)
                     {
-                        return Results.BadRequest($"User with username {request.UserName} already exists.");
+                        return Results.ValidationProblem(
+                            new Dictionary<string, string[]>
+                            {
+                                ["UserName"] = [$"User with username {request.UserName} already exists."]
+                            });
                     }
 
                     var user = new User(request.UserName, request.FullName);
@@ -45,7 +49,7 @@ static class RegisterEndpoint
             .WithSummary("Register")
             .WithDescription("Creates a new user account with the provided credentials.")
             .Produces((int)HttpStatusCode.Created)
-            .Produces((int)HttpStatusCode.BadRequest)
+            .ProducesValidationProblem()
             .AllowAnonymous();
     }
 }

@@ -4,6 +4,7 @@ using HomeAccounting.Users.GetUsers;
 using HomeAccounting.Users.Login;
 using HomeAccounting.Users.TokensCleanup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace HomeAccounting.Users;
@@ -16,6 +17,16 @@ static class UsersModule
         builder.Services.Configure<JwtTokenSettings>(builder.Configuration.GetRequiredSection(nameof(JwtTokenSettings)));
         
         builder.AddDatabase(databaseServiceName);
+
+        builder.Services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequiredLength = 6;
+            options.Password.RequireDigit = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-";
+        });
 
         builder.Services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<UsersContext>();

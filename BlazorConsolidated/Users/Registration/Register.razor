@@ -19,6 +19,8 @@
             <MudTextField
                 @ref="loginTextField"
                 @bind-Value="registrationModel.Login"
+                @bind-Error="showLoginError"
+                @bind-ErrorText="loginErrorText"
                 Variant="Variant.Outlined"
                 Clearable="Clearable"
                 Immediate="Immediate"
@@ -27,13 +29,13 @@
                 For="@(() => registrationModel.Login)"/>
 
             <MudTextField
-                @bind-Value="registrationModel.UserName"
+                @bind-Value="registrationModel.FullName"
                 Variant="Variant.Outlined"
                 Clearable="Clearable"
                 Immediate="Immediate"
                 OnlyValidateIfDirty="OnlyValidateIfDirty"
                 Label="Имя пользователя"
-                For="@(() => registrationModel.UserName)"/>
+                For="@(() => registrationModel.FullName)"/>
 
 
             <MudTextField
@@ -86,6 +88,8 @@
     private const bool OnlyValidateIfDirty = true;
     private const bool Immediate = true;
     private const bool Clearable = true;
+    private bool showLoginError = false;
+    private string? loginErrorText;
     private bool showPasswordFieldText = false;
     private bool showPasswordConfirmationFieldText = false;
     private readonly RegistrationModel registrationModel = new();
@@ -104,13 +108,8 @@
         if (await AuthorizationApi.CheckLoginExist(new CheckLoginExistQueryParameters { Login = registrationModel.Login} ))
         {
             var errorText = $"Логин {registrationModel.Login} уже существует";
-            loginTextField.ValidationErrors.Add(errorText);
-            //todo: Придумать, как добавлять ошибку при проверке существования логина
-            
-            // #pragma warning disable BL0005
-            // loginTextField.Error = true;
-            // loginTextField.ErrorText = errorText;
-            // #pragma warning restore BL0005
+            showLoginError = true;
+            loginErrorText = errorText;
             StateHasChanged();
             return;
         }

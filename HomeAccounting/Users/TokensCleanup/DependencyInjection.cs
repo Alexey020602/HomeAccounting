@@ -1,4 +1,4 @@
-using HomeAccounting.Common.Infrastructure.ConfigOptions;
+using ServiceDefaults.ConfigOptions;
 
 namespace HomeAccounting.Users.TokensCleanup;
 

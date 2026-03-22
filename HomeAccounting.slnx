@@ -12,8 +12,6 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path="docker-compose.yaml" />
-    <File Path="nginx.conf" />
-    <File Path="proxy.conf" />
     <File Path="Readme.md" />
   </Folder>
   <Folder Name="/UI/">

@@ -1,8 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace HomeAccounting.Common.Infrastructure.ConfigOptions;
+namespace ServiceDefaults.ConfigOptions;
 
-internal static class ConfigOptionsServiceCollectionExtensions
+public static class ConfigOptionsServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {

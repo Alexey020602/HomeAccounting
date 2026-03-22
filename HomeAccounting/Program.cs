@@ -24,6 +24,9 @@ builder.Services.AddCors();
 
 builder.AddServiceDefaults();
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<UsersContext>("postgres", tags: ["ready"]);
+
 builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerAuthenticationSchemeTransformer>());
@@ -94,7 +97,10 @@ app.UseSerilogRequestLogging(options =>
     options.GetLevel = HomeAccounting.SerilogApplicationBuilderExtensions.DefaultGetLevel;
 });
 
-app.UseHttpsRedirection();
+if(app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 var apiGroup = app.MapGroup("api").RequireAuthorization();
 

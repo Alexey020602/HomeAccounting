@@ -21,6 +21,14 @@
 dotnet run --project AppHost
 ```
 
+### Через Docker Compose
+
+Для локального запуска контейнеров приложения, PostgreSQL и стека мониторинга используйте:
+
+```powershell
+docker compose -f docker-compose.Development.yaml up --build -d
+```
+
 ### Что запускается
 
 AppHost автоматически поднимает:
@@ -32,6 +40,16 @@ AppHost автоматически поднимает:
 | **HomeAccounting** | ASP.NET Core бэкенд |
 
 Миграции БД применяются автоматически при старте бэкенда.
+
+При запуске через `docker-compose.Development.yaml` дополнительно поднимаются:
+
+| Ресурс | Описание |
+|---|---|
+| **OpenTelemetry Collector** | Приём OTLP и маршрутизация телеметрии |
+| **Prometheus** | Сбор и хранение метрик |
+| **Loki** | Хранение логов |
+| **Tempo** | Хранение трейсов |
+| **Grafana** | Дашборды и исследование телеметрии |
 
 ## Конфигурация
 

@@ -3,6 +3,7 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -36,6 +37,7 @@
       <Folder Include="Budgets\GetBudgetSpendings\" />
       <Folder Include="Categories\Data\DataBase\Migrations\" />
       <Folder Include="Common\Database\" />
+      <Folder Include="Common\Infrastructure\ConfigOptions\" />
       <Folder Include="ReceiptProcessing\Events\" />
       <Folder Include="Users\Data\Database\Migrations\" />
       <Folder Include="Users\Data\Login\" />

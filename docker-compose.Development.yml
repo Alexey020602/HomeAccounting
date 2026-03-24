@@ -1,0 +1,155 @@
+services:
+  db:
+    image: "docker.io/library/postgres:latest"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "${USERNAME:-homeaccounting}"
+      POSTGRES_PASSWORD: "${PASSWORD:-change-me}"
+      POSTGRES_DB: "HomeAccounting"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - "homeaccounting-dev-db-data:/var/lib/postgresql"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${USERNAME:-homeaccounting}", "-d", "HomeAccounting"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+      start_period: "20s"
+    networks:
+      - "homeaccounting"
+
+  api:
+    build:
+      context: .
+      dockerfile: "./HomeAccounting/Dockerfile"
+    image: "${API_IMAGE:-homeaccounting-dev:local}"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      ASPNETCORE_HTTP_PORTS: "8080;8081"
+      ConnectionStrings__homeaccounting-db: "Host=db;Port=5432;Username=${USERNAME:-homeaccounting};Password=${PASSWORD:-change-me};Database=HomeAccounting"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://alloy:4317"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=development,service.namespace=homeaccounting,service.version=${API_VERSION:-local}"
+      OTEL_SERVICE_NAME: "homeaccounting-dev"
+    ports:
+      - "${API_PORT:-5001}:8080"
+      - "${API_MANAGEMENT_PORT:-8081}:8081"
+    depends_on:
+      db:
+        condition: "service_healthy"
+      alloy:
+        condition: "service_started"
+    networks:
+      - "homeaccounting"
+
+  alloy:
+    image: "grafana/alloy:v1.8.3"
+    command: ["run", "/etc/alloy/config.alloy", "--server.http.listen-addr=0.0.0.0:12345"]
+    volumes:
+      - "./ops/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro"
+    expose:
+      - "4317"
+      - "4318"
+      - "9464"
+      - "12345"
+    depends_on:
+      loki:
+        condition: "service_started"
+      tempo:
+        condition: "service_started"
+    networks:
+      - "homeaccounting"
+
+  prometheus:
+    image: "prom/prometheus:v3.2.1"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+      - "--web.enable-remote-write-receiver"
+    volumes:
+      - "./ops/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "homeaccounting-dev-prometheus-data:/prometheus"
+    expose:
+      - "9090"
+    depends_on:
+      alloy:
+        condition: "service_started"
+    networks:
+      - "homeaccounting"
+    
+
+  loki:
+    image: "grafana/loki:3.4.2"
+    command: ["-config.file=/etc/loki/config.yaml"]
+    volumes:
+      - "./ops/monitoring/loki/config.yaml:/etc/loki/config.yaml:ro"
+      - "homeaccounting-dev-loki-data:/loki"
+    expose:
+      - "3100"
+    networks:
+      - "homeaccounting"
+
+  tempo:
+    image: "grafana/tempo:2.7.1"
+    command: ["-config.file=/etc/tempo/config.yaml"]
+    volumes:
+      - "./ops/monitoring/tempo/config.yaml:/etc/tempo/config.yaml:ro"
+      - "homeaccounting-dev-tempo-data:/var/tempo"
+    expose:
+      - "3200"
+      - "4317"
+      - "4318"
+    networks:
+      - "homeaccounting"
+
+  grafana:
+    image: "grafana/grafana:11.5.2"
+    environment:
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USER:-admin}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:-change-me}"
+      GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-http://localhost:3001}"
+      GF_USERS_DEFAULT_THEME: "dark"
+      GF_DATE_FORMATS_DEFAULT_TIMEZONE: "browser"
+      GF_EXPLORE_ENABLED: "true"
+      GF_UNIFIED_ALERTING_ENABLED: "false"
+      GF_ALERTING_ENABLED: "false"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: "/var/lib/grafana/dashboards/homeaccounting-overview.json"
+    volumes:
+      - "./ops/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro"
+      - "./ops/monitoring/grafana/dashboards/provisioning.yaml:/etc/grafana/provisioning/dashboards/provisioning.yaml:ro"
+      - "./ops/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro"
+      - "homeaccounting-dev-grafana-data:/var/lib/grafana"
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    depends_on:
+      prometheus:
+        condition: "service_started"
+      loki:
+        condition: "service_started"
+      tempo:
+        condition: "service_started"
+    networks:
+      - "homeaccounting"
+
+networks:
+  homeaccounting:
+    driver: "bridge"
+
+volumes:
+  homeaccounting-dev-db-data:
+    driver: "local"
+  homeaccounting-dev-grafana-data:
+    driver: "local"
+  homeaccounting-dev-loki-data:
+    driver: "local"
+  homeaccounting-dev-prometheus-data:
+    driver: "local"
+  homeaccounting-dev-tempo-data:
+    driver: "local"

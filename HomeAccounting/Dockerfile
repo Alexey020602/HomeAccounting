@@ -1,10 +1,12 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 USER $APP_UID
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Build.props", "./"]
+COPY ["Directory.Packages.props", "./"]
 COPY ["HomeAccounting/HomeAccounting.csproj", "HomeAccounting/"]
 COPY ["ClientServerContracts/ClientServerContracts.csproj", "ClientServerContracts/"]
 COPY ["Client/Client.csproj", "Client/"]

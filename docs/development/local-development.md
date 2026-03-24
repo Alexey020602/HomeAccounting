@@ -26,7 +26,7 @@ dotnet run --project AppHost
 Для локального запуска контейнеров приложения, PostgreSQL и стека мониторинга используйте:
 
 ```powershell
-docker compose -f docker-compose.Development.yaml up --build -d
+docker compose -f docker-compose.Development.yml up --build -d
 ```
 
 ### Что запускается
@@ -41,15 +41,40 @@ AppHost автоматически поднимает:
 
 Миграции БД применяются автоматически при старте бэкенда.
 
-При запуске через `docker-compose.Development.yaml` дополнительно поднимаются:
+При запуске через `docker-compose.Development.yml` дополнительно поднимаются:
 
 | Ресурс | Описание |
 |---|---|
-| **OpenTelemetry Collector** | Приём OTLP и маршрутизация телеметрии |
+| **Grafana Alloy** | Приём OTLP и маршрутизация телеметрии |
 | **Prometheus** | Сбор и хранение метрик |
 | **Loki** | Хранение логов |
 | **Tempo** | Хранение трейсов |
 | **Grafana** | Дашборды и исследование телеметрии |
+
+## Grafana provisioning (Development)
+
+Базовая конфигурация Grafana хранится в репозитории:
+
+- Data sources: `ops/monitoring/grafana/datasources/datasources.yaml`
+- Dashboard provisioning: `ops/monitoring/grafana/dashboards/provisioning.yaml`
+- Managed dashboards (JSON): `ops/monitoring/grafana/dashboards/*.json`
+- Alerting provisioning: `ops/monitoring/grafana/alerting/*.yaml`
+
+### Managed vs ad-hoc dashboards
+
+- **Managed dashboards**: файлы в `ops/monitoring/grafana/dashboards/*.json`. Они являются source of truth и автоматически подгружаются при старте Grafana.
+- **Ad-hoc dashboards**: создаются в UI Grafana для быстрых экспериментов и хранятся во внутренней БД Grafana (volume `homeaccounting-dev-grafana-data`).
+- Изменения provisioned dashboards через UI могут быть перезаписаны при следующем обновлении provisioning.
+
+### Как добавить новый managed dashboard
+
+1. Создайте/обновите дашборд в UI Grafana.
+2. Экспортируйте dashboard в JSON.
+3. Перед сохранением в репозиторий убедитесь, что:
+   - `id` равен `null`;
+   - `uid` стабильный и уникальный.
+4. Положите JSON в `ops/monitoring/grafana/dashboards/`.
+5. Перезапустите Grafana или дождитесь автообновления (`updateIntervalSeconds`).
 
 ## Конфигурация
 

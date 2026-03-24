@@ -9,11 +9,11 @@ partial class Category
         {
         }
 
-        public List<Category> CreateCategories(ref int i, Category? parentId)
+        public List<Category> CreateCategories(ref int i, Category? parentCategory)
         {
             var categories = new List<Category>();
 
-            var category = new Category(Name, parentId)
+            var category = new Category(Name, parentCategory)
             {
                 Id = new CategoryId(i),
             };  

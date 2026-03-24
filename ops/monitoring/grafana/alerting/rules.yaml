@@ -1,0 +1,90 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: homeaccounting-mvp
+    folder: HomeAccounting
+    interval: 1m
+    rules:
+      - uid: api-error-rate-high
+        title: API Error Rate High
+        condition: A
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange:
+              from: 300
+              to: 0
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: sum(rate(http_server_request_duration_seconds_count{http_response_status_code=~"5.."}[5m])) > 0.05
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: false
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: API returns 5xx responses above threshold.
+        labels:
+          severity: warning
+
+      - uid: api-p95-latency-high
+        title: API P95 Latency High
+        condition: A
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange:
+              from: 300
+              to: 0
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket[5m]))) > 1
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: false
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: API P95 latency is above 1 second.
+        labels:
+          severity: warning
+
+      - uid: no-logs-for-service
+        title: No Logs for HomeAccounting Service
+        condition: A
+        data:
+          - refId: A
+            datasourceUid: loki
+            relativeTimeRange:
+              from: 300
+              to: 0
+            model:
+              datasource:
+                type: loki
+                uid: loki
+              editorMode: code
+              expr: sum(count_over_time({service_name=~"homeaccounting.*"}[5m])) == 0
+              intervalMs: 1000
+              maxDataPoints: 43200
+              queryType: instant
+              refId: A
+        noDataState: Alerting
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Loki has no logs from HomeAccounting service for 10 minutes.
+        labels:
+          severity: critical

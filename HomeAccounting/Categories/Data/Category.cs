@@ -26,7 +26,7 @@ internal sealed partial class Category: Entity<CategoryId>
         }
         else
         {
-            Hierarchy = new CategoryHierarchy();
+            Hierarchy = CategoryHierarchy.Root;
         }
     }
 }

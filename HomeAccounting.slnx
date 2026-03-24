@@ -11,6 +11,8 @@
     <File Path="Agents.md" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.Development.yml" />
+    <File Path="docker-compose.Production.yml" />
     <File Path="docker-compose.yaml" />
     <File Path="Readme.md" />
   </Folder>

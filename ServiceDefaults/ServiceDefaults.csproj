@@ -19,6 +19,8 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
         <PackageReference Include="Rebus.OpenTelemetry" />
         <PackageReference Include="Rebus"/>
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
     </ItemGroup>
 
 </Project>

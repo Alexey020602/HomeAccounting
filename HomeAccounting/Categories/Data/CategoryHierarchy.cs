@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace HomeAccounting.Categories.Data;
 
-internal record struct CategoryHierarchy(string Path = "/")
+internal readonly record struct CategoryHierarchy(string Path)
 {
     public CategoryId[] CategoriesPath() => Path
         .Split('/', StringSplitOptions.RemoveEmptyEntries)
@@ -10,6 +10,8 @@ internal record struct CategoryHierarchy(string Path = "/")
         .Select(id => new CategoryId(id))
         .ToArray();
 
+    public static readonly CategoryHierarchy Root = new CategoryHierarchy([]);
+    
     public CategoryHierarchy(CategoryId[] ids):this($"/{string.Join("/", ids.Select(x => x.Value.ToString()))}/")
     {
     }

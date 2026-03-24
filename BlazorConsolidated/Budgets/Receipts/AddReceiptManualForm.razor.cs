@@ -21,7 +21,7 @@ public sealed partial class AddReceiptManualForm
 
     private async Task Submit()
     {
-        await form.Validate();
+        await form.ValidateAsync();
         if (!form.IsValid)
         {
             return;

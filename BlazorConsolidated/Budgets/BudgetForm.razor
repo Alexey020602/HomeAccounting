@@ -61,7 +61,7 @@
     
     private async Task Submit()
     {
-        await form.Validate();
+        await form.ValidateAsync();
         if (!form.IsValid) return;
         await OnSubmit.InvokeAsync(Model.Result(EditedBudget));
         
